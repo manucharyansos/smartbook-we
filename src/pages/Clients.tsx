@@ -344,7 +344,7 @@ export default function Clients() {
         actions={canManage ? <Button size="lg" onClick={openCreate}><Plus className="h-4 w-4" /> Նոր հաճախորդ</Button> : undefined}
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 xl:grid-cols-6">
         <SummaryCard label="Ընդհանուր հաճախորդներ" value={String(summary.totalClients)} icon={Contact} />
         <SummaryCard label="Ընթացիկ այցեր" value={String(summary.visibleVisits)} icon={UserRound} />
         <SummaryCard label="Ընթացիկ շրջանառություն" value={`${formatMoney(summary.visibleSpent)} դր`} icon={WalletCards} />
@@ -365,7 +365,7 @@ export default function Clients() {
           </div>
         </div>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        <div className="mt-3 grid gap-2 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
           <select value={segment} onChange={(e) => { setSegment(e.target.value); setPageNumber(1); }} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
             <option value="">Բոլոր segment-ները</option>
             <option value="vip">VIP</option>
@@ -395,7 +395,7 @@ export default function Clients() {
         ) : null}
       </Card>
 
-      <div className="grid gap-6 2xl:grid-cols-[1.05fr_0.95fr]">
+      <div className="grid gap-4 sm:gap-6 xl:grid-cols-[1.05fr_0.95fr]">
         <motion.div variants={card} initial="initial" animate="animate" transition={cardTransition}>
           <Card className="rounded-[30px] border border-white/70 bg-white/90 p-5 shadow-sm sm:p-6">
             <div>

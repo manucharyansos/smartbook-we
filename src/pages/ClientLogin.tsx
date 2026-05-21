@@ -43,7 +43,7 @@ export default function ClientLogin() {
     <AuthShell
       title="Client login"
       subtitle="Մուտք գործիր և տես upcoming ու past այցերդ մեկ վայրում։"
-      badge="SmartBook client cabinet"
+      badge="Vizit client cabinet"
       sideTitle="Քո ամրագրումները՝ մեկ պարզ cabinet-ում"
       sideText="Հաճախորդի համար արագ մուտքը պետք է լինի պարզ, վստահելի և առանց ավելորդ business դաշտերի։"
       footer={<div className="text-center text-sm text-slate-500">Բիզնեսի մուտք պե՞տք է <Link to="/business/login" className="font-medium text-violet-700 hover:text-violet-600">անցնել business login</Link></div>}

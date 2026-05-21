@@ -7,7 +7,7 @@ import { fadeUp, hoverLift, scaleIn } from "../lib/motion";
 
 const items = [
   {
-    q: "SmartBook-ը ում համար է նախատեսված?",
+    q: "Vizit-ը ում համար է նախատեսված?",
     a: "Հարթակը հիմնականում կառուցված է գեղեցկության սրահների, կոսմետոլոգիական ծառայությունների, ատամնաբուժական կլինիկաների և appointment-based այլ բիզնեսների համար։",
   },
   {
@@ -33,7 +33,7 @@ export default function Faq() {
         </>
       }
       title="Հաճախ տրվող հարցեր"
-      description="Ամենատարածված հարցերը SmartBook-ի setup-ի, public booking flow-ի և role/feature հնարավորությունների մասին։"
+      description="Ամենատարածված հարցերը Vizit-ի setup-ի, public booking flow-ի և role/feature հնարավորությունների մասին։"
       maxWidthClassName="max-w-5xl"
     >
       <div className="grid gap-6 2xl:grid-cols-[1.05fr_0.95fr]">

@@ -53,7 +53,7 @@ export default function ClientCabinet() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-violet-100 bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700">
-                <Sparkles className="h-3.5 w-3.5" /> SmartBook client cabinet
+                <Sparkles className="h-3.5 w-3.5" /> Vizit client cabinet
               </div>
               <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">Բարի վերադարձ, {user?.name ?? "հյուր"}</h1>
               <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-500">Այստեղ տեսնում ես քո upcoming ու past bookings-ները տարբեր բիզնեսներից, որոնք կապված են նույն email/phone-ին։</p>

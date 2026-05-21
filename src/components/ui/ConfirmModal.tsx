@@ -38,12 +38,17 @@ export function ConfirmModal({
           />
 
           <motion.div
-            className="fixed left-1/2 top-1/2 z-50 w-[min(92vw,520px)] -translate-x-1/2 -translate-y-1/2"
-            initial={{ opacity: 0, y: 16, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 12, scale: 0.98 }}
+            className="fixed inset-x-0 bottom-0 z-50 sm:left-1/2 sm:top-1/2 sm:bottom-auto sm:w-[min(92vw,520px)] sm:-translate-x-1/2 sm:-translate-y-1/2"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_24px_80px_rgba(124,58,237,0.12)]">
+            {/* Mobile drag handle */}
+            <div className="flex justify-center pt-3 sm:hidden">
+              <div className="h-1 w-10 rounded-full bg-slate-300" />
+            </div>
+            <div className="rounded-t-[28px] border border-slate-200 bg-white p-5 shadow-[0_-12px_40px_rgba(15,23,42,0.12)] sm:rounded-[28px] sm:p-6 sm:shadow-[0_24px_80px_rgba(124,58,237,0.12)]">
               <div className="flex items-start gap-4">
                 <div
                   className={`flex h-12 w-12 items-center justify-center rounded-2xl ${
@@ -59,12 +64,12 @@ export function ConfirmModal({
                 </div>
               </div>
 
-              <div className="mt-6 flex justify-end gap-3">
-                <Button variant="secondary" onClick={onClose} disabled={loading}>
+              <div className="mt-5 flex flex-col-reverse gap-2 sm:mt-6 sm:flex-row sm:justify-end sm:gap-3">
+                <Button variant="secondary" onClick={onClose} disabled={loading} className="w-full sm:w-auto">
                   {cancelText}
                 </Button>
 
-                <Button onClick={onConfirm} loading={loading} className={danger ? "!bg-rose-600 hover:!bg-rose-700" : ""}>
+                <Button onClick={onConfirm} loading={loading} className={`w-full sm:w-auto ${danger ? "!bg-rose-600 hover:!bg-rose-700" : ""}`}>
                   {confirmText}
                 </Button>
               </div>

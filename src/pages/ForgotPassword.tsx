@@ -32,7 +32,7 @@ export default function ForgotPassword() {
       title="Մոռացե՞լ ես գաղտնաբառը"
       subtitle="Մուտքագրիր էլ. փոստը, և մենք կուղարկենք վերականգնման հղումը"
       sideTitle="Անվտանգ վերականգնում"
-      sideText="SmartBook-ը պահպանում է վերականգնման հոսքը պարզ, արագ և հասկանալի՝ առանց ավելորդ քայլերի։"
+      sideText="Vizit-ը պահպանում է վերականգնման հոսքը պարզ, արագ և հասկանալի՝ առանց ավելորդ քայլերի։"
       footer={<div className="text-center text-sm text-slate-500">Հիշեցի՞ր <Link to="/login" className="font-medium text-violet-700 hover:text-violet-600">վերադառնալ մուտքին</Link></div>}
     >
       <motion.form variants={staggerContainer(0.08)} initial="hidden" animate="show" onSubmit={submit} className="space-y-5">

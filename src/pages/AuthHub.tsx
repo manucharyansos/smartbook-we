@@ -13,13 +13,13 @@ export default function AuthHub({ mode }: Props) {
 
   return (
     <AuthShell
-      title={isRegister ? "Ինչպե՞ս ես ուզում միանալ SmartBook-ին" : "Ո՞րպես ով ես մուտք գործում"}
+      title={isRegister ? "Ինչպե՞ս ես ուզում միանալ Vizit-ին" : "Ո՞րպես ով ես մուտք գործում"}
       subtitle={
         isRegister
           ? "Բիզնեսի և հաճախորդի ճանապարհները բաժանված են, որ onboarding-ը ու cabinet-ը լինեն ավելի պարզ ու պրեմիում։"
           : "Ընտրիր ճիշտ ճանապարհը՝ բիզնես կառավարելու կամ քո անձնական ամրագրումները տեսնելու համար։"
       }
-      badge="SmartBook access"
+      badge="Vizit access"
       sideTitle="Մեկ product, բայց երկու հստակ ճանապարհ"
       sideText="Բիզնեսը ստանում է trial, pricing և onboarding flow, իսկ հաճախորդը՝ արագ register/login և իր cabinet-ը։"
       footer={

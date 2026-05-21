@@ -58,7 +58,7 @@ export default function ComingSoonPage({
           variants={scaleIn}
           className="rounded-[32px] border border-slate-200 bg-[linear-gradient(145deg,#0f172a_0%,#4c1d95_55%,#7c2d12_100%)] p-6 text-white shadow-[0_24px_80px_rgba(15,23,42,0.22)] sm:p-8"
         >
-          <h2 className="text-2xl font-semibold tracking-tight">Մինչ այդ՝ փորձիր SmartBook-ը գործող ռեժիմում</h2>
+          <h2 className="text-2xl font-semibold tracking-tight">Մինչ այդ՝ փորձիր Vizit-ը գործող ռեժիմում</h2>
           <p className="mt-4 text-sm leading-7 text-white/75">
             Core product-ը արդեն կենտրոնացած է public booking experience-ի, calendar-ի,
             staff control-ի և business operations-ի վրա։ Այս secondary բաժինն էլ բերեցի նոր

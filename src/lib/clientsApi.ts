@@ -30,6 +30,103 @@ export type ClientRow = {
 };
 
 
+
+export type DentalProfile = {
+  id: number;
+  chief_complaint?: string | null;
+  dental_history?: string | null;
+  current_medications?: string | null;
+  treatment_alerts?: string | null;
+  insurance_provider?: string | null;
+  insurance_number?: string | null;
+  preferred_doctor?: string | null;
+  pain_level?: number | null;
+  oral_hygiene_status?: "good" | "fair" | "poor" | null;
+  periodontal_risk?: "low" | "medium" | "high" | null;
+  last_xray_at?: string | null;
+  next_follow_up_at?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+};
+
+export type DentalProfilePayload = {
+  chief_complaint?: string | null;
+  dental_history?: string | null;
+  current_medications?: string | null;
+  treatment_alerts?: string | null;
+  insurance_provider?: string | null;
+  insurance_number?: string | null;
+  preferred_doctor?: string | null;
+  pain_level?: number | null;
+  oral_hygiene_status?: "good" | "fair" | "poor" | null;
+  periodontal_risk?: "low" | "medium" | "high" | null;
+  last_xray_at?: string | null;
+  next_follow_up_at?: string | null;
+};
+
+export type DentalTreatmentRecord = {
+  id: number;
+  booking_id?: number | null;
+  performed_by_user_id?: number | null;
+  visit_date?: string | null;
+  procedure_name?: string | null;
+  procedure_code?: string | null;
+  diagnosis?: string | null;
+  treated_teeth?: string[];
+  surfaces?: string[];
+  notes?: string | null;
+  recommendation?: string | null;
+  treatment_status?: "planned" | "in_progress" | "completed" | "cancelled" | null;
+  priority?: "routine" | "urgent" | "emergency" | null;
+  cost?: number | null;
+  follow_up_at?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+};
+
+export type DentalTreatmentPayload = {
+  booking_id?: number | null;
+  performed_by_user_id?: number | null;
+  visit_date?: string | null;
+  procedure_name: string;
+  procedure_code?: string | null;
+  diagnosis?: string | null;
+  treated_teeth?: string[];
+  surfaces?: string[];
+  notes?: string | null;
+  recommendation?: string | null;
+  treatment_status?: "planned" | "in_progress" | "completed" | "cancelled" | null;
+  priority?: "routine" | "urgent" | "emergency" | null;
+  cost?: number | null;
+  follow_up_at?: string | null;
+};
+
+export type DentalToothRecord = {
+  id: number;
+  tooth_number: string;
+  status?: "healthy" | "attention" | "planned" | "treated" | "monitoring" | "missing" | null;
+  condition_label?: string | null;
+  surface_summary?: string[];
+  notes?: string | null;
+  recommendation?: string | null;
+  priority?: "routine" | "urgent" | "emergency" | null;
+  last_treated_at?: string | null;
+  next_action_due_at?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+};
+
+export type DentalToothPayload = {
+  status?: "healthy" | "attention" | "planned" | "treated" | "monitoring" | "missing" | null;
+  condition_label?: string | null;
+  surface_summary?: string[];
+  notes?: string | null;
+  recommendation?: string | null;
+  priority?: "routine" | "urgent" | "emergency" | null;
+  last_treated_at?: string | null;
+  next_action_due_at?: string | null;
+};
+
 export type ClientNote = {
   id: number;
   body: string;
@@ -97,6 +194,9 @@ export type ClientDetails = ClientRow & {
   recent_notes?: ClientNote[];
   reminders?: ClientReminder[];
   timeline?: ClientTimelineItem[];
+  dental_profile?: DentalProfile | null;
+  dental_chart?: DentalToothRecord[];
+  dental_treatments?: DentalTreatmentRecord[];
   crm?: {
     completed_count: number;
     cancelled_count: number;
@@ -107,6 +207,20 @@ export type ClientDetails = ClientRow & {
     favorite_source?: string | null;
     last_source?: string | null;
     linked_account?: boolean;
+    dental?: {
+      chart_status?: string | null;
+      emergency_visits_count?: number;
+      treatment_records_count?: number;
+      profile_completion_score?: number;
+      last_diagnosis?: string | null;
+      last_clinical_note?: string | null;
+      last_clinical_note_at?: string | null;
+      last_visit_date?: string | null;
+      last_chart_update_at?: string | null;
+      charted_teeth_count?: number;
+      attention_teeth_count?: number;
+      recent_treatment_codes?: string[];
+    } | null;
   };
 };
 
@@ -191,4 +305,33 @@ export async function deleteClientReminder(clientId: number, reminderId: number)
 export async function dispatchClientReminder(clientId: number, reminderId: number) {
   const r = await api.post(`/clients/${clientId}/reminders/${reminderId}/dispatch`);
   return r.data.data as ClientReminder;
+}
+
+
+export async function upsertDentalProfile(clientId: number, payload: DentalProfilePayload) {
+  const r = await api.put(`/clients/${clientId}/dental/profile`, payload);
+  return r.data.data as DentalProfile;
+}
+
+export async function createDentalTreatment(clientId: number, payload: DentalTreatmentPayload) {
+  const r = await api.post(`/clients/${clientId}/dental/treatments`, payload);
+  return r.data.data as DentalTreatmentRecord;
+}
+
+export async function updateDentalTreatment(clientId: number, recordId: number, payload: Partial<DentalTreatmentPayload>) {
+  const r = await api.put(`/clients/${clientId}/dental/treatments/${recordId}`, payload);
+  return r.data.data as DentalTreatmentRecord;
+}
+
+export async function deleteDentalTreatment(clientId: number, recordId: number) {
+  await api.delete(`/clients/${clientId}/dental/treatments/${recordId}`);
+}
+
+export async function upsertDentalTooth(clientId: number, toothNumber: string, payload: DentalToothPayload) {
+  const r = await api.put(`/clients/${clientId}/dental/chart/${toothNumber}`, payload);
+  return r.data.data as DentalToothRecord;
+}
+
+export async function deleteDentalTooth(clientId: number, recordId: number) {
+  await api.delete(`/clients/${clientId}/dental/chart/${recordId}`);
 }

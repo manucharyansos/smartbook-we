@@ -187,8 +187,8 @@ export default function Register() {
     return (
         <AuthShell
             title="Գրանցվել"
-            subtitle="Ստեղծիր քո SmartBook business հաշիվ"
-            sideTitle="Սկսիր SmartBook-ը քո բիզնեսի համար"
+            subtitle="Ստեղծիր քո Vizit business հաշիվ"
+            sideTitle="Սկսիր Vizit-ը քո բիզնեսի համար"
             sideText="Գրանցվիր, հետո անցիր onboarding և պատրաստիր workspace-ը աշխատանքի համար։"
             footer={
                 <div className="text-center text-sm text-slate-500">
@@ -368,7 +368,7 @@ export default function Register() {
                                         placeholder={
                                             business_type === "beauty" ? "Իմ սրահը" : "Իմ կլինիկան"
                                         }
-                                        className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
                                         required
                                     />
                                 </div>
@@ -385,7 +385,7 @@ export default function Register() {
                                         value={business_phone}
                                         onChange={(e) => setBusinessPhone(e.target.value)}
                                         placeholder="+374 77 123456"
-                                        className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
                                         required
                                     />
                                 </div>
@@ -402,7 +402,7 @@ export default function Register() {
                                         value={business_address}
                                         onChange={(e) => setBusinessAddress(e.target.value)}
                                         placeholder="Երևան, Հայաստան"
-                                        className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
                                     />
                                 </div>
                             </motion.div>
@@ -416,7 +416,7 @@ export default function Register() {
                                 Շարունակել
                             </motion.button>
 
-                            <SocialAuthButtons mode="register" audience="business" />
+                            <SocialAuthButtons mode="register" audience="business" businessType={business_type} />
 
 
                         </motion.div>
@@ -441,7 +441,7 @@ export default function Register() {
                                         value={owner_name}
                                         onChange={(e) => setOwnerName(e.target.value)}
                                         placeholder="Անուն Ազգանուն"
-                                        className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
                                         required
                                     />
                                 </div>
@@ -459,7 +459,7 @@ export default function Register() {
                                         value={owner_email}
                                         onChange={(e) => setOwnerEmail(e.target.value)}
                                         placeholder="owner@example.com"
-                                        className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
                                         required
                                     />
                                 </div>
@@ -479,7 +479,7 @@ export default function Register() {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         placeholder="••••••••"
-                                        className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-12 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-12 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
                                         required
                                     />
                                     <button
@@ -538,7 +538,7 @@ export default function Register() {
                                         value={password_confirmation}
                                         onChange={(e) => setPasswordConfirmation(e.target.value)}
                                         placeholder="••••••••"
-                                        className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-12 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-12 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
                                         required
                                     />
                                     <button
@@ -556,7 +556,7 @@ export default function Register() {
                             </motion.div>
                             </div>
 
-                            <SocialAuthButtons mode="register" audience="business" />
+                            <SocialAuthButtons mode="register" audience="business" businessType={business_type} />
 
                             <motion.div
                                 variants={fadeUp}

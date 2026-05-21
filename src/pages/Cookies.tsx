@@ -6,7 +6,7 @@ export default function Cookies() {
   return (
     <LegalPageTemplate
       title="Cookie Policy"
-      description="Ինչ cookies ենք օգտագործում, ինչ նպատակով և ինչպես են դրանք օգնում SmartBook-ի հիմնական ֆունկցիոնալին։"
+      description="Ինչ cookies ենք օգտագործում, ինչ նպատակով և ինչպես են դրանք օգնում Vizit-ի հիմնական ֆունկցիոնալին։"
       updatedAt={updatedAt}
       sections={[
         {

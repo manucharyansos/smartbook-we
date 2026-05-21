@@ -17,7 +17,7 @@ type AuthShellProps = {
 export default function AuthShell({
                                       title,
                                       subtitle,
-                                      badge = "SmartBook access",
+                                      badge = "Vizit access",
                                       sideTitle,
                                       sideText,
                                       children,
@@ -45,7 +45,7 @@ export default function AuthShell({
                 <span className="hidden sm:inline">Հետ</span>
             </motion.button>
 
-            <div className="relative z-10 mx-auto grid min-h-screen max-w-7xl items-start gap-6 px-3 pb-8 pt-28 sm:gap-8 sm:px-6 sm:pb-12 sm:pt-28 lg:px-8 2xl:grid-cols-[0.95fr_1.05fr] 2xl:items-center">
+            <div className="relative z-10 mx-auto grid min-h-screen max-w-7xl items-start gap-6 px-3 pb-8 pt-20 sm:gap-8 sm:px-6 sm:pb-12 sm:pt-24 lg:px-8 2xl:grid-cols-[0.95fr_1.05fr] 2xl:items-center">
                 <motion.div
                     variants={staggerContainer(0.08, 0.05)}
                     className="hidden 2xl:block"
@@ -62,7 +62,7 @@ export default function AuthShell({
                             </div>
                             <div>
                                 <div className="text-2xl font-semibold tracking-tight text-slate-950">
-                                    SmartBook
+                                    Vizit
                                 </div>
                                 <div className="text-sm text-slate-500">
                                     Ամրագրման միջավայր
@@ -104,15 +104,15 @@ export default function AuthShell({
 
                 <motion.div variants={scaleIn} className="relative">
                     <div className="rounded-[28px] border border-white/70 bg-white/86 p-2 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:rounded-[34px] sm:p-5 xl:p-6 2xl:min-h-[740px]">
-                        <div className="rounded-[24px] bg-[linear-gradient(135deg,#fff7ed_0%,#faf5ff_55%,#ffffff_100%)] p-2 sm:rounded-[28px] sm:p-5 xl:p-6">
-                            <div className="rounded-[22px] border border-white/70 bg-white/90 p-4 shadow-sm sm:rounded-[26px] sm:p-6 xl:p-8">
+                        <div className="rounded-[20px] bg-[linear-gradient(135deg,#fff7ed_0%,#faf5ff_55%,#ffffff_100%)] p-1.5 sm:rounded-[28px] sm:p-4 xl:p-6">
+                            <div className="rounded-[18px] border border-white/70 bg-white/90 p-4 shadow-sm sm:rounded-[26px] sm:p-6 xl:p-8">
                                 <motion.div variants={fadeUp} className="text-center">
                                     <Link to="/" className="inline-flex items-center gap-3 xl:hidden max-w-full">
                                         <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white shadow-lg">
                                             <CalendarDays className="h-5 w-5" />
                                         </div>
                                         <div className="text-left">
-                                            <div className="text-lg font-semibold text-slate-950">SmartBook</div>
+                                            <div className="text-lg font-semibold text-slate-950">Vizit</div>
                                             <div className="text-xs text-slate-500">Ամրագրման միջավայր</div>
                                         </div>
                                     </Link>

@@ -55,13 +55,13 @@ export default function LandingNavbar() {
                     >
                         <div className="flex h-[54px] items-center justify-between gap-2 px-3 sm:h-16 sm:gap-4 sm:px-5">
                             <Link to="/" className="flex min-w-0 items-center gap-2.5 sm:gap-3">
-                                <div className="grid h-8.5 w-8.5 shrink-0 place-items-center rounded-[16px] bg-slate-950 text-white shadow-sm sm:h-11 sm:w-11 sm:rounded-2xl">
+                                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-[16px] bg-gradient-to-br from-violet-600 to-fuchsia-500 text-white shadow-md shadow-violet-500/20 sm:h-11 sm:w-11 sm:rounded-2xl">
                                     <CalendarDays className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
                                 </div>
 
                                 <div className="min-w-0">
                                     <div className="truncate text-[15px] font-semibold tracking-tight text-slate-950 sm:text-[17px]">
-                                        SmartBook
+                                        Vizit
                                     </div>
                                     <div className="truncate text-xs text-slate-500">
                                         Ամրագրման միջավայր
@@ -69,7 +69,7 @@ export default function LandingNavbar() {
                                 </div>
                             </Link>
 
-                            <nav className="hidden items-center gap-1 xl:flex">
+                            <nav className="hidden items-center gap-1 md:flex">
                                 {navItems.map((item) => (
                                     <NavLink
                                         key={item.to}
@@ -82,7 +82,7 @@ export default function LandingNavbar() {
                                 ))}
                             </nav>
 
-                            <div className="hidden items-center gap-3 xl:flex">
+                            <div className="hidden items-center gap-3 md:flex">
                                 <Link
                                     to="/login"
                                     className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
@@ -102,7 +102,7 @@ export default function LandingNavbar() {
                             <button
                                 type="button"
                                 onClick={() => setMobileOpen((prev) => !prev)}
-                                className="inline-flex h-10 w-10 items-center justify-center rounded-[18px] border border-slate-200 bg-white text-slate-700 shadow-sm xl:hidden sm:h-11 sm:w-11 sm:rounded-2xl"
+                                className="inline-flex h-10 w-10 items-center justify-center rounded-[18px] border border-slate-200 bg-white text-slate-700 shadow-sm md:hidden sm:h-11 sm:w-11 sm:rounded-2xl"
                                 aria-label="Բացել մենյուն"
                             >
                                 {mobileOpen ? <X className="h-[18px] w-[18px] sm:h-5 sm:w-5" /> : <Menu className="h-[18px] w-[18px] sm:h-5 sm:w-5" />}
@@ -120,7 +120,7 @@ export default function LandingNavbar() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setMobileOpen(false)}
-                            className="fixed inset-0 z-40 bg-slate-950/30 backdrop-blur-[2px] xl:hidden"
+                            className="fixed inset-0 z-40 bg-slate-950/30 backdrop-blur-[2px] md:hidden"
                         />
 
                         <motion.div
@@ -128,7 +128,7 @@ export default function LandingNavbar() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
                             transition={{ duration: 0.22 }}
-                            className="fixed inset-x-0 top-[4.45rem] z-50 mx-3 max-h-[calc(100vh-5.25rem)] overflow-y-auto rounded-[24px] border border-slate-200 bg-white p-4 pb-5 shadow-[0_24px_80px_rgba(15,23,42,0.14)] xl:hidden sm:mx-4 sm:top-20 sm:max-h-[calc(100vh-6rem)]"
+                            className="fixed inset-x-0 top-[4.2rem] z-50 mx-3 max-h-[calc(100vh-5rem)] overflow-y-auto rounded-[24px] border border-slate-200 bg-white p-4 pb-5 shadow-[0_24px_80px_rgba(15,23,42,0.14)] md:hidden sm:mx-4 sm:top-[4.5rem]"
                         >
                             <div className="flex flex-col gap-2">
                                 {navItems.map((item) => (

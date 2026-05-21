@@ -55,7 +55,7 @@ export default function AdminSidebar({ expanded, mobileOpen, onToggleExpanded, o
                     <CalendarDays className="h-5 w-5" />
                   </div>
                   <div className="min-w-0">
-                    <div className="truncate text-lg font-semibold tracking-tight">SmartBook</div>
+                    <div className="truncate text-lg font-semibold tracking-tight">Vizit</div>
                     <div className="truncate text-xs text-white/45">Admin workspace</div>
                   </div>
                 </div>

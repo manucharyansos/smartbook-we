@@ -229,7 +229,7 @@ export default function BusinessSettingsPage() {
   const bookingLink = useMemo(() => {
     const slug = (form.slug ?? settingsQ.data?.slug) as string | undefined;
     if (!slug) return null;
-    return `smartbook.am/book/${slug}`;
+    return `vizit.am/book/${slug}`;
   }, [form.slug, settingsQ.data?.slug]);
 
   const saveSettingsMut = useMutation({
@@ -413,7 +413,7 @@ export default function BusinessSettingsPage() {
 
 
           <motion.div variants={card} initial="initial" animate="animate" transition={cardTransition}>
-            <SectionCard className="p-6 md:p-7">
+            <SectionCard className="p-4 sm:p-6 md:p-7">
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <h2 className="text-xl font-semibold text-slate-950">Հանրային էջ և բրենդինգ</h2>
@@ -421,7 +421,7 @@ export default function BusinessSettingsPage() {
                 </div>
               </div>
 
-              <div className="mt-6 grid gap-6 2xl:grid-cols-[1.1fr_0.9fr]">
+              <div className="mt-5 grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
                 <div className="space-y-4">
                   <InputShell label="Կարճ նկարագրություն" icon={<Sparkles className="h-4 w-4 text-violet-500" />}>
                     <textarea value={form.short_description ?? ""} onChange={(e) => setForm((p) => ({ ...p, short_description: e.target.value }))} className="min-h-[96px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100" />
@@ -448,7 +448,7 @@ export default function BusinessSettingsPage() {
                   <div className="rounded-[28px] border border-slate-200 bg-slate-50/70 p-4">
                     <div className="text-sm font-semibold text-slate-900">Սոցիալական հղումներ և աղբյուրներ</div>
                     <div className="mt-1 text-xs leading-5 text-slate-500">Այս հղումները կերևան public profile-ում և booking source tracking-ի համար էլ պետք կգան։</div>
-                    <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                    <div className="mt-3 grid gap-3 sm:grid-cols-2">
                       <InputShell label="Instagram հղում" icon={<LinkIcon className="h-4 w-4 text-violet-500" />}>
                         <input value={form.instagram_url ?? ""} onChange={(e) => setForm((p) => ({ ...p, instagram_url: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="https://instagram.com/..." />
                       </InputShell>
@@ -523,8 +523,8 @@ export default function BusinessSettingsPage() {
           {isOwner && (
               <motion.div variants={card} initial="initial" animate="animate" transition={cardTransition}>
                 <SectionCard className="overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.10),transparent_35%),white] p-0">
-                  <div className="grid gap-0 2xl:grid-cols-[1.2fr_0.8fr]">
-                    <div className="p-6 md:p-7">
+                  <div className="grid gap-0 xl:grid-cols-[1.2fr_0.8fr]">
+                    <div className="p-4 sm:p-6 md:p-7">
                       <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
                         <Crown size={14} className="text-violet-600" />
                         Սեփականատիրոջ վճարումների կենտրոն
@@ -592,7 +592,7 @@ export default function BusinessSettingsPage() {
           )}
 
           {loading ? (
-              <div className="grid gap-4 xl:grid-cols-2">
+              <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
                 {[1, 2].map((i) => (
                     <SectionCard key={i} className="p-6">
                       <div className="flex items-center gap-2 text-slate-500">
@@ -608,7 +608,7 @@ export default function BusinessSettingsPage() {
                 ))}
               </div>
           ) : (
-              <div className="grid gap-4 xl:grid-cols-2">
+              <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
                 <motion.div variants={card} initial="initial" animate="animate" transition={cardTransition}>
                   <SectionCard className="p-6">
                     <div className="mb-6 flex items-center justify-between gap-3">

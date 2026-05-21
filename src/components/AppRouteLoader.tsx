@@ -4,7 +4,7 @@ export function AppRouteLoader() {
   return (
     <FullScreenLoader
       title="Բացում ենք էջը…"
-      subtitle="SmartBook-ը պատրաստում է անհրաժեշտ տվյալներն ու ինտերֆեյսը"
+      subtitle="Vizit-ը պատրաստում է անհրաժեշտ տվյալներն ու ինտերֆեյսը"
     />
   );
 }

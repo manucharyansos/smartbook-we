@@ -17,32 +17,54 @@ export default function SocialAuthCallback() {
 
     useEffect(() => {
         async function boot() {
-            const token = params.get("token");
+            const exchangeCode = params.get("code");
+            const legacyToken = params.get("token");
             const message = params.get("message");
             const provider = params.get("provider");
             const audience = params.get("audience") === "business" ? "business" : "client";
 
-            if (!token) {
+            if (!exchangeCode && !legacyToken) {
                 setError(message || "Սոցիալական մուտքը չհաջողվեց։");
                 return;
             }
 
             try {
-                const res = await api.get(audience === "client" ? "/client/auth/me" : "/auth/me", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                let token = legacyToken;
+                let user: any = null;
 
-                const user = res.data.user;
+                if (exchangeCode) {
+                    const exchange = await api.post("/auth/social/exchange", { code: exchangeCode });
+                    token = exchange.data?.token ?? null;
+                    user = exchange.data?.user ?? null;
+                }
+
+                if (!token) {
+                    throw new Error("Missing social auth token");
+                }
+
+                if (!user) {
+                    const res = await api.get(audience === "client" ? "/client/auth/me" : "/auth/me", {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    user = res.data.user;
+                }
+
                 setAuth(token, user);
 
-                navigate(audience === "client" ? "/client/cabinet" : (user?.needs_onboarding ? "/app/onboarding" : "/app/dashboard"), {
-                    replace: true,
-                });
+                navigate(
+                    audience === "client"
+                        ? "/client/cabinet"
+                        : user?.needs_onboarding
+                            ? "/app/onboarding"
+                            : "/app/dashboard",
+                    { replace: true }
+                );
             } catch (e: any) {
                 setError(
                     e?.response?.data?.message ??
+                    e?.response?.data?.errors?.code?.[0] ??
                     `${provider ? `${provider}-ով ` : ""}մուտքը չհաջողվեց։`
                 );
             }
@@ -56,7 +78,7 @@ export default function SocialAuthCallback() {
             title="Social sign in"
             subtitle="Ստուգում ենք սոցիալական մուտքի տվյալները"
             sideTitle="Մուտք գործիր ավելի արագ"
-            sideText="Google կամ Facebook մուտքը թույլ է տալիս հաճախորդին ավելի արագ անցնել իր cabinet կամ booking flow։"
+            sideText="Google կամ Facebook մուտքը թույլ է տալիս հաճախորդին ու բիզնեսին ավելի արագ մտնել իրենց հաշիվ։"
             footer={null}
         >
             <motion.div
@@ -101,8 +123,7 @@ export default function SocialAuthCallback() {
                     <div className="flex items-start gap-3">
                         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-violet-600" />
                         <div>
-                            Social login-ը լավ է հատկապես client cabinet-ի համար, որովհետև հաճախորդը
-                            ավելի արագ է անցնում booking-ից դեպի իր անձնական էջ։
+                            Callback փուլում token-ը այլևս URL-ով չի փոխանցվում։ Frontend-ը ստանում է one-time code և իրական token-ը վերցնում է API-ից։
                         </div>
                     </div>
                 </motion.div>

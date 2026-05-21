@@ -23,14 +23,14 @@ type FeatureSection = {
 
 const sections: FeatureSection[] = [
   {
-    title: "Թասքեր",
+    title: "Ամրագրումների վահանակ",
     image: tasksImg,
     icon: BriefcaseBusiness,
     bullets: [
-      "Kanban ոճի task board՝ պլանավորված, ընթացիկ, ավարտված և չեղարկված սյունակներով։",
-      "Թափանցիկ թիմային վերահսկում՝ ով ինչի վրա է աշխատում և ինչն է ուշացած։",
-      "Արագ ներդրվող աշխատանքային հոսք՝ առանց բարդ համակարգի։",
-      "Task card-երը կապվում են booking-ի, հաճախորդի և աշխատակցի հետ։",
+      "Ամրագրումների արագ վահանակ՝ սպասող, հաստատված, ավարտված, չեկած և չեղարկված սյունակներով։",
+      "Թափանցիկ վերահսկում՝ որ ամրագրումն ինչ վիճակում է և ով է սպասարկում այն։",
+      "Արագ աշխատանքային հոսք՝ օրացույցի ու ամրագրումների կառավարման հետ միասին։",
+      "Քարտերը կապվում են հաճախորդի, ծառայության և մասնագետի հետ։",
     ],
   },
   {
@@ -99,7 +99,7 @@ export default function Features() {
         <section className="px-4 pb-8 sm:px-6 lg:px-8">
           <motion.div variants={staggerContainer(0.08, 0.05)} initial="hidden" animate="show" className="mx-auto max-w-7xl text-center">
             <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/90 px-4 py-2 text-sm font-medium text-violet-700 shadow-sm">
-              <BarChart3 className="h-4 w-4" /> SmartBook մոդուլներ
+              <BarChart3 className="h-4 w-4" /> Vizit մոդուլներ
             </motion.div>
             <motion.h1 variants={fadeUp} className="mt-6 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
               Ամենակարևոր մոդուլները՝ մեկ միասնական product-ում

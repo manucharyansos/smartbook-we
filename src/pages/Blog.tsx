@@ -3,7 +3,7 @@ import ComingSoonPage from "../components/marketing/ComingSoonPage";
 export default function Blog() {
   return (
     <ComingSoonPage
-      badge="SmartBook Blog"
+      badge="Vizit Blog"
       title="Հոդվածներ բիզնեսի աճի, booking flow-ի և հաճախորդների փորձի մասին"
       description="Այս բաժինը դեռ լրացվում է, բայց արդեն բերվել է ընդհանուր premium public design-ի տակ, որպեսզի կայքը տեսողականորեն ամբողջական լինի։"
       bullets={[

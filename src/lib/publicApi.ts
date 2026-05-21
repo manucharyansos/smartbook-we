@@ -76,6 +76,7 @@ export type PublicService = {
     currency: string;
     is_active: boolean;
     image_url?: string | null;
+    location_id?: number | null;
 };
 
 export type PublicStaff = {
@@ -85,6 +86,7 @@ export type PublicStaff = {
     avatar_url?: string | null;
     bio?: string | null;
     is_bookable: boolean;
+    location_id?: number | null;
 };
 
 export type Slot = {
@@ -228,16 +230,16 @@ export async function fetchPublicBusiness(slug: string): Promise<PublicBusiness>
     };
 }
 
-export async function fetchPublicServices(slug: string): Promise<PublicService[]> {
-    const { data } = await publicApi.get(`/public/businesses/${slug}/services`);
+export async function fetchPublicServices(slug: string, params?: { location_id?: number }): Promise<PublicService[]> {
+    const { data } = await publicApi.get(`/public/businesses/${slug}/services`, { params });
     return (data.data || data).map((item: PublicService) => ({
         ...item,
         image_url: resolveMediaUrl(item.image_url),
     }));
 }
 
-export async function fetchPublicStaff(slug: string): Promise<PublicStaff[]> {
-    const { data } = await publicApi.get(`/public/businesses/${slug}/staff`);
+export async function fetchPublicStaff(slug: string, params?: { location_id?: number; bookable_only?: boolean }): Promise<PublicStaff[]> {
+    const { data } = await publicApi.get(`/public/businesses/${slug}/staff`, { params });
     return (data.data || data).map((item: PublicStaff) => ({
         ...item,
         avatar_url: resolveMediaUrl(item.avatar_url),
@@ -249,10 +251,11 @@ export async function fetchPublicAvailability(params: {
     service_id: number;
     date: string;
     staff_id?: number;
+    location_id?: number;
 }): Promise<Slot[]> {
     const { slug, ...query } = params;
     const { data } = await publicApi.get(`/public/businesses/${slug}/availability`, {
-        params: query,
+        params: { ...query, _t: Date.now() },
     });
     return data.data || data;
 }
@@ -262,16 +265,19 @@ export async function fetchPublicAvailabilityMulti(params: {
     service_ids: number[];
     date: string;
     staff_id?: number;
+    location_id?: number;
 }): Promise<Slot[]> {
     const { slug, ...query } = params;
     const { data } = await publicApi.get(`/public/businesses/${slug}/availability/multi`, {
-        params: query,
+        params: { ...query, _t: Date.now() },
         paramsSerializer: {
             serialize: (params) => {
                 const search = new URLSearchParams();
                 params.service_ids?.forEach((id: number) => search.append("service_ids[]", String(id)));
                 if (params.date) search.append("date", params.date);
                 if (params.staff_id) search.append("staff_id", String(params.staff_id));
+                if (params.location_id) search.append("location_id", String(params.location_id));
+                if (params._t) search.append("_t", String(params._t));
                 return search.toString();
             },
         },
@@ -290,6 +296,10 @@ export async function createPublicBooking(payload: {
     notes?: string | null;
     room_id?: number;
     source?: string;
+    location_id?: number;
+    redeem_points?: number;
+    gift_card_code?: string;
+    gift_card_amount?: number;
 }): Promise<PublicBookingResponse> {
     const { slug, ...body } = payload;
     const { data } = await publicApi.post(`/public/businesses/${slug}/bookings`, body);
@@ -307,6 +317,10 @@ export async function createPublicBookingMulti(payload: {
     notes?: string | null;
     room_id?: number;
     source?: string;
+    location_id?: number;
+    redeem_points?: number;
+    gift_card_code?: string;
+    gift_card_amount?: number;
 }): Promise<PublicBookingResponse> {
     const { slug, ...body } = payload;
     const { data } = await publicApi.post(`/public/businesses/${slug}/bookings/multi`, body);
@@ -326,6 +340,10 @@ export async function createPublicBookingLines(payload: {
     notes?: string | null;
     room_id?: number;
     source?: string;
+    location_id?: number;
+    redeem_points?: number;
+    gift_card_code?: string;
+    gift_card_amount?: number;
 }): Promise<PublicBookingResponse> {
     const { slug, ...body } = payload;
     const { data } = await publicApi.post(`/public/businesses/${slug}/bookings/lines`, body);
@@ -340,7 +358,7 @@ export async function verifyPublicBooking(payload: {
     return { ...data, cover_url: resolveMediaUrl(data.cover_url), logo_url: resolveMediaUrl(data.logo_url) };
 }
 
-export async function resendPublicBookingCode(bookingCode: string): Promise<{ ok: boolean; expires_at?: string; message?: string }> {
+export async function resendPublicBookingCode(bookingCode: string): Promise<{ ok: boolean; already?: boolean; expires_at?: string; message?: string; manage_token?: string; manage_url?: string; data?: PublicBookingDetail }> {
     const { data } = await publicApi.post(`/public/bookings/${bookingCode}/resend`);
     return { ...data, cover_url: resolveMediaUrl(data.cover_url), logo_url: resolveMediaUrl(data.logo_url) };
 }

@@ -26,6 +26,8 @@ export type Booking = {
     room_id?: number;
     booking_code?: string;
     source?: string | null;
+    location_id?: number | null;
+    location?: { id: number; name?: string | null; address?: string | null; is_primary?: boolean } | null;
 };
 
 export type CreateBookingPayload = {
@@ -39,6 +41,7 @@ export type CreateBookingPayload = {
     status?: "pending" | "confirmed";
     room_id?: number;
     source?: string;
+    location_id?: number;
 };
 
 export async function fetchBookings(params?: {
@@ -48,6 +51,7 @@ export async function fetchBookings(params?: {
     week_start?: string;
     status?: string;
     staff_id?: number;
+    location_id?: number;
 }) {
     const r = await api.get("/bookings", { params });
     return r.data.data ?? [];

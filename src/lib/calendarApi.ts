@@ -24,6 +24,8 @@ export type Booking = {
     currency?: string | null;
     service?: { id: number; name: string; duration_minutes: number; price: number | null };
   }>;
+  location_id?: number | null;
+  location?: { id: number; name?: string | null; address?: string | null; is_primary?: boolean } | null;
 };
 
 export type BookingBlock = {
@@ -47,6 +49,10 @@ export type CreateBookingPayload = {
   notes?: string | null;
   status?: "pending" | "confirmed";
   source?: string;
+  location_id?: number;
+  redeem_points?: number;
+  gift_card_code?: string;
+  gift_card_amount?: number;
 };
 
 export type CreateBookingLinesPayload = {
@@ -61,15 +67,19 @@ export type CreateBookingLinesPayload = {
   notes?: string | null;
   status?: "pending" | "confirmed";
   source?: string;
+  location_id?: number;
+  redeem_points?: number;
+  gift_card_code?: string;
+  gift_card_amount?: number;
 };
 
-export async function fetchBookings(from: string, to: string): Promise<Booking[]> {
-  const r = await api.get("/calendar", { params: { from, to } });
+export async function fetchBookings(from: string, to: string, params?: { location_id?: number }): Promise<Booking[]> {
+  const r = await api.get("/calendar", { params: { from, to, ...params } });
   return (r.data?.data ?? []) as Booking[];
 }
 
-export async function fetchBlocks(from: string, to: string): Promise<BookingBlock[]> {
-  const r = await api.get("/calendar/blocks", { params: { from, to } });
+export async function fetchBlocks(from: string, to: string, params?: { location_id?: number }): Promise<BookingBlock[]> {
+  const r = await api.get("/calendar/blocks", { params: { from, to, ...params } });
   return (r.data?.data ?? []) as BookingBlock[];
 }
 
@@ -94,6 +104,7 @@ export async function updateBooking(
     staff_id: number | null;
     status: BookingStatus;
     notes: string | null;
+    location_id: number | null;
   }>
 ) {
   const r = await api.put(`/bookings/${id}`, payload);
@@ -134,6 +145,7 @@ export async function createBlock(payload: {
   starts_at: string;
   ends_at: string;
   is_all_day?: boolean;
+  location_id?: number | null;
 }): Promise<BookingBlock> {
   const r = await api.post("/calendar/blocks", payload);
   return r.data?.data as BookingBlock;

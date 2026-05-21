@@ -40,7 +40,7 @@ export function PublicBusinessHeader({
               )}
             </div>
             <div className="min-w-0">
-              <div className="truncate text-sm font-semibold text-slate-950 sm:text-base">{business?.name || "SmartBook"}</div>
+              <div className="truncate text-sm font-semibold text-slate-950 sm:text-base">{business?.name || "Vizit"}</div>
               <div className="truncate text-xs text-slate-500">{business ? businessTypeLabel(business.business_type) : "Ամրագրման միջավայր"}</div>
             </div>
           </div>
@@ -68,7 +68,7 @@ export function PublicBusinessFooter({ business }: { business?: PublicBusiness |
         <div className="grid gap-6 rounded-[30px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6 xl:grid-cols-[1.15fr_0.85fr] xl:items-start">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-600">
-              SmartBook-ի աջակցությամբ
+              Vizit-ի աջակցությամբ
             </div>
             <h3 className="mt-4 text-xl font-semibold text-slate-950">{business?.name || "Բիզնես էջ"}</h3>
             <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">{business?.short_description || "Ամրագրում, կոնտակտ և բիզնեսի հիմնական տվյալները մեկ էջում։"}</p>

@@ -21,10 +21,13 @@ function planFeatures(plan: PublicPlan) {
   const features = plan.features ?? {};
   const staffLimit = Number(plan.staff_limit ?? features.staff_limit ?? 0);
 
+  const servicesLimit = Number((plan as any).services_limit ?? features.services_limit ?? 0);
+
   const items = [
     staffLimit >= 999 ? "16+ ակտիվ մասնագետ" : `Մինչև ${staffLimit} ակտիվ մասնագետ`,
     `Սեփականատերեր և մենեջերներ՝ անսահմանափակ`,
     `${Number(plan.locations ?? 1) > 1 ? `Մինչև ${plan.locations} հասցե` : "1 հասցե"}`,
+    servicesLimit > 0 ? `Մինչև ${servicesLimit} ծառայություն` : "Ծառայությունների սահմանափակում չկա",
     "Բոլոր հիմնական գործիքները ներառված են",
     "Օրացույց, ամրագրումներ, առաջադրանքներ և analytics",
     "Հաճախորդի cabinet, loyalty, նվերի քարտեր և աղբյուրների հետևում",
@@ -79,7 +82,7 @@ export default function Pricing() {
       badge={
         <>
           <Sparkles className="h-4 w-4" />
-          SmartBook գնացուցակ · պարզ և հասկանալի
+          Vizit գնացուցակ · պարզ և հասկանալի
         </>
       }
       title={

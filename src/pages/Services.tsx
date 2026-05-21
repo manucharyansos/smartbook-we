@@ -29,6 +29,7 @@ import {
 import { cn } from "../lib/cn";
 import {Spinner} from "@/components/ui/Spinner.tsx";
 import { uploadMedia } from "../lib/mediaApi";
+import { fetchBusinessSettings } from "../lib/businessSettingsApi";
 
 type ToastState = {
     open: boolean;
@@ -43,6 +44,7 @@ type ServiceForm = {
     currency: string;
     image_url?: string | null;
     is_active: boolean;
+    location_id: number | "";
 };
 
 const initialForm: ServiceForm = {
@@ -52,6 +54,7 @@ const initialForm: ServiceForm = {
     currency: "AMD",
     image_url: null,
     is_active: true,
+    location_id: "",
 };
 
 function SectionCard({
@@ -94,20 +97,30 @@ export default function ServicesPage() {
     const [showForm, setShowForm] = useState(false);
     const [editing, setEditing] = useState<Service | null>(null);
     const [form, setForm] = useState<ServiceForm>(initialForm);
+    const [selectedLocationId, setSelectedLocationId] = useState<number | "">("");
+
+    const settingsQ = useQuery({
+        queryKey: ["business-settings"],
+        queryFn: fetchBusinessSettings,
+        staleTime: 60_000,
+    });
 
     const servicesQ = useQuery({
-        queryKey: ["services"],
-        queryFn: fetchServices,
+        queryKey: ["services", selectedLocationId || "all"],
+        queryFn: () => fetchServices({ location_id: selectedLocationId ? Number(selectedLocationId) : undefined }),
         staleTime: 20_000,
     });
 
     const createMut = useMutation({
         mutationFn: createService,
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: ["services"] });
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: ["services"] }),
+                queryClient.invalidateQueries({ queryKey: ["business-settings"] }),
+            ]);
             setToast({ open: true, text: "Ծառայությունը ստեղծվեց ✅", type: "success" });
             setShowForm(false);
-            setForm(initialForm);
+            setForm({ ...initialForm, location_id: preferredLocationId });
             setTimeout(() => setToast((p) => ({ ...p, open: false })), 2200);
         },
         onError: (error: unknown) => {
@@ -119,11 +132,14 @@ export default function ServicesPage() {
     const updateMut = useMutation({
         mutationFn: ({ id, payload }: { id: number; payload: any }) => updateService(id, payload),
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: ["services"] });
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: ["services"] }),
+                queryClient.invalidateQueries({ queryKey: ["business-settings"] }),
+            ]);
             setToast({ open: true, text: "Ծառայությունը թարմացվեց ✅", type: "success" });
             setShowForm(false);
             setEditing(null);
-            setForm(initialForm);
+            setForm({ ...initialForm, location_id: preferredLocationId });
             setTimeout(() => setToast((p) => ({ ...p, open: false })), 2200);
         },
         onError: (error: unknown) => {
@@ -145,7 +161,10 @@ export default function ServicesPage() {
     const deleteMut = useMutation({
         mutationFn: deleteService,
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: ["services"] });
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: ["services"] }),
+                queryClient.invalidateQueries({ queryKey: ["business-settings"] }),
+            ]);
             setToast({ open: true, text: "Ծառայությունը ջնջվեց ✅", type: "success" });
             setTimeout(() => setToast((p) => ({ ...p, open: false })), 2200);
         },
@@ -154,6 +173,18 @@ export default function ServicesPage() {
             setTimeout(() => setToast((p) => ({ ...p, open: false })), 2400);
         },
     });
+
+    const locations = settingsQ.data?.locations ?? [];
+    const serviceUsage = settingsQ.data?.usage;
+    const serviceLimitReached = serviceUsage?.services_limit != null && serviceUsage.services_count >= serviceUsage.services_limit;
+    const locationNameById = useMemo(() => new Map(locations.map((location) => [location.id, location.name || (location.is_primary ? "Գլխավոր հասցե" : location.address)])), [locations]);
+
+    const hasMultipleLocations = locations.length > 1;
+    const preferredLocationId = useMemo<number | "">(() => {
+        if (selectedLocationId) return selectedLocationId;
+        if (locations.length === 1) return locations[0].id;
+        return "";
+    }, [locations, selectedLocationId]);
 
     const services = useMemo(() => {
         const rows = servicesQ.data ?? [];
@@ -164,7 +195,7 @@ export default function ServicesPage() {
 
     function openCreate() {
         setEditing(null);
-        setForm(initialForm);
+        setForm({ ...initialForm, location_id: preferredLocationId });
         setShowForm(true);
     }
 
@@ -177,11 +208,18 @@ export default function ServicesPage() {
             currency: service.currency ?? "AMD",
             image_url: service.image_url ?? null,
             is_active: service.is_active,
+            location_id: service.location_id ?? preferredLocationId,
         });
         setShowForm(true);
     }
 
     function submitForm() {
+        if (hasMultipleLocations && form.location_id === "") {
+            setToast({ open: true, text: "Մի քանի հասցե ունենալու դեպքում ծառայությունը պետք է կապել կոնկրետ հասցեի։", type: "error" });
+            setTimeout(() => setToast((p) => ({ ...p, open: false })), 2400);
+            return;
+        }
+
         const payload = {
             name: form.name,
             duration_minutes: Number(form.duration_minutes),
@@ -189,6 +227,7 @@ export default function ServicesPage() {
             currency: form.currency,
             image_url: form.image_url ?? null,
             is_active: form.is_active,
+            location_id: form.location_id === "" ? null : Number(form.location_id),
         };
 
         if (editing) {
@@ -223,7 +262,19 @@ export default function ServicesPage() {
                         </div>
 
                         <div className="flex flex-wrap gap-3">
-                            <Button onClick={openCreate} className="gap-2">
+                            {locations.length > 1 ? (
+                                <select
+                                    value={selectedLocationId}
+                                    onChange={(e) => setSelectedLocationId(e.target.value ? Number(e.target.value) : "")}
+                                    className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+                                >
+                                    <option value="">Բոլոր հասցեները</option>
+                                    {locations.map((location) => (
+                                        <option key={location.id} value={location.id}>{location.name || (location.is_primary ? "Գլխավոր հասցե" : location.address)}</option>
+                                    ))}
+                                </select>
+                            ) : null}
+                            <Button onClick={openCreate} className="gap-2" disabled={serviceLimitReached}>
                                 <Plus size={16} />
                                 Ավելացնել ծառայություն
                             </Button>
@@ -251,6 +302,20 @@ export default function ServicesPage() {
                         </div>
                     </div>
 
+                    {serviceUsage ? (
+                        <div className="mt-6 mb-4 rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600">
+                            <div className="flex flex-wrap items-center gap-3">
+                                <span className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 font-medium text-violet-700">
+                                    {settingsQ.data?.plan?.name ?? 'Plan'}
+                                </span>
+                                <span>Ծառայություններ՝ <strong className="text-slate-950">{serviceUsage.services_count}</strong> / <strong className="text-slate-950">{serviceUsage.services_limit ?? '∞'}</strong></span>
+                                <span>Հասցեներ՝ <strong className="text-slate-950">{serviceUsage.locations_count}</strong> / <strong className="text-slate-950">{serviceUsage.locations_limit}</strong></span>
+                                <span>Մասնագետներ՝ <strong className="text-slate-950">{serviceUsage.active_staff}</strong> / <strong className="text-slate-950">{serviceUsage.staff_limit ?? '∞'}</strong></span>
+                            </div>
+                            {serviceLimitReached ? <div className="mt-2 text-rose-600">Ծառայությունների limit-ը սպառված է․ upgrade արա կամ ջնջիր ավելորդ ծառայությունը։</div> : null}
+                        </div>
+                    ) : null}
+
                     <div className="mt-6">
                         {servicesQ.isLoading ? (
                             <div className="flex items-center justify-center py-14 text-slate-500">
@@ -265,7 +330,7 @@ export default function ServicesPage() {
                                 className="border-0 shadow-none"
                             />
                         ) : (
-                            <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">
+                            <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
                                 {services.map((service) => (
                                     <div
                                         key={service.id}
@@ -281,7 +346,8 @@ export default function ServicesPage() {
                                             </div>
                                             <div className="min-w-0 flex-1">
                                                 <div className="text-xl font-semibold text-slate-950">{service.name}</div>
-                                                <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">
+                                                <div className="mt-2 flex flex-wrap items-center gap-2">
+                                                <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">
                                                     {service.is_active ? (
                                                         <>
                                                             <CheckCircle2 size={13} className="text-emerald-600" />
@@ -291,6 +357,10 @@ export default function ServicesPage() {
                                                         <>Inactive</>
                                                     )}
                                                 </div>
+                                                <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700">
+                                                    {service.location_id ? (locationNameById.get(service.location_id) ?? `#${service.location_id}`) : "Բոլոր հասցեների համար"}
+                                                </div>
+                                            </div>
                                             </div>
                                         </div>
 
@@ -357,7 +427,7 @@ export default function ServicesPage() {
                                     if (!busy) {
                                         setShowForm(false);
                                         setEditing(null);
-                                        setForm(initialForm);
+                                        setForm({ ...initialForm, location_id: preferredLocationId });
                                     }
                                 }}
                             />
@@ -366,7 +436,7 @@ export default function ServicesPage() {
                                 initial={{ opacity: 0, y: 30, scale: 0.98 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 20, scale: 0.98 }}
-                                className="fixed inset-x-0 top-6 z-50 mx-auto w-[min(92vw,720px)] max-h-[calc(100vh-3rem)] overflow-y-auto rounded-[32px]"
+                                className="fixed inset-x-0 bottom-0 top-0 z-50 mx-auto w-full max-h-full overflow-y-auto sm:inset-x-4 sm:top-6 sm:bottom-auto sm:max-h-[calc(100vh-3rem)] sm:w-[min(92vw,720px)] rounded-t-[28px] sm:rounded-[32px]"
                             >
                                 <SectionCard className="p-6">
                                     <div className="flex items-center justify-between gap-3">
@@ -380,7 +450,7 @@ export default function ServicesPage() {
                                         </div>
                                     </div>
 
-                                    <div className="mt-6 grid gap-5 2xl:grid-cols-[1.15fr_0.85fr]">
+                                    <div className="mt-4 grid gap-4 sm:gap-5 lg:grid-cols-[1.15fr_0.85fr]">
                                         <div className="space-y-4">
                                             <div>
                                                 <label className="mb-2 block text-sm font-medium text-slate-800">Անուն</label>
@@ -393,6 +463,20 @@ export default function ServicesPage() {
                                             </div>
 
                                             <div className="grid gap-4 sm:grid-cols-2">
+                                                <div>
+                                                    <label className="mb-2 block text-sm font-medium text-slate-800">Հասցե / մասնաճյուղ</label>
+                                                    <select
+                                                        value={form.location_id}
+                                                        onChange={(e) => setForm((p) => ({ ...p, location_id: e.target.value ? Number(e.target.value) : "" }))}
+                                                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+                                                    >
+                                                        {hasMultipleLocations ? <option value="" disabled>Ընտրիր հասցեն</option> : null}
+                                                        {locations.map((location) => (
+                                                            <option key={location.id} value={location.id}>{location.name || (location.is_primary ? "Գլխավոր հասցե" : location.address)}</option>
+                                                        ))}
+                                                    </select>
+                                                    {hasMultipleLocations ? <p className="mt-2 text-xs text-slate-500">Multi-location business-ի համար ծառայությունը պետք է կապվի կոնկրետ հասցեի հետ։</p> : null}
+                                                </div>
                                                 <div>
                                                     <label className="mb-2 block text-sm font-medium text-slate-800">Տևողություն (րոպե)</label>
                                                     <input
@@ -468,8 +552,13 @@ export default function ServicesPage() {
                                                         <span>{form.duration_minutes || 0} րոպե</span>
                                                         <span>{form.price === '' ? 'Գինը նշված չէ' : `${form.price} ${form.currency}`}</span>
                                                     </div>
-                                                    <div className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
-                                                        {form.is_active ? 'Ակտիվ ծառայություն' : 'Ոչ ակտիվ ծառայություն'}
+                                                    <div className="flex flex-wrap gap-2">
+                                                        <div className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
+                                                            {form.is_active ? 'Ակտիվ ծառայություն' : 'Ոչ ակտիվ ծառայություն'}
+                                                        </div>
+                                                        <div className="inline-flex rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">
+                                                            {form.location_id === "" ? 'Բոլոր հասցեների համար' : (locationNameById.get(Number(form.location_id)) ?? `#${form.location_id}`)}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -502,7 +591,7 @@ export default function ServicesPage() {
                                                 if (!busy) {
                                                     setShowForm(false);
                                                     setEditing(null);
-                                                    setForm(initialForm);
+                                                    setForm({ ...initialForm, location_id: preferredLocationId });
                                                 }
                                             }}
                                         >

@@ -89,8 +89,8 @@ export default function UnifiedLogin() {
   return (
     <AuthShell
       title="Մուտք գործել"
-      subtitle="Մուտք գործիր քո SmartBook հաշիվ։"
-      badge="SmartBook access"
+      subtitle="Մուտք գործիր քո Vizit հաշիվ։"
+      badge="Vizit access"
       sideTitle="Բարի վերադարձ"
       sideText="Business-ը կարող է մուտք գործել email-ով, client-ը՝ email կամ հեռախոսահամարով։"
       footer={

@@ -48,7 +48,7 @@ export function Modal({
   return (
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4" aria-modal="true" role="dialog">
+        <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4" aria-modal="true" role="dialog">
           <motion.div
             className="absolute inset-0 bg-slate-950/55 backdrop-blur-sm"
             initial={{ opacity: 0 }}
@@ -58,35 +58,41 @@ export function Modal({
           />
 
           <motion.div
-            initial={{ opacity: 0, y: 12, scale: 0.985 }}
+            initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.985 }}
-            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] as any }}
+            exit={{ opacity: 0, y: 16, scale: 0.98 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] as any }}
             className={cn(
-              "relative flex max-h-[92vh] w-full flex-col overflow-hidden overflow-x-hidden rounded-[32px] border border-white/70 bg-white shadow-[0_30px_100px_rgba(15,23,42,0.28)]",
+              "relative flex w-full flex-col overflow-hidden overflow-x-hidden bg-white shadow-[0_30px_100px_rgba(15,23,42,0.28)]",
+              "max-h-[94dvh] rounded-t-[28px] sm:max-h-[92vh] sm:rounded-[32px] sm:border sm:border-white/70",
               sizeMap[size],
               panelClassName,
             )}
             onMouseDown={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-4 border-b border-slate-200/80 bg-white/95 px-5 py-4 backdrop-blur sm:px-6">
+            {/* Drag handle for mobile */}
+            <div className="flex justify-center pt-3 sm:hidden">
+              <div className="h-1 w-10 rounded-full bg-slate-300" />
+            </div>
+
+            <div className="flex items-start justify-between gap-4 border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur sm:px-6 sm:py-4">
               <div className="min-w-0">
-                <div className="text-lg font-semibold text-slate-950">{title ?? ""}</div>
-                {description ? <div className="mt-1 text-sm text-slate-500">{description}</div> : null}
+                <div className="text-base font-semibold text-slate-950 sm:text-lg">{title ?? ""}</div>
+                {description ? <div className="mt-0.5 text-xs leading-5 text-slate-500 sm:mt-1 sm:text-sm">{description}</div> : null}
               </div>
               <button
                 type="button"
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 sm:h-10 sm:w-10 sm:rounded-2xl"
                 onClick={onClose}
                 aria-label="Close"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
             </div>
 
-            <div className={cn("min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-5 py-4 sm:px-6", bodyClassName)}>{children}</div>
+            <div className={cn("min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-3 sm:px-6 sm:py-4", bodyClassName)}>{children}</div>
 
-            {footer ? <div className="border-t border-slate-200/80 bg-white/95 px-5 py-4 sm:px-6">{footer}</div> : null}
+            {footer ? <div className="border-t border-slate-200/80 bg-white/95 px-4 py-3 sm:px-6 sm:py-4">{footer}</div> : null}
           </motion.div>
         </div>
       )}

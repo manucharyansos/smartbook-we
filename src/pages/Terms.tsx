@@ -6,14 +6,14 @@ export default function Terms() {
   return (
     <LegalPageTemplate
       title="Օգտագործման պայմաններ"
-      description="Հիմնական կանոնները, որոնցով կառավարվում է SmartBook ծառայության օգտագործումը, role access-ը և billing/feature սահմանափակումները։"
+      description="Հիմնական կանոնները, որոնցով կառավարվում է Vizit ծառայության օգտագործումը, role access-ը և billing/feature սահմանափակումները։"
       updatedAt={updatedAt}
       sections={[
         {
           title: "1. Ընդհանուր",
           content: (
             <p>
-              SmartBook-ից օգտվելով՝ դուք համաձայնում եք այս պայմաններին։ Եթե համաձայն չեք,
+              Vizit-ից օգտվելով՝ դուք համաձայնում եք այս պայմաններին։ Եթե համաձայն չեք,
               խնդրում ենք չօգտվել ծառայությունից։
             </p>
           ),

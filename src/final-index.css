@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Base (global) ===== */
+:root {
+  color-scheme: light;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+  "Apple Color Emoji", "Segoe UI Emoji";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --bb-bg: #f4efe8;
+  --bb-bg-soft: #fcfbf8;
+  --bb-surface: rgba(255, 255, 255, 0.9);
+  --bb-surface-strong: #ffffff;
+  --bb-border: rgba(231, 223, 214, 0.95);
+  --bb-border-strong: rgba(255, 255, 255, 0.72);
+  --bb-text: #0f172a;
+  --bb-text-muted: #475569;
+  --bb-primary: #24364b;
+  --bb-primary-strong: #24364b;
+  --bb-primary-soft: rgba(124, 58, 237, 0.1);
+  --bb-shadow: 0 14px 40px rgba(15, 23, 42, 0.07);
+  --bb-shadow-soft: 0 10px 24px rgba(15, 23, 42, 0.05);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bb-bg);
+  color: var(--bb-text);
+}
+
+/* Links */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Better focus outline */
+:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.25);
+  outline-offset: 2px;
+}
+
+/* Inputs / Buttons basic normalize */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+
+@layer components {
+  .bb-container {
+    @apply mx-auto max-w-6xl px-4;
+  }
+
+  .bb-surface {
+    @apply border bg-white shadow-sm;
+    border-color: var(--bb-border-strong);
+    box-shadow: var(--bb-shadow-soft);
+  }
+
+  .bb-surface-soft {
+    background: var(--bb-bg-soft);
+  }
+
+  .bb-input {
+    @apply h-12 w-full rounded-2xl border bg-white px-4 text-sm outline-none transition;
+    border-color: var(--bb-border);
+  }
+
+  .bb-input:focus {
+    @apply ring-4;
+    border-color: rgba(139, 92, 246, 0.4);
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+  }
+
+  .bb-eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full border bg-white/80 px-4 py-2 text-sm font-medium text-violet-700 shadow-sm;
+    border-color: rgba(196, 181, 253, 0.8);
+  }
+
+  .bb-stat-pill {
+    @apply rounded-full border bg-slate-50 px-4 py-2 text-sm text-slate-600;
+    border-color: var(--bb-border);
+  }
+}
+
+@layer components {
+  .calendar-shell .fc {
+    @apply text-sm;
+  }
+
+  .calendar-shell .fc-theme-standard td,
+  .calendar-shell .fc-theme-standard th,
+  .calendar-shell .fc-scrollgrid,
+  .calendar-shell .fc-timegrid-slot,
+  .calendar-shell .fc-timegrid-axis,
+  .calendar-shell .fc-col-header-cell {
+    border-color: rgba(231, 223, 214, 0.95);
+  }
+
+  .calendar-shell .fc-scrollgrid {
+    @apply overflow-hidden rounded-[24px] border bg-white;
+    border-color: #e7dfd6;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.85);
+  }
+
+  .calendar-shell .fc-col-header-cell {
+    background: #faf8f5;
+  }
+
+  .calendar-shell .fc-col-header-cell-cushion {
+    @apply px-2 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-600;
+  }
+
+  .calendar-shell .fc-timegrid-axis-cushion,
+  .calendar-shell .fc-timegrid-slot-label-cushion {
+    @apply px-2 text-[11px] font-medium text-slate-400;
+  }
+
+  .calendar-shell .fc-timegrid-now-indicator-line {
+    border-color: rgba(36, 54, 75, 0.75);
+    border-width: 2px;
+  }
+
+  .calendar-shell .fc-timegrid-now-indicator-arrow {
+    border-left-color: rgba(36, 54, 75, 0.75);
+  }
+
+  .calendar-shell .fc-highlight {
+    background: rgba(36, 54, 75, 0.08);
+  }
+
+  .calendar-shell .fc-timegrid-event-harness {
+    margin-inline: 5px;
+  }
+
+  .calendar-shell .fc .fc-timegrid-col.fc-day-today,
+  .calendar-shell .fc .fc-timegrid-col.fc-day-today .fc-timegrid-col-frame {
+    background: rgba(36, 54, 75, 0.03);
+  }
+}
+
+@layer components {
+  .calendar-shell-desktop .fc .fc-timegrid-slot {
+    min-height: 52px;
+    background-image: none;
+  }
+
+  .calendar-shell-desktop .fc .fc-timegrid-col-frame {
+    min-height: 720px;
+    background: #ffffff;
+  }
+
+  .calendar-shell-desktop .fc .fc-timegrid-axis-frame,
+  .calendar-shell-desktop .fc .fc-timegrid-slot-label-frame {
+    justify-content: center;
+  }
+
+  .calendar-shell-desktop .fc .fc-bg-event {
+    border-radius: 20px;
+  }
+
+  .calendar-shell-desktop .fc .fc-timegrid-event {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .calendar-shell-desktop .fc .fc-event-main {
+    padding: 0;
+  }
+
+  .calendar-search-field {
+    @apply flex items-center gap-2 rounded-2xl border bg-[#f7f3ee] px-3 py-2.5;
+    border-color: #e7dfd6;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.85);
+  }
+
+  .calendar-event-card {
+    min-height: 100%;
+    
+  }
+}
+
+@layer components {
+  .calendar-shell .fc-timegrid-slot-minor {
+    border-top-style: dashed;
+    opacity: 0.55;
+  }
+
+  .calendar-shell .fc .fc-scroller-liquid-absolute {
+    background: #ffffff;
+  }
+
+  .calendar-shell .fc .fc-timegrid-slot-lane:hover {
+    background: #faf8f5;
+  }
+}

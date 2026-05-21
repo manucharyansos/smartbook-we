@@ -1,173 +1,255 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlarmClock, CheckCircle2, CircleSlash2, ListFilter, Plus, Search, Trash2, UserRound } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarDays,
+  CheckCircle2,
+  Clock3,
+  Phone,
+  Search,
+  Users2,
+  XCircle,
+} from "lucide-react";
 
 import { page } from "../lib/motion";
-import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
-import { Modal } from "../components/ui/Modal";
+import { Toast } from "../components/ui/Toast";
 import { Spinner } from "../components/ui/Spinner";
 import { EmptyState } from "../components/ui/EmptyState";
 import { useAuth } from "../store/auth";
 import { fetchStaff } from "../lib/staffApi";
+import { fetchServices, type Service } from "../lib/servicesApi";
 import {
-  createTask,
-  deleteTask,
-  fetchTasks,
-  patchTaskStatus,
-  updateTask,
-  type TaskPriority,
-  type TaskRow,
-  type TaskStatus,
-} from "../lib/tasksApi";
+  cancelBooking,
+  confirmBooking,
+  doneBooking,
+  fetchBookings,
+  noShowBooking,
+  type Booking,
+  type BookingStatus,
+} from "../lib/calendarApi";
 import { cn } from "../lib/cn";
+import { getErrorMessage } from "../lib/http";
 
 type Column = {
-  key: TaskStatus;
+  key: BookingStatus;
   title: string;
-  tone: string;
+  subtitle: string;
+  headerTone: string;
+  badgeTone: string;
 };
 
-type FormState = {
-  title: string;
-  description: string;
-  priority: TaskPriority;
-  status: TaskStatus;
-  assignee_id: string;
-  due_at: string;
+type FiltersState = {
+  search: string;
+  status: "" | BookingStatus;
+  staff_id: string;
 };
 
 const columns: Column[] = [
-  { key: "open", title: "Պլանավորված", tone: "from-slate-500/10 to-slate-100/60" },
-  { key: "in_progress", title: "Ընթացքում", tone: "from-amber-500/10 to-orange-100/60" },
-  { key: "completed", title: "Ավարտված", tone: "from-emerald-500/10 to-emerald-100/60" },
-  { key: "canceled", title: "Չեղարկված", tone: "from-rose-500/10 to-rose-100/60" },
+  { key: "pending", title: "Սպասող", subtitle: "Հաստատման փուլ", headerTone: "border-amber-200 bg-amber-50", badgeTone: "bg-amber-100 text-amber-700" },
+  { key: "confirmed", title: "Հաստատված", subtitle: "Առաջիկա այցեր", headerTone: "border-sky-200 bg-sky-50", badgeTone: "bg-sky-100 text-sky-700" },
+  { key: "done", title: "Ավարտված", subtitle: "Փակված այցեր", headerTone: "border-emerald-200 bg-emerald-50", badgeTone: "bg-emerald-100 text-emerald-700" },
+  { key: "no_show", title: "Չի եկել", subtitle: "Բաց թողած այցեր", headerTone: "border-rose-200 bg-rose-50", badgeTone: "bg-rose-100 text-rose-700" },
+  { key: "cancelled", title: "Չեղարկված", subtitle: "Արխիվ", headerTone: "border-slate-200 bg-slate-100", badgeTone: "bg-slate-200 text-slate-700" },
 ];
 
-const emptyForm: FormState = {
-  title: "",
-  description: "",
-  priority: "medium",
-  status: "open",
-  assignee_id: "",
-  due_at: "",
+const emptyFilters: FiltersState = {
+  search: "",
+  status: "",
+  staff_id: "",
 };
 
-function priorityLabel(priority: TaskPriority) {
-  return (
-    {
-      low: "Ցածր",
-      medium: "Միջին",
-      high: "Բարձր",
-      urgent: "Շտապ",
-    } as const
-  )[priority];
+function ymd(date: Date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
 }
 
-function priorityUi(priority: TaskPriority) {
-  return (
-    {
-      low: "border-slate-200 bg-white text-slate-600",
-      medium: "border-violet-200 bg-violet-50 text-violet-700",
-      high: "border-orange-200 bg-orange-50 text-orange-700",
-      urgent: "border-rose-200 bg-rose-50 text-rose-700",
-    } as const
-  )[priority];
+function addDays(date: Date, days: number) {
+  const x = new Date(date);
+  x.setDate(x.getDate() + days);
+  return x;
 }
 
-function toLocalInputValue(value: string | null) {
-  if (!value) return "";
-  const d = new Date(value);
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  const hh = String(d.getHours()).padStart(2, "0");
-  const mi = String(d.getMinutes()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
+function parseDateTime(value: string) {
+  return new Date(value.replace(" ", "T"));
 }
 
-function formatDue(value: string | null) {
-  if (!value) return "Առանց վերջնաժամկետի";
+function formatShortDate(value: string) {
   try {
-    return new Date(value).toLocaleString("hy-AM", {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    return parseDateTime(value).toLocaleDateString("hy-AM", {
+      month: "2-digit",
+      day: "2-digit",
     });
   } catch {
-    return value;
+    return value.slice(5, 10);
   }
 }
 
-function Summary({ label, value }: { label: string; value: number }) {
+function formatTime(value: string) {
+  return value.slice(11, 16);
+}
+
+function statusLabel(status: BookingStatus) {
+  return columns.find((col) => col.key === status)?.title ?? status;
+}
+
+function statusUi(status: BookingStatus) {
+  switch (status) {
+    case "pending":
+      return "border-amber-200 bg-amber-50 text-amber-700";
+    case "confirmed":
+      return "border-sky-200 bg-sky-50 text-sky-700";
+    case "done":
+      return "border-emerald-200 bg-emerald-50 text-emerald-700";
+    case "no_show":
+      return "border-rose-200 bg-rose-50 text-rose-700";
+    case "cancelled":
+      return "border-slate-200 bg-slate-100 text-slate-600";
+    default:
+      return "border-slate-200 bg-slate-100 text-slate-600";
+  }
+}
+
+function bookingActionLabel(status: BookingStatus) {
+  switch (status) {
+    case "confirmed":
+      return "Հաստատել";
+    case "done":
+      return "Ավարտել";
+    case "cancelled":
+      return "Չեղարկել";
+    case "no_show":
+      return "Չի եկել";
+    default:
+      return status;
+  }
+}
+
+function bookingTransitions(status: BookingStatus): BookingStatus[] {
+  switch (status) {
+    case "pending":
+      return ["confirmed", "cancelled"];
+    case "confirmed":
+      return ["done", "no_show", "cancelled"];
+    default:
+      return [];
+  }
+}
+
+function bookingServicesTitle(booking: Booking, serviceById: Map<number, Service>) {
+  const names = booking.items?.length
+    ? booking.items
+        .slice()
+        .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+        .map((item) => item.service?.name ?? serviceById.get(item.service_id)?.name ?? "")
+        .filter(Boolean)
+    : [serviceById.get(booking.service_id)?.name ?? `Ծառայություն #${booking.service_id}`];
+
+  return names.join(" + ");
+}
+
+function initials(name?: string) {
   return (
-    <Card className="rounded-[28px] border border-slate-200 bg-white/90 p-5 shadow-sm">
-      <div className="text-sm text-slate-500">{label}</div>
-      <div className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">{value}</div>
-    </Card>
+    name
+      ?.split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("") || "NA"
   );
 }
 
-function TaskCard({
-  task,
-  canManage,
-  onEdit,
-  onDelete,
+function timePillTone(booking: Booking) {
+  const start = parseDateTime(booking.starts_at);
+  const now = new Date();
+  const diff = start.getTime() - now.getTime();
+  const hours = diff / 3_600_000;
+
+  if (booking.status === "cancelled") return "bg-slate-200 text-slate-600";
+  if (booking.status === "done") return "bg-emerald-100 text-emerald-700";
+  if (booking.status === "no_show") return "bg-rose-100 text-rose-700";
+  if (hours < 0) return "bg-rose-100 text-rose-700";
+  if (hours < 24) return "bg-amber-100 text-amber-700";
+  return "bg-slate-100 text-slate-700";
+}
+
+function SummaryChip({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
+  return (
+    <div className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 shadow-sm">
+      <span className="text-slate-400">{icon}</span>
+      <span>{label}</span>
+      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700">{value}</span>
+    </div>
+  );
+}
+
+function BookingCard({
+  booking,
+  serviceById,
+  staffName,
   onMove,
 }: {
-  task: TaskRow;
-  canManage: boolean;
-  onEdit: (task: TaskRow) => void;
-  onDelete: (task: TaskRow) => void;
-  onMove: (task: TaskRow, status: TaskStatus) => void;
+  booking: Booking;
+  serviceById: Map<number, Service>;
+  staffName: string;
+  onMove: (booking: Booking, status: BookingStatus) => void;
 }) {
+  const transitions = bookingTransitions(booking.status);
+
   return (
-    <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="text-base font-semibold text-slate-950">{task.title}</div>
-          {task.description ? <div className="mt-2 text-sm leading-6 text-slate-600">{task.description}</div> : null}
+    <div className="rounded-[12px] border border-[#d7d7d7] bg-white p-3 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition hover:-translate-y-0.5 hover:shadow-[0_8px_18px_rgba(15,23,42,0.08)]">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <div className="truncate text-[14px] font-semibold text-slate-900">{booking.client_name}</div>
+          <div className="mt-1 line-clamp-2 text-[12px] leading-5 text-slate-500">{bookingServicesTitle(booking, serviceById)}</div>
         </div>
-        <span className={cn("rounded-full border px-2.5 py-1 text-[11px] font-semibold", priorityUi(task.priority))}>
-          {priorityLabel(task.priority)}
+        <span className={cn("shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold", statusUi(booking.status))}>
+          {statusLabel(booking.status)}
         </span>
       </div>
 
-      <div className="mt-4 space-y-2 text-xs text-slate-500">
-        <div className="flex items-center gap-2"><UserRound className="h-3.5 w-3.5" /> {task.assignee?.name ?? "Առանց աշխատակցի"}</div>
-        <div className="flex items-center gap-2"><AlarmClock className="h-3.5 w-3.5" /> {formatDue(task.due_at)}</div>
-        {task.client ? <div>Հաճախորդ՝ {task.client.name}</div> : null}
-        {task.booking ? <div>Ամրագրում #{task.booking.id}</div> : null}
+      <div className="mt-3 flex items-center gap-2 text-[11px] text-slate-500">
+        <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1">
+          <Clock3 className="h-3.5 w-3.5" /> {formatTime(booking.starts_at)}
+        </span>
+        {booking.client_phone ? (
+          <span className="inline-flex min-w-0 items-center gap-1 rounded-full bg-slate-100 px-2 py-1">
+            <Phone className="h-3.5 w-3.5" />
+            <span className="max-w-[110px] truncate">{booking.client_phone}</span>
+          </span>
+        ) : null}
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        {columns
-          .filter((col) => col.key !== task.status)
-          .slice(0, 2)
-          .map((col) => (
+      <div className="mt-3 flex items-end justify-between gap-3">
+        <span className={cn("inline-flex items-center rounded-full px-2 py-1 text-[11px] font-semibold", timePillTone(booking))}>
+          {formatShortDate(booking.starts_at)}
+        </span>
+
+        <div className="flex items-center gap-2">
+          {transitions.map((nextStatus) => (
             <button
-              key={col.key}
+              key={nextStatus}
               type="button"
-              onClick={() => onMove(task, col.key)}
-              className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-medium text-slate-700 transition hover:bg-slate-100"
+              onClick={() => onMove(booking, nextStatus)}
+              className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-1 text-[10px] font-semibold text-slate-700 transition hover:bg-slate-200"
+              title={bookingActionLabel(nextStatus)}
             >
-              Տանել՝ {col.title}
+              {bookingActionLabel(nextStatus)}
+              <ArrowRight className="h-3 w-3" />
             </button>
           ))}
+
+          <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#e9eaec] text-[10px] font-semibold text-slate-700">
+            {initials(staffName || "Մասնագետ")}
+          </div>
+        </div>
       </div>
 
-      {canManage ? (
-        <div className="mt-4 flex items-center justify-end gap-2 border-t border-slate-100 pt-3">
-          <button type="button" onClick={() => onEdit(task)} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50">
-            Խմբագրել
-          </button>
-          <button type="button" onClick={() => onDelete(task)} className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700 transition hover:bg-rose-100">
-            <Trash2 className="mr-1 inline h-3.5 w-3.5" /> Ջնջել
-          </button>
-        </div>
-      ) : null}
+      <div className="mt-2 text-[11px] text-slate-400">{staffName || "Առանց մասնագետի"}</div>
     </div>
   );
 }
@@ -176,237 +258,210 @@ export default function Tasks() {
   const qc = useQueryClient();
   const { user } = useAuth();
   const isStaff = user?.role === "staff";
-  const canManage = !isStaff;
 
-  const [filters, setFilters] = useState({ search: "", priority: "", assignee_id: "", overdue: false });
-  const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState<TaskRow | null>(null);
-  const [form, setForm] = useState<FormState>(emptyForm);
-
-  const tasksQ = useQuery({
-    queryKey: ["tasks", filters],
-    queryFn: () =>
-      fetchTasks({
-        search: filters.search || undefined,
-        priority: filters.priority || undefined,
-        assignee_id: filters.assignee_id ? Number(filters.assignee_id) : null,
-        overdue: filters.overdue,
-      }),
+  const [filters, setFilters] = useState<FiltersState>(emptyFilters);
+  const [toast, setToast] = useState<{ open: boolean; text: string; type: "success" | "error" }>({
+    open: false,
+    text: "",
+    type: "success",
   });
 
-  const staffQ = useQuery({ queryKey: ["staff", "tasks-board"], queryFn: fetchStaff, enabled: canManage });
+  const from = ymd(addDays(new Date(), -14));
+  const to = ymd(addDays(new Date(), 45));
 
-  const createMut = useMutation({
-    mutationFn: createTask,
-    onSuccess: async () => {
-      closeModal();
-      await qc.invalidateQueries({ queryKey: ["tasks"] });
-    },
+  const bookingsQ = useQuery({
+    queryKey: ["booking-board", from, to],
+    queryFn: () => fetchBookings(from, to),
   });
+  const staffQ = useQuery({ queryKey: ["staff", "booking-board"], queryFn: fetchStaff, enabled: !isStaff });
+  const servicesQ = useQuery({ queryKey: ["services", "booking-board"], queryFn: fetchServices });
 
-  const updateMut = useMutation({
-    mutationFn: ({ id, payload }: { id: number; payload: Parameters<typeof updateTask>[1] }) => updateTask(id, payload),
-    onSuccess: async () => {
-      closeModal();
-      await qc.invalidateQueries({ queryKey: ["tasks"] });
-    },
-  });
-
-  const statusMut = useMutation({
-    mutationFn: ({ id, status }: { id: number; status: TaskStatus }) => patchTaskStatus(id, status),
-    onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["tasks"] });
-    },
-  });
-
-  const deleteMut = useMutation({
-    mutationFn: deleteTask,
-    onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["tasks"] });
-    },
-  });
-
-  const tasks = tasksQ.data?.data ?? [];
-  const summary = tasksQ.data?.summary ?? { total: 0, open: 0, in_progress: 0, completed: 0, overdue: 0, due_today: 0 };
   const staff = staffQ.data ?? [];
+  const services = servicesQ.data ?? [];
+  const serviceById = useMemo(() => new Map(services.map((service) => [service.id, service])), [services]);
+  const staffById = useMemo(() => new Map(staff.map((member) => [member.id, member.name])), [staff]);
+
+  function showToast(text: string, type: "success" | "error" = "success") {
+    setToast({ open: true, text, type });
+    window.setTimeout(() => setToast((prev) => ({ ...prev, open: false })), 2200);
+  }
+
+  const actionMut = useMutation({
+    mutationFn: async ({ id, status }: { id: number; status: BookingStatus }) => {
+      if (status === "confirmed") return confirmBooking(id);
+      if (status === "done") return doneBooking(id);
+      if (status === "no_show") return noShowBooking(id);
+      if (status === "cancelled") return cancelBooking(id);
+      return null;
+    },
+    onSuccess: async (_, variables) => {
+      await qc.invalidateQueries({ queryKey: ["booking-board"] });
+      await qc.invalidateQueries({ queryKey: ["bookings"] });
+      showToast(`Ամրագրումը թարմացվեց՝ ${statusLabel(variables.status)}`);
+    },
+    onError: (error) => showToast(getErrorMessage(error, "Չհաջողվեց թարմացնել ամրագրումը"), "error"),
+  });
+
+  const bookings = useMemo(() => {
+    const rows = bookingsQ.data ?? [];
+    const query = filters.search.trim().toLowerCase();
+    return rows.filter((booking) => {
+      if (filters.status && booking.status !== filters.status) return false;
+      if (filters.staff_id && String(booking.staff_id ?? "") !== filters.staff_id) return false;
+      if (!query) return true;
+      const haystack = [
+        booking.client_name,
+        booking.client_phone,
+        booking.notes ?? "",
+        booking.staff_id ? staffById.get(booking.staff_id) ?? "" : "",
+        bookingServicesTitle(booking, serviceById),
+      ]
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(query);
+    });
+  }, [bookingsQ.data, filters, staffById, serviceById]);
 
   const grouped = useMemo(() => {
-    const groups: Record<TaskStatus, TaskRow[]> = { open: [], in_progress: [], completed: [], canceled: [] };
-    for (const task of tasks) groups[task.status].push(task);
-    return groups;
-  }, [tasks]);
-
-  function closeModal() {
-    setOpen(false);
-    setEditing(null);
-    setForm(emptyForm);
-  }
-
-  function openCreate() {
-    setEditing(null);
-    setForm(emptyForm);
-    setOpen(true);
-  }
-
-  function openEdit(task: TaskRow) {
-    setEditing(task);
-    setForm({
-      title: task.title,
-      description: task.description ?? "",
-      priority: task.priority,
-      status: task.status,
-      assignee_id: task.assignee?.id ? String(task.assignee.id) : "",
-      due_at: toLocalInputValue(task.due_at),
-    });
-    setOpen(true);
-  }
-
-  function submitForm(e: React.FormEvent) {
-    e.preventDefault();
-    const payload = {
-      title: form.title.trim(),
-      description: form.description.trim() || null,
-      priority: form.priority,
-      status: form.status,
-      assignee_id: form.assignee_id ? Number(form.assignee_id) : null,
-      due_at: form.due_at ? form.due_at.replace("T", " ") : null,
+    const groups: Record<BookingStatus, Booking[]> = {
+      pending: [],
+      confirmed: [],
+      done: [],
+      cancelled: [],
+      no_show: [],
     };
-    if (!payload.title) return;
-    if (editing) updateMut.mutate({ id: editing.id, payload });
-    else createMut.mutate(payload);
-  }
+    for (const booking of bookings) groups[booking.status].push(booking);
+    return groups;
+  }, [bookings]);
+
+  const boardSummary = useMemo(
+    () => ({
+      total: bookings.length,
+      pending: bookings.filter((booking) => booking.status === "pending").length,
+      confirmed: bookings.filter((booking) => booking.status === "confirmed").length,
+      today: bookings.filter((booking) => booking.starts_at.slice(0, 10) === ymd(new Date())).length,
+    }),
+    [bookings]
+  );
 
   return (
-    <motion.div {...page} className="space-y-6">
-      <div className="rounded-[32px] border border-slate-200 bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.12),transparent_35%),white] p-8 shadow-[0_18px_60px_rgba(124,58,237,0.06)]">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+    <motion.div {...page} className="space-y-4 bg-[#ededee] p-3 sm:p-4 lg:p-5">
+      <div className="flex flex-col gap-3 rounded-[16px] border border-slate-300 bg-white px-4 py-4 shadow-sm sm:px-5">
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
-              <ListFilter className="h-4 w-4" /> Kanban tasks
+            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-600">
+              <CalendarDays className="h-3.5 w-3.5" /> Ամրագրումների վահանակ
             </div>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950">Թասքեր</h1>
-            <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">Task board՝ պլանավորված, ընթացիկ, ավարտված և չեղարկված սյունակներով։ Owner/manager-ը կառավարում է ամբողջ թիմը, staff-ը՝ միայն իրենը։</p>
+            <h1 className="mt-3 text-xl font-semibold text-slate-950 sm:text-2xl">Ամրագրումների տախտակ</h1>
+            <p className="mt-1 text-sm text-slate-500">Սպասող, հաստատված, ավարտված և չեղարկված այցերը մեկ view-ի մեջ։</p>
           </div>
-          {canManage ? (
-            <Button onClick={openCreate} className="gap-2"><Plus className="h-4 w-4" /> Նոր task</Button>
-          ) : null}
+
+          <div className="flex flex-wrap items-center gap-2">
+            <SummaryChip icon={<Users2 className="h-4 w-4" />} label="Բոլորը" value={boardSummary.total} />
+            <SummaryChip icon={<Clock3 className="h-4 w-4" />} label="Սպասող" value={boardSummary.pending} />
+            <SummaryChip icon={<CheckCircle2 className="h-4 w-4" />} label="Հաստատված" value={boardSummary.confirmed} />
+            <SummaryChip icon={<CalendarDays className="h-4 w-4" />} label="Այսօր" value={boardSummary.today} />
+            <Link
+              to="/app/calendar"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#24364b] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#1d2b3c]"
+            >
+              <CalendarDays className="h-4 w-4" /> Բացել օրացույցը
+            </Link>
+          </div>
         </div>
-      </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
-        <Summary label="Ընդամենը" value={summary.total} />
-        <Summary label="Բաց" value={summary.open} />
-        <Summary label="Ընթացքում" value={summary.in_progress} />
-        <Summary label="Ուշացած" value={summary.overdue} />
-      </div>
-
-      <Card className="rounded-[30px] border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="grid gap-3 2xl:grid-cols-[1.4fr_0.8fr_0.8fr_auto]">
+        <div className="grid gap-2 md:grid-cols-[1.7fr_1fr_1fr_auto]">
           <label className="relative block">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input value={filters.search} onChange={(e) => setFilters((p) => ({ ...p, search: e.target.value }))} placeholder="Փնտրել task" className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm" />
+            <input
+              value={filters.search}
+              onChange={(e) => setFilters((p) => ({ ...p, search: e.target.value }))}
+              placeholder="Փնտրել հաճախորդ, ծառայություն կամ մասնագետ"
+              className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-11 pr-4 text-sm"
+            />
           </label>
-          <select value={filters.priority} onChange={(e) => setFilters((p) => ({ ...p, priority: e.target.value }))} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
-            <option value="">Բոլոր priority-ները</option>
-            <option value="low">Ցածր</option>
-            <option value="medium">Միջին</option>
-            <option value="high">Բարձր</option>
-            <option value="urgent">Շտապ</option>
+          <select
+            value={filters.status}
+            onChange={(e) => setFilters((p) => ({ ...p, status: e.target.value as FiltersState["status"] }))}
+            className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm"
+          >
+            <option value="">Բոլոր կարգավիճակները</option>
+            {columns.map((col) => (
+              <option key={col.key} value={col.key}>
+                {col.title}
+              </option>
+            ))}
           </select>
-          <select value={filters.assignee_id} onChange={(e) => setFilters((p) => ({ ...p, assignee_id: e.target.value }))} disabled={!canManage} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm disabled:bg-slate-50">
-            <option value="">Բոլոր աշխատակիցները</option>
-            {staff.map((member) => <option key={member.id} value={member.id}>{member.name}</option>)}
+          <select
+            value={filters.staff_id}
+            onChange={(e) => setFilters((p) => ({ ...p, staff_id: e.target.value }))}
+            disabled={isStaff}
+            className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm disabled:bg-slate-50"
+          >
+            <option value="">Բոլոր մասնագետները</option>
+            {staff.map((member) => (
+              <option key={member.id} value={member.id}>
+                {member.name}
+              </option>
+            ))}
           </select>
-          <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
-            <input type="checkbox" checked={filters.overdue} onChange={(e) => setFilters((p) => ({ ...p, overdue: e.target.checked }))} />
-            Միայն ուշացած
-          </label>
+          <Button variant="secondary" size="sm" onClick={() => setFilters(emptyFilters)}>
+            Մաքրել
+          </Button>
         </div>
-      </Card>
+      </div>
 
-      {tasksQ.isLoading ? (
-        <div className="flex min-h-[260px] items-center justify-center"><Spinner size={28} /></div>
-      ) : tasks.length === 0 ? (
-        <EmptyState icon={Plus} title="Task-եր դեռ չկան" description="Ստեղծիր առաջին task-ը և սկսիր աշխատանքը board view-ով։" />
+      {bookingsQ.isLoading || servicesQ.isLoading || (!isStaff && staffQ.isLoading) ? (
+        <div className="flex min-h-[260px] items-center justify-center">
+          <Spinner size={28} />
+        </div>
+      ) : bookingsQ.isError ? (
+        <div className="rounded-[18px] border border-rose-200 bg-rose-50 px-4 py-6 text-sm text-rose-700">
+          Չհաջողվեց բեռնել ամրագրումները։ Փորձիր նորից։
+        </div>
+      ) : bookings.length === 0 ? (
+        <EmptyState icon={XCircle} title="Ամրագրումներ դեռ չկան" description="Այս տեսքի համար ընտրված ժամանակահատվածում ամրագրումներ չկան։" />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
-          {columns.map((col) => (
-            <div key={col.key} className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-sm">
-              <div className={cn("rounded-[24px] bg-gradient-to-br p-4", col.tone)}>
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <div className="text-base font-semibold text-slate-950">{col.title}</div>
-                    <div className="mt-1 text-sm text-slate-500">{grouped[col.key].length} քարտ</div>
-                  </div>
-                  <div className="grid h-10 w-10 place-items-center rounded-2xl border border-white/70 bg-white/80 text-slate-700 shadow-sm">
-                    {col.key === "completed" ? <CheckCircle2 className="h-5 w-5" /> : col.key === "canceled" ? <CircleSlash2 className="h-5 w-5" /> : <AlarmClock className="h-5 w-5" />}
+        <div className="overflow-x-auto pb-2">
+          <div className="flex min-w-max gap-3">
+            {columns.map((col) => (
+              <section key={col.key} className="w-[288px] shrink-0 rounded-[10px] border border-[#cfcfcf] bg-[#dfdfdf] p-2 shadow-sm">
+                <div className={cn("rounded-[10px] border px-3 py-2.5 shadow-sm", col.headerTone)}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="text-[13px] font-semibold text-slate-900">{col.title} ({grouped[col.key].length})</div>
+                      <div className="mt-0.5 text-[11px] text-slate-500">{col.subtitle}</div>
+                    </div>
+                    <span className={cn("inline-flex min-w-[34px] items-center justify-center rounded-full px-2 py-1 text-[10px] font-bold", col.badgeTone)}>
+                      {grouped[col.key].length}
+                    </span>
                   </div>
                 </div>
-              </div>
 
-              <div className="mt-4 space-y-3">
-                {grouped[col.key].length ? grouped[col.key].map((task) => (
-                  <TaskCard
-                    key={task.id}
-                    task={task}
-                    canManage={canManage}
-                    onEdit={openEdit}
-                    onDelete={(row) => deleteMut.mutate(row.id)}
-                    onMove={(row, status) => statusMut.mutate({ id: row.id, status })}
-                  />
-                )) : (
-                  <div className="rounded-[24px] border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-400">Դատարկ սյունակ</div>
-                )}
-              </div>
-            </div>
-          ))}
+                <div className="mt-2 space-y-2">
+                  {grouped[col.key].length ? (
+                    grouped[col.key].map((booking) => (
+                      <BookingCard
+                        key={booking.id}
+                        booking={booking}
+                        serviceById={serviceById}
+                        staffName={booking.staff_id ? staffById.get(booking.staff_id) ?? "" : ""}
+                        onMove={(row, status) => actionMut.mutate({ id: row.id, status })}
+                      />
+                    ))
+                  ) : (
+                    <div className="rounded-[12px] border border-dashed border-slate-300 bg-white px-4 py-8 text-center text-sm text-slate-400">
+                      Այս սյունակում այց չկա
+                    </div>
+                  )}
+                </div>
+              </section>
+            ))}
+          </div>
         </div>
       )}
 
-      <Modal open={open} onClose={closeModal} title={editing ? "Խմբագրել task" : "Նոր task"}>
-        <form onSubmit={submitForm} className="space-y-4">
-          <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">Վերնագիր</label>
-            <input value={form.title} onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" />
-          </div>
-          <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">Նկարագրություն</label>
-            <textarea value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} rows={4} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" />
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">Priority</label>
-              <select value={form.priority} onChange={(e) => setForm((p) => ({ ...p, priority: e.target.value as TaskPriority }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
-                <option value="low">Ցածր</option>
-                <option value="medium">Միջին</option>
-                <option value="high">Բարձր</option>
-                <option value="urgent">Շտապ</option>
-              </select>
-            </div>
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">Ստատուս</label>
-              <select value={form.status} onChange={(e) => setForm((p) => ({ ...p, status: e.target.value as TaskStatus }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
-                {columns.map((col) => <option key={col.key} value={col.key}>{col.title}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">Աշխատակից</label>
-              <select value={canManage ? form.assignee_id : String(user?.id ?? "")} disabled={!canManage} onChange={(e) => setForm((p) => ({ ...p, assignee_id: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm disabled:bg-slate-50">
-                <option value="">Ընտրել</option>
-                {staff.map((member) => <option key={member.id} value={member.id}>{member.name}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">Վերջնաժամկետ</label>
-              <input type="datetime-local" value={form.due_at} onChange={(e) => setForm((p) => ({ ...p, due_at: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" />
-            </div>
-          </div>
-          <div className="flex justify-end gap-3 pt-2">
-            <Button type="button" variant="secondary" onClick={closeModal}>Չեղարկել</Button>
-            <Button type="submit" disabled={createMut.isPending || updateMut.isPending}>{editing ? "Պահպանել" : "Ստեղծել"}</Button>
-          </div>
-        </form>
-      </Modal>
+      <Toast open={toast.open} text={toast.text} type={toast.type} />
     </motion.div>
   );
 }

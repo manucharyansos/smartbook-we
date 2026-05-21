@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Menu, X, Sparkles, Award } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { Menu, X, Sparkles, Award, CalendarDays } from "lucide-react";
 
 interface NavigationProps {
     isScrolled: boolean;
@@ -11,28 +11,19 @@ interface NavigationProps {
 const Navigation: React.FC<NavigationProps> = ({ isScrolled, selectedType }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const location = useLocation();
-    useNavigate();
+
     const navItems = [
         { name: 'Գլխավոր', path: '/' },
         { name: 'Առանձնահատկություններ', path: '/features' },
         { name: 'Գներ', path: '/pricing' },
-        { name: 'Կապ', path: '/contact' }
+        { name: 'Կապ', path: '/contact' },
     ];
 
-    const isActive = (path: string) => {
-        return location.pathname === path;
-    };
+    const isActive = (path: string) => location.pathname === path;
 
     const getBusinessType = () => {
         const params = new URLSearchParams(location.search);
-        const typeFromUrl = params.get('type');
-        if (typeFromUrl) return typeFromUrl;
-
-        // Եթե կա selectedType prop-ից
-        if (selectedType) return selectedType;
-
-        // Վերջին ընտրությունը localStorage-ից
-        return localStorage.getItem('preferred_business_type') || 'beauty';
+        return params.get('type') || selectedType || 'beauty';
     };
 
     const businessType = getBusinessType();
@@ -42,163 +33,158 @@ const Navigation: React.FC<NavigationProps> = ({ isScrolled, selectedType }) => 
             <motion.nav
                 initial={{ y: -100 }}
                 animate={{ y: 0 }}
-                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500
-          ${isScrolled
-                    ? 'bg-white/80 backdrop-blur-lg shadow-lg py-3'
-                    : 'bg-transparent py-5'
+                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+                    isScrolled
+                        ? 'bg-white/90 backdrop-blur-lg shadow-sm py-2'
+                        : 'bg-transparent py-4'
                 }`}
             >
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between">
                         {/* Logo */}
-                        <Link to="/" className="flex items-center gap-2 group">
-                            <motion.div
-                                whileHover={{ rotate: 360 }}
-                                transition={{ duration: 0.5 }}
-                                className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#C5A28A] to-[#B88E72]
-                          flex items-center justify-center shadow-lg shadow-[#C5A28A]/20"
-                            >
-                                <Sparkles size={20} className="text-white" />
-                            </motion.div>
-                            <span className="text-xl font-light text-[#2C2C2C] group-hover:text-[#C5A28A] transition-colors">
-                SmartBook
-              </span>
+                        <Link to="/" className="flex items-center gap-2.5 group">
+                            <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white shadow-md sm:h-10 sm:w-10 sm:rounded-[14px]">
+                                <CalendarDays size={18} />
+                            </div>
+                            <span className="text-lg font-semibold tracking-tight text-slate-900 group-hover:text-violet-700 transition-colors sm:text-xl">
+                                Vizit
+                            </span>
                         </Link>
 
-                        {/* Desktop Menu */}
-                        <div className="hidden md:flex items-center gap-1">
+                        {/* Desktop nav */}
+                        <div className="hidden items-center gap-1 md:flex">
                             {navItems.map((item) => (
                                 <Link
                                     key={item.path}
                                     to={item.path}
-                                    className={`
-                    relative px-5 py-2 rounded-full text-sm transition-all duration-300
-                    ${isActive(item.path)
-                                        ? 'text-[#C5A28A] font-medium'
-                                        : 'text-[#2C2C2C] hover:text-[#C5A28A]'
-                                    }
-                  `}
+                                    className={`relative px-4 py-2 rounded-full text-sm transition-all duration-200 ${
+                                        isActive(item.path)
+                                            ? 'text-violet-700 font-medium'
+                                            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
+                                    }`}
                                 >
+                                    {item.name}
                                     {isActive(item.path) && (
                                         <motion.div
-                                            layoutId="activeNav"
-                                            className="absolute inset-0 bg-gradient-to-r from-[#C5A28A]/10 to-[#B88E72]/10 rounded-full"
-                                            transition={{ type: "spring" as const, duration: 0.5 }}
+                                            layoutId="nav-indicator"
+                                            className="absolute inset-0 rounded-full bg-violet-50 -z-10"
                                         />
                                     )}
-                                    <span className="relative z-10">{item.name}</span>
                                 </Link>
                             ))}
                         </div>
 
-                        {/* Auth Buttons */}
-                        <div className="hidden md:flex items-center gap-3">
+                        {/* Desktop auth buttons */}
+                        <div className="hidden items-center gap-2 md:flex">
                             <Link
                                 to={`/login?type=${businessType}`}
-                                className="px-6 py-2.5 text-sm text-[#2C2C2C] hover:text-[#C5A28A] transition-colors"
+                                className="rounded-xl px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
                             >
                                 Մուտք
                             </Link>
                             <Link
                                 to={`/register?type=${businessType}`}
-                                className="px-6 py-2.5 bg-gradient-to-r from-[#C5A28A] to-[#B88E72]
-                         text-white rounded-full text-sm hover:shadow-lg
-                         hover:shadow-[#C5A28A]/30 transition-all duration-300"
+                                className="rounded-xl bg-violet-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-violet-700"
                             >
                                 Գրանցում
                             </Link>
                         </div>
 
-                        {/* Mobile Menu Button */}
+                        {/* Mobile hamburger */}
                         <button
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="md:hidden relative z-50 w-10 h-10 rounded-full bg-white shadow-lg
-                       flex items-center justify-center"
+                            onClick={() => setIsMenuOpen(true)}
+                            className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white shadow-sm transition hover:bg-slate-50 md:hidden"
+                            aria-label="Բացել մենյուն"
                         >
-                            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                            <Menu size={20} className="text-slate-700" />
                         </button>
                     </div>
                 </div>
             </motion.nav>
 
-            {/* Mobile Menu */}
-            {isMenuOpen && (
-                <motion.div
-                    initial={{ opacity: 0, x: '100%' }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: '100%' }}
-                    transition={{ type: 'spring' as const, damping: 25 }}
-                    className="fixed inset-0 bg-white z-40 md:hidden"
-                >
-                    <div className="flex flex-col h-full pt-24 p-6">
-                        {/* Business Type Indicator */}
-                        <div className="mb-6 p-4 bg-gradient-to-r from-[#C5A28A]/10 to-[#B88E72]/10
-                          rounded-xl border border-[#C5A28A]/20">
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm text-[#8F6B58]">Ընտրված բիզնես</span>
-                                <div className="flex items-center gap-2">
-                                    {businessType === 'beauty' ? (
-                                        <>
-                                            <Sparkles size={16} className="text-[#C5A28A]" />
-                                            <span className="text-sm font-light">Գեղեցկության սրահ</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Award size={16} className="text-[#C5A28A]" />
-                                            <span className="text-sm font-light">Կլինիկա</span>
-                                        </>
-                                    )}
+            {/* Mobile full-screen menu */}
+            <AnimatePresence>
+                {isMenuOpen && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm md:hidden"
+                            onClick={() => setIsMenuOpen(false)}
+                        />
+                        <motion.div
+                            initial={{ x: '100%' }}
+                            animate={{ x: 0 }}
+                            exit={{ x: '100%' }}
+                            transition={{ type: 'spring', damping: 28, stiffness: 220 }}
+                            className="fixed right-0 top-0 z-50 flex h-full w-[min(85vw,320px)] flex-col bg-white shadow-2xl md:hidden"
+                        >
+                            {/* Header */}
+                            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+                                <div className="flex items-center gap-2.5">
+                                    <div className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white">
+                                        <CalendarDays size={15} />
+                                    </div>
+                                    <span className="font-semibold text-slate-900">Vizit</span>
+                                </div>
+                                <button
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="grid h-9 w-9 place-items-center rounded-xl border border-slate-200 transition hover:bg-slate-50"
+                                >
+                                    <X size={18} className="text-slate-600" />
+                                </button>
+                            </div>
+
+                            {/* Business type badge */}
+                            <div className="border-b border-slate-100 px-5 py-3">
+                                <div className="inline-flex items-center gap-2 rounded-full bg-violet-50 px-3 py-1.5 text-xs font-medium text-violet-700">
+                                    {businessType === 'beauty'
+                                        ? <><Sparkles size={13} /> Գեղեցկության սրահ</>
+                                        : <><Award size={13} /> Ատամնաբուժական կլինիկա</>
+                                    }
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Mobile Navigation Items */}
-                        <div className="flex-1 space-y-2">
-                            {navItems.map((item) => (
+                            {/* Nav links */}
+                            <nav className="flex-1 space-y-0.5 overflow-y-auto p-4">
+                                {navItems.map((item) => (
+                                    <Link
+                                        key={item.path}
+                                        to={item.path}
+                                        onClick={() => setIsMenuOpen(false)}
+                                        className={`flex items-center rounded-2xl px-4 py-3.5 text-base font-medium transition-all ${
+                                            isActive(item.path)
+                                                ? 'bg-violet-600 text-white'
+                                                : 'text-slate-700 hover:bg-slate-50 active:bg-slate-100'
+                                        }`}
+                                    >
+                                        {item.name}
+                                    </Link>
+                                ))}
+                            </nav>
+
+                            {/* Auth buttons */}
+                            <div className="space-y-2 border-t border-slate-100 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
                                 <Link
-                                    key={item.path}
-                                    to={item.path}
+                                    to={`/login?type=${businessType}`}
                                     onClick={() => setIsMenuOpen(false)}
-                                    className={`
-                    block py-4 px-6 rounded-xl text-lg transition-all
-                    ${isActive(item.path)
-                                        ? 'bg-gradient-to-r from-[#C5A28A]/10 to-[#B88E72]/10 text-[#C5A28A]'
-                                        : 'text-[#2C2C2C] hover:bg-[#F5F0EB]'
-                                    }
-                  `}
+                                    className="flex w-full items-center justify-center rounded-2xl border border-slate-200 py-3.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
                                 >
-                                    {item.name}
+                                    Մուտք
                                 </Link>
-                            ))}
-                        </div>
-
-                        {/* Mobile Auth Buttons */}
-                        <div className="space-y-3 pt-6 border-t border-[#E8D5C4]/30">
-                            <Link
-                                to={`/login?type=${businessType}`}
-                                onClick={() => setIsMenuOpen(false)}
-                                className="block w-full py-4 text-center text-[#2C2C2C] border border-[#C5A28A]/30
-                         rounded-xl hover:bg-[#C5A28A]/5 transition-colors"
-                            >
-                                Մուտք
-                            </Link>
-                            <Link
-                                to={`/register?type=${businessType}`}
-                                onClick={() => setIsMenuOpen(false)}
-                                className="block w-full py-4 text-center bg-gradient-to-r from-[#C5A28A] to-[#B88E72]
-                         text-white rounded-xl shadow-lg shadow-[#C5A28A]/30"
-                            >
-                                Գրանցում
-                            </Link>
-                        </div>
-
-                        {/* Mobile Footer */}
-                        <div className="mt-8 text-center text-sm text-[#8F6B58]">
-                            <p>© 2024 SmartBook</p>
-                        </div>
-                    </div>
-                </motion.div>
-            )}
+                                <Link
+                                    to={`/register?type=${businessType}`}
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="flex w-full items-center justify-center rounded-2xl bg-violet-600 py-3.5 text-sm font-medium text-white shadow-sm transition hover:bg-violet-700"
+                                >
+                                    Գրանցում
+                                </Link>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
         </>
     );
 };

@@ -17,10 +17,15 @@ export type StaffUser = {
     show_in_public_team: boolean;
     is_bookable: boolean;
     deactivated_at: string | null;
+    location_id?: number | null;
+    location?: { id: number; name?: string | null; address?: string | null; is_primary?: boolean } | null;
 };
 
-export async function fetchStaff() {
-    const res = await api.get("/staff?only_active=false");
+export async function fetchStaff(params?: any) {
+    const query = params && typeof params === "object" && "location_id" in params
+        ? { location_id: (params as { location_id?: number }).location_id }
+        : undefined;
+    const res = await api.get("/staff", { params: { only_active: false, ...query } });
     return (res.data.data as StaffUser[]).map((item) => ({ ...item, avatar_url: resolveMediaUrl(item.avatar_url) }));
 }
 
@@ -34,6 +39,7 @@ export async function createStaff(payload: {
     bio?: string | null;
     show_in_public_team?: boolean;
     is_bookable?: boolean;
+    location_id?: number | null;
 }) {
     const res = await api.post("/staff", payload);
     const item = res.data.data as StaffUser;
@@ -58,6 +64,7 @@ export async function updateStaff(id: number, payload: Partial<{
     bio: string | null;
     show_in_public_team: boolean;
     is_bookable: boolean;
+    location_id: number | null;
 }>) {
     const res = await api.patch(`/staff/${id}`, payload);
     const item = res.data.data as StaffUser;

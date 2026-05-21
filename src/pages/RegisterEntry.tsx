@@ -10,7 +10,7 @@ export default function RegisterEntry() {
     <AuthShell
       title="Ստեղծել հաշիվ"
       subtitle="Ընտրիր հաշվի տեսակը։"
-      badge="SmartBook account setup"
+      badge="Vizit account setup"
       sideTitle="Սկսենք"
       sideText="Ընտրիր՝ business թե client։"
       footer={

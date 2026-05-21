@@ -51,7 +51,7 @@ export default function Login() {
     return (
         <AuthShell
             title="Մուտք գործել"
-            subtitle="Մուտք գործիր քո SmartBook հաշիվ"
+            subtitle="Մուտք գործիր քո Vizit հաշիվ"
             sideTitle="Կառավարիր բիզնեսդ մեկ պարզ միջավայրում"
             sideText="Մուտք գործիր workspace ու շարունակիր աշխատել օրացույցի, թիմի և ամրագրումների հետ։"
             footer={
@@ -88,7 +88,7 @@ export default function Login() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="owner@mail.com"
-                            className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                            className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
                             required
                         />
                     </div>
@@ -112,7 +112,7 @@ export default function Login() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="••••••••"
-                            className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-12 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                            className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-12 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
                             required
                         />
                         <button

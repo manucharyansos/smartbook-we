@@ -40,6 +40,7 @@ import {
   type StaffUser,
 } from "../lib/staffApi";
 import { uploadMedia } from "../lib/mediaApi";
+import { fetchBusinessSettings } from "../lib/businessSettingsApi";
 
 type StaffRoleForm = "staff" | "manager";
 
@@ -53,6 +54,7 @@ type FormState = {
   bio: string;
   show_in_public_team: boolean;
   is_bookable: boolean;
+  location_id: number | "";
 };
 
 const emptyForm: FormState = {
@@ -65,6 +67,7 @@ const emptyForm: FormState = {
   bio: "",
   show_in_public_team: true,
   is_bookable: true,
+  location_id: "",
 };
 
 function roleLabel(role: string) {
@@ -134,6 +137,7 @@ function normalizeFormFromPerson(person: StaffUser): FormState {
     bio: person.bio ?? "",
     show_in_public_team: person.show_in_public_team,
     is_bookable: person.is_bookable,
+    location_id: person.location_id ?? "",
   };
 }
 
@@ -147,41 +151,70 @@ export default function Staff() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
+  const [selectedLocationId, setSelectedLocationId] = useState<number | "">("");
+
+  const settingsQ = useQuery({
+    queryKey: ["business-settings"],
+    queryFn: fetchBusinessSettings,
+    staleTime: 60_000,
+  });
 
   const staffQ = useQuery({
-    queryKey: ["staff"],
-    queryFn: fetchStaff,
+    queryKey: ["staff", selectedLocationId || "all"],
+    queryFn: () => fetchStaff({ location_id: selectedLocationId ? Number(selectedLocationId) : undefined }),
   });
 
   const createMut = useMutation({
     mutationFn: createStaff,
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["staff"] });
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ["staff"] }),
+        qc.invalidateQueries({ queryKey: ["business-settings"] }),
+      ]);
     },
   });
 
   const deactivateMut = useMutation({
     mutationFn: deactivateStaff,
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["staff"] });
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ["staff"] }),
+        qc.invalidateQueries({ queryKey: ["business-settings"] }),
+      ]);
     },
   });
 
   const updateMut = useMutation({
     mutationFn: ({ id, payload }: { id: number; payload: Parameters<typeof updateStaff>[1] }) => updateStaff(id, payload),
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["staff"] });
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ["staff"] }),
+        qc.invalidateQueries({ queryKey: ["business-settings"] }),
+      ]);
     },
   });
 
   const activateMut = useMutation({
     mutationFn: activateStaff,
     onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["staff"] });
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ["staff"] }),
+        qc.invalidateQueries({ queryKey: ["business-settings"] }),
+      ]);
     },
   });
 
   const staff = staffQ.data ?? [];
+  const locations = settingsQ.data?.locations ?? [];
+  const usage = settingsQ.data?.usage;
+  const locationNameById = useMemo(() => new Map(locations.map((location) => [location.id, location.name || (location.is_primary ? "Գլխավոր հասցե" : location.address)])), [locations]);
+
+  const hasMultipleLocations = locations.length > 1;
+  const preferredLocationId = useMemo<number | "">(() => {
+    if (selectedLocationId) return selectedLocationId;
+    if (locations.length === 1) return locations[0].id;
+    return "";
+  }, [locations, selectedLocationId]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -210,7 +243,7 @@ export default function Staff() {
     setEditingId(null);
     setShowPassword(false);
     setFormError(null);
-    setForm(emptyForm);
+    setForm({ ...emptyForm, location_id: preferredLocationId });
   }
 
   function openCreate() {
@@ -218,7 +251,7 @@ export default function Staff() {
     setEditingId(null);
     setShowPassword(false);
     setFormError(null);
-    setForm(emptyForm);
+    setForm({ ...emptyForm, location_id: preferredLocationId });
     setPanelOpen(true);
   }
 
@@ -227,7 +260,7 @@ export default function Staff() {
     setEditingId(person.id);
     setShowPassword(false);
     setFormError(null);
-    setForm(normalizeFormFromPerson(person));
+    setForm({ ...normalizeFormFromPerson(person), location_id: person.location_id ?? preferredLocationId });
     setPanelOpen(true);
   }
 
@@ -265,6 +298,11 @@ export default function Staff() {
       }
     }
 
+    if (hasMultipleLocations && form.location_id === "") {
+      setFormError("Մի քանի հասցե ունենալու դեպքում աշխատակցին պետք է կապել կոնկրետ հասցեի։");
+      return;
+    }
+
     try {
       if (mode === "create") {
         await createMut.mutateAsync({
@@ -277,6 +315,7 @@ export default function Staff() {
           bio: form.bio.trim() || null,
           show_in_public_team: form.show_in_public_team,
           is_bookable: form.is_bookable,
+          location_id: form.location_id === "" ? null : Number(form.location_id),
         });
       } else if (editingId) {
         await updateMut.mutateAsync({
@@ -289,6 +328,7 @@ export default function Staff() {
             bio: form.bio.trim() || null,
             show_in_public_team: form.show_in_public_team,
             is_bookable: form.is_bookable,
+            location_id: form.location_id === "" ? null : Number(form.location_id),
           },
         });
       }
@@ -317,7 +357,18 @@ export default function Staff() {
         }
       />
 
-      <div className="grid gap-4 md:grid-cols-3">
+      {usage ? (
+        <Card className="rounded-[28px] border border-white/70 bg-white/90 p-5 shadow-sm">
+          <div className="flex flex-wrap items-center gap-3 text-sm text-slate-600">
+            <span className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 font-medium text-violet-700">{settingsQ.data?.plan?.name ?? 'Plan'}</span>
+            <span>Ակտիվ staff՝ <strong className="text-slate-950">{usage.active_staff}</strong> / <strong className="text-slate-950">{usage.staff_limit ?? '∞'}</strong></span>
+            <span>Ծառայություններ՝ <strong className="text-slate-950">{usage.services_count}</strong> / <strong className="text-slate-950">{usage.services_limit ?? '∞'}</strong></span>
+            <span>Հասցեներ՝ <strong className="text-slate-950">{usage.locations_count}</strong> / <strong className="text-slate-950">{usage.locations_limit}</strong></span>
+          </div>
+        </Card>
+      ) : null}
+
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3">
         {[
           { label: "Ակտիվ անդամներ", value: totals.active, icon: Users, tone: "text-slate-700" },
           { label: "Public-ում երևում են", value: totals.publicCount, icon: Globe2, tone: "text-violet-700" },
@@ -341,15 +392,29 @@ export default function Staff() {
 
       <motion.div variants={card} initial="initial" animate="animate" transition={cardTransition}>
         <Card className="rounded-[28px] border border-white/70 bg-white/90 p-5 shadow-sm">
-          <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-center 2xl:justify-between">
-            <div className="relative w-full max-w-md">
-              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <Input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Փնտրել անունով, email-ով կամ հեռախոսով..."
-                className="pl-11 pr-4"
-              />
+          <div className="flex flex-col gap-3">
+            <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
+              <div className="relative w-full max-w-md">
+                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Փնտրել անունով, email-ով կամ հեռախոսով..."
+                  className="pl-11 pr-4"
+                />
+              </div>
+              {locations.length > 1 ? (
+                <select
+                  value={selectedLocationId}
+                  onChange={(e) => setSelectedLocationId(e.target.value ? Number(e.target.value) : "")}
+                  className="rounded-[22px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                >
+                  <option value="">Բոլոր հասցեները</option>
+                  {locations.map((location) => (
+                    <option key={location.id} value={location.id}>{location.name || (location.is_primary ? "Գլխավոր հասցե" : location.address)}</option>
+                  ))}
+                </select>
+              ) : null}
             </div>
 
             <div className="flex flex-wrap gap-2 text-xs text-slate-500">
@@ -362,13 +427,13 @@ export default function Staff() {
       </motion.div>
 
       {staffQ.isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="h-[280px] animate-pulse rounded-[28px] border border-slate-200 bg-white/80" />
           ))}
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3">
           {filtered.length === 0 ? (
             <div className="sm:col-span-2 2xl:col-span-3">
               <EmptyState
@@ -523,15 +588,19 @@ export default function Staff() {
 
       <AnimatePresence>
         {panelOpen && (
-          <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/45 p-4 backdrop-blur-sm" onClick={closePanel}>
-            <div className="flex min-h-full items-center justify-center">
+          <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/45 backdrop-blur-sm" onClick={closePanel}>
+            <div className="flex min-h-full items-end justify-center sm:items-center sm:p-4">
               <motion.div
-                initial={{ opacity: 0, scale: 0.96, y: 14 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.96, y: 14 }}
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 40 }}
                 onClick={(e) => e.stopPropagation()}
-                className="w-full max-w-3xl rounded-[30px] border border-white/20 bg-white/95 p-6 shadow-[0_24px_80px_rgba(15,23,42,0.22)] sm:p-8"
+                className="w-full max-w-3xl rounded-t-[28px] border border-white/20 bg-white/95 p-5 shadow-[0_24px_80px_rgba(15,23,42,0.22)] sm:rounded-[30px] sm:p-8"
               >
+                {/* Mobile drag handle */}
+                <div className="mb-4 flex justify-center sm:hidden">
+                  <div className="h-1 w-10 rounded-full bg-slate-300" />
+                </div>
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                   <div>
                     <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
@@ -550,7 +619,7 @@ export default function Staff() {
                   </div>
                 </div>
 
-                <div className="mt-6 grid gap-4 2xl:grid-cols-[1.05fr_0.95fr]">
+                <div className="mt-5 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
                   <div className="space-y-4">
                     <div className="grid gap-3 sm:grid-cols-2">
                       {(["staff", "manager"] as StaffRoleForm[]).map((role) => {
@@ -619,6 +688,23 @@ export default function Staff() {
                         <Input value={form.whatsapp_phone} onChange={(e) => setForm((p) => ({ ...p, whatsapp_phone: e.target.value }))} />
                       </div>
 
+                      <div>
+                        <label className="mb-2 block text-sm font-medium text-slate-700">Հասցե / մասնաճյուղ</label>
+                        <select
+                          value={form.location_id}
+                          onChange={(e) => setForm((p) => ({ ...p, location_id: e.target.value ? Number(e.target.value) : "" }))}
+                          className="w-full rounded-[22px] border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                        >
+                          {hasMultipleLocations ? <option value="" disabled>Ընտրիր հասցեն</option> : null}
+                          {locations.map((location) => (
+                            <option key={location.id} value={location.id}>{location.name || (location.is_primary ? "Գլխավոր հասցե" : location.address)}</option>
+                          ))}
+                        </select>
+                        {hasMultipleLocations ? (
+                          <p className="mt-2 text-xs text-slate-500">Multi-location business-ի համար աշխատակիցը պետք է կապվի կոնկրետ հասցեի հետ։</p>
+                        ) : null}
+                      </div>
+
                       <div className="sm:col-span-2">
                         <label className="mb-2 block text-sm font-medium text-slate-700">Bio</label>
                         <textarea
@@ -679,6 +765,9 @@ export default function Staff() {
                           </span>
                           <span className={cn("inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium", form.is_bookable ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-slate-200 bg-slate-50 text-slate-500")}>
                             <CalendarCheck2 className="h-3.5 w-3.5" /> {form.is_bookable ? "Booking ընդունում է" : "Booking չի ընդունում"}
+                          </span>
+                          <span className="inline-flex items-center gap-1 rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-[11px] font-medium text-sky-700">
+                            {form.location_id === "" ? "Բոլոր հասցեների համար" : (locationNameById.get(Number(form.location_id)) ?? `#${form.location_id}`)}
                           </span>
                         </div>
                         {form.bio ? <div className="mt-3 text-sm leading-6 text-slate-500">{form.bio}</div> : null}

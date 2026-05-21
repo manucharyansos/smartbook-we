@@ -62,7 +62,7 @@ export default function About() {
                                     className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm"
                                 >
                                     <Sparkles className="h-4 w-4 text-violet-600" />
-                                    SmartBook-ի մասին
+                                    Vizit-ի մասին
                                 </motion.div>
 
                                 <motion.h1
@@ -78,7 +78,7 @@ export default function About() {
                                     variants={fadeUp}
                                     className="mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg"
                                 >
-                                    SmartBook-ը ստեղծված է, որպեսզի գեղեցկության սրահներն ու
+                                    Vizit-ը ստեղծված է, որպեսզի գեղեցկության սրահներն ու
                                     ատամնաբուժական կլինիկաները ոչ միայն ընդունեն online bookings,
                                     այլև ունենան պրոֆեսիոնալ թվային ներկայություն և ավելի հարմար
                                     հաճախորդային փորձ։

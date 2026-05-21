@@ -57,6 +57,7 @@ const emptyForm: Plan = {
     locations: 1,
     features: {
         staff_limit: 1,
+        services_limit: 10,
         sms_reminders: 50 as SmsReminders,
         api_access: false,
         priority_support: false,
@@ -98,6 +99,7 @@ export function PlanModal({
                 locations: plan.locations ?? 1,
                 features: {
                     staff_limit: plan.staff_limit ?? plan.features?.staff_limit ?? plan.seats ?? 1,
+                    services_limit: plan.services_limit ?? plan.features?.services_limit ?? 10,
                     sms_reminders: plan.features?.sms_reminders ?? 50,
                     api_access: !!plan.features?.api_access,
                     priority_support: !!plan.features?.priority_support,
@@ -167,8 +169,9 @@ export function PlanModal({
             monthly_price: Number(formData.monthly_price ?? 0),
             yearly_price: Number(formData.yearly_price ?? 0) || Number(formData.monthly_price ?? 0) * 10,
             staff_limit: formData.features.staff_limit,
+            services_limit: formData.features.services_limit,
             seats: formData.features.staff_limit,
-            features: { ...formData.features, staff_limit: formData.features.staff_limit },
+            features: { ...formData.features, staff_limit: formData.features.staff_limit, services_limit: formData.features.services_limit },
         });
     };
 
@@ -349,6 +352,18 @@ export function PlanModal({
                                                 type="number"
                                                 name="features.staff_limit"
                                                 value={formData.features.staff_limit}
+                                                onChange={handleChange}
+                                                min="1"
+                                                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="mb-2 block text-sm font-medium text-slate-700">Ծառայությունների քանակ</label>
+                                            <input
+                                                type="number"
+                                                name="features.services_limit"
+                                                value={Number(formData.features.services_limit ?? 0)}
                                                 onChange={handleChange}
                                                 min="1"
                                                 className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"

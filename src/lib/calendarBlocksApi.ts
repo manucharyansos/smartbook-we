@@ -8,10 +8,10 @@ export type Block = {
     staff_id?: number | null;
 };
 
-export async function fetchBlocks(from: string, to: string, staff_id?: number) {
+export async function fetchBlocks(from: string, to: string, params?: { staff_id?: number; location_id?: number }) {
     try {
         const r = await api.get("/calendar/blocks", {
-            params: { from, to, ...(staff_id ? { staff_id } : {}) },
+            params: { from, to, ...(params?.staff_id ? { staff_id: params.staff_id } : {}), ...(params?.location_id ? { location_id: params.location_id } : {}) },
         });
         return (r.data.data ?? r.data ?? []) as Block[];
     } catch (err: any) {

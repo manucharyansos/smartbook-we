@@ -117,7 +117,7 @@ export default function Onboarding() {
   const businessName = user?.business_name ?? "Քո բիզնեսը";
 
   const bookingLink = useMemo(
-    () => `smartbook.am/b/${user?.business_slug ?? "your-business"}`,
+    () => `vizit.am/b/${user?.business_slug ?? "your-business"}`,
     [user?.business_slug],
   );
 
@@ -241,13 +241,13 @@ export default function Onboarding() {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(139,92,246,0.12),_transparent_30%),linear-gradient(180deg,#f8fafc_0%,#eef2ff_100%)] px-3 py-4 sm:px-5 sm:py-6 lg:px-8">
-      <div className="mx-auto flex max-w-7xl flex-col gap-5 2xl:flex-row 2xl:items-stretch">
-        <aside className="2xl:w-[360px] 2xl:sticky 2xl:top-6 2xl:self-start">
+      <div className="mx-auto flex max-w-7xl flex-col gap-4 xl:flex-row xl:items-stretch">
+        <aside className="xl:w-[300px] xl:sticky xl:top-6 xl:self-start">
           <div className="overflow-hidden rounded-[32px] border border-white/70 bg-slate-950 text-white shadow-[0_30px_80px_rgba(15,23,42,0.22)]">
             <div className="border-b border-white/10 bg-[linear-gradient(135deg,rgba(124,58,237,0.95),rgba(76,29,149,0.92))] p-6">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur">
                 <Sparkles size={14} />
-                SmartBook setup
+                Vizit setup
               </div>
               <h1 className="mt-4 text-2xl font-semibold tracking-tight">{businessName}</h1>
               <p className="mt-2 max-w-sm text-sm text-white/75">
@@ -340,7 +340,7 @@ export default function Onboarding() {
                 </div>
               </div>
 
-              <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
                 {steps.map((step, index) => (
                   <div key={step.id} className="rounded-full bg-slate-100 p-1">
                     <motion.div
@@ -357,7 +357,7 @@ export default function Onboarding() {
               </div>
             </div>
 
-            <div className="grid gap-6 p-4 sm:p-6 lg:p-8 2xl:grid-cols-[minmax(0,1fr)_320px]">
+            <div className="grid gap-5 p-4 sm:p-6 lg:p-8 2xl:grid-cols-[minmax(0,1fr)_300px]">
               <div>
                 {error ? (
                   <div className="mb-6 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
@@ -373,7 +373,7 @@ export default function Onboarding() {
                 >
                   {currentStep === 0 && (
                     <div className="space-y-6">
-                      <div className="grid gap-5 2xl:grid-cols-2">
+                      <div className="grid gap-4 sm:grid-cols-2">
                         <div>
                           <SectionLabel>Ծառայության անվանում</SectionLabel>
                           <FieldShell icon={<Store size={18} />}>
@@ -430,7 +430,7 @@ export default function Onboarding() {
 
                   {currentStep === 1 && (
                     <div className="space-y-6">
-                      <div className="grid gap-5 2xl:grid-cols-2">
+                      <div className="grid gap-4 sm:grid-cols-2">
                         <div>
                           <SectionLabel>Անուն</SectionLabel>
                           <FieldShell icon={<User size={18} />}>
@@ -456,7 +456,7 @@ export default function Onboarding() {
                         </div>
                       </div>
 
-                      <div className="grid gap-5 2xl:grid-cols-2">
+                      <div className="grid gap-4 sm:grid-cols-2">
                         <div>
                           <SectionLabel>Մուտքի գաղտնաբառ</SectionLabel>
                           <FieldShell icon={<Lock size={18} />}>
@@ -520,7 +520,7 @@ export default function Onboarding() {
 
                   {currentStep === 2 && (
                     <div className="space-y-6">
-                      <div className="grid gap-5 2xl:grid-cols-2">
+                      <div className="grid gap-4 sm:grid-cols-2">
                         <div>
                           <SectionLabel>Աշխատանքի սկիզբ</SectionLabel>
                           <PrimaryInput type="time" value={workStart} onChange={(e) => setWorkStart(e.target.value)} />

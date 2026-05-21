@@ -4,15 +4,15 @@ export const easeOutExpo: Transition["ease"] = [0.16, 1, 0.3, 1];
 export const easeSoft: Transition["ease"] = [0.22, 1, 0.36, 1];
 
 export const pageTransition: Variants = {
-    hidden: { opacity: 0, y: 24 },
+    hidden: { opacity: 0, y: 14 },
     show: {
         opacity: 1,
         y: 0,
         transition: {
-            duration: 0.55,
+            duration: 0.35,
             ease: easeOutExpo,
             when: "beforeChildren",
-            staggerChildren: 0.08,
+            staggerChildren: 0.06,
         },
     },
 };
@@ -50,7 +50,7 @@ export const fadeIn: Variants = {
     hidden: { opacity: 0 },
     show: {
         opacity: 1,
-        transition: { duration: 0.45, ease: easeSoft },
+        transition: { duration: 0.35, ease: easeSoft },
     },
 };
 

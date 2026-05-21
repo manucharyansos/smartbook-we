@@ -13,12 +13,17 @@ export type HttpError = {
   };
 };
 
+export function getValidationMessages(error: unknown): string[] {
+  const err = error as HttpError;
+  const errors = err?.response?.data?.errors;
+  if (!errors) return [];
+  return Object.values(errors)
+    .flatMap((messages) => messages ?? [])
+    .filter((message): message is string => typeof message === 'string' && message.trim().length > 0);
+}
+
 export function getErrorMessage(error: unknown, fallback: string): string {
   const err = error as HttpError;
-  return (
-    err?.response?.data?.message ||
-    err?.response?.data?.errors?.email?.[0] ||
-    err?.message ||
-    fallback
-  );
+  const firstValidation = getValidationMessages(error)[0];
+  return err?.response?.data?.message || firstValidation || err?.message || fallback;
 }

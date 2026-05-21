@@ -1,12 +1,16 @@
 import { motion } from "framer-motion";
 import { cn } from "../../lib/cn";
+import { getDeviceFingerprint } from "../../lib/fingerprint";
 import { fadeUp } from "../../lib/motion";
 
 type Provider = "google" | "facebook";
+type Audience = "business" | "client";
+type BusinessType = "beauty" | "dental";
 
 type SocialAuthButtonsProps = {
     mode?: "login" | "register";
-    audience?: "business" | "client";
+    audience?: Audience;
+    businessType?: BusinessType;
     className?: string;
 };
 
@@ -36,7 +40,38 @@ const providerMeta: Record<
     },
 };
 
-function getRedirectUrl(provider: Provider, mode: "login" | "register", audience: "business" | "client") {
+function isEnvEnabled(value: string | undefined, fallback = false) {
+    if (value == null) return fallback;
+    return String(value).toLowerCase() === "true";
+}
+
+function getEnabledProviders(): Provider[] {
+    const globallyEnabled = isEnvEnabled(import.meta.env.VITE_SOCIAL_AUTH_ENABLED, false);
+    if (!globallyEnabled) return [];
+
+    const googleEnabled = isEnvEnabled(import.meta.env.VITE_SOCIAL_AUTH_GOOGLE_ENABLED, true);
+    const facebookEnabled = isEnvEnabled(import.meta.env.VITE_SOCIAL_AUTH_FACEBOOK_ENABLED, false);
+
+    return ([
+        googleEnabled ? "google" : null,
+        facebookEnabled ? "facebook" : null,
+    ].filter(Boolean) as Provider[]);
+}
+
+function getDeviceFingerprintSafe() {
+    try {
+        return getDeviceFingerprint();
+    } catch {
+        return "";
+    }
+}
+
+function getRedirectUrl(
+    provider: Provider,
+    mode: "login" | "register",
+    audience: Audience,
+    businessType?: BusinessType
+) {
     const apiBase = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
     const frontendBase = window.location.origin;
     const callbackUrl = `${frontendBase}/auth/social/callback`;
@@ -47,18 +82,34 @@ function getRedirectUrl(provider: Provider, mode: "login" | "register", audience
         callback_url: callbackUrl,
     });
 
+    if (audience === "business" && businessType) {
+        params.set("business_type", businessType);
+    }
+
+    const fingerprint = getDeviceFingerprintSafe();
+    if (fingerprint) {
+        params.set("device_fingerprint", fingerprint);
+    }
+
     return `${apiBase}/auth/social/${provider}/redirect?${params.toString()}`;
 }
 
 export default function SocialAuthButtons({
-                                              mode = "login",
-                                              className,
+    mode = "login",
+    className,
     audience = "client",
+    businessType,
 }: SocialAuthButtonsProps) {
+    const enabledProviders = getEnabledProviders();
+
+    if (!enabledProviders.length) {
+        return null;
+    }
+
     const actionText = mode === "register" ? "Շարունակել" : "Մուտք գործել";
 
     function startSocialAuth(provider: Provider) {
-        window.location.assign(getRedirectUrl(provider, mode, audience));
+        window.location.assign(getRedirectUrl(provider, mode, audience, businessType));
     }
 
     return (
@@ -70,8 +121,8 @@ export default function SocialAuthButtons({
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {(Object.keys(providerMeta) as Provider[]).map((provider) => {
+            <div className={cn("grid gap-3", enabledProviders.length > 1 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1")}>
+                {enabledProviders.map((provider) => {
                     const item = providerMeta[provider];
 
                     return (
@@ -88,16 +139,16 @@ export default function SocialAuthButtons({
                                 provider === "facebook" && "hover:opacity-95"
                             )}
                         >
-              <span
-                  className={cn(
-                      "grid h-7 w-7 place-items-center rounded-full text-sm font-bold",
-                      provider === "google"
-                          ? "bg-slate-100 text-slate-700"
-                          : "bg-white/20 text-white"
-                  )}
-              >
-                {item.short}
-              </span>
+                            <span
+                                className={cn(
+                                    "grid h-7 w-7 place-items-center rounded-full text-sm font-bold",
+                                    provider === "google"
+                                        ? "bg-slate-100 text-slate-700"
+                                        : "bg-white/20 text-white"
+                                )}
+                            >
+                                {item.short}
+                            </span>
                             {actionText} {item.label}-ով
                         </button>
                     );
@@ -105,8 +156,7 @@ export default function SocialAuthButtons({
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs leading-6 text-slate-500">
-                Google / Facebook social կապը դրված է integration-ready շերտով։
-                Instagram, WhatsApp և Messenger-ը ավելի ճիշտ է պահել որպես booking/source/integration շերտ։
+                Social login-ը հիմա աշխատում է միայն այն provider-ների համար, որոնք environment-ով միացված են և backend credential-ներ ունեն։
             </div>
         </motion.div>
     );

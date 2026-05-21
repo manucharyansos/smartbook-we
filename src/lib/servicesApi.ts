@@ -9,12 +9,17 @@ export type Service = {
     currency?: string | null;
     is_active: boolean;
     image_url?: string | null;
+    location_id?: number | null;
+    location?: { id: number; name?: string | null; address?: string | null; is_primary?: boolean } | null;
     created_at?: string;
     updated_at?: string;
 };
 
-export async function fetchServices(): Promise<Service[]> {
-    const res = await api.get("/services");
+export async function fetchServices(params?: any): Promise<Service[]> {
+    const query = params && typeof params === "object" && "location_id" in params
+        ? { location_id: (params as { location_id?: number }).location_id }
+        : undefined;
+    const res = await api.get("/services", { params: query });
     return (res.data.data ?? []).map((item: Service) => ({ ...item, image_url: resolveMediaUrl(item.image_url) }));
 }
 
@@ -25,6 +30,7 @@ export async function createService(payload: {
     currency?: string | null;
     is_active?: boolean;
     image_url?: string | null;
+    location_id?: number | null;
 }) {
     const res = await api.post("/services", payload);
     const item = res.data.data as Service;
@@ -38,6 +44,7 @@ export async function updateService(id: number, payload: Partial<{
     currency: string | null;
     is_active: boolean;
     image_url: string | null;
+    location_id: number | null;
 }>) {
     const res = await api.put(`/services/${id}`, payload);
     const item = res.data.data as Service;

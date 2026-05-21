@@ -12,6 +12,7 @@ export type PublicPlan = {
     currency?: string | null;
     period?: string | null;
     staff_limit?: number | null;
+    services_limit?: number | null;
     locations?: number | null;
     features?: Record<string, unknown> | null;
     pricing_model?: {
@@ -32,6 +33,7 @@ export const plansApi = {
     list: (_businessType?: BusinessType, showHidden?: boolean) =>
         api.get<{ data: PublicPlan[] }>("/plans", {
             params: {
+                business_type: _businessType ?? undefined,
                 show_hidden: showHidden,
             },
         }),
@@ -39,5 +41,7 @@ export const plansApi = {
 
 export const publicPlansApi = {
     list: (_businessType?: BusinessType) =>
-        api.get<{ data: PublicPlan[] }>("/plans"),
+        api.get<{ data: PublicPlan[] }>("/plans", {
+            params: { business_type: _businessType ?? undefined },
+        }),
 };

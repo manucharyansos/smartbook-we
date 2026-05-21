@@ -88,7 +88,7 @@ export default function Analytics() {
   return (
     <motion.div {...page} className="space-y-6">
       <div className="rounded-[32px] border border-slate-200 bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.12),transparent_35%),white] p-6 sm:p-8 shadow-[0_18px_60px_rgba(124,58,237,0.06)]">
-        <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-end 2xl:justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
               <BarChart3 className="h-4 w-4" /> Խորացված վերլուծություն
@@ -96,7 +96,7 @@ export default function Analytics() {
             <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950">Անալիտիկա</h1>
             <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">Եկամուտ, աղբյուրներ, վերադարձող և կորցրած հաճախորդներ, VIP-ներ ու սև ցուցակ՝ մեկ էջում։</p>
           </div>
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid gap-2 grid-cols-1 xs:grid-cols-3 sm:grid-cols-3">
             <select value={days} onChange={(e) => setDays(Number(e.target.value))} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
               <option value={7}>7 օր</option>
               <option value={30}>30 օր</option>
@@ -117,7 +117,7 @@ export default function Analytics() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
         <StatCard icon={CalendarDays} label="Այսօր ամրագրումներ" value={overviewQ.data?.today.bookings ?? 0} />
         <StatCard icon={DollarSign} label="Այսօր եկամուտ" value={formatMoney(overviewQ.data?.today.revenue ?? 0, currency)} />
         <StatCard icon={Users} label="Վերջին 7 օրում" value={overviewQ.data?.last_7_days.bookings ?? 0} sub={`${overviewQ.data?.last_7_days.unique_clients ?? 0} unique clients`} />
@@ -132,14 +132,14 @@ export default function Analytics() {
         <StatCard icon={ShieldBan} label="Blacklisted" value={clientsQ.data?.blacklisted_clients ?? 0} />
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
         <StatCard icon={Wallet} label="30 օրվա միջին չեկ" value={formatMoney(metrics30?.avg_ticket ?? 0, currency)} sub={`${metrics30?.paid_bookings ?? 0} paid bookings`} />
         <StatCard icon={CalendarDays} label="Completion rate" value={`${metrics30?.completion_rate ?? 0}%`} sub={`${metrics30?.done_bookings ?? 0} done`} />
         <StatCard icon={AlertTriangle} label="Cancellation rate" value={`${metrics30?.cancellation_rate ?? 0}%`} sub={`${metrics30?.cancelled_bookings ?? 0} cancelled`} />
         <StatCard icon={AlertTriangle} label="No-show rate" value={`${metrics30?.no_show_rate ?? 0}%`} sub={`${metrics30?.no_show_bookings ?? 0} no-show`} />
       </div>
 
-      <div className="grid gap-6 2xl:grid-cols-[1.5fr_1fr]">
+      <div className="grid gap-4 sm:gap-6 xl:grid-cols-[1.5fr_1fr]">
         <Card className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
           <div className="text-lg font-semibold text-slate-950">Եկամտի դինամիկա</div>
           <div className="mt-2 text-sm text-slate-500">Եկամուտ + ամրագրումներ ըստ ամիսների</div>
@@ -174,7 +174,7 @@ export default function Analytics() {
         </Card>
       </div>
 
-      <div className="grid gap-6 2xl:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 xl:grid-cols-2">
         <Card className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
           <div className="text-lg font-semibold text-slate-950">Թոփ ծառայություններ</div>
           <div className="mt-2 text-sm text-slate-500">{days} օրվա կտրվածքով</div>
@@ -210,7 +210,7 @@ export default function Analytics() {
         </Card>
       </div>
 
-      <div className="grid gap-6 2xl:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 xl:grid-cols-2">
         <Card className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
           <div className="flex items-center gap-2 text-lg font-semibold text-slate-950"><Layers3 className="h-5 w-5 text-violet-600" /> Հաճախորդների խմբեր</div>
           <div className="mt-2 text-sm text-slate-500">VIP, խմբեր և կարգավիճակների վերլուծություն</div>
@@ -252,7 +252,7 @@ export default function Analytics() {
         </Card>
       </div>
 
-      <div className="grid gap-6 2xl:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 xl:grid-cols-2">
         <Card className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
           <div className="text-lg font-semibold text-slate-950">Sources table</div>
           <div className="mt-4 overflow-x-auto rounded-[24px] border border-slate-200">

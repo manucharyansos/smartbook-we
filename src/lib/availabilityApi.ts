@@ -17,6 +17,7 @@ export async function fetchAvailabilityDay(params: {
   service_ids?: number[];
   staff_id?: number;
   date: string;
+  location_id?: number;
 }) {
   const token = localStorage.getItem("token");
 

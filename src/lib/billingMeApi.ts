@@ -18,6 +18,14 @@ export type BillingMeResponse = {
     owners_unlimited?: boolean;
     managers_unlimited?: boolean;
   };
+  usage?: {
+    active_staff: number;
+    staff_limit: number | null;
+    services_count: number;
+    services_limit: number | null;
+    locations_count: number;
+    locations_limit: number | null;
+  };
 
   individual_offers?: Array<{
     id: number;
@@ -27,6 +35,7 @@ export type BillingMeResponse = {
       code: string;
       name: string;
       staff_limit: number;
+      services_limit?: number | null;
       locations?: number | null;
       currency: string;
     };
@@ -40,6 +49,12 @@ export type BillingMeResponse = {
     ends_at?: string | null;
     note?: string | null;
   }>;
+
+  payment_provider?: {
+    default: "idbank" | "idbank_mock";
+    mode: string;
+    live_ready: boolean;
+  } | null;
   pricing?: {
     currency: string;
     base_monthly_price: number;
@@ -73,9 +88,10 @@ export type BillingMeResponse = {
       yearly_price: number;
       currency: string;
       staff_limit: number;
+      services_limit?: number | null;
       locations?: number | null;
       duration_days?: number;
-      features?: Record<string, boolean | number | string>;
+      features?: Record<string, boolean | number | string | null>;
     };
   };
 };

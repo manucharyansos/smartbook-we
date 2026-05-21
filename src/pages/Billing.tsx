@@ -35,6 +35,7 @@ type Plan = {
   price: number;
   currency: string;
   staff_limit?: number | null;
+  services_limit?: number | null;
   locations?: number | null;
   yearly_offer?: {
     enabled: boolean;
@@ -53,6 +54,7 @@ type IndividualOffer = {
     code: string;
     name: string;
     staff_limit: number;
+    services_limit?: number | null;
     locations?: number | null;
     currency: string;
   };
@@ -98,8 +100,10 @@ type UpgradeResponse = {
   };
 };
 
-async function fetchPlans(): Promise<Plan[]> {
-  const r = await api.get("/plans");
+async function fetchPlans(businessType?: string | null): Promise<Plan[]> {
+  const r = await api.get("/plans", {
+    params: { business_type: businessType ?? undefined },
+  });
   return r.data.data as Plan[];
 }
 
@@ -149,7 +153,12 @@ export default function Billing() {
   const [currentInvoiceId, setCurrentInvoiceId] = useState<number | null>(null);
 
   const billingQ = useQuery({ queryKey: ["billing", "me"], queryFn: fetchBillingMe, staleTime: 20_000 });
-  const plansQ = useQuery({ queryKey: ["plans", "billing-page"], queryFn: fetchPlans, staleTime: 60_000 });
+  const currentBusinessType = billingQ.data?.business.business_type ?? null;
+  const plansQ = useQuery({
+    queryKey: ["plans", "billing-page", currentBusinessType],
+    queryFn: () => fetchPlans(currentBusinessType),
+    staleTime: 60_000,
+  });
   const invoicesQ = useQuery({ queryKey: ["billing", "invoices"], queryFn: fetchInvoices, staleTime: 20_000 });
 
   const latestInvoice = invoicesQ.data?.[0] ?? null;
@@ -176,7 +185,7 @@ export default function Billing() {
   });
 
   const checkoutMut = useMutation({
-    mutationFn: (invoiceId: number) => createCheckoutSession({ invoice_id: invoiceId, provider: "idbank_mock", payment_method: "card" }),
+    mutationFn: (invoiceId: number) => createCheckoutSession({ invoice_id: invoiceId, payment_method: "card" }),
     onSuccess: (data) => {
       setCurrentInvoiceId(data.data.invoice_id);
       if (data.data.checkout_url) window.location.href = data.data.checkout_url;
@@ -200,6 +209,7 @@ export default function Billing() {
         description: plan.description,
         currency: plan.currency,
         staff_limit: plan.staff_limit,
+        services_limit: plan.services_limit,
         locations: plan.locations,
         monthlyPrice,
         yearlyPrice,
@@ -222,6 +232,7 @@ export default function Billing() {
         description: `${offer.base_plan.name} · մինչև ${offer.base_plan.staff_limit} ակտիվ մասնագետ`,
         currency: offer.base_plan.currency,
         staff_limit: offer.base_plan.staff_limit,
+        services_limit: offer.base_plan.services_limit,
         locations: offer.base_plan.locations,
         monthlyPrice,
         yearlyPrice,
@@ -245,7 +256,7 @@ export default function Billing() {
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <SectionCard className="overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.14),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(236,72,153,0.10),transparent_35%),white] p-8">
-        <div className="flex flex-col gap-8 2xl:flex-row 2xl:items-center 2xl:justify-between">
+        <div className="flex flex-col gap-5 sm:gap-8 xl:flex-row xl:items-center xl:justify-between">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-medium text-violet-700">
               <Sparkles className="h-4 w-4" /> Վճարումներ · գնագոյացում ըստ մասնագետների
@@ -262,7 +273,7 @@ export default function Billing() {
             </div>
           </div>
 
-          <div className="w-full max-w-[520px] rounded-[32px] border border-slate-200 bg-white/90 p-6 shadow-[0_24px_80px_rgba(124,58,237,0.10)]">
+          <div className="w-full rounded-[32px] border border-slate-200 bg-white/90 p-6 shadow-[0_24px_80px_rgba(124,58,237,0.10)]">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-sm font-medium text-slate-500">Current plan</div>
@@ -271,7 +282,7 @@ export default function Billing() {
               <div className="grid h-14 w-14 place-items-center rounded-3xl bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white shadow-lg"><Landmark className="h-6 w-6" /></div>
             </div>
 
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <div className="mt-4 grid gap-3 grid-cols-2 xl:grid-cols-5">
               <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
                 <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Status</div>
                 <div className="mt-2"><span className={cn("rounded-full border px-3 py-1 text-xs font-semibold", statusBadge(subscription?.status))}>{subscription?.status ?? "inactive"}</span></div>
@@ -281,6 +292,22 @@ export default function Billing() {
                 <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.seats.active_staff ?? 0} / {billingQ.data?.seats.staff_limit ?? "∞"}</div>
                 <div className="mt-1 text-xs text-slate-500">Owner / manager unlimited</div>
               </div>
+              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Services</div>
+                <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.usage?.services_count ?? 0} / {billingQ.data?.usage?.services_limit ?? "∞"}</div>
+                <div className="mt-1 text-xs text-slate-500">Ընթացիկ ծառայությունների քանակ</div>
+              </div>
+              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Locations</div>
+                <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.usage?.locations_count ?? 0} / {billingQ.data?.usage?.locations_limit ?? "∞"}</div>
+                <div className="mt-1 text-xs text-slate-500">Մասնաճյուղերի/հասցեների limit</div>
+              </div>
+              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Վճարման provider</div>
+                <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.payment_provider?.default === "idbank" ? "IDBank Live" : "IDBank Test"}</div>
+                <div className="mt-1 text-xs text-slate-500">Provider-ը որոշում է backend-ը, ոչ թե frontend hardcode-ը</div>
+              </div>
+
             </div>
 
             <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-4">
@@ -314,7 +341,7 @@ export default function Billing() {
           </div>
         </div>
 
-        <div className="mt-6 grid gap-5 sm:grid-cols-2 2xl:grid-cols-4">
+        <div className="mt-4 grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-4">
           {presentationPlans.map((plan) => {
             const isCurrent = currentPlanCode === plan.code;
             const isBusy = requestMut.isPending && selectedPlan === plan.code;
@@ -338,12 +365,13 @@ export default function Billing() {
                   <div>{billingCycle === "yearly" ? `Արդյունավետ՝ ~${formatMoney(plan.perMonthEffective, plan.currency)}/ամիս` : `${formatMoney(plan.monthlyPrice, plan.currency)} / ամիս`}</div>
                   {billingCycle === "yearly" ? <div>{plan.isIndividualOffer ? `Անհատական տարեկան առաջարկ՝ ${formatMoney(plan.yearlyPrice, plan.currency)}` : `Խնայողություն՝ ${formatMoney(plan.discountAmount, plan.currency)}`}</div> : null}
                   <div>{plan.locations && plan.locations > 1 ? `Մինչև ${plan.locations} հասցե` : "1 հասցե"}</div>
+                  <div>{plan.services_limit ? `Մինչև ${plan.services_limit} ծառայություն` : 'Ծառայությունների սահմանափակում չկա'}</div>
                   {plan.billingCyclesLimit ? <div>Վավեր է մինչև {plan.billingCyclesLimit} վճարային շրջան</div> : null}
                 </div>
 
                 <div className="mt-5 space-y-2">
                   <div className={cn("flex items-center gap-2 text-sm", isCurrent ? "text-white/90" : "text-slate-700")}><Check className="h-4 w-4 text-emerald-500" /> Հանրային ամրագրում և հաճախորդի cabinet</div>
-                  <div className={cn("flex items-center gap-2 text-sm", isCurrent ? "text-white/90" : "text-slate-700")}><Check className="h-4 w-4 text-emerald-500" /> Առաջադրանքներ, վերլուծություն և աղբյուրների հետևում</div>
+                  <div className={cn("flex items-center gap-2 text-sm", isCurrent ? "text-white/90" : "text-slate-700")}><Check className="h-4 w-4 text-emerald-500" /> Ամրագրումների վահանակ, վերլուծություն և աղբյուրների հետևում</div>
                   <div className={cn("flex items-center gap-2 text-sm", isCurrent ? "text-white/90" : "text-slate-700")}><Check className="h-4 w-4 text-emerald-500" /> Սեփականատեր և մենեջեր՝ անսահմանափակ</div>
                 </div>
 
@@ -359,7 +387,7 @@ export default function Billing() {
         </div>
       </SectionCard>
 
-      <div className="grid gap-4 2xl:grid-cols-[1.15fr_0.85fr]">
+      <div className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
         <SectionCard className="space-y-4 p-6">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-700"><Landmark className="h-4 w-4 text-violet-600" /> Վերջին վճարման հաշիվ և checkout</div>
           {!latestInvoice ? (
@@ -382,9 +410,9 @@ export default function Billing() {
               </div>
               <div className="rounded-3xl border border-slate-200 bg-white p-5">
                 <div className="text-base font-semibold text-slate-950">Բացել bank checkout-ը</div>
-                <p className="mt-2 text-sm leading-7 text-slate-600">Checkout session-ը կստեղծվի backend-ում, հետո owner-ը կredirect արվի hosted payment page։</p>
+                <p className="mt-2 text-sm leading-7 text-slate-600">Checkout session-ը ստեղծվում է backend-ում, և frontend-ը այլևս provider hardcode չի անում։</p>
                 <Button className="mt-4" loading={checkoutMut.isPending} onClick={() => checkoutMut.mutate(latestInvoice.id)}>
-                  {checkoutMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />} Բացել IDBank checkout-ը
+                  {checkoutMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />} {billingQ.data?.payment_provider?.default === "idbank" ? "Բացել IDBank checkout-ը" : "Բացել IDBank test checkout-ը"}
                 </Button>
               </div>
             </>

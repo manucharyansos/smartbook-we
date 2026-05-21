@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 import { fadeUp, pageTransition, scaleIn, staggerContainer, hoverLift } from "../lib/motion";
 
 const channels = [
-  { icon: <Mail className="h-5 w-5" />, label: "Էլ. փոստ", value: "support@smartbook.am", hint: "Պատասխանը սովորաբար նույն օրը" },
+  { icon: <Mail className="h-5 w-5" />, label: "Էլ. փոստ", value: "support@vizit.am", hint: "Պատասխանը սովորաբար նույն օրը" },
   { icon: <MessageCircle className="h-5 w-5" />, label: "WhatsApp", value: "+374 XX XXX XXX", hint: "Արագ հարցերի համար" },
   { icon: <Phone className="h-5 w-5" />, label: "Հեռախոս", value: "+374 XX XX XX XX", hint: "Աշխատանքային ժամերին" },
 ];
@@ -23,7 +23,7 @@ export default function Support() {
                 <ShieldCheck className="h-4 w-4" /> Աջակցության կենտրոն
               </div>
               <h1 className="mt-5 text-3xl font-semibold tracking-tight text-slate-950 sm:mt-6 sm:text-5xl lg:text-6xl">Օգնություն և աջակցություն</h1>
-              <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-slate-600">Եթե ունես տեխնիկական խնդիր, միացման հարց կամ ուզում ես արագ խորհրդատվություն, այստեղից կարող ես կապվել SmartBook-ի թիմի հետ։</p>
+              <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-slate-600">Եթե ունես տեխնիկական խնդիր, միացման հարց կամ ուզում ես արագ խորհրդատվություն, այստեղից կարող ես կապվել Vizit-ի թիմի հետ։</p>
             </motion.div>
 
             <div className="mt-12 grid gap-6 2xl:grid-cols-[0.95fr_1.05fr]">

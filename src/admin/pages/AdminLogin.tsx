@@ -56,7 +56,7 @@ export default function AdminLogin() {
           <div className="hidden text-white lg:block">
             <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm text-white/85 backdrop-blur">
               <ShieldCheck className="h-4 w-4" />
-              SmartBook Admin Access
+              Vizit Admin Access
             </motion.div>
             <motion.div variants={fadeUp} className="mt-8">
               <div className="inline-flex items-center gap-3">
@@ -64,7 +64,7 @@ export default function AdminLogin() {
                   <CalendarDays className="h-6 w-6" />
                 </div>
                 <div>
-                  <div className="text-2xl font-semibold tracking-tight">SmartBook</div>
+                  <div className="text-2xl font-semibold tracking-tight">Vizit</div>
                   <div className="text-sm text-white/55">Admin workspace</div>
                 </div>
               </div>
@@ -79,7 +79,7 @@ export default function AdminLogin() {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="text-3xl font-semibold tracking-tight">Admin մուտք</div>
-                    <p className="mt-2 text-sm leading-7 text-white/60">Մուտք գործիր SmartBook admin workspace։</p>
+                    <p className="mt-2 text-sm leading-7 text-white/60">Մուտք գործիր Vizit admin workspace։</p>
                   </div>
                   <Link to="/" className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-2 text-sm text-white/85 transition hover:bg-white/15">
                     <ArrowLeft className="h-4 w-4" />
@@ -107,7 +107,7 @@ export default function AdminLogin() {
                           'h-12 w-full rounded-2xl border bg-white/5 pl-11 pr-4 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-violet-300/60 focus:ring-4 focus:ring-violet-500/15',
                           validationErrors.email ? 'border-rose-400/40' : 'border-white/10',
                         )}
-                        placeholder="admin@smartbook.am"
+                        placeholder="admin@vizit.am"
                         required
                       />
                     </div>

@@ -63,7 +63,7 @@ export default function Contact() {
                         <motion.div variants={fadeUp} className="mb-10 text-center sm:mb-12">
                             <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm">
                                 <ShieldCheck className="h-4 w-4 text-violet-600" />
-                                SmartBook կապ
+                                Vizit կապ
                             </div>
 
                             <h1 className="mt-6 text-[1.9rem] font-semibold tracking-tight text-slate-950 sm:text-4xl lg:text-6xl">
@@ -72,7 +72,7 @@ export default function Contact() {
 
                             <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
                                 Եթե ունես հարց, համագործակցության առաջարկ կամ ցանկանում ես
-                                միացնել SmartBook-ը քո բիզնեսին, գրիր մեզ։
+                                միացնել Vizit-ը քո բիզնեսին, գրիր մեզ։
                             </p>
                         </motion.div>
 
@@ -91,7 +91,7 @@ export default function Contact() {
                                             {
                                                 icon: <Mail className="h-5 w-5" />,
                                                 label: "Էլ. փոստ",
-                                                value: "info@smartbook.am",
+                                                value: "info@vizit.am",
                                             },
                                             {
                                                 icon: <MapPin className="h-5 w-5" />,

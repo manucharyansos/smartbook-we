@@ -4,13 +4,15 @@ import path from "path";
 
 export default defineConfig({
   plugins: [react()],
-  // base: '/app/',
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
   build: {
+    // Faster builds, smaller output
+    target: 'es2020',
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -19,30 +21,32 @@ export default defineConfig({
           if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('react-router-dom')) {
             return 'react-vendor';
           }
-
           if (id.includes('@tanstack/react-query') || id.includes('/axios/') || id.includes('/zustand/') || id.includes('/zod/')) {
             return 'data-vendor';
           }
-
           if (id.includes('/framer-motion/')) {
             return 'motion-vendor';
           }
-
           if (id.includes('/lucide-react/')) {
             return 'icons-vendor';
           }
-
           if (id.includes('/recharts/')) {
             return 'charts-vendor';
           }
-
           if (id.includes('@fullcalendar')) {
             return 'calendar-vendor';
           }
-
           return undefined;
         },
       },
     },
+  },
+  // Dev server performance
+  server: {
+    hmr: { overlay: true },
+  },
+  // Faster dev startup
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom', 'framer-motion', '@tanstack/react-query'],
   },
 })

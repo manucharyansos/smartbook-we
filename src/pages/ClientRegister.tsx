@@ -61,7 +61,7 @@ export default function ClientRegister() {
     <AuthShell
       title="Ստեղծել հաճախորդի հաշիվ"
       subtitle="Ստեղծիր account և պահիր քո booking history-ն, upcoming այցերն ու salon կապերը մեկ տեղում։"
-      badge="SmartBook հաճախորդի հաշիվ"
+      badge="Vizit հաճախորդի հաշիվ"
       sideTitle="Պարզ registration, հետո՝ արագ booking experience"
       sideText="Client flow-ը պետք է լինի թեթև, պարզ և հարմար mobile-ից օգտագործելու համար։"
       footer={<div className="text-center text-sm text-slate-500">Բիզնես ե՞ս <Link to="/business/register?entry=trial" className="font-medium text-violet-700 hover:text-violet-600">անցնել business signup</Link></div>}

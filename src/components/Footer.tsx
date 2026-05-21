@@ -44,7 +44,7 @@ export default function Footer() {
               <div>
                 <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-white/80 sm:text-sm">
                   <Sparkles className="h-4 w-4" />
-                  SmartBook բիզնեսների համար
+                  Vizit բիզնեսների համար
                 </div>
 
                 <h2 className="mt-5 max-w-2xl text-2xl font-semibold tracking-tight sm:text-3xl lg:text-[36px]">
@@ -79,20 +79,20 @@ export default function Footer() {
           <div className="mt-12 grid gap-8 md:grid-cols-2 xl:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]">
             <div>
               <Link to="/" className="flex items-center gap-3">
-                <div className="grid h-12 w-12 place-items-center rounded-2xl bg-slate-950 text-white">
+                <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-500 text-white shadow-md shadow-violet-500/20">
                   <CalendarDays className="h-5 w-5" />
                 </div>
 
                 <div>
                   <div className="text-lg font-semibold tracking-tight text-slate-950">
-                    SmartBook
+                    Vizit
                   </div>
                   <div className="text-xs text-slate-500">Ամրագրման հարթակ</div>
                 </div>
               </Link>
 
               <p className="mt-5 max-w-md text-sm leading-7 text-slate-600">
-                SmartBook-ը ստեղծված է beauty, dental և service բիզնեսների համար՝
+                Vizit-ը ստեղծված է beauty, dental և service բիզնեսների համար՝
                 ամրագրումները ավելի պարզ, արագ և վստահելի դարձնելու համար։
               </p>
 
@@ -143,7 +143,7 @@ export default function Footer() {
           </div>
 
           <div className="mt-8 flex flex-col gap-2 border-t border-slate-200 pt-5 text-center text-sm text-slate-500 sm:mt-10 sm:flex-row sm:items-center sm:justify-between sm:text-left">
-            <span>© {new Date().getFullYear()} SmartBook. Բոլոր իրավունքները պաշտպանված են։</span>
+            <span>© {new Date().getFullYear()} Vizit. Բոլոր իրավունքները պաշտպանված են։</span>
             <span>Ժամադրություններով աշխատող բիզնեսների համար։</span>
           </div>
         </div>

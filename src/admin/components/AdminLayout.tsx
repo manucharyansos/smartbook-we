@@ -78,7 +78,7 @@ export default function AdminLayout() {
                 <div className="truncate text-2xl font-semibold tracking-tight text-slate-950">{pageTitle}</div>
                 <div className="mt-1 inline-flex max-w-full items-center gap-2 truncate text-xs text-slate-500">
                   <Sparkles className="h-3.5 w-3.5 shrink-0 text-violet-500" />
-                  SmartBook admin workspace
+                  Vizit admin workspace
                 </div>
               </div>
             </div>

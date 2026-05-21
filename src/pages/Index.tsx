@@ -286,7 +286,7 @@ export default function Index() {
             <LandingNavbar />
 
             <main>
-                <section className="relative overflow-hidden px-4 pb-14 pt-28 sm:px-6 lg:px-8 lg:pb-20 lg:pt-40">
+                <section className="relative overflow-hidden px-4 pb-10 pt-16 sm:pb-14 sm:pt-24 sm:px-6 lg:px-8 lg:pb-20 lg:pt-40">
                     <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,rgba(124,58,237,0.07),transparent_26%),radial-gradient(circle_at_bottom_right,rgba(124,58,237,0.04),transparent_24%)]" />
 
                     <motion.div
@@ -294,7 +294,7 @@ export default function Index() {
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true, amount: 0.12 }}
-                        className="mx-auto grid max-w-7xl items-center gap-10 2xl:grid-cols-[1.02fr_0.98fr]"
+                        className="mx-auto grid max-w-7xl items-center gap-6 sm:gap-10 xl:grid-cols-[1.02fr_0.98fr]"
                     >
                         <div>
                             <motion.div
@@ -307,7 +307,7 @@ export default function Index() {
 
                             <motion.h1
                                 variants={revealUp}
-                                className="mt-6 max-w-3xl text-4xl font-semibold leading-tight tracking-tight text-slate-950 sm:text-5xl lg:text-6xl"
+                                className="mt-4 max-w-3xl text-3xl font-semibold leading-tight tracking-tight text-slate-950 sm:mt-6 sm:text-5xl lg:text-6xl"
                             >
                                 Բացահայտիր լավագույն սրահներն ու կլինիկաները և
                                 <span className="block text-slate-500">
@@ -319,7 +319,7 @@ export default function Index() {
                                 variants={revealSoft}
                                 className="mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg"
                             >
-                                SmartBook-ը միավորում է գեղեցկության սրահներն ու կլինիկաները մեկ հարթակում՝
+                                Vizit-ը միավորում է գեղեցկության սրահներն ու կլինիկաները մեկ հարթակում՝
                                 արագ ամրագրումների, մաքուր ներկայացման և հարմար հաճախորդային փորձի համար։
                             </motion.p>
 
@@ -345,7 +345,7 @@ export default function Index() {
 
                             <motion.div
                                 variants={staggerWrap}
-                                className="mt-8 grid gap-4 xl:grid-cols-3"
+                                className="mt-6 grid gap-3 sm:gap-4 sm:grid-cols-2 xl:grid-cols-3"
                             >
                                 <motion.div
                                     variants={revealSoft}
@@ -382,7 +382,7 @@ export default function Index() {
                                 <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-5">
                                     <div className="flex items-start justify-between gap-4">
                                         <div>
-                                            <div className="text-sm text-slate-500">SmartBook հանրային էջ</div>
+                                            <div className="text-sm text-slate-500">Vizit հանրային էջ</div>
                                             <div className="mt-1 text-2xl font-semibold tracking-tight text-slate-950">
                                                 Մաքուր, արագ, վստահելի
                                             </div>
@@ -490,7 +490,7 @@ export default function Index() {
                                 </h2>
 
                                 <p className="mt-3 text-base leading-7 text-slate-600">
-                                    Ցույց ենք տալիս այն բիզնեսները, որոնք արդեն գրանցված են SmartBook-ում
+                                    Ցույց ենք տալիս այն բիզնեսները, որոնք արդեն գրանցված են Vizit-ում
                                     և հասանելի են օնլայն ամրագրման համար։
                                 </p>
                             </motion.div>
@@ -902,7 +902,7 @@ export default function Index() {
                             <div>
                                 <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700">
                                     <Sparkles className="h-4 w-4 text-violet-600" />
-                                    SmartBook բիզնեսների համար
+                                    Vizit բիզնեսների համար
                                 </div>
 
                                 <h2 className="mt-5 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">

@@ -84,7 +84,7 @@ export default function PublicBusinessProfile() {
     if (businessQ.isLoading) {
         return (
             <div className="min-h-screen bg-[linear-gradient(180deg,#fffaf5_0%,#ffffff_20%,#faf7ff_100%)]">
-                <PublicBusinessHeader secondaryHref="/" secondaryLabel="SmartBook" />
+                <PublicBusinessHeader secondaryHref="/" secondaryLabel="Vizit" />
                 <main className="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6 lg:px-8">
                     <div className="h-72 animate-pulse rounded-[34px] border border-slate-200 bg-white/80" />
                     <div className="mt-8 grid gap-6 2xl:grid-cols-[1fr_340px]">
@@ -103,7 +103,7 @@ export default function PublicBusinessProfile() {
     if (businessQ.isError || !business) {
         return (
             <div className="min-h-screen bg-[linear-gradient(180deg,#fffaf5_0%,#ffffff_20%,#faf7ff_100%)]">
-                <PublicBusinessHeader secondaryHref="/" secondaryLabel="SmartBook" />
+                <PublicBusinessHeader secondaryHref="/" secondaryLabel="Vizit" />
                 <main className="mx-auto max-w-4xl px-4 pb-16 pt-8 sm:px-6 lg:px-8">
                     <div className="rounded-[32px] border border-rose-200 bg-white p-10 text-center shadow-sm">
                         <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-rose-50 text-rose-500">
@@ -130,7 +130,7 @@ export default function PublicBusinessProfile() {
 
     return (
         <div className="min-h-screen bg-[linear-gradient(180deg,#fffaf5_0%,#ffffff_22%,#faf7ff_100%)] text-slate-900">
-            <PublicBusinessHeader business={business} primaryHref={`/book/${business.slug}?source=website`} primaryLabel="Ամրագրել հիմա" secondaryHref="/" secondaryLabel="SmartBook" />
+            <PublicBusinessHeader business={business} primaryHref={`/book/${business.slug}?source=website`} primaryLabel="Ամրագրել հիմա" secondaryHref="/" secondaryLabel="Vizit" />
 
             <main className="pb-16 pt-8 sm:pt-10">
                 <section className="px-4 sm:px-6 lg:px-8">
@@ -167,7 +167,7 @@ export default function PublicBusinessProfile() {
                                             </h1>
                                             <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
                                                 {(business as any).short_description ||
-                                                    "Պրոֆեսիոնալ սպասարկում, հարմար ժամերի ընտրություն և արագ օնլայն ամրագրում SmartBook-ի միջոցով։"}
+                                                    "Պրոֆեսիոնալ սպասարկում, հարմար ժամերի ընտրություն և արագ օնլայն ամրագրում Vizit-ի միջոցով։"}
                                             </p>
                                         </div>
                                     </div>
@@ -303,7 +303,7 @@ export default function PublicBusinessProfile() {
 
                                             <div className="flex items-start gap-3 text-sm text-slate-600">
                                                 <CheckCircle2 className="mt-0.5 h-4 w-4 text-emerald-500" />
-                                                <span>Օնլայն ամրագրում SmartBook հարթակում</span>
+                                                <span>Օնլայն ամրագրում Vizit հարթակում</span>
                                             </div>
                                         </div>
                                     </div>
@@ -468,7 +468,7 @@ export default function PublicBusinessProfile() {
                                         "Օնլայն ամրագրում առանց զանգերի",
                                         "Ծառայությունների և մասնագետների հարմար ընտրություն",
                                         "Ժամերի արագ ստուգում booking էջում",
-                                        "Պրոֆեսիոնալ ներկայացում SmartBook-ում",
+                                        "Պրոֆեսիոնալ ներկայացում Vizit-ում",
                                     ].map((item) => (
                                         <div
                                             key={item}

@@ -93,7 +93,8 @@ const stagger: Variants = {
 const categoryIconRules: Array<{ keywords: string[]; Icon: LucideIcon; tone: string }> = [
   { keywords: ["hair", "barber", "beauty", "salon", "վարս", "գեղեց", "барбер", "салон"], Icon: Scissors, tone: "from-violet-100 to-indigo-50 text-violet-500" },
   { keywords: ["spa", "massage", "մերս", "սպա", "массаж", "спа"], Icon: Sparkles, tone: "from-fuchsia-100 to-pink-50 text-fuchsia-500" },
-  { keywords: ["dental", "dent", "tooth", "ատամ", "ստոմ", "зуб"], Icon: HeartPulse, tone: "from-sky-100 to-blue-50 text-sky-500" },
+  { keywords: ["dental", "dent", "tooth", "ատամ", "դենտ", "ստոմ", "зуб"], Icon: HeartPulse, tone: "from-sky-100 to-blue-50 text-sky-500" },
+  { keywords: ["medical", "clinic", "health", "hospital", "doctor", "բժշ", "առողջ", "կլինիկ", "մեդ", "врач", "мед", "клиник"], Icon: HeartPulse, tone: "from-cyan-100 to-sky-50 text-cyan-600" },
   { keywords: ["fitness", "gym", "coach", "մարզ", "ֆիթ", "спорт", "фит"], Icon: Dumbbell, tone: "from-emerald-100 to-green-50 text-emerald-500" },
   { keywords: ["nail", "manicure", "մատն", "ногт", "маник"], Icon: WandSparkles, tone: "from-pink-100 to-purple-50 text-pink-500" },
   { keywords: ["car", "auto", "wash", "ավտ", "լվաց", "маш", "авто"], Icon: Car, tone: "from-blue-100 to-cyan-50 text-blue-500" },
@@ -121,9 +122,12 @@ function getCategoryName(category: PublicBusinessCategory | null | undefined, lo
 }
 
 function getCategoryPresentation(category: PublicBusinessCategory): { Icon: LucideIcon; tone: string } {
-  const value = `${category.slug ?? ""} ${category.name ?? ""} ${category.name_hy ?? ""} ${category.name_ru ?? ""} ${category.name_en ?? ""}`.toLowerCase();
+  const value = `${category.slug ?? ""} ${category.icon ?? ""} ${category.name ?? ""} ${category.name_hy ?? ""} ${category.name_ru ?? ""} ${category.name_en ?? ""}`.toLowerCase();
   const match = categoryIconRules.find((rule) => rule.keywords.some((keyword) => value.includes(keyword)));
-  return match ? { Icon: match.Icon, tone: match.tone } : { Icon: MoreHorizontal, tone: "from-slate-100 to-slate-50 text-slate-500" };
+  if (match) return { Icon: match.Icon, tone: match.tone };
+  return normalizeVertical(category.vertical ?? category.slug) === "healthcare"
+    ? { Icon: HeartPulse, tone: "from-cyan-100 to-sky-50 text-cyan-600" }
+    : { Icon: Sparkles, tone: "from-violet-100 to-indigo-50 text-violet-500" };
 }
 
 function businessHaystack(item: PublicDirectoryBusiness) {
@@ -614,10 +618,10 @@ function MobileStats({ stats }: { stats: { total: number | string; services: num
   return (
     <motion.div variants={fadeUp} className="mt-7 grid grid-cols-3 gap-2 xl:hidden">
       {items.map(({ value, label, Icon }) => (
-        <div key={label} className="rounded-[18px] border border-white/10 bg-white/[0.08] p-3 text-center backdrop-blur-2xl sm:p-4">
-          <Icon className="mx-auto h-5 w-5 text-cyan-200" />
-          <div className="mt-2 text-xl font-black text-white sm:text-2xl">{value}</div>
-          <div className="mt-1 text-[10px] font-bold leading-4 text-slate-200 sm:text-xs">{label}</div>
+        <div key={label} className="rounded-[18px] border border-slate-200 bg-white/80 p-3 text-center shadow-sm backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.08] sm:p-4">
+          <Icon className="mx-auto h-5 w-5 text-violet-500 dark:text-cyan-200" />
+          <div className="mt-2 text-xl font-black text-slate-950 dark:text-white sm:text-2xl">{value}</div>
+          <div className="mt-1 text-[10px] font-bold leading-4 text-slate-600 dark:text-slate-200 sm:text-xs">{label}</div>
         </div>
       ))}
     </motion.div>

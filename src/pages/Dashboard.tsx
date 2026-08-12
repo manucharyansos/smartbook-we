@@ -30,18 +30,17 @@ function StatCard({
   icon: React.ReactNode;
 }) {
   return (
-    <motion.div variants={card} initial="initial" animate="animate" transition={cardTransition}>
-      <Card className="rounded-[20px] border border-slate-200 bg-white/95 p-3.5 shadow-sm backdrop-blur sm:p-5">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className="text-sm font-medium text-slate-500">{title}</div>
-            <div className="mt-1.5 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">{value}</div>
-            <div className="mt-1.5 text-xs leading-5 text-slate-500 sm:text-sm">{subtitle}</div>
-          </div>
-
-          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-indigo-600 via-violet-600 to-cyan-500 text-white shadow-md sm:h-11 sm:w-11 sm:rounded-2xl">
+    <motion.div className="h-full" variants={card} initial="initial" animate="animate" transition={cardTransition}>
+      <Card className="h-full min-h-[164px] rounded-[20px] border border-slate-200 bg-white/95 p-3.5 shadow-sm backdrop-blur sm:min-h-[176px] sm:p-5">
+        <div className="flex h-full flex-col">
+          <div className="flex items-start justify-between gap-2.5">
+            <div className="min-w-0 text-[13px] font-medium leading-[1.35rem] text-slate-500 sm:text-sm">{title}</div>
+            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-indigo-600 via-violet-600 to-cyan-500 text-white shadow-md sm:h-11 sm:w-11 sm:rounded-2xl">
             {icon}
+            </div>
           </div>
+          <div className="mt-auto pt-3 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">{value}</div>
+          <div className="mt-1 min-h-10 text-[11px] leading-5 text-slate-500 sm:text-sm">{subtitle}</div>
         </div>
       </Card>
     </motion.div>

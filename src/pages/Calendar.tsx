@@ -318,27 +318,6 @@ function bookingSourceTone(source?: string | null) {
     }
 }
 
-function formatShortDateLabel(date: Date) {
-    try {
-        return date.toLocaleDateString("hy-AM", { month: "short", day: "numeric" });
-    } catch {
-        return ymd(date);
-    }
-}
-
-function formatWeekRangeLabel(days: Date[]) {
-    if (!days.length) return "Շաբաթ";
-    const first = days[0];
-    const last = days[days.length - 1];
-    try {
-        const firstLabel = first.toLocaleDateString("hy-AM", { month: "short", day: "numeric" });
-        const lastLabel = last.toLocaleDateString("hy-AM", { month: "short", day: "numeric" });
-        return `${firstLabel} — ${lastLabel}`;
-    } catch {
-        return `${ymd(first)} — ${ymd(last)}`;
-    }
-}
-
 function formatDateTimeLabel(value?: string | null) {
     const date = parseLocalDateTime(value);
     if (!date) return "—";
@@ -612,7 +591,7 @@ function ModeCard({
             type="button"
             onClick={onClick}
             className={cn(
-                "group rounded-[22px] border p-4 text-left transition-all duration-200",
+                "group rounded-[20px] border p-3 text-left transition-all duration-200 sm:rounded-[22px] sm:p-4",
                 active
                     ? "border-transparent bg-white text-slate-900 shadow-[0_24px_60px_rgba(15,23,42,0.18)]"
                     : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
@@ -620,7 +599,7 @@ function ModeCard({
         >
             <div className="flex items-start gap-3">
                 <div className={cn(
-                    "grid h-11 w-11 shrink-0 place-items-center rounded-2xl text-slate-900 shadow-sm",
+                    "grid h-10 w-10 shrink-0 place-items-center rounded-xl text-white shadow-sm sm:h-11 sm:w-11 sm:rounded-2xl",
                     color,
                     !active && "opacity-95"
                 )}>
@@ -628,7 +607,7 @@ function ModeCard({
                 </div>
                 <div className="min-w-0">
                     <div className={cn("text-sm font-semibold", active ? "text-slate-900" : "text-slate-900")}>{title}</div>
-                    <div className={cn("mt-1 text-sm leading-6", active ? "text-slate-500" : "text-slate-500")}>{description}</div>
+                    <div className={cn("mt-1 text-xs leading-5 sm:text-sm sm:leading-6", active ? "text-slate-500" : "text-slate-500")}>{description}</div>
                 </div>
             </div>
         </button>
@@ -678,7 +657,7 @@ function SmartSlotPicker({
                                     {slot.starts_at.slice(11, 16)}
                                     {showStaff && slot.staff_name ? ` · ${slot.staff_name}` : ""}
                                 </div>
-                                <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[11px] font-semibold text-slate-900">
+                                <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[11px] font-semibold text-white">
                   #{slot.recommendation_rank ?? "★"}
                 </span>
                             </div>
@@ -779,14 +758,10 @@ function SonlineMobileSchedule({
                                    serviceById,
                                    staffById,
                                    selectedDateRevenue,
-                                   viewMode,
-                                   activeFilterCount,
                                    onPickDate,
                                    onOpenCreate,
                                    onBookingClick,
                                    onBlockClick,
-                                   onOpenFilters,
-                                   onJumpToToday,
                                }: {
     weekDays: Date[];
     datePick: string;
@@ -795,14 +770,10 @@ function SonlineMobileSchedule({
     serviceById: Map<number, Service>;
     staffById: Map<number, StaffUser>;
     selectedDateRevenue: number;
-    viewMode: ViewMode;
-    activeFilterCount: number;
     onPickDate: (value: string) => void;
     onOpenCreate: (date: string, time: string) => void;
     onBookingClick: (booking: Booking) => void;
     onBlockClick: (block: Block) => void;
-    onOpenFilters: () => void;
-    onJumpToToday: () => void;
 }) {
     const dayBookings = useMemo(
         () => bookings.filter((booking) => booking.starts_at.slice(0, 10) === datePick).sort((a, b) => a.starts_at.localeCompare(b.starts_at)),
@@ -812,12 +783,6 @@ function SonlineMobileSchedule({
         () => blocks.filter((block) => block.starts_at.slice(0, 10) === datePick).sort((a, b) => a.starts_at.localeCompare(b.starts_at)),
         [blocks, datePick]
     );
-    const currentRangeLabel = viewMode === "week"
-        ? formatWeekRangeLabel(weekDays)
-        : formatShortDateLabel(parseLocalDateTime(`${datePick} 12:00:00`) ?? new Date());
-    const jumpButtonLabel = viewMode === "week" ? "Այս շաբաթ" : "Այսօր";
-    const footerModeLabel = viewMode === "week" ? "Շաբաթ" : "Օր";
-
     return (
         <div className="space-y-4 pb-4">
             <div className="overflow-hidden rounded-[30px] border border-[#e7dfd6] bg-white text-slate-900 shadow-[0_14px_36px_rgba(15,23,42,0.08)]">
@@ -850,7 +815,7 @@ function SonlineMobileSchedule({
                 </div>
             </div>
 
-            <div className="-mx-1 overflow-x-auto">
+            <div className="-mx-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <div className="flex min-w-max gap-2 px-1 pb-1">
                     {weekDays.map((day) => {
                         const key = ymd(day);
@@ -931,20 +896,6 @@ function SonlineMobileSchedule({
                 )}
             </div>
 
-            <div className="sticky bottom-[76px] z-20 px-1 pt-1">
-                <div className="mx-auto flex max-w-sm items-center justify-between rounded-[28px] border border-[#e7dfd6] bg-white/95 px-4 py-3 shadow-[0_18px_45px_rgba(15,23,42,0.14)] backdrop-blur">
-                    <button type="button" onClick={onJumpToToday} className="flex flex-col items-center gap-1 text-[11px] text-slate-500">
-                        <CalendarDays className="h-4 w-4" /> {jumpButtonLabel}
-                    </button>
-                    <button type="button" onClick={() => onOpenCreate(datePick, "10:00")} className="grid h-12 w-12 place-items-center rounded-full bg-[#24364b] text-white shadow-[0_12px_28px_rgba(36,54,75,0.28)] transition hover:-translate-y-0.5">
-                        <Plus className="h-5 w-5" />
-                    </button>
-                    <button type="button" onClick={onOpenFilters} className="flex flex-col items-center gap-1 text-[11px] text-slate-500">
-                        <Filter className="h-4 w-4" /> {activeFilterCount ? `Ֆիլտր ${activeFilterCount}` : footerModeLabel}
-                    </button>
-                </div>
-                <div className="mt-2 text-center text-[11px] text-slate-500">{currentRangeLabel}</div>
-            </div>
         </div>
     );
 }
@@ -1149,6 +1100,8 @@ export function Calendar() {
     const [datePick, setDatePick] = useState<string>(() => ymd(new Date()));
     const [isMobile, setIsMobile] = useState(false);
     const [viewMode, setViewMode] = useState<ViewMode>("day");
+    const [datePickerOpen, setDatePickerOpen] = useState(false);
+    const [pickerMonth, setPickerMonth] = useState<Date>(() => new Date());
 
     const [filtersOpen, setFiltersOpen] = useState(false);
     const [staffFilter, setStaffFilter] = useState<number[]>([]);
@@ -1865,6 +1818,14 @@ export function Calendar() {
             return `${viewDate.getMonth() + 1}/${viewDate.getFullYear()}`;
         }
     }, [viewDate]);
+    const pickerMonthDays = useMemo(() => monthMatrix(pickerMonth), [pickerMonth]);
+    const pickerMonthLabel = useMemo(() => {
+        try {
+            return pickerMonth.toLocaleDateString("hy-AM", { month: "long", year: "numeric" });
+        } catch {
+            return `${pickerMonth.getMonth() + 1}/${pickerMonth.getFullYear()}`;
+        }
+    }, [pickerMonth]);
 
     const stats = useMemo(() => {
         const todayKey = ymd(new Date());
@@ -1931,7 +1892,7 @@ export function Calendar() {
         <motion.div {...page} className="admin-page space-y-3">
             <div className="overflow-hidden rounded-[24px] border border-[#e7dfd6] bg-white shadow-[0_14px_38px_rgba(15,23,42,0.06)] sm:rounded-[30px]">
                 <div className="space-y-3 bg-[#fcfbf8] p-3 sm:space-y-4 sm:p-5 lg:p-6">
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         {/* Title - compact on mobile */}
                         <div className="flex items-center gap-2 sm:gap-3">
                             <div className="grid h-9 w-9 place-items-center rounded-xl bg-[#24364b] text-white shadow-sm sm:h-11 sm:w-11 sm:rounded-2xl">
@@ -1944,7 +1905,7 @@ export function Calendar() {
                         </div>
 
                         {/* Right controls */}
-                        <div className="flex items-center gap-1.5 sm:gap-2">
+                        <div className="flex w-full items-center justify-between gap-1.5 sm:w-auto sm:justify-start sm:gap-2">
                             {/* Day/Week toggle */}
                             <div className="inline-flex items-center rounded-xl border border-[#e7dfd6] bg-white p-0.5 shadow-sm sm:rounded-2xl sm:p-1">
                                 {[
@@ -2002,18 +1963,17 @@ export function Calendar() {
                             <button
                                 type="button"
                                 onClick={() => openCreateWithRange({ start: new Date(), end: new Date(new Date().getTime() + 30 * 60_000) })}
-                                className="inline-flex h-9 items-center gap-1.5 rounded-xl bg-[#24364b] px-2.5 text-sm font-medium text-white shadow-[0_10px_24px_rgba(36,54,75,0.18)] transition hover:bg-[#1d2b3c] sm:gap-2 sm:px-4"
+                                className="hidden h-9 items-center gap-2 rounded-xl bg-[#24364b] px-4 text-sm font-medium text-white shadow-[0_10px_24px_rgba(36,54,75,0.18)] transition hover:bg-[#1d2b3c] sm:inline-flex"
                             >
                                 <Plus className="h-4 w-4" />
-                                <span className="hidden sm:inline">Նոր ամրագրում</span>
-                                <span className="sm:hidden">Ավ.</span>
+                                <span>Նոր ամրագրում</span>
                             </button>
                         </div>
                     </div>
 
                     <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
                         <div className="flex flex-wrap items-center gap-3">
-                            <div className="rounded-2xl border border-[#e7dfd6] bg-white px-4 py-2 text-sm text-slate-600 shadow-sm">
+                            <div className="hidden rounded-2xl border border-[#e7dfd6] bg-white px-4 py-2 text-sm text-slate-600 shadow-sm sm:block">
                                 <span className="font-semibold text-slate-900">{viewMode === "day" ? "Օր" : "Շաբաթ"}</span> · {rangeLabel}
                             </div>
                             {isStaff ? (
@@ -2040,13 +2000,25 @@ export function Calendar() {
                             ) : null}
                         </div>
 
-                        <div className="flex items-center gap-3">
-                            <label className="text-sm font-medium text-slate-600">Jump to</label>
+                        <div className="flex items-center gap-2 sm:gap-3">
+                            <label className="text-sm font-medium text-slate-600">Ամսաթիվ</label>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setPickerMonth(viewDate);
+                                    setDatePickerOpen(true);
+                                }}
+                                className="inline-flex min-h-10 items-center gap-2 rounded-2xl border border-[#e7dfd6] bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm sm:hidden"
+                            >
+                                <CalendarDays className="h-4 w-4 text-violet-600" />
+                                {datePick.split("-").reverse().join(".")}
+                            </button>
                             <input
                                 type="date"
                                 value={datePick}
                                 onChange={(e) => jumpToPickedDate(e.target.value)}
-                                className="rounded-2xl border border-[#e7dfd6] bg-white px-4 py-2.5 text-sm shadow-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                lang="hy-AM"
+                                className="hidden rounded-2xl border border-[#e7dfd6] bg-white px-4 py-2.5 text-sm shadow-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100 sm:block"
                             />
                         </div>
                     </div>
@@ -2074,14 +2046,10 @@ export function Calendar() {
                     serviceById={serviceById}
                     staffById={staffById}
                     selectedDateRevenue={selectedDateRevenue}
-                    viewMode={viewMode}
-                    activeFilterCount={activeFilterCount}
-                    onPickDate={setDatePick}
+                    onPickDate={jumpToPickedDate}
                     onOpenCreate={openCreateFromSlot}
                     onBookingClick={(booking) => setSelectedBooking(booking)}
                     onBlockClick={(block) => canManageBlocks && setConfirmState({ type: "block", block })}
-                    onOpenFilters={() => setFiltersOpen(true)}
-                    onJumpToToday={() => jumpToPickedDate(ymd(new Date()))}
                 />
             ) : (
                 <div className="grid gap-3 xl:grid-cols-[280px_minmax(0,1fr)]">
@@ -2328,6 +2296,88 @@ export function Calendar() {
                 </div>
             )}
 
+            <Modal
+                open={datePickerOpen}
+                onClose={() => setDatePickerOpen(false)}
+                title="Ընտրել ամսաթիվ"
+                description="Օրացույցի օրը կփոխվի անմիջապես ընտրելուց հետո։"
+            >
+                <div className="space-y-4">
+                    <div className="rounded-[24px] border border-[#e7dfd6] bg-[#fcfbf8] p-3">
+                        <div className="mb-4 flex items-center justify-between gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setPickerMonth((current) => addMonths(current, -1))}
+                                className="grid h-10 w-10 place-items-center rounded-2xl border border-[#e7dfd6] bg-white text-slate-600 shadow-sm"
+                                aria-label="Նախորդ ամիս"
+                            >
+                                <ChevronLeft className="h-4 w-4" />
+                            </button>
+                            <div className="text-sm font-semibold capitalize text-slate-950">{pickerMonthLabel}</div>
+                            <button
+                                type="button"
+                                onClick={() => setPickerMonth((current) => addMonths(current, 1))}
+                                className="grid h-10 w-10 place-items-center rounded-2xl border border-[#e7dfd6] bg-white text-slate-600 shadow-sm"
+                                aria-label="Հաջորդ ամիս"
+                            >
+                                <ChevronRight className="h-4 w-4" />
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-semibold text-slate-400">
+                            {['Երկ', 'Երք', 'Չրք', 'Հնգ', 'Ուրբ', 'Շբթ', 'Կիր'].map((label) => (
+                                <div key={label} className="py-1">{label}</div>
+                            ))}
+                        </div>
+
+                        <div className="mt-2 space-y-1">
+                            {pickerMonthDays.map((week, index) => (
+                                <div key={index} className="grid grid-cols-7 gap-1">
+                                    {week.map((day) => {
+                                        const dayKey = ymd(day);
+                                        const active = dayKey === datePick;
+                                        const inMonth = day.getMonth() === pickerMonth.getMonth();
+                                        return (
+                                            <button
+                                                key={dayKey}
+                                                type="button"
+                                                onClick={() => {
+                                                    jumpToPickedDate(dayKey);
+                                                    setDatePickerOpen(false);
+                                                }}
+                                                className={cn(
+                                                    "grid aspect-square min-h-10 place-items-center rounded-xl text-sm font-medium transition",
+                                                    active
+                                                        ? "bg-[#24364b] text-white shadow-sm"
+                                                        : inMonth
+                                                            ? "bg-white text-slate-700 hover:bg-violet-50"
+                                                            : "text-slate-300 hover:bg-white",
+                                                )}
+                                            >
+                                                {day.getDate()}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <Button
+                        variant="secondary"
+                        className="w-full"
+                        onClick={() => {
+                            const today = new Date();
+                            jumpToPickedDate(ymd(today));
+                            setPickerMonth(today);
+                            setDatePickerOpen(false);
+                        }}
+                    >
+                        <CalendarDays className="h-4 w-4" /> Այսօր
+                    </Button>
+                </div>
+            </Modal>
+
             <Modal open={filtersOpen} onClose={() => setFiltersOpen(false)} title="Ֆիլտրեր">
                 <div className="space-y-4">
                     {canManageAllBookings ? (
@@ -2472,34 +2522,34 @@ export function Calendar() {
                 bodyClassName="p-0"
             >
                 <div className="grid min-w-0 gap-0 overflow-x-hidden xl:grid-cols-[minmax(0,1.2fr)_380px]">
-                    <div className="min-w-0 space-y-6 p-5 sm:p-6">
+                    <div className="min-w-0 space-y-4 p-3 sm:space-y-6 sm:p-6">
                         {draft && (
-                            <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-[radial-gradient(circle_at_top_left,rgba(124,58,237,0.14),transparent_38%),linear-gradient(135deg,#f8fafc,#ffffff)] p-5 shadow-sm">
+                            <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-[radial-gradient(circle_at_top_left,rgba(124,58,237,0.14),transparent_38%),linear-gradient(135deg,#f8fafc,#ffffff)] p-4 shadow-sm sm:rounded-[28px] sm:p-5">
                                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                                     <div>
                                         <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-violet-700">
                                             <Clock3 className="h-3.5 w-3.5" /> Ընտրված մեկնարկ
                                         </div>
-                                        <div className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">
+                                        <div className="mt-3 text-lg font-semibold tracking-tight text-slate-950 sm:text-2xl">
                                             {ymd(draft.startsAt)} · {hm(draft.startsAt)} – {hm(draft.endsAt)}
                                         </div>
-                                        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+                                        <p className="mt-2 hidden max-w-2xl text-sm leading-6 text-slate-500 sm:block">
                                             Ընտրիր ամրագրման ճիշտ տեսակը, լրացրու հաճախորդի տվյալները և պահիր ամրագրումը անմիջապես calendar-ից։
                                         </p>
                                     </div>
 
-                                    <div className="grid gap-3 sm:grid-cols-3 xl:w-[360px]">
-                                        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Քայլ</div>
-                                            <div className="mt-1 text-lg font-semibold text-slate-950">{slotMinutes} ր</div>
+                                    <div className="grid grid-cols-3 gap-2 sm:gap-3 xl:w-[360px]">
+                                        <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2.5 sm:rounded-2xl sm:px-4 sm:py-3">
+                                            <div className="text-[9px] font-semibold uppercase tracking-wide text-slate-400 sm:text-[11px]">Քայլ</div>
+                                            <div className="mt-1 text-sm font-semibold text-slate-950 sm:text-lg">{slotMinutes} ր</div>
                                         </div>
-                                        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Աշխատաժամ</div>
-                                            <div className="mt-1 text-lg font-semibold text-slate-950">{workStart}–{workEnd}</div>
+                                        <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2.5 sm:rounded-2xl sm:px-4 sm:py-3">
+                                            <div className="text-[9px] font-semibold uppercase tracking-wide text-slate-400 sm:text-[11px]">Ժամեր</div>
+                                            <div className="mt-1 text-xs font-semibold text-slate-950 sm:text-lg">{workStart}–{workEnd}</div>
                                         </div>
-                                        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Տեսակ</div>
-                                            <div className="mt-1 text-lg font-semibold text-slate-950">
+                                        <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2.5 sm:rounded-2xl sm:px-4 sm:py-3">
+                                            <div className="text-[9px] font-semibold uppercase tracking-wide text-slate-400 sm:text-[11px]">Տեսակ</div>
+                                            <div className="mt-1 truncate text-sm font-semibold text-slate-950 sm:text-lg">
                                                 {bookingMode === "single" ? "Մեկ" : bookingMode === "multi" ? "Մի քանի" : "Առանձին"}
                                             </div>
                                         </div>
@@ -2544,9 +2594,9 @@ export function Calendar() {
                             </div>
                         </section>
 
-                        <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                        <section className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-[28px] sm:p-6">
                             <div className="mb-5 flex items-start gap-3">
-                                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-slate-900 text-slate-900 shadow-sm">
+                                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-slate-900 text-white shadow-sm">
                                     <Scissors className="h-5 w-5" />
                                 </div>
                                 <div>

@@ -1,6 +1,5 @@
 import { Suspense, lazy } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ClientProtectedRoute } from "./components/ClientProtectedRoute";
@@ -67,14 +66,12 @@ const AdminPlans = lazy(() => import("./admin/pages/AdminPlans"));
 
 export default function App() {
     const mockBankEnabled = String(import.meta.env.VITE_ENABLE_MOCK_BANK ?? "true").toLowerCase() === "true";
-    const location = useLocation();
 
     return (
         <Suspense fallback={<AppRouteLoader />}>
             <ScrollToTop />
             <ScrollToTopButton />
-            <AnimatePresence mode="sync" initial={false}>
-            <Routes location={location} key={location.pathname}>
+            <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/business/login" element={<Navigate to="/login" replace />} />
@@ -145,7 +142,6 @@ export default function App() {
 
                 <Route path="*" element={<NotFound />} />
             </Routes>
-            </AnimatePresence>
         </Suspense>
     );
 }

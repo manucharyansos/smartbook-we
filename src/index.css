@@ -41,6 +41,125 @@ body {
   color: var(--bb-text);
 }
 
+/* ===== Business workspace design system ===== */
+.vizit-admin-shell {
+  --admin-bg: #f4f6fb;
+  --admin-surface: rgba(255, 255, 255, 0.96);
+  --admin-surface-soft: #f8fafc;
+  --admin-border: #e2e8f0;
+  --admin-text: #0f172a;
+  --admin-muted: #64748b;
+  background-image:
+    radial-gradient(circle at 8% 2%, rgba(99, 102, 241, 0.08), transparent 25rem),
+    radial-gradient(circle at 92% 12%, rgba(6, 182, 212, 0.06), transparent 24rem);
+}
+
+.vizit-admin-content .bb-surface {
+  border-color: var(--admin-border) !important;
+  border-radius: 22px !important;
+  background-color: var(--admin-surface);
+  box-shadow: 0 12px 34px rgba(15, 23, 42, 0.055) !important;
+}
+
+.vizit-admin-content .admin-page > :first-child {
+  border-radius: 22px !important;
+}
+
+.vizit-admin-content .admin-page > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 1rem !important;
+}
+
+.vizit-admin-content :where(input, select, textarea) {
+  border-radius: 14px !important;
+}
+
+.vizit-admin-content :where(button, a) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html.dark .vizit-admin-shell {
+  --admin-bg: #080b12;
+  --admin-surface: rgba(16, 23, 38, 0.96);
+  --admin-surface-soft: #151d2d;
+  --admin-border: #263247;
+  --admin-text: #f8fafc;
+  --admin-muted: #94a3b8;
+  background-color: var(--admin-bg) !important;
+  background-image:
+    radial-gradient(circle at 10% 0%, rgba(99, 102, 241, 0.16), transparent 28rem),
+    radial-gradient(circle at 90% 8%, rgba(6, 182, 212, 0.1), transparent 26rem);
+}
+
+html.dark .vizit-admin-header,
+html.dark .vizit-admin-sidebar > div > div,
+html.dark .vizit-admin-shell nav[class*="fixed"] {
+  border-color: var(--admin-border) !important;
+  background-color: rgba(12, 17, 28, 0.94) !important;
+}
+
+html.dark .vizit-admin-header [class*="text-slate-950"],
+html.dark .vizit-admin-header [class*="text-slate-900"],
+html.dark .vizit-admin-sidebar [class*="text-slate-950"],
+html.dark .vizit-admin-sidebar [class*="text-slate-900"] {
+  color: #f8fafc !important;
+}
+
+html.dark .vizit-admin-header [class*="text-slate-700"],
+html.dark .vizit-admin-header [class*="text-slate-600"],
+html.dark .vizit-admin-header [class*="text-slate-500"],
+html.dark .vizit-admin-sidebar [class*="text-slate-700"],
+html.dark .vizit-admin-sidebar [class*="text-slate-600"],
+html.dark .vizit-admin-sidebar [class*="text-slate-500"] {
+  color: #94a3b8 !important;
+}
+
+html.dark .vizit-admin-content .admin-page > :first-child:not(.vizit-preserve-dark) {
+  background-color: var(--admin-surface) !important;
+  background-image: radial-gradient(circle at 8% 0%, rgba(99, 102, 241, 0.16), transparent 24rem) !important;
+}
+
+html.dark .vizit-admin-content .bb-surface,
+html.dark .vizit-admin-content [class*="bg-white"] {
+  border-color: var(--admin-border) !important;
+  background-color: var(--admin-surface) !important;
+}
+
+html.dark .vizit-admin-content [class*="bg-slate-50"],
+html.dark .vizit-admin-content [class*="bg-slate-100"],
+html.dark .vizit-admin-content [class*="bg-[#fcfbf8]"],
+html.dark .vizit-admin-content [class*="bg-[#faf8f5]"] {
+  background-color: var(--admin-surface-soft) !important;
+}
+
+html.dark .vizit-admin-content [class*="text-slate-950"],
+html.dark .vizit-admin-content [class*="text-slate-900"],
+html.dark .vizit-admin-content [class*="text-slate-800"] {
+  color: var(--admin-text) !important;
+}
+
+html.dark .vizit-admin-content [class*="text-slate-700"],
+html.dark .vizit-admin-content [class*="text-slate-600"],
+html.dark .vizit-admin-content [class*="text-slate-500"] {
+  color: var(--admin-muted) !important;
+}
+
+html.dark .vizit-admin-content [class*="border-slate-200"],
+html.dark .vizit-admin-content [class*="border-white"],
+html.dark .vizit-admin-content [class*="border-[#e7dfd6]"],
+html.dark .vizit-admin-content [class*="border-[#eee6dc]"] {
+  border-color: var(--admin-border) !important;
+}
+
+html.dark .vizit-admin-content :where(input, select, textarea) {
+  border-color: var(--admin-border) !important;
+  background-color: #0d1422 !important;
+  color: #f8fafc !important;
+}
+
+html.dark .vizit-admin-content :where(input, textarea)::placeholder {
+  color: #64748b;
+}
+
 /* Links */
 a {
   color: inherit;

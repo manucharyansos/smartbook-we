@@ -243,7 +243,7 @@ export default function ServicesPage() {
         <>
             <Toast open={toast.open} text={toast.text} type={toast.type} />
 
-            <motion.div {...page} className="space-y-6">
+            <motion.div {...page} className="admin-page space-y-4">
                 <SectionCard className="overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.14),transparent_35%),white] p-5 sm:p-8">
                     <div className="flex flex-col gap-6 2xl:flex-row 2xl:items-center 2xl:justify-between">
                         <div className="max-w-3xl">

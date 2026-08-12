@@ -720,6 +720,57 @@ function bookingServiceTitle(booking: Booking, serviceById: Map<number, Service>
     return titles.join(" + ");
 }
 
+type BookingColumnLayout = { column: number; columns: number };
+
+function layoutOverlappingBookings(bookings: Booking[]): Map<number, BookingColumnLayout> {
+    const sorted = bookings
+        .slice()
+        .sort((a, b) => {
+            const startCompare = a.starts_at.localeCompare(b.starts_at);
+            return startCompare || a.ends_at.localeCompare(b.ends_at) || a.id - b.id;
+        });
+    const result = new Map<number, BookingColumnLayout>();
+    let group: Booking[] = [];
+    let groupEnd = Number.NEGATIVE_INFINITY;
+
+    const flushGroup = () => {
+        if (!group.length) return;
+        const columnEnds: number[] = [];
+        const assignments = new Map<number, number>();
+
+        for (const booking of group) {
+            const start = parseLocalDateTime(booking.starts_at)?.getTime() ?? 0;
+            const end = parseLocalDateTime(booking.ends_at)?.getTime() ?? start + 1;
+            let column = columnEnds.findIndex((columnEnd) => columnEnd <= start);
+            if (column < 0) {
+                column = columnEnds.length;
+                columnEnds.push(end);
+            } else {
+                columnEnds[column] = end;
+            }
+            assignments.set(booking.id, column);
+        }
+
+        const columns = Math.max(columnEnds.length, 1);
+        for (const booking of group) {
+            result.set(booking.id, { column: assignments.get(booking.id) ?? 0, columns });
+        }
+        group = [];
+        groupEnd = Number.NEGATIVE_INFINITY;
+    };
+
+    for (const booking of sorted) {
+        const start = parseLocalDateTime(booking.starts_at)?.getTime() ?? 0;
+        const end = parseLocalDateTime(booking.ends_at)?.getTime() ?? start + 1;
+        if (group.length && start >= groupEnd) flushGroup();
+        group.push(booking);
+        groupEnd = Math.max(groupEnd, end);
+    }
+    flushGroup();
+
+    return result;
+}
+
 function SonlineMobileSchedule({
                                    weekDays,
                                    datePick,
@@ -768,7 +819,7 @@ function SonlineMobileSchedule({
     const footerModeLabel = viewMode === "week" ? "Շաբաթ" : "Օր";
 
     return (
-        <div className="space-y-4 pb-24">
+        <div className="space-y-4 pb-4">
             <div className="overflow-hidden rounded-[30px] border border-[#e7dfd6] bg-white text-slate-900 shadow-[0_14px_36px_rgba(15,23,42,0.08)]">
                 <div className="border-b border-[#eee6dc] px-4 py-4">
                     <div className="flex items-start justify-between gap-3">
@@ -880,7 +931,7 @@ function SonlineMobileSchedule({
                 )}
             </div>
 
-            <div className="fixed inset-x-0 bottom-4 z-30 px-4">
+            <div className="sticky bottom-[76px] z-20 px-1 pt-1">
                 <div className="mx-auto flex max-w-sm items-center justify-between rounded-[28px] border border-[#e7dfd6] bg-white/95 px-4 py-3 shadow-[0_18px_45px_rgba(15,23,42,0.14)] backdrop-blur">
                     <button type="button" onClick={onJumpToToday} className="flex flex-col items-center gap-1 text-[11px] text-slate-500">
                         <CalendarDays className="h-4 w-4" /> {jumpButtonLabel}
@@ -1006,6 +1057,7 @@ function SonlineDesktopDayColumns({
                             const memberId = (member as StaffUser).id === -1 ? null : (member as StaffUser).id;
                             const memberBookings = dayBookings.filter((booking) => memberId === null ? !booking.staff_id : booking.staff_id === memberId);
                             const memberBlocks = dayBlocks.filter((block) => memberId === null ? !block.staff_id : !block.staff_id || block.staff_id === memberId);
+                            const bookingLayout = layoutOverlappingBookings(memberBookings);
 
                             return (
                                 <div key={memberId ?? 'na'} className="relative border-r border-[#eee6dc] last:border-r-0 bg-white" style={{ height: bodyHeight }}>
@@ -1045,14 +1097,21 @@ function SonlineDesktopDayColumns({
                                         const top = Math.max(0, (minutesFromDate(startDate) - startMinutes) * pxPerMinute + 3);
                                         const height = Math.max(56, (minutesFromDate(endDate) - minutesFromDate(startDate)) * pxPerMinute - 6);
                                         const ui = eventColor(booking.status);
+                                        const layout = bookingLayout.get(booking.id) ?? { column: 0, columns: 1 };
+                                        const columnWidth = 100 / layout.columns;
                                         return (
                                             <button
                                                 key={booking.id}
                                                 type="button"
                                                 data-booking-id={booking.id}
                                                 onClick={() => onBookingClick(booking)}
-                                                className={cn("absolute left-1.5 right-1.5 z-20 overflow-hidden rounded-[16px] border px-3 py-2 text-left shadow-[0_8px_18px_rgba(15,23,42,0.06)]", ui.outer)}
-                                                style={{ top, height }}
+                                                className={cn("absolute z-20 overflow-hidden rounded-[16px] border px-3 py-2 text-left shadow-[0_8px_18px_rgba(15,23,42,0.06)]", ui.outer)}
+                                                style={{
+                                                    top,
+                                                    height,
+                                                    left: `calc(${layout.column * columnWidth}% + 6px)`,
+                                                    width: `calc(${columnWidth}% - 9px)`,
+                                                }}
                                             >
                                                 <div className="flex items-start justify-between gap-2">
                                                     <div className="min-w-0">
@@ -1182,7 +1241,13 @@ export function Calendar() {
     const settings = settingsQ.data ?? null;
     const services = (servicesQ.data ?? []) as Service[];
     const staff = (staffQ.data ?? []) as StaffUser[];
-    const bookings = (bookingsQ.data ?? []) as Booking[];
+    const bookings = useMemo(() => {
+        const unique = new Map<number, Booking>();
+        for (const booking of (bookingsQ.data ?? []) as Booking[]) {
+            if (!unique.has(Number(booking.id))) unique.set(Number(booking.id), booking);
+        }
+        return Array.from(unique.values());
+    }, [bookingsQ.data]);
     const blocks = (blocksQ.data ?? []) as Block[];
     const clientSuggestions = (clientsQ.data?.data ?? []) as ClientRow[];
     const smartSlots = (smartAvailabilityQ.data ?? []) as Slot[];
@@ -1863,7 +1928,7 @@ export function Calendar() {
     }, [from, to, viewMode]);
 
     return (
-        <motion.div {...page} className="space-y-3">
+        <motion.div {...page} className="admin-page space-y-3">
             <div className="overflow-hidden rounded-[24px] border border-[#e7dfd6] bg-white shadow-[0_14px_38px_rgba(15,23,42,0.06)] sm:rounded-[30px]">
                 <div className="space-y-3 bg-[#fcfbf8] p-3 sm:space-y-4 sm:p-5 lg:p-6">
                     <div className="flex items-center justify-between gap-2">
@@ -1986,31 +2051,6 @@ export function Calendar() {
                         </div>
                     </div>
 
-                    {isMobile && (
-                        <div className="mt-1 -mx-1 overflow-x-auto">
-                            <div className="flex min-w-max gap-2 px-1 pb-1">
-                                {weekDays.map((day) => {
-                                    const active = ymd(day) === datePick;
-                                    return (
-                                        <button
-                                            key={ymd(day)}
-                                            type="button"
-                                            onClick={() => jumpToPickedDate(ymd(day))}
-                                            className={cn(
-                                                "min-w-[82px] rounded-[18px] border px-4 py-3 text-center transition",
-                                                active
-                                                    ? "border-[#24364b] bg-[#24364b] text-white shadow-sm"
-                                                    : "border-[#e7dfd6] bg-white text-slate-700"
-                                            )}
-                                        >
-                                            <div className="text-[11px] font-medium opacity-80">{weekdayShort(day)}</div>
-                                            <div className="mt-1 text-lg font-semibold">{String(day.getDate()).padStart(2, '0')}</div>
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div>
 
@@ -2244,6 +2284,8 @@ export function Calendar() {
                                         slotMinTime={slotMinTime}
                                         slotMaxTime={slotMaxTime}
                                         slotDuration={`00:${String(slotMinutes).padStart(2, "0")}:00`}
+                                        slotEventOverlap={false}
+                                        eventMaxStack={3}
                                         nowIndicator
                                         dayHeaderFormat={{ weekday: "short", day: "2-digit", month: "2-digit" }}
                                         events={events}

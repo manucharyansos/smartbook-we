@@ -19,6 +19,8 @@ import {
     Loader2,
     Plus,
     Trash2,
+    Layers3,
+    Users,
     Check,
     Copy,
     MapPin,
@@ -1201,38 +1203,35 @@ export default function PublicBooking() {
                             </div>
                         </div>
 
-                        <div className="rounded-[24px] border border-white/70 bg-white/85 p-4 shadow-lg backdrop-blur-xl">
-                            <div className="text-sm font-semibold text-slate-900">Քանի՞ ծառայություն ես ուզում</div>
-                            <div className="mt-3 grid grid-cols-2 gap-2">
-                                {([
-                                    ["single", "Մեկ ծառայություն"],
-                                    ["multi", "Մի քանի ծառայություն"],
-                                ] as const).map(([value, label]) => (
-                                    <button
-                                        key={value}
-                                        type="button"
-                                        onClick={() => setMode(value)}
-                                        className={mergeClass(
-                                            "rounded-2xl border px-3 py-3 text-sm font-semibold transition",
-                                            mode === value
-                                                ? "border-violet-500 bg-violet-600 text-white"
-                                                : "border-slate-200 bg-white text-slate-700 hover:border-violet-300"
-                                        )}
-                                    >
-                                        {label}
-                                    </button>
-                                ))}
+                        <div className="rounded-[24px] border border-white/70 bg-white/88 p-4 shadow-lg backdrop-blur-xl sm:p-5">
+                            <div className="text-sm font-semibold text-slate-900">Ընտրիր ամրագրման տարբերակը</div>
+                            <div className="mt-1 text-xs leading-5 text-slate-500">Երեք տարբերակն էլ հասանելի են՝ ըստ ծառայությունների, մասնագետների և ժամերի քանակի։</div>
+                            <div className="mt-4 grid gap-2.5">
+                                <ModeCard
+                                    active={mode === "single"}
+                                    icon={<Check className="h-5 w-5" />}
+                                    title="Մեկ ծառայություն"
+                                    description="Մեկ ծառայություն, մեկ մասնագետ և մեկ ժամ։"
+                                    onClick={() => setMode("single")}
+                                    color="from-sky-500 to-cyan-500"
+                                />
+                                <ModeCard
+                                    active={mode === "multi"}
+                                    icon={<Layers3 className="h-5 w-5" />}
+                                    title="Մի քանի ծառայություն"
+                                    description="Մի քանի ծառայություն իրար հետևից՝ նույն մասնագետի մոտ։"
+                                    onClick={() => setMode("multi")}
+                                    color="from-violet-500 to-fuchsia-500"
+                                />
+                                <ModeCard
+                                    active={mode === "lines"}
+                                    icon={<Users className="h-5 w-5" />}
+                                    title="Տարբեր մասնագետներ կամ ժամեր"
+                                    description="Յուրաքանչյուր ծառայության համար ընտրիր առանձին մասնագետ և ժամ։"
+                                    onClick={() => setMode("lines")}
+                                    color="from-amber-500 to-orange-500"
+                                />
                             </div>
-                            <button
-                                type="button"
-                                onClick={() => setMode("lines")}
-                                className={mergeClass(
-                                    "mt-2 w-full rounded-xl px-3 py-2 text-left text-xs font-medium transition",
-                                    mode === "lines" ? "bg-amber-100 text-amber-900" : "text-slate-500 hover:bg-slate-100"
-                                )}
-                            >
-                                Տարբեր մասնագետներ կամ տարբեր ժամեր
-                            </button>
                         </div>
                     </div>
 
@@ -1821,6 +1820,48 @@ function Field({
     );
 }
 
+function ModeCard({
+                      active,
+                      icon,
+                      title,
+                      description,
+                      onClick,
+                      color,
+                  }: {
+    active: boolean;
+    icon: React.ReactNode;
+    title: string;
+    description: string;
+    onClick: () => void;
+    color: string;
+}) {
+    return (
+        <button
+            type="button"
+            onClick={onClick}
+            aria-pressed={active}
+            className={mergeClass(
+                "w-full rounded-2xl border p-3 text-left transition-all sm:p-4",
+                active
+                    ? "border-violet-300 bg-violet-50 shadow-sm ring-2 ring-violet-100"
+                    : "border-slate-200 bg-white hover:border-violet-200 hover:bg-slate-50"
+            )}
+        >
+            <div className="flex items-start gap-3">
+                <div className={mergeClass("mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-r text-white", color)}>
+                    {icon}
+                </div>
+                <div className="min-w-0">
+                    <div className="flex items-center gap-2 font-semibold text-slate-900">
+                        {title}
+                        {active ? <CheckCircle2 className="h-4 w-4 shrink-0 text-violet-600" /> : null}
+                    </div>
+                    <div className="mt-1 text-xs leading-5 text-slate-500">{description}</div>
+                </div>
+            </div>
+        </button>
+    );
+}
 function StatPill({ label, value }: { label: string; value: string }) {
     return (
         <div className="rounded-2xl bg-white border border-violet-100 px-4 py-3 min-w-0">

@@ -40,6 +40,7 @@ import { fetchSchedule, updateSchedule, type ScheduleDay } from "../lib/schedule
 import { cn } from "../lib/cn";
 import { uploadMedia } from "../lib/mediaApi";
 import { useAuth } from "../store/auth";
+import { LocationMapPicker } from "../components/settings/LocationMapPicker";
 
 type ToastState = {
   open: boolean;
@@ -52,6 +53,8 @@ type LocationDraft = {
   name: string;
   address: string;
   phone: string;
+  latitude: number | null;
+  longitude: number | null;
   is_primary: boolean;
 };
 
@@ -60,6 +63,8 @@ const emptyLocationDraft = (): LocationDraft => ({
   name: "",
   address: "",
   phone: "",
+  latitude: null,
+  longitude: null,
   is_primary: false,
 });
 
@@ -216,6 +221,8 @@ export default function BusinessSettingsPage() {
       name: location.name ?? "",
       address: location.address ?? "",
       phone: location.phone ?? "",
+      latitude: location.latitude == null ? null : Number(location.latitude),
+      longitude: location.longitude == null ? null : Number(location.longitude),
       is_primary: Boolean(location.is_primary),
     });
   }
@@ -255,6 +262,8 @@ export default function BusinessSettingsPage() {
         name: locationDraft.name.trim() || null,
         address: locationDraft.address.trim(),
         phone: locationDraft.phone.trim() || null,
+        latitude: locationDraft.latitude,
+        longitude: locationDraft.longitude,
         is_primary: locationDraft.is_primary,
       };
 
@@ -369,11 +378,11 @@ export default function BusinessSettingsPage() {
       <>
         <Toast open={toast.open} text={toast.text} type={toast.type} />
 
-        <motion.div {...page} className="space-y-6">
+        <motion.div {...page} className="admin-page space-y-4">
           <motion.div
               initial={{ opacity: 0, y: -14 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-[32px] border border-slate-200 bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.12),transparent_35%),white] p-5 shadow-[0_18px_60px_rgba(124,58,237,0.06)] sm:p-8"
+              className="rounded-[22px] border border-slate-200 bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.10),transparent_35%),white] p-5 shadow-[0_12px_34px_rgba(15,23,42,0.055)] sm:p-6"
           >
             <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-end 2xl:justify-between">
               <div>
@@ -694,6 +703,13 @@ export default function BusinessSettingsPage() {
                                   </div>
                                   <div className="text-sm leading-6 text-slate-600">{location.address}</div>
                                   {location.phone ? <div className="text-xs text-slate-500">{location.phone}</div> : null}
+                                  {location.latitude != null && location.longitude != null ? (
+                                    <div className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-violet-100 bg-violet-50 px-2.5 py-1 text-[11px] font-medium text-violet-700">
+                                      <MapPin className="h-3 w-3" /> Քարտեզում նշված է
+                                    </div>
+                                  ) : (
+                                    <div className="mt-2 text-[11px] font-medium text-amber-700">Քարտեզի դիրքը նշված չէ</div>
+                                  )}
                                 </div>
                                 {canEdit ? (
                                   <div className="flex items-center gap-2">
@@ -736,6 +752,27 @@ export default function BusinessSettingsPage() {
                               className="mt-3 min-h-[96px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100 disabled:bg-slate-50"
                               placeholder="Լրիվ հասցե"
                             />
+                            <div className="mt-4 rounded-[22px] border border-slate-200 bg-slate-50/80 p-3 sm:p-4">
+                              <div className="mb-3">
+                                <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+                                  <MapPin className="h-4 w-4 text-violet-600" /> Դիր հասցեն քարտեզի վրա
+                                </div>
+                                <div className="mt-1 text-xs leading-5 text-slate-500">
+                                  Քաշիր քարտեզը մինչև նշիչը հայտնվի բիզնեսի մուտքի վրա։ Սա պետք է գլխավոր էջի քարտեզի և մոտակա վայրերի որոնման համար։
+                                </div>
+                              </div>
+                              <LocationMapPicker
+                                key={editingLocationId ?? "new-location"}
+                                latitude={locationDraft.latitude}
+                                longitude={locationDraft.longitude}
+                                disabled={!canEdit || saveLocationMut.isPending}
+                                onChange={(coordinates) => setLocationDraft((prev) => ({
+                                  ...prev,
+                                  latitude: coordinates?.latitude ?? null,
+                                  longitude: coordinates?.longitude ?? null,
+                                }))}
+                              />
+                            </div>
                             <label className="mt-3 inline-flex items-center gap-2 text-sm text-slate-600">
                               <input type="checkbox" checked={locationDraft.is_primary} onChange={(e) => setLocationDraft((prev) => ({ ...prev, is_primary: e.target.checked }))} />
                               Սարքել գլխավոր հասցե

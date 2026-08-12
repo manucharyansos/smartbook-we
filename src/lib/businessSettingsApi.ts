@@ -6,6 +6,8 @@ export type BusinessLocation = {
   name?: string | null;
   address: string;
   phone?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   is_primary: boolean;
   sort_order: number;
 };
@@ -131,6 +133,8 @@ export async function createBusinessLocation(payload: {
   name?: string | null;
   address: string;
   phone?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   is_primary?: boolean;
 }): Promise<{ locations: BusinessLocation[]; location_limit: number }> {
   const r = await api.post('/business/locations', payload);
@@ -144,6 +148,8 @@ export async function updateBusinessLocation(locationId: number, payload: {
   name?: string | null;
   address: string;
   phone?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   is_primary?: boolean;
 }): Promise<{ locations: BusinessLocation[]; location_limit: number }> {
   const r = await api.patch(`/business/locations/${locationId}`, payload);

@@ -31,15 +31,15 @@ function StatCard({
 }) {
   return (
     <motion.div variants={card} initial="initial" animate="animate" transition={cardTransition}>
-      <Card className="rounded-[24px] sm:rounded-[28px] border border-white/70 bg-white/90 p-4 shadow-sm backdrop-blur sm:p-6">
+      <Card className="rounded-[20px] border border-slate-200 bg-white/95 p-3.5 shadow-sm backdrop-blur sm:p-5">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="text-sm font-medium text-slate-500">{title}</div>
-            <div className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:mt-3 sm:text-3xl">{value}</div>
-            <div className="mt-2 text-sm text-slate-500">{subtitle}</div>
+            <div className="mt-1.5 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">{value}</div>
+            <div className="mt-1.5 text-xs leading-5 text-slate-500 sm:text-sm">{subtitle}</div>
           </div>
 
-          <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white shadow-lg">
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-indigo-600 via-violet-600 to-cyan-500 text-white shadow-md sm:h-11 sm:w-11 sm:rounded-2xl">
             {icon}
           </div>
         </div>
@@ -93,11 +93,11 @@ export default function Dashboard() {
   const data = dashboardQ.data;
 
   return (
-    <motion.div {...page} className="space-y-4 sm:space-y-6">
+    <motion.div {...page} className="admin-page space-y-4">
       <motion.div
         initial={{ opacity: 0, y: -18 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-[24px] sm:rounded-[32px] border border-white/70 bg-[linear-gradient(135deg,#1e1b4b_0%,#581c87_50%,#7c2d12_100%)] p-6 text-white shadow-[0_25px_90px_rgba(76,29,149,0.18)] sm:p-8"
+        className="vizit-preserve-dark overflow-hidden rounded-[22px] border border-white/10 bg-[radial-gradient(circle_at_85%_10%,rgba(34,211,238,0.25),transparent_26%),linear-gradient(135deg,#111827_0%,#312e81_58%,#4c1d95_100%)] p-5 text-white shadow-[0_18px_55px_rgba(49,46,129,0.18)] sm:p-6"
       >
         <div className="flex flex-col gap-4 sm:gap-6 xl:flex-row xl:items-center xl:justify-between">
           <div>
@@ -106,9 +106,9 @@ export default function Dashboard() {
               Vizit վահանակ
             </div>
 
-            <h1 className="mt-4 text-2xl font-semibold tracking-tight sm:mt-5 sm:text-4xl">Բարի վերադարձ</h1>
+            <h1 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">Բարի վերադարձ</h1>
 
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-white/80 sm:mt-3 sm:leading-7">
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-white/80">
               Արագ ստուգիր հիմնական ցուցանիշները, առաջիկա ամրագրումները և plan usage-ը։
             </p>
           </div>
@@ -140,7 +140,7 @@ export default function Dashboard() {
 
       {loading ? (
         <div className="grid gap-6">
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 xl:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="h-36 animate-pulse rounded-[28px] border border-slate-200 bg-white/80" />
             ))}
@@ -153,11 +153,11 @@ export default function Dashboard() {
         </div>
       ) : data ? (
         <>
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 xl:grid-cols-3">
             <StatCard
               title="Այսօրվա ամրագրումներ"
               value={data.today.total}
-              subtitle={`${data.today.confirmed} confirmed • ${data.today.pending} pending`}
+              subtitle={`${data.today.confirmed} հաստատված • ${data.today.pending} սպասող`}
               icon={<CalendarDays className="h-5 w-5" />}
             />
             <StatCard

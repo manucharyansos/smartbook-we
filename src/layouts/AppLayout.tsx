@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useNavigate } from "react-router-dom";
+import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -11,6 +11,7 @@ import { cn } from "../lib/cn";
 import { useAuth } from "../store/auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchFeatures, hasFeature } from "../lib/featuresApi";
+import ThemeToggle from "../components/ThemeToggle";
 
 type NavItem = {
   to: string; label: string;
@@ -19,21 +20,22 @@ type NavItem = {
 };
 
 const baseNavItems: NavItem[] = [
-  { to: "/app/dashboard", label: "Վահանակ", icon: LayoutDashboard, color: "from-violet-500/20 to-fuchsia-500/20" },
-  { to: "/app/calendar", label: "Օրացույց", icon: CalendarDays, color: "from-violet-500/20 to-pink-500/20" },
-  { to: "/app/services", label: "Ծառայություններ", icon: Scissors, color: "from-orange-500/20 to-amber-500/20" },
-  { to: "/app/staff", label: "Աշխատակիցներ", icon: Users, color: "from-cyan-500/20 to-blue-500/20" },
-  { to: "/app/clients", label: "Հաճախորդներ", icon: Contact, color: "from-emerald-500/20 to-cyan-500/20" },
-  { to: "/app/tasks", label: "Ամրագրումների վահանակ", icon: ClipboardList, color: "from-amber-500/20 to-orange-500/20", feature: "tasks" },
-  { to: "/app/analytics", label: "Վերլուծություն", icon: BarChart3, color: "from-fuchsia-500/20 to-violet-500/20", feature: "analytics" },
-  { to: "/app/billing", label: "Պլան", icon: Landmark, color: "from-violet-500/20 to-fuchsia-500/20" },
-  { to: "/app/settings", label: "Կարգավորումներ", icon: Settings, color: "from-slate-500/20 to-slate-400/20" },
+  { to: "/app/dashboard", label: "Վահանակ", icon: LayoutDashboard, color: "from-indigo-600 to-violet-600" },
+  { to: "/app/calendar", label: "Օրացույց", icon: CalendarDays, color: "from-violet-600 to-fuchsia-600" },
+  { to: "/app/services", label: "Ծառայություններ", icon: Scissors, color: "from-orange-500 to-amber-500" },
+  { to: "/app/staff", label: "Աշխատակիցներ", icon: Users, color: "from-cyan-600 to-blue-600" },
+  { to: "/app/clients", label: "Հաճախորդներ", icon: Contact, color: "from-emerald-600 to-teal-600" },
+  { to: "/app/tasks", label: "Ամրագրումների վահանակ", icon: ClipboardList, color: "from-amber-500 to-orange-600", feature: "tasks" },
+  { to: "/app/analytics", label: "Վերլուծություն", icon: BarChart3, color: "from-fuchsia-600 to-violet-600", feature: "analytics" },
+  { to: "/app/billing", label: "Պլան", icon: Landmark, color: "from-indigo-600 to-violet-600" },
+  { to: "/app/settings", label: "Կարգավորումներ", icon: Settings, color: "from-slate-700 to-slate-900" },
 ];
 
 const mobileBottomPaths = ["/app/dashboard", "/app/calendar", "/app/clients", "/app/services", "/app/settings"];
 
 export function AppLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const { user, clear } = useAuth();
 
@@ -58,8 +60,8 @@ export function AppLayout() {
       const idx = items.findIndex((x) => x.to === "/app/settings");
       if (idx >= 0) items.splice(idx, 0, item); else items.push(item);
     };
-    if (hasFeature(features, "gift_cards")) insertBeforeSettings({ to: "/app/gift-cards", label: "Նվերի քարտեր", icon: Gift, color: "from-violet-500/20 to-fuchsia-500/20", feature: "gift_cards" });
-    if (hasFeature(features, "loyalty")) insertBeforeSettings({ to: "/app/loyalty", label: "Լոյալություն", icon: Star, color: "from-orange-500/20 to-amber-500/20", feature: "loyalty" });
+    if (hasFeature(features, "gift_cards")) insertBeforeSettings({ to: "/app/gift-cards", label: "Նվերի քարտեր", icon: Gift, color: "from-violet-600 to-fuchsia-600", feature: "gift_cards" });
+    if (hasFeature(features, "loyalty")) insertBeforeSettings({ to: "/app/loyalty", label: "Լոյալություն", icon: Star, color: "from-orange-500 to-amber-500", feature: "loyalty" });
     return items;
   }, [features, user?.role]);
 
@@ -72,12 +74,38 @@ export function AppLayout() {
   }, []);
 
   useEffect(() => {
-    try { localStorage.setItem("bb_app_sidebar_collapsed", isDesktopCollapsed ? "1" : "0"); } catch {}
+    try { localStorage.setItem("bb_app_sidebar_collapsed", isDesktopCollapsed ? "1" : "0"); } catch { /* storage can be disabled */ }
   }, [isDesktopCollapsed]);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const preloadBusinessPages = () => {
+      void Promise.allSettled([
+        import("../pages/Dashboard"),
+        import("../pages/Calendar"),
+        import("../pages/Services"),
+        import("../pages/Staff"),
+        import("../pages/Clients"),
+        import("../pages/Tasks"),
+        import("../pages/Analytics"),
+        import("../pages/GiftCards"),
+        import("../pages/Loyalty"),
+        import("../pages/BusinessSettings"),
+        import("../pages/Billing"),
+      ]);
+    };
+
+    const timerId = globalThis.setTimeout(preloadBusinessPages, 250);
+    return () => globalThis.clearTimeout(timerId);
+  }, []);
 
   function handleLogout() {
     clear();
-    try { localStorage.removeItem("bb_auth"); } catch {}
+    try { localStorage.removeItem("bb_auth"); } catch { /* storage can be disabled */ }
     queryClient.clear();
     window.location.replace("/login");
   }
@@ -101,17 +129,17 @@ export function AppLayout() {
   const BusinessTypeIcon = businessTypeUi?.icon ?? Sparkles;
 
   return (
-    <div className="min-h-screen w-full bg-[linear-gradient(180deg,#fffaf5_0%,#ffffff_20%,#faf7ff_100%)]">
+    <div className="vizit-admin-shell min-h-screen w-full bg-[#f4f6fb] dark:bg-[#080b12]">
       {/* HEADER */}
       <motion.header
         initial={{ y: -90 }} animate={{ y: 0 }}
         className={cn(
-          "sticky top-0 z-30 transition-all duration-300",
-          isScrolled ? "border-b border-slate-200/80 bg-white/88 shadow-sm backdrop-blur-xl"
-            : "border-b border-white/60 bg-white/70 backdrop-blur-md"
+          "vizit-admin-header sticky top-0 z-30 transition-all duration-300",
+          isScrolled ? "border-b border-slate-200/80 bg-white/92 shadow-sm backdrop-blur-xl"
+            : "border-b border-slate-200/70 bg-white/84 backdrop-blur-xl"
         )}
       >
-        <div className="mx-auto max-w-[1600px] px-3 sm:px-6">
+        <div className="mx-auto max-w-[1540px] px-3 sm:px-6">
           <div className="flex h-14 items-center justify-between sm:h-20">
             <div className="flex items-center gap-2 sm:gap-4">
               {/* Desktop sidebar collapse */}
@@ -133,7 +161,7 @@ export function AppLayout() {
                 className="flex cursor-pointer items-center gap-2 sm:gap-3"
                 onClick={() => navigate("/app/dashboard")}
               >
-                <div className="grid h-9 w-9 place-items-center rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white shadow-lg sm:h-11 sm:w-11">
+                <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-indigo-600 via-violet-600 to-cyan-500 text-white shadow-[0_10px_25px_rgba(79,70,229,0.25)] sm:h-11 sm:w-11 sm:rounded-2xl">
                   <CalendarDays size={18} />
                 </div>
                 <div className="hidden min-[360px]:block">
@@ -165,6 +193,10 @@ export function AppLayout() {
                   </div>
                 )}
               </div>
+              <ThemeToggle
+                compact
+                className="border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+              />
               <motion.button whileTap={{ scale: 0.96 }}
                 className="inline-flex h-10 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 sm:px-4"
                 onClick={handleLogout}
@@ -177,13 +209,13 @@ export function AppLayout() {
       </motion.header>
 
       {/* BODY */}
-      <div className="mx-auto w-full max-w-[1600px] px-4 pb-24 pt-4 sm:px-6 sm:pb-8 sm:pt-6 xl:py-8">
-        <div className={cn("grid gap-4 transition-all duration-300", isDesktopCollapsed ? "xl:grid-cols-[80px_1fr]" : "xl:grid-cols-[270px_1fr]")}>
+      <div className="mx-auto w-full max-w-[1540px] px-3 pb-24 pt-3 sm:px-6 sm:pb-8 sm:pt-5 xl:py-6">
+        <div className={cn("grid gap-4 transition-all duration-300 xl:gap-5", isDesktopCollapsed ? "xl:grid-cols-[76px_1fr]" : "xl:grid-cols-[248px_1fr]")}>
 
           {/* DESKTOP SIDEBAR */}
-          <aside className="hidden xl:block">
+          <aside className="vizit-admin-sidebar hidden xl:block">
             <motion.div initial={{ opacity: 0, x: -18 }} animate={{ opacity: 1, x: 0 }} className="sticky top-28 space-y-4">
-              <div className={cn("rounded-[30px] border border-white/70 bg-white/85 p-4 shadow-[0_18px_60px_rgba(124,58,237,0.08)] backdrop-blur", isDesktopCollapsed && "px-2")}>
+              <div className={cn("rounded-[24px] border border-slate-200/80 bg-white/95 p-3 shadow-[0_14px_38px_rgba(15,23,42,0.07)] backdrop-blur", isDesktopCollapsed && "px-2")}>
                 <div className={cn("mb-3 px-2 text-xs font-semibold tracking-[0.18em] text-slate-400", isDesktopCollapsed && "text-center text-[10px]")}>
                   {isDesktopCollapsed ? "ՄԵՆ" : "ՆԱՎԻԳԱՑԻԱ"}
                 </div>
@@ -199,12 +231,7 @@ export function AppLayout() {
                     >
                       {({ isActive }) => (
                         <>
-                          {isActive && (
-                            <motion.div layoutId="activeNav"
-                              className={cn("absolute inset-0 rounded-2xl bg-gradient-to-r", item.color)}
-                              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.25 }}
-                            />
-                          )}
+                          {isActive && <span className={cn("absolute inset-0 rounded-2xl bg-gradient-to-r shadow-sm", item.color)} />}
                           <span className="relative z-10">
                             <item.icon size={18} className={cn("transition-colors", isActive ? "text-white" : "text-slate-500 group-hover:text-violet-600")} />
                           </span>
@@ -221,7 +248,7 @@ export function AppLayout() {
                 </nav>
               </div>
               {!isDesktopCollapsed && (
-                <div className="rounded-[30px] border border-white/70 bg-white/96 p-4 shadow-[0_18px_60px_rgba(124,58,237,0.08)]">
+                <div className="rounded-[24px] border border-slate-200/80 bg-white/96 p-4 shadow-[0_14px_38px_rgba(15,23,42,0.06)]">
                   <div className="flex items-start gap-3">
                     <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-r from-violet-100 to-fuchsia-100">
                       <Sparkles size={16} className="text-violet-700" />
@@ -312,11 +339,20 @@ export function AppLayout() {
           <motion.main
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="min-w-0"
+            className="vizit-admin-content min-w-0"
           >
             {featuresQ.isLoading ? (
               <div className="grid min-h-[50vh] place-items-center text-sm text-slate-500">Բեռնում է...</div>
-            ) : <Outlet />}
+            ) : (
+              <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
+              >
+                <Outlet />
+              </motion.div>
+            )}
           </motion.main>
         </div>
       </div>

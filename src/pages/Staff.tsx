@@ -344,7 +344,7 @@ export default function Staff() {
   const CurrentPresetIcon = currentPreset.icon;
 
   return (
-    <motion.div {...page} className="space-y-6">
+    <motion.div {...page} className="admin-page space-y-4">
       <PageHero
         eyebrow={<><Sparkles className="h-4 w-4" /> Staff management</>}
         title="Աշխատակիցներ"

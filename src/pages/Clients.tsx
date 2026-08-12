@@ -336,7 +336,7 @@ export default function Clients() {
   }
 
   return (
-    <motion.div {...page} className="space-y-6">
+    <motion.div {...page} className="admin-page space-y-4">
       <PageHero
         eyebrow="Հաճախորդների բազա"
         title="Հաճախորդների բազա"

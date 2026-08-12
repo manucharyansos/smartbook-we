@@ -254,7 +254,7 @@ export default function Billing() {
   const currentPlanName = currentPlanCode === "custom" && pricing?.has_override ? "Անհատական առաջարկ" : (subscription?.plan?.name ?? null);
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="admin-page space-y-4">
       <SectionCard className="overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.14),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(236,72,153,0.10),transparent_35%),white] p-8">
         <div className="flex flex-col gap-5 sm:gap-8 xl:flex-row xl:items-center xl:justify-between">
           <div className="max-w-3xl">

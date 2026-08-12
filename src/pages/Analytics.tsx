@@ -86,8 +86,8 @@ export default function Analytics() {
   );
 
   return (
-    <motion.div {...page} className="space-y-6">
-      <div className="rounded-[32px] border border-slate-200 bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.12),transparent_35%),white] p-6 sm:p-8 shadow-[0_18px_60px_rgba(124,58,237,0.06)]">
+    <motion.div {...page} className="admin-page space-y-4">
+      <div className="rounded-[22px] border border-slate-200 bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.10),transparent_35%),white] p-5 shadow-[0_12px_34px_rgba(15,23,42,0.055)] sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">

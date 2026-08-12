@@ -15,14 +15,14 @@ const STORAGE_KEY = "vizit-theme";
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 function getSystemTheme(): ResolvedTheme {
-  if (typeof window === "undefined") return "dark";
+  if (typeof window === "undefined") return "light";
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
 function readInitialTheme(): ThemeMode {
-  if (typeof window === "undefined") return "dark";
+  if (typeof window === "undefined") return "system";
   const stored = window.localStorage.getItem(STORAGE_KEY);
-  return stored === "light" || stored === "dark" || stored === "system" ? stored : "dark";
+  return stored === "light" || stored === "dark" || stored === "system" ? stored : "system";
 }
 
 function applyTheme(theme: ThemeMode, resolvedTheme: ResolvedTheme) {

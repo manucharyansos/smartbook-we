@@ -345,7 +345,7 @@ export default function Tasks() {
   );
 
   return (
-    <motion.div {...page} className="space-y-4 bg-[#ededee] p-3 sm:p-4 lg:p-5">
+    <motion.div {...page} className="admin-page space-y-4">
       <div className="flex flex-col gap-3 rounded-[16px] border border-slate-300 bg-white px-4 py-4 shadow-sm sm:px-5">
         <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
           <div>

@@ -92,7 +92,7 @@ export function GiftCards() {
   const totalBalance = useMemo(() => list.reduce((sum, item) => sum + item.balance, 0), [list]);
 
   return (
-    <motion.div {...page} className="space-y-6">
+    <motion.div {...page} className="admin-page space-y-4">
       <div className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>

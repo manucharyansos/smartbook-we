@@ -3,18 +3,20 @@ import { Link, NavLink } from "react-router-dom";
 import { AnimatePresence, motion, useScroll } from "framer-motion";
 import { ArrowRight, CalendarDays, Menu, X } from "lucide-react";
 import { cn } from "../lib/cn";
-
-const navItems = [
-    { to: "/", label: "Գլխավոր", end: true },
-    { to: "/pricing", label: "Գներ" },
-    { to: "/about", label: "Մեր մասին" },
-    { to: "/contact", label: "Կապ" },
-];
+import LanguageToggle from "./LanguageToggle";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function LandingNavbar() {
+    const { t } = useLanguage();
     const { scrollY } = useScroll();
     const [isScrolled, setIsScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const navItems = [
+        { to: "/", label: t("nav.home"), end: true },
+        { to: "/pricing", label: t("nav.pricing") },
+        { to: "/about", label: t("nav.about") },
+        { to: "/contact", label: t("nav.contact") },
+    ];
 
     useEffect(() => {
         const unsubscribe = scrollY.on("change", (latest) => {
@@ -64,7 +66,7 @@ export default function LandingNavbar() {
                                         Vizit
                                     </div>
                                     <div className="truncate text-xs text-slate-500">
-                                        Ամրագրման միջավայր
+                                        {t("nav.tagline")}
                                     </div>
                                 </div>
                             </Link>
@@ -83,18 +85,19 @@ export default function LandingNavbar() {
                             </nav>
 
                             <div className="hidden items-center gap-3 md:flex">
+                                <LanguageToggle className="border-slate-200 bg-white text-slate-700 hover:bg-slate-50" compact />
                                 <Link
                                     to="/login"
                                     className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
                                 >
-                                    Մուտք
+                                    {t("nav.login")}
                                 </Link>
 
                                 <Link
                                     to="/register"
                                     className="inline-flex items-center justify-center gap-2 rounded-full bg-violet-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-violet-700"
                                 >
-                                    Սկսել անվճար
+                                    {t("nav.start")}
                                     <ArrowRight className="h-4 w-4" />
                                 </Link>
                             </div>
@@ -103,7 +106,7 @@ export default function LandingNavbar() {
                                 type="button"
                                 onClick={() => setMobileOpen((prev) => !prev)}
                                 className="inline-flex h-10 w-10 items-center justify-center rounded-[18px] border border-slate-200 bg-white text-slate-700 shadow-sm md:hidden sm:h-11 sm:w-11 sm:rounded-2xl"
-                                aria-label="Բացել մենյուն"
+                                aria-label={t("nav.openMenu")}
                             >
                                 {mobileOpen ? <X className="h-[18px] w-[18px] sm:h-5 sm:w-5" /> : <Menu className="h-[18px] w-[18px] sm:h-5 sm:w-5" />}
                             </button>
@@ -152,12 +155,13 @@ export default function LandingNavbar() {
                             </div>
 
                             <div className="mt-4 grid gap-3">
+                                <LanguageToggle className="justify-center border-slate-200 bg-white text-slate-700" />
                                 <Link
                                     to="/login"
                                     onClick={() => setMobileOpen(false)}
                                     className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700"
                                 >
-                                    Մուտք
+                                    {t("nav.login")}
                                 </Link>
 
                                 <Link
@@ -165,7 +169,7 @@ export default function LandingNavbar() {
                                     onClick={() => setMobileOpen(false)}
                                     className="inline-flex items-center justify-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 text-sm font-medium text-white"
                                 >
-                                    Սկսել անվճար
+                                    {t("nav.start")}
                                     <ArrowRight className="h-4 w-4" />
                                 </Link>
                             </div>

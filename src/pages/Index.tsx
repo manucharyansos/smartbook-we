@@ -585,16 +585,17 @@ function SearchPanel({ search, setSearch, onSubmit }: { search: string; setSearc
 }
 
 function HeroVisual({ businessCount, servicesCount, staffCount }: { businessCount: number | string; servicesCount: number | string; staffCount: number | string }) {
+  const { t } = useLanguage();
   return (
     <motion.div variants={fadeUp} className="relative hidden min-h-[560px] xl:block">
       <div className="absolute left-[7%] top-[116px] h-[335px] w-[360px] skew-x-[-16deg] rounded-[24px] bg-gradient-to-br from-[#1b315e]/65 via-[#3d3f96]/55 to-[#8f4cff]/55 opacity-70" />
       <div className="absolute left-[30%] top-[202px] h-[278px] w-[410px] skew-x-[-16deg] rounded-[26px] bg-gradient-to-br from-[#5231a7]/80 via-[#8d54ee]/68 to-[#273a82]/65 opacity-80" />
-      <img src={heroWoman} alt="Vizit օնլայն ամրագրում" className="absolute bottom-0 left-[56px] z-10 h-[520px] w-auto select-none object-contain drop-shadow-[0_34px_70px_rgba(0,0,0,0.35)]" draggable={false} />
+      <img src={heroWoman} alt={t("seo.imageAlt")} className="absolute bottom-0 left-[56px] z-10 h-[520px] w-auto select-none object-contain drop-shadow-[0_34px_70px_rgba(0,0,0,0.35)]" draggable={false} />
 
       {[
-        { top: "72px", value: businessCount, label: "Գործընկերներ", Icon: Building2, color: "text-[#93b5ff]", trend: true },
-        { top: "218px", value: servicesCount, label: "Ծառայություններ", Icon: Sparkles, color: "text-[#ffc857]", trend: false },
-        { top: "360px", value: staffCount, label: "Մասնագետներ", Icon: CalendarDays, color: "text-cyan-200", trend: false },
+        { top: "72px", value: businessCount, label: t("stats.businesses"), Icon: Building2, color: "text-[#93b5ff]", trend: true },
+        { top: "218px", value: servicesCount, label: t("stats.services"), Icon: Sparkles, color: "text-[#ffc857]", trend: false },
+        { top: "360px", value: staffCount, label: t("stats.staff"), Icon: CalendarDays, color: "text-cyan-200", trend: false },
       ].map(({ top, value, label, Icon, color, trend }) => (
         <motion.div key={label} variants={fadeUp} className="absolute right-[4px] z-20 w-[224px] rounded-[20px] border border-white/10 bg-white/[0.105] p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl" style={{ top }}>
           <div className="flex items-center gap-4">
@@ -638,7 +639,7 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
   const vertical = normalizeVertical(item.category?.vertical ?? item.vertical ?? item.business_type);
   const isHealthcare = vertical === "healthcare";
   const Icon = isHealthcare ? HeartPulse : Sparkles;
-  const categoryName = getCategoryName(item.category, locale) ?? item.custom_category_name ?? (isHealthcare ? "Բժշկական" : "Ծառայություններ");
+  const categoryName = getCategoryName(item.category, locale) ?? item.custom_category_name ?? (isHealthcare ? t("businesses.healthcare") : t("businesses.services"));
   const primaryLocation = item.locations?.find((location) => location.is_primary) ?? item.locations?.[0];
   const bookingUrl = `/book/${item.slug}${primaryLocation?.id ? `?location_id=${primaryLocation.id}` : ""}`;
 
@@ -661,15 +662,15 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
           </div>
           <div className="min-w-0">
             <h3 className="truncate text-lg font-black tracking-tight text-white">{item.name}</h3>
-            <p className="mt-1 truncate text-xs font-semibold text-white/65">{primaryLocation?.address || item.address || "Հասցեն նշված չէ"}</p>
+            <p className="mt-1 truncate text-xs font-semibold text-white/65">{primaryLocation?.address || item.address || t("business.card.noAddress")}</p>
           </div>
         </div>
       </div>
       <div className="p-5 sm:p-6">
-        <p className="line-clamp-2 min-h-[48px] text-sm leading-6 text-slate-300">{item.short_description || "Ծառայություններ, մասնագետներ և օնլայն ամրագրում։"}</p>
+        <p className="line-clamp-2 min-h-[48px] text-sm leading-6 text-slate-300">{item.short_description || t("business.card.defaultDescription")}</p>
         <div className="mt-5 grid grid-cols-2 gap-3 text-xs text-slate-300">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3"><span className="block text-lg font-black text-white">{item.services_count ?? 0}</span> ծառայություն</div>
-          <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3"><span className="block text-lg font-black text-white">{item.staff_count ?? 0}</span> մասնագետ</div>
+          <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3"><span className="block text-lg font-black text-white">{item.services_count ?? 0}</span> {t("business.card.services")}</div>
+          <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3"><span className="block text-lg font-black text-white">{item.staff_count ?? 0}</span> {t("business.card.staff")}</div>
         </div>
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <Link to={bookingUrl} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-black text-slate-950 transition hover:bg-slate-100">{t("business.card.book")} <ArrowRight className="h-4 w-4" /></Link>
@@ -799,7 +800,7 @@ export default function Index() {
 
   return (
     <div className="vizit-dark-public min-h-screen overflow-x-clip bg-[#050816] text-white">
-      <Seo title="Vizit.am — օնլայն ամրագրում ծառայությունների և բժշկական այցերի համար" description="Գտիր ծառայություններն ու բժշկական կենտրոնները, տես քարտեզում, ընտրիր բիզնեսը և ամրագրիր ազատ ժամը Vizit.am-ում։" image="/og-default.svg" />
+      <Seo title={t("seo.homeTitle")} description={t("seo.homeDescription")} image="/og-default.svg" />
       <LandingNavbar />
 
       <main>
@@ -824,7 +825,7 @@ export default function Index() {
               <motion.div variants={fadeUp} className="mt-5 flex flex-wrap items-center justify-center gap-2 text-[12px] text-white/68 xl:justify-start">
                 <span className="mr-1 font-semibold">{t("popular")}</span>
                 {popularChips.length ? popularChips.map((category) => {
-                  const label = getCategoryName(category, locale) ?? "Կատեգորիա";
+                  const label = getCategoryName(category, locale) ?? t("category.fallback");
                   return <button key={category.slug ?? label} type="button" onClick={() => selectCategory(category)} className="rounded-full border border-white/10 bg-white/[0.065] px-4 py-2 font-semibold text-white/82 transition hover:border-cyan-200/30 hover:bg-white/[0.12] hover:text-white">{label}</button>;
                 }) : null}
               </motion.div>
@@ -849,7 +850,7 @@ export default function Index() {
               <div className="-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4 xl:grid-cols-7">
                 {categories.map((category) => {
                   const { Icon, tone } = getCategoryPresentation(category);
-                  const label = getCategoryName(category, locale) ?? "Կատեգորիա";
+                  const label = getCategoryName(category, locale) ?? t("category.fallback");
                   const active = selectedCategorySlug === category.slug;
                   return (
                     <button key={category.slug ?? label} type="button" onClick={() => selectCategory(category)} className={cn("group min-h-[138px] w-[76vw] max-w-[280px] shrink-0 snap-start rounded-[20px] border p-4 text-center shadow-[0_12px_34px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:border-violet-200 sm:w-auto sm:max-w-none", active ? "border-violet-300 bg-violet-50" : "border-slate-100 bg-white")}>
@@ -902,8 +903,8 @@ export default function Index() {
         <section id="map" className="bg-[#050b16] px-5 py-16 text-white sm:px-8 lg:py-20">
           <div className="mx-auto max-w-[1320px]">
             <div className="mb-8">
-              <SectionBadge><MapPin className="h-4 w-4" /> Քարտեզով որոնում</SectionBadge>
-              <h2 className="mt-5 max-w-3xl text-3xl font-black tracking-[-0.04em] text-white sm:text-5xl">Գտիր մոտակայքում գտնվող բիզնեսները</h2>
+              <SectionBadge><MapPin className="h-4 w-4" /> {t("map.badge")}</SectionBadge>
+              <h2 className="mt-5 max-w-3xl text-3xl font-black tracking-[-0.04em] text-white sm:text-5xl">{t("map.title")}</h2>
             </div>
 
             <div className="grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
@@ -918,20 +919,20 @@ export default function Index() {
               <div className="rounded-[30px] border border-white/10 bg-white/[0.07] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-2xl">
                 {selectedPin ? (
                   <div>
-                    <div className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.08] px-3 py-2 text-xs font-bold text-cyan-100"><MapPin className="h-3.5 w-3.5" /> Ընտրված հասցե</div>
+                    <div className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.08] px-3 py-2 text-xs font-bold text-cyan-100"><MapPin className="h-3.5 w-3.5" /> {t("map.selectedAddress")}</div>
                     <h3 className="mt-4 text-2xl font-black text-white">{selectedPin.name}</h3>
                     <p className="mt-2 text-sm font-semibold text-slate-300">{selectedPin.categoryName || (selectedPin.vertical === "healthcare" ? "Բժշկական" : "Ծառայություններ")}</p>
-                    <p className="mt-4 text-sm leading-7 text-slate-400">{selectedPin.locationName ? `${selectedPin.locationName} · ` : ""}{selectedPin.address || "Հասցեն նշված չէ"}</p>
+                    <p className="mt-4 text-sm leading-7 text-slate-400">{selectedPin.locationName ? `${selectedPin.locationName} · ` : ""}{selectedPin.address || t("business.card.noAddress")}</p>
                     <div className="mt-5 grid gap-3">
-                      <Link to={selectedPin.bookingUrl} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-slate-100">Ամրագրել այս հասցեում <ArrowRight className="h-4 w-4" /></Link>
-                      <Link to={`/businesses/${selectedPin.slug}`} className="inline-flex items-center justify-center rounded-2xl border border-white/12 bg-white/[0.06] px-5 py-3 text-sm font-bold text-white transition hover:bg-white/[0.10]">Տեսնել էջը</Link>
+                      <Link to={selectedPin.bookingUrl} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-slate-100">{t("map.bookAddress")} <ArrowRight className="h-4 w-4" /></Link>
+                      <Link to={`/businesses/${selectedPin.slug}`} className="inline-flex items-center justify-center rounded-2xl border border-white/12 bg-white/[0.06] px-5 py-3 text-sm font-bold text-white transition hover:bg-white/[0.10]">{t("business.card.view")}</Link>
                     </div>
                   </div>
                 ) : (
                   <div className="text-center">
                     <MapPin className="mx-auto h-10 w-10 text-cyan-200" />
-                    <h3 className="mt-4 text-xl font-black text-white">Ընտրիր քարտեզի pin-ը</h3>
-                    <p className="mt-3 text-sm leading-7 text-slate-400">Սեղմիր քարտեզի վրա երևացող բիզնեսը՝ մանրամասները տեսնելու և ամրագրելու համար։</p>
+                    <h3 className="mt-4 text-xl font-black text-white">{t("map.choosePin")}</h3>
+                    <p className="mt-3 text-sm leading-7 text-slate-400">{t("map.choosePinText")}</p>
                   </div>
                 )}
 
@@ -971,7 +972,7 @@ export default function Index() {
             {categories.length ? (
               <div className="mb-8 flex gap-2 overflow-x-auto pb-2">
                 {categories.map((category) => {
-                  const label = getCategoryName(category, locale) ?? "Կատեգորիա";
+                  const label = getCategoryName(category, locale) ?? t("category.fallback");
                   const active = selectedCategorySlug === category.slug;
                   return (
                     <button

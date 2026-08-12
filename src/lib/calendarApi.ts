@@ -4,6 +4,7 @@ export type BookingStatus = "pending" | "confirmed" | "done" | "cancelled" | "no
 
 export type Booking = {
   id: number;
+  booking_code?: string | null;
   business_id?: number;
   service_id: number;
   staff_id: number | null;
@@ -111,32 +112,50 @@ export async function updateBooking(
   return r.data?.data ?? r.data;
 }
 
-export async function cancelBooking(id: number) {
-  const r = await api.patch<Booking>(`/bookings/${id}/cancel`);
-  return r.data;
+export async function cancelBooking(id: number): Promise<Booking> {
+  const r = await api.patch<{
+    ok: boolean;
+    cancelled_booking_id: number;
+    data: Booking;
+  }>(`/bookings/${id}/cancel`);
+
+  const cancelledId = Number(r.data?.cancelled_booking_id);
+  const booking = r.data?.data;
+  if (!r.data?.ok || cancelledId !== id || Number(booking?.id) !== id) {
+    throw new Error("Սերվերը չի հաստատել ընտրված ամրագրման չեղարկումը։ Փոփոխություն չի ցուցադրվի։");
+  }
+
+  return booking;
 }
 
 export async function doneBooking(id: number) {
-  const r = await api.patch<Booking>(`/bookings/${id}/done`);
-  return r.data;
+  const r = await api.patch<{ ok?: boolean; data: Booking }>(`/bookings/${id}/done`);
+  return requireExactBooking(r.data?.data, id);
 }
 
 export async function noShowBooking(id: number) {
-  const r = await api.patch<Booking>(`/bookings/${id}/no-show`);
-  return r.data;
+  const r = await api.patch<{ ok?: boolean; data: Booking }>(`/bookings/${id}/no-show`);
+  return requireExactBooking(r.data?.data, id);
 }
 
 export async function confirmBooking(id: number) {
-  const r = await api.patch<Booking>(`/bookings/${id}/confirm`);
-  return r.data;
+  const r = await api.patch<{ ok?: boolean; data: Booking }>(`/bookings/${id}/confirm`);
+  return requireExactBooking(r.data?.data, id);
 }
 
 export async function updateBookingTime(
   id: number,
   payload: { starts_at: string; ends_at: string }
 ) {
-  const r = await api.patch<Booking>(`/bookings/${id}/time`, payload);
-  return r.data;
+  const r = await api.patch<{ ok?: boolean; data: Booking }>(`/bookings/${id}/time`, payload);
+  return requireExactBooking(r.data?.data, id);
+}
+
+function requireExactBooking(booking: Booking | undefined, expectedId: number): Booking {
+  if (!booking || Number(booking.id) !== expectedId) {
+    throw new Error("Սերվերը չի վերադարձրել ընտրված ամրագրումը։");
+  }
+  return booking;
 }
 
 export async function createBlock(payload: {

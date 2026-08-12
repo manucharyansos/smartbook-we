@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -19,8 +19,6 @@ import {
     Loader2,
     Plus,
     Trash2,
-    Layers3,
-    Users,
     Check,
     Copy,
     MapPin,
@@ -392,6 +390,8 @@ export default function PublicBooking() {
 
     const [mode, setMode] = useState<BookingMode>("single");
     const [selectedLocationId, setSelectedLocationId] = useState<number | "">("");
+    const [locationNotice, setLocationNotice] = useState<string | null>(null);
+    const checkedEmptyLocationRef = useRef<number | null>(null);
 
     const [serviceId, setServiceId] = useState<number>(0);
     const [staffId, setStaffId] = useState<number | "any">("any");
@@ -430,10 +430,14 @@ export default function PublicBooking() {
         enabled: !!slug,
     });
 
+    const business = businessQ.data;
+    const locations = business?.locations ?? EMPTY_LOCATIONS;
+    const locationSelectionRequired = locations.length > 1 && !selectedLocationId;
+
     const servicesQ = useQuery({
         queryKey: ["public-services", slug, selectedLocationId || "all"],
         queryFn: () => fetchPublicServices(slug, { location_id: selectedLocationId ? Number(selectedLocationId) : undefined }),
-        enabled: !!slug,
+        enabled: !!slug && !!business && !locationSelectionRequired,
     });
 
     const staffQ = useQuery({
@@ -442,13 +446,11 @@ export default function PublicBooking() {
             location_id: selectedLocationId ? Number(selectedLocationId) : undefined,
             bookable_only: true,
         }),
-        enabled: !!slug,
+        enabled: !!slug && !!business && !locationSelectionRequired,
     });
 
-    const services = servicesQ.data ?? EMPTY_SERVICES;
-    const staff = staffQ.data ?? EMPTY_STAFF;
-    const business = businessQ.data;
-    const locations = business?.locations ?? EMPTY_LOCATIONS;
+    const services = locationSelectionRequired ? EMPTY_SERVICES : servicesQ.data ?? EMPTY_SERVICES;
+    const staff = locationSelectionRequired ? EMPTY_STAFF : staffQ.data ?? EMPTY_STAFF;
     const bookingSource = searchParams.get("source") ?? "website";
 
     useEffect(() => {
@@ -482,6 +484,63 @@ export default function PublicBooking() {
             setSelectedLocationId(locations[0].id);
         }
     }, [searchParams, locations]);
+
+    useEffect(() => {
+        if (
+            !selectedLocationId ||
+            locations.length < 2 ||
+            !servicesQ.isSuccess ||
+            servicesQ.isFetching ||
+            services.length > 0 ||
+            checkedEmptyLocationRef.current === Number(selectedLocationId)
+        ) {
+            return;
+        }
+
+        const emptyLocationId = Number(selectedLocationId);
+        checkedEmptyLocationRef.current = emptyLocationId;
+        let cancelled = false;
+
+        void Promise.all(
+            locations
+                .filter((location) => location.id !== emptyLocationId)
+                .map(async (location) => ({
+                    location,
+                    services: await queryClient.fetchQuery({
+                        queryKey: ["public-services", slug, location.id],
+                        queryFn: () => fetchPublicServices(slug, { location_id: location.id }),
+                    }),
+                }))
+        ).then((results) => {
+            if (cancelled) return;
+            const fallback = results.find((result) => result.services.length > 0)?.location;
+            if (!fallback) return;
+
+            const emptyLocation = locations.find((location) => location.id === emptyLocationId);
+            setSelectedLocationId(fallback.id);
+            const nextParams = new URLSearchParams(searchParams);
+            nextParams.set("location_id", String(fallback.id));
+            setSearchParams(nextParams, { replace: true });
+            setLocationNotice(
+                `${emptyLocation?.name || "Ընտրված մասնաճյուղում"} հասանելի ծառայություն չկար, ուստի բացվեց ${fallback.name || fallback.address || "հասանելի մասնաճյուղը"}։`
+            );
+        }).catch(() => {
+            // The regular services query already owns the visible error state.
+        });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [locations, queryClient, searchParams, selectedLocationId, services.length, servicesQ.isFetching, servicesQ.isSuccess, setSearchParams, slug]);
+
+    function changeLocation(nextLocationId: number | "") {
+        setLocationNotice(null);
+        setSelectedLocationId(nextLocationId);
+        const nextParams = new URLSearchParams(searchParams);
+        if (nextLocationId) nextParams.set("location_id", String(nextLocationId));
+        else nextParams.delete("location_id");
+        setSearchParams(nextParams, { replace: true });
+    }
 
     useEffect(() => {
         const fromQuery = Number(searchParams.get("staff_id") || 0);
@@ -907,6 +966,12 @@ export default function PublicBooking() {
         setMsg(null);
         setResultCode(null);
 
+        if (locations.length > 1 && !selectedLocationId) {
+            setMsgType("error");
+            setMsg("Նախ ընտրիր մասնաճյուղը");
+            return;
+        }
+
         if (!validateCommonFields()) return;
 
         if (mode === "single") {
@@ -1133,50 +1198,41 @@ export default function PublicBooking() {
                                     </div>
                                 </div>
 
-                                <div className="mt-6 flex flex-wrap gap-2">
-                                    <Badge color="bg-white/15" text="Online Booking" />
-                                    <Badge color="bg-white/15" text="Multi Services" />
-                                    <Badge color="bg-white/15" text="Phone Verification" />
-                                </div>
                             </div>
                         </div>
 
-                        <div className="rounded-[28px] bg-white/80 backdrop-blur-xl border border-white/70 shadow-xl p-5 sm:p-6">
-                            <h3 className="text-lg font-semibold text-slate-900">
-                                Ամրագրման ռեժիմ
-                            </h3>
-                            <p className="text-sm text-slate-500 mt-1">
-                                Ընտրիր այն տարբերակը, որը քեզ ամենահարմարն է։
-                            </p>
-
-                            <div className="mt-4 grid gap-3">
-                                <ModeCard
-                                    active={mode === "single"}
-                                    icon={<Check className="h-5 w-5" />}
-                                    title="Մեկ ծառայություն"
-                                    description="Ամենապարզ տարբերակը՝ մեկ service, մեկ ժամ։"
-                                    onClick={() => setMode("single")}
-                                    color="from-sky-500 to-cyan-500"
-                                />
-
-                                <ModeCard
-                                    active={mode === "multi"}
-                                    icon={<Layers3 className="h-5 w-5" />}
-                                    title="Multi booking"
-                                    description="Մի քանի ծառայություն իրար հետևից՝ նույն մասնագետի մոտ։"
-                                    onClick={() => setMode("multi")}
-                                    color="from-violet-500 to-fuchsia-500"
-                                />
-
-                                <ModeCard
-                                    active={mode === "lines"}
-                                    icon={<Users className="h-5 w-5" />}
-                                    title="Advanced multi-lines"
-                                    description="Յուրաքանչյուր ծառայության համար առանձին staff և առանձին ժամ։"
-                                    onClick={() => setMode("lines")}
-                                    color="from-amber-500 to-orange-500"
-                                />
+                        <div className="rounded-[24px] border border-white/70 bg-white/85 p-4 shadow-lg backdrop-blur-xl">
+                            <div className="text-sm font-semibold text-slate-900">Քանի՞ ծառայություն ես ուզում</div>
+                            <div className="mt-3 grid grid-cols-2 gap-2">
+                                {([
+                                    ["single", "Մեկ ծառայություն"],
+                                    ["multi", "Մի քանի ծառայություն"],
+                                ] as const).map(([value, label]) => (
+                                    <button
+                                        key={value}
+                                        type="button"
+                                        onClick={() => setMode(value)}
+                                        className={mergeClass(
+                                            "rounded-2xl border px-3 py-3 text-sm font-semibold transition",
+                                            mode === value
+                                                ? "border-violet-500 bg-violet-600 text-white"
+                                                : "border-slate-200 bg-white text-slate-700 hover:border-violet-300"
+                                        )}
+                                    >
+                                        {label}
+                                    </button>
+                                ))}
                             </div>
+                            <button
+                                type="button"
+                                onClick={() => setMode("lines")}
+                                className={mergeClass(
+                                    "mt-2 w-full rounded-xl px-3 py-2 text-left text-xs font-medium transition",
+                                    mode === "lines" ? "bg-amber-100 text-amber-900" : "text-slate-500 hover:bg-slate-100"
+                                )}
+                            >
+                                Տարբեր մասնագետներ կամ տարբեր ժամեր
+                            </button>
                         </div>
                     </div>
 
@@ -1199,7 +1255,7 @@ export default function PublicBooking() {
                                     <div className="font-medium">{msg}</div>
                                     {resultCode && (
                                         <div className="mt-1 text-sm opacity-80">
-                                            Booking code: <span className="font-semibold">{resultCode}</span>
+                                            Ամրագրման կոդը՝ <span className="font-semibold">{resultCode}</span>
                                         </div>
                                     )}
                                 </div>
@@ -1242,6 +1298,7 @@ export default function PublicBooking() {
                         {bookingDetailQ.data?.data && (
                             <div className="mb-6">
                                 <ManageBookingCard
+                                    key={bookingDetailQ.data.data.booking_code}
                                     detail={bookingDetailQ.data.data}
                                     isLoading={bookingDetailQ.isFetching}
                                     onCancel={() => activeBookingCode && guestToken && cancelMut.mutate({ booking_code: activeBookingCode, token: guestToken })}
@@ -1251,6 +1308,11 @@ export default function PublicBooking() {
                         )}
 
                         <form onSubmit={handleSubmit} className="space-y-8">
+                            {locationNotice ? (
+                                <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
+                                    {locationNotice}
+                                </div>
+                            ) : null}
                             {locations.length > 1 && (
                                 <section className="space-y-5">
                                     <SectionTitle
@@ -1261,7 +1323,7 @@ export default function PublicBooking() {
                                         <select
                                             className={inputClass}
                                             value={selectedLocationId}
-                                            onChange={(e) => setSelectedLocationId(e.target.value ? Number(e.target.value) : "")}
+                                            onChange={(e) => changeLocation(e.target.value ? Number(e.target.value) : "")}
                                         >
                                             <option value="">Ընտրիր հասցեն</option>
                                             {locations.map((location) => (
@@ -1650,17 +1712,22 @@ export default function PublicBooking() {
                                 </div>
 
                                 {mode !== 'lines' ? (
-                                    <div className="grid gap-3 sm:grid-cols-3">
-                                        <Field label="Օգտագործել միավորներ" icon={<Star className="h-4 w-4" />}>
-                                            <input type="number" className={inputClass} value={redeemPoints} onChange={(e) => setRedeemPoints(e.target.value)} placeholder="Օր. 100" />
-                                        </Field>
-                                        <Field label="Նվերի քարտի կոդ" icon={<Gift className="h-4 w-4" />}>
-                                            <input className={inputClass} value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value.toUpperCase())} placeholder="Օր. GC-AB12CD34" />
-                                        </Field>
-                                        <Field label="Նվերի քարտից գումար" icon={<Wallet className="h-4 w-4" />}>
-                                            <input type="number" className={inputClass} value={giftCardAmount} onChange={(e) => setGiftCardAmount(e.target.value)} placeholder="Լրիվ կամ մասամբ" />
-                                        </Field>
-                                    </div>
+                                    <details className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
+                                        <summary className="cursor-pointer text-sm font-semibold text-slate-700">
+                                            Զեղչ, միավորներ կամ նվերի քարտ
+                                        </summary>
+                                        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                                            <Field label="Օգտագործել միավորներ" icon={<Star className="h-4 w-4" />}>
+                                                <input type="number" className={inputClass} value={redeemPoints} onChange={(e) => setRedeemPoints(e.target.value)} placeholder="Օր. 100" />
+                                            </Field>
+                                            <Field label="Նվերի քարտի կոդ" icon={<Gift className="h-4 w-4" />}>
+                                                <input className={inputClass} value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value.toUpperCase())} placeholder="Օր. GC-AB12CD34" />
+                                            </Field>
+                                            <Field label="Նվերի քարտից գումար" icon={<Wallet className="h-4 w-4" />}>
+                                                <input type="number" className={inputClass} value={giftCardAmount} onChange={(e) => setGiftCardAmount(e.target.value)} placeholder="Լրիվ կամ մասամբ" />
+                                            </Field>
+                                        </div>
+                                    </details>
                                 ) : null}
                             </section>
 
@@ -1670,10 +1737,10 @@ export default function PublicBooking() {
                                         <div className="text-sm text-slate-500">Պատրաստ է ամրագրման</div>
                                         <div className="text-lg font-semibold text-slate-900">
                                             {mode === "single"
-                                                ? "Single booking"
+                                                ? "Մեկ ծառայության ամրագրում"
                                                 : mode === "multi"
-                                                    ? "Sequential multi booking"
-                                                    : "Advanced multi-lines booking"}
+                                                    ? "Մի քանի ծառայության ամրագրում"
+                                                    : "Ամրագրում տարբեր մասնագետների կամ ժամերի մոտ"}
                                         </div>
                                     </div>
 
@@ -1715,14 +1782,6 @@ export default function PublicBooking() {
     );
 }
 
-function Badge({ text, color }: { text: string; color: string }) {
-    return (
-        <span className={mergeClass("rounded-full px-3 py-1 text-xs font-medium text-white", color)}>
-      {text}
-    </span>
-    );
-}
-
 function SectionTitle({
                           title,
                           subtitle,
@@ -1759,52 +1818,6 @@ function Field({
                 <div className={icon ? "[&>input]:pl-10 [&>select]:pl-10" : ""}>{children}</div>
             </div>
         </div>
-    );
-}
-
-function ModeCard({
-                      active,
-                      icon,
-                      title,
-                      description,
-                      onClick,
-                      color,
-                  }: {
-    active: boolean;
-    icon: React.ReactNode;
-    title: string;
-    description: string;
-    onClick: () => void;
-    color: string;
-}) {
-    return (
-        <button
-            type="button"
-            onClick={onClick}
-            className={mergeClass(
-                "w-full text-left rounded-2xl border p-4 transition-all",
-                active
-                    ? "border-transparent bg-slate-900 text-white shadow-lg"
-                    : "border-slate-200 bg-white hover:border-slate-300"
-            )}
-        >
-            <div className="flex items-start gap-3">
-                <div className={mergeClass("mt-0.5 rounded-xl p-2 text-white bg-gradient-to-r", color)}>
-                    {icon}
-                </div>
-                <div>
-                    <div className="font-semibold">{title}</div>
-                    <div
-                        className={mergeClass(
-                            "mt-1 text-sm",
-                            active ? "text-slate-300" : "text-slate-500"
-                        )}
-                    >
-                        {description}
-                    </div>
-                </div>
-            </div>
-        </button>
     );
 }
 
@@ -1918,6 +1931,8 @@ function ManageBookingCard({
 }) {
     const statusMeta = getStatusMeta(detail.status, detail.status_label);
     const timezone = detail.business.timezone || "Asia/Yerevan";
+    const [confirmingCancel, setConfirmingCancel] = useState(false);
+    const cancellableBookings = detail.bookings.filter((booking) => !["cancelled", "done", "completed", "no_show"].includes(booking.status));
 
     async function copyBookingCode() {
         try {
@@ -1933,7 +1948,7 @@ function ManageBookingCard({
                 <div>
                     <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
                         <ShieldCheck className="h-4 w-4" />
-                        Secure access ակտիվ է
+                        Անվտանգ մուտքն ակտիվ է
                     </div>
                     <h3 className="mt-3 text-2xl font-bold text-slate-900">{detail.business.name}</h3>
                     <div className="mt-2 flex flex-wrap gap-2 text-sm text-slate-500">
@@ -1947,7 +1962,7 @@ function ManageBookingCard({
                         </span>
                         {detail.guest_access_expires_at ? (
                             <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600">
-                                Guest access մինչև {formatDateTime(detail.guest_access_expires_at, timezone)}
+                                Կառավարման հասանելիությունը մինչև {formatDateTime(detail.guest_access_expires_at, timezone)}
                             </span>
                         ) : null}
                     </div>
@@ -1963,19 +1978,64 @@ function ManageBookingCard({
                     </button>
                     <button
                         type="button"
-                        onClick={onCancel}
+                        onClick={() => setConfirmingCancel(true)}
                         disabled={isCancelling || detail.status === "cancelled" || detail.can_cancel === false}
                         className="rounded-2xl border border-rose-200 bg-white px-4 py-3 text-sm font-semibold text-rose-600 disabled:opacity-60"
                     >
-                        {isCancelling ? "Չեղարկվում է..." : detail.status === "cancelled" ? "Չեղարկված է" : "Չեղարկել ամրագրումը"}
+                        {isCancelling
+                            ? "Չեղարկվում է..."
+                            : detail.status === "cancelled"
+                                ? "Չեղարկված է"
+                                : cancellableBookings.length > 1
+                                    ? `Չեղարկել ${cancellableBookings.length} գրանցումները`
+                                    : "Չեղարկել ամրագրումը"}
                     </button>
                 </div>
             </div>
 
+            {confirmingCancel ? (
+                <div className="mt-5 rounded-3xl border border-rose-200 bg-rose-50 p-4 sm:p-5">
+                    <div className="font-semibold text-rose-900">
+                        {cancellableBookings.length > 1
+                            ? `Կչեղարկվեն այս խմբի բոլոր ${cancellableBookings.length} գրանցումները։`
+                            : "Կչեղարկվի հենց այս ամրագրումը։"}
+                    </div>
+                    <div className="mt-3 space-y-2">
+                        {cancellableBookings.map((booking) => (
+                            <div key={booking.id} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-white px-3 py-2 text-sm text-slate-700">
+                                <span>{booking.service?.name ?? "Ծառայություն"} · {formatDateTime(booking.starts_at, timezone)}</span>
+                                <span className="font-semibold">#{booking.booking_code}</span>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setConfirmingCancel(false);
+                                onCancel();
+                            }}
+                            disabled={isCancelling}
+                            className="rounded-2xl bg-rose-600 px-4 py-3 text-sm font-semibold text-white disabled:opacity-60"
+                        >
+                            Այո, չեղարկել նշվածները
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setConfirmingCancel(false)}
+                            disabled={isCancelling}
+                            className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700"
+                        >
+                            Հետ գնալ
+                        </button>
+                    </div>
+                </div>
+            ) : null}
+
             <div className="mt-5 grid gap-3 2xl:grid-cols-[1.2fr_0.8fr]">
                 <div className="space-y-3">
                     {detail.bookings.map((booking) => (
-                        <div key={booking.id} className="rounded-3xl border border-white bg-white/90 px-4 py-4 shadow-sm">
+                        <div data-booking-id={booking.id} key={booking.id} className="rounded-3xl border border-white bg-white/90 px-4 py-4 shadow-sm">
                             <div className="flex flex-wrap items-start justify-between gap-3">
                                 <div>
                                     <div className="font-semibold text-slate-900">{booking.service?.name ?? "Ծառայություն"}</div>

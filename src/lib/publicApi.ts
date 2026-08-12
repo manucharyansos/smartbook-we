@@ -625,5 +625,9 @@ export async function cancelPublicBooking(payload: {
             },
         }
     );
+    const detail = data?.data as PublicBookingDetail | undefined;
+    if (!detail || detail.booking_code !== payload.booking_code) {
+        throw new Error("Սերվերը չի հաստատել ընտրված ամրագրման չեղարկումը։");
+    }
     return { ...data, cover_url: resolveMediaUrl(data.cover_url), logo_url: resolveMediaUrl(data.logo_url) };
 }

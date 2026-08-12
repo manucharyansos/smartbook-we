@@ -631,7 +631,11 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
   const Icon = isHealthcare ? HeartPulse : Sparkles;
   const categoryName = getCategoryName(item.category, locale) ?? item.custom_category_name ?? (isHealthcare ? t("businesses.healthcare") : t("businesses.services"));
   const primaryLocation = item.locations?.find((location) => location.is_primary) ?? item.locations?.[0];
-  const bookingUrl = `/book/${item.slug}${primaryLocation?.id ? `?location_id=${primaryLocation.id}` : ""}`;
+  // A directory card represents the whole business. When there are several
+  // branches, let the customer choose instead of silently sending them to a
+  // primary branch that may not offer the advertised services.
+  const onlyLocation = item.locations?.length === 1 ? item.locations[0] : null;
+  const bookingUrl = `/book/${item.slug}${onlyLocation?.id ? `?location_id=${onlyLocation.id}` : ""}`;
 
   return (
     <motion.article

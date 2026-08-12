@@ -376,14 +376,14 @@ function BookingDetailsDrawer({
             .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
             .map((item) => ({
                 id: item.id,
-                name: item.service?.name ?? serviceById.get(item.service_id)?.name ?? `Service #${item.service_id}`,
+                name: item.service?.name ?? serviceById.get(item.service_id)?.name ?? `Ծառայություն #${item.service_id}`,
                 duration: item.duration_minutes ?? item.service?.duration_minutes ?? 0,
                 price: item.price ?? item.service?.price ?? null,
             }))
         : booking
             ? [{
                 id: booking.id,
-                name: serviceById.get(booking.service_id)?.name ?? `Service #${booking.service_id}`,
+                name: serviceById.get(booking.service_id)?.name ?? `Ծառայություն #${booking.service_id}`,
                 duration: serviceById.get(booking.service_id)?.duration_minutes ?? 0,
                 price: serviceById.get(booking.service_id)?.price ?? null,
             }]
@@ -443,6 +443,7 @@ function BookingDetailsDrawer({
                         onClick={onClose}
                     />
                     <motion.aside
+                        data-booking-id={booking.id}
                         initial={{ x: 420, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: 420, opacity: 0 }}
@@ -452,7 +453,9 @@ function BookingDetailsDrawer({
                         <div className="border-b border-slate-200 bg-[#faf8f4] px-5 py-5 text-slate-900">
                             <div className="flex items-start justify-between gap-4">
                                 <div>
-                                    <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Booking details</div>
+                                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                                        Ամրագրման տվյալներ · #{booking.booking_code || booking.id}
+                                    </div>
                                     <div className="mt-2 text-2xl font-semibold tracking-tight">{booking.client_name}</div>
                                     <div className="mt-1 flex items-center gap-2 text-sm text-slate-500">
                                         <Phone className="h-4 w-4" /> {booking.client_phone}
@@ -492,7 +495,7 @@ function BookingDetailsDrawer({
                                     <div className="flex items-center justify-between gap-3">
                                         <div>
                                             <div className="text-sm font-semibold text-slate-950">Խմբագրել ամրագրումը</div>
-                                            <div className="mt-1 text-xs text-slate-500">Փոխիր հաճախորդին, ժամը, աշխատակցին կամ status-ը առանց էջից դուրս գալու։</div>
+                                            <div className="mt-1 text-xs text-slate-500">Փոխիր հաճախորդին, ժամը, մասնագետին կամ կարգավիճակը։</div>
                                         </div>
                                         <Button size="sm" onClick={saveEdit} loading={saving}><Save className="h-4 w-4" /> Պահպանել</Button>
                                     </div>
@@ -502,7 +505,7 @@ function BookingDetailsDrawer({
                                         <CreateField label="Ամսաթիվ"><input type="date" value={form.date} onChange={(e) => setForm((p) => ({ ...p, date: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" /></CreateField>
                                         <CreateField label="Ժամ"><input type="time" value={form.time} onChange={(e) => setForm((p) => ({ ...p, time: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" /></CreateField>
                                         <CreateField label="Աշխատակից"><select value={form.staff_id} onChange={(e) => setForm((p) => ({ ...p, staff_id: e.target.value ? Number(e.target.value) : '' }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"><option value="">Առանց ընտրության</option>{Array.from(staffById.values()).map((member) => <option key={member.id} value={member.id}>{member.name}</option>)}</select></CreateField>
-                                        <CreateField label="Status"><select value={form.status} onChange={(e) => setForm((p) => ({ ...p, status: e.target.value as BookingStatus }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"><option value="pending">Pending</option><option value="confirmed">Confirmed</option><option value="done">Done</option><option value="cancelled">Cancelled</option><option value="no_show">No-show</option></select></CreateField>
+                                        <CreateField label="Կարգավիճակ"><select value={form.status} onChange={(e) => setForm((p) => ({ ...p, status: e.target.value as BookingStatus }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"><option value="pending">Սպասող</option><option value="confirmed">Հաստատված</option><option value="done">Ավարտված</option><option value="cancelled">Չեղարկված</option><option value="no_show">Չներկայացած</option></select></CreateField>
                                     </div>
                                     <CreateField label="Նշումներ"><textarea rows={4} value={form.notes} onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" /></CreateField>
                                     <div className="grid gap-2 sm:grid-cols-3">
@@ -528,9 +531,9 @@ function BookingDetailsDrawer({
                                 <div className="flex items-center gap-2 text-sm font-semibold text-slate-950">
                                     <Scissors className="h-4 w-4 text-violet-600" /> Ծառայություններ
                                 </div>
-                                <div className="mt-4 space-y-3">
+                                <div className="mt-3 divide-y divide-slate-100">
                                     {items.map((item) => (
-                                        <div key={item.id} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                        <div key={item.id} className="py-3 first:pt-0 last:pb-0">
                                             <div className="flex items-start justify-between gap-3">
                                                 <div>
                                                     <div className="font-medium text-slate-900">{item.name}</div>
@@ -551,9 +554,9 @@ function BookingDetailsDrawer({
                                 </div>
                             ) : null}
 
-                            <div className="mt-4 rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
+                            <div className="mt-5 border-t border-slate-200 pt-5">
                                 <div className="text-sm font-semibold text-slate-950">Արագ գործողություններ</div>
-                                <div className="mt-4 grid gap-3">
+                                <div className="mt-3 grid gap-2">
                                     {options.map((option) => (
                                         <button
                                             key={option.key}
@@ -702,7 +705,7 @@ function minutesFromDate(date: Date) {
 }
 
 function staffAvatarName(name?: string | null) {
-    return name?.trim() || "Staff";
+    return name?.trim() || "Մասնագետ";
 }
 
 function bookingServiceTitle(booking: Booking, serviceById: Map<number, Service>) {
@@ -712,7 +715,7 @@ function bookingServiceTitle(booking: Booking, serviceById: Map<number, Service>
             .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
             .map((item) => item.service?.name ?? serviceById.get(item.service_id)?.name ?? "")
             .filter(Boolean)
-        : [serviceById.get(booking.service_id)?.name ?? `Service #${booking.service_id}`];
+        : [serviceById.get(booking.service_id)?.name ?? `Ծառայություն #${booking.service_id}`];
 
     return titles.join(" + ");
 }
@@ -770,9 +773,9 @@ function SonlineMobileSchedule({
                 <div className="border-b border-[#eee6dc] px-4 py-4">
                     <div className="flex items-start justify-between gap-3">
                         <div>
-                            <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">Daily schedule</div>
+                            <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">Օրվա ամրագրումներ</div>
                             <div className="mt-1 text-lg font-semibold text-slate-950">{formatDateTimeLabel(`${datePick} 10:00`)?.split(',')[0] ?? datePick}</div>
-                            <div className="mt-1 text-xs text-slate-500">{dayBookings.length} booking • {formatMoney(selectedDateRevenue)} դր</div>
+                            <div className="mt-1 text-xs text-slate-500">{dayBookings.length} ամրագրում • {formatMoney(selectedDateRevenue)} դր</div>
                         </div>
                         <button
                             type="button"
@@ -849,6 +852,7 @@ function SonlineMobileSchedule({
                             <button
                                 key={booking.id}
                                 type="button"
+                                data-booking-id={booking.id}
                                 onClick={() => onBookingClick(booking)}
                                 className="w-full rounded-[24px] border border-[#e7dfd6] bg-white px-4 py-4 text-left shadow-[0_10px_22px_rgba(15,23,42,0.05)] transition hover:border-violet-200"
                             >
@@ -952,7 +956,7 @@ function SonlineDesktopDayColumns({
             <div className="border-b border-[#eee6dc] bg-[#fcfbf8] px-4 py-4 text-slate-900">
                 <div className="flex items-center justify-between gap-3">
                     <div>
-                        <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">Electronic journal</div>
+                        <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">Էլեկտրոնային մատյան</div>
                         <div className="mt-1 text-lg font-semibold">{date}</div>
                     </div>
                     <div className="inline-flex items-center gap-2 rounded-full border border-[#e7dfd6] bg-white px-3 py-1.5 text-xs font-medium text-slate-500">
@@ -969,7 +973,7 @@ function SonlineDesktopDayColumns({
                             <div className="flex items-center gap-3 border-r border-[#eee6dc] px-4 py-3">
                                 <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#e7dfd6] bg-white text-[11px] font-semibold text-slate-700">NA</div>
                                 <div className="min-w-0">
-                                    <div className="truncate text-sm font-semibold text-slate-950">Առանց staff</div>
+                                    <div className="truncate text-sm font-semibold text-slate-950">Առանց մասնագետի</div>
                                     <div className="text-[11px] text-slate-500">{unassignedBookings.length} այց</div>
                                 </div>
                             </div>
@@ -1045,6 +1049,7 @@ function SonlineDesktopDayColumns({
                                             <button
                                                 key={booking.id}
                                                 type="button"
+                                                data-booking-id={booking.id}
                                                 onClick={() => onBookingClick(booking)}
                                                 className={cn("absolute left-1.5 right-1.5 z-20 overflow-hidden rounded-[16px] border px-3 py-2 text-left shadow-[0_8px_18px_rgba(15,23,42,0.06)]", ui.outer)}
                                                 style={{ top, height }}
@@ -1090,6 +1095,7 @@ export function Calendar() {
     const [staffFilter, setStaffFilter] = useState<number[]>([]);
     const [serviceFilter, setServiceFilter] = useState<number[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [showCancelled, setShowCancelled] = useState(false);
 
     const [blockOpen, setBlockOpen] = useState(false);
     const [blockDraft, setBlockDraft] = useState<DraftBlock>(() => ({
@@ -1212,6 +1218,7 @@ export function Calendar() {
 
     const filteredBookings = useMemo(() => {
         return bookings.filter((b) => {
+            if (!showCancelled && b.status === "cancelled") return false;
             if (staffFilter.length && b.staff_id && !staffFilter.includes(b.staff_id)) return false;
             if (serviceFilter.length) {
                 const ids = (b.items?.length ? b.items.map((it) => it.service_id) : [b.service_id]).filter(Boolean) as number[];
@@ -1219,7 +1226,7 @@ export function Calendar() {
             }
             return true;
         });
-    }, [bookings, staffFilter, serviceFilter]);
+    }, [bookings, showCancelled, staffFilter, serviceFilter]);
 
     const visibleBookings = useMemo(() => {
         const query = searchTerm.trim().toLowerCase();
@@ -1396,35 +1403,45 @@ export function Calendar() {
 
     const cancelMut = useMutation({
         mutationFn: cancelBooking,
-        onSuccess: async () => {
+        onSuccess: async (cancelledBooking) => {
             setConfirmState(null);
-            setSelectedBooking(null);
+            setSelectedBooking((current) => current?.id === cancelledBooking.id ? null : current);
+            showCalendarToast(`#${cancelledBooking.booking_code || cancelledBooking.id} ամրագրումը չեղարկվեց`);
             await qc.invalidateQueries({ queryKey: ["bookings", businessId] });
+        },
+        onError: (error) => {
+            showCalendarToast(error instanceof Error ? error.message : "Չհաջողվեց չեղարկել ամրագրումը", "error");
         },
     });
 
     const confirmMut = useMutation({
         mutationFn: confirmBooking,
-        onSuccess: async () => {
+        onSuccess: async (updatedBooking) => {
             setSelectedBooking(null);
+            showCalendarToast(`#${updatedBooking.booking_code || updatedBooking.id} ամրագրումը հաստատվեց`);
             await qc.invalidateQueries({ queryKey: ["bookings", businessId] });
         },
+        onError: () => showCalendarToast("Չհաջողվեց հաստատել ամրագրումը", "error"),
     });
 
     const doneMut = useMutation({
         mutationFn: doneBooking,
-        onSuccess: async () => {
+        onSuccess: async (updatedBooking) => {
             setSelectedBooking(null);
+            showCalendarToast(`#${updatedBooking.booking_code || updatedBooking.id} ամրագրումը նշվեց ավարտված`);
             await qc.invalidateQueries({ queryKey: ["bookings", businessId] });
         },
+        onError: () => showCalendarToast("Չհաջողվեց ավարտել ամրագրումը", "error"),
     });
 
     const noShowMut = useMutation({
         mutationFn: noShowBooking,
-        onSuccess: async () => {
+        onSuccess: async (updatedBooking) => {
             setSelectedBooking(null);
+            showCalendarToast(`#${updatedBooking.booking_code || updatedBooking.id} ամրագրումը նշվեց չներկայացած`);
             await qc.invalidateQueries({ queryKey: ["bookings", businessId] });
         },
+        onError: () => showCalendarToast("Չհաջողվեց փոխել ամրագրման կարգավիճակը", "error"),
     });
 
     const createBlockMut = useMutation({
@@ -1756,7 +1773,7 @@ export function Calendar() {
         }
         if (selectedBooking.status === "confirmed") {
             options.push({ key: "done", title: "Նշել որպես կատարված", description: "Փակել որպես ավարտված" });
-            options.push({ key: "no_show", title: "Նշել որպես no-show", description: "Հաճախորդը չի եկել այցին", danger: true });
+            options.push({ key: "no_show", title: "Նշել որպես չներկայացած", description: "Հաճախորդը չի եկել այցին", danger: true });
             options.push({ key: "cancel", title: "Չեղարկել ամրագրումը", description: "Նշել որպես չեղարկված", danger: true });
         }
         if (selectedBooking.status === "done" || selectedBooking.status === "cancelled" || selectedBooking.status === "no_show") {
@@ -1765,6 +1782,15 @@ export function Calendar() {
         return options;
     }, [selectedBooking]);
     const searchPlaceholder = canManageAllBookings ? "Փնտրել հաճախորդ կամ աշխատակից" : "Փնտրել իմ հաճախորդներին";
+    const cancellationDescription = confirmState?.type === "booking-cancel"
+        ? [
+            `#${confirmState.booking.booking_code || confirmState.booking.id}`,
+            confirmState.booking.client_name,
+            formatDateTimeLabel(confirmState.booking.starts_at),
+            bookingServiceTitle(confirmState.booking, serviceById),
+            confirmState.booking.staff_id ? staffById.get(confirmState.booking.staff_id)?.name : "Առանց մասնագետի",
+        ].filter(Boolean).join(" · ")
+        : undefined;
 
     const monthDays = useMemo(() => monthMatrix(viewDate), [viewDate]);
     const monthLabel = useMemo(() => {
@@ -2118,7 +2144,7 @@ export function Calendar() {
                         <div className="border-b border-[#eee6dc] bg-[#fcfbf8] px-4 py-4">
                             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                                 <div>
-                                    <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">Schedule board</div>
+                                    <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">Ամրագրումների օրացույց</div>
                                     <div className="mt-1 text-lg font-semibold text-slate-950">{viewMode === "day" ? datePick : "Շաբաթվա տեսք"}</div>
                                 </div>
 
@@ -2127,8 +2153,17 @@ export function Calendar() {
                                         <Search className="h-4 w-4 text-slate-400" />
                                         <input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder={searchPlaceholder} className="w-full border-0 bg-transparent p-0 text-sm text-slate-600 outline-none placeholder:text-slate-400" />
                                     </label>
+                                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-[#e7dfd6] bg-white px-3 py-2 text-xs font-medium text-slate-600">
+                                        <input
+                                            type="checkbox"
+                                            checked={showCancelled}
+                                            onChange={(event) => setShowCancelled(event.target.checked)}
+                                            className="h-4 w-4 rounded border-slate-300 text-violet-600"
+                                        />
+                                        Ցույց տալ չեղարկվածները
+                                    </label>
                                     <div className="inline-flex items-center gap-2 rounded-full border border-[#e7dfd6] bg-white px-3 py-2 text-xs font-medium text-slate-500">
-                                        <Users2 className="h-3.5 w-3.5" /> {visibleBookings.length} booking
+                                        <Users2 className="h-3.5 w-3.5" /> {visibleBookings.length} ամրագրում
                                     </div>
                                 </div>
                             </div>
@@ -2168,7 +2203,7 @@ export function Calendar() {
                                             >
                                                 <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">{weekdayShort(item.day)}</div>
                                                 <div className="mt-1 text-lg font-semibold text-slate-950">{item.day.getDate()}</div>
-                                                <div className="mt-2 text-xs text-slate-500">{item.bookings} booking</div>
+                                                <div className="mt-2 text-xs text-slate-500">{item.bookings} ամրագրում</div>
                                                 <div className="mt-1 text-xs font-medium text-slate-700">{formatMoney(item.revenue)} դր</div>
                                             </button>
                                         );
@@ -2225,7 +2260,7 @@ export function Calendar() {
                                             const ui = eventColor(booking.status);
                                             const statusLabel = bookingStatusLabel(booking.status);
                                             return (
-                                                <div className={cn("calendar-event-card rounded-[16px] border px-3 py-2 shadow-sm", ui.outer)}>
+                                                <div data-booking-id={booking.id} className={cn("calendar-event-card rounded-[16px] border px-3 py-2 shadow-sm", ui.outer)}>
                                                     <div className="flex items-start justify-between gap-2">
                                                         <div className="min-w-0">
                                                             <div className="truncate text-[10px] font-semibold leading-4 text-slate-900">{booking.client_name}</div>
@@ -2352,7 +2387,7 @@ export function Calendar() {
                         </CreateField>
                         <CreateField label="Տեսակ">
                             <select value={blockDraft.mode} onChange={(e) => setBlockDraft((p) => ({ ...p, mode: e.target.value as "allday" | "duration" }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
-                                <option value="duration">Ժամային block</option>
+                                <option value="duration">Փակ ժամ</option>
                                 <option value="allday">Ամբողջ օր</option>
                             </select>
                         </CreateField>
@@ -2375,13 +2410,13 @@ export function Calendar() {
 
                     <div className="grid gap-3 sm:grid-cols-2">
                         <Button onClick={submitBlock} disabled={createBlockMut.isPending || !blockDraft.date || (blockDraft.scope === "staff" && !blockDraft.staffId && staff.length > 0)}>
-                            {createBlockMut.isPending ? "Պահպանում է…" : "Պահպանել block"}
+                            {createBlockMut.isPending ? "Պահպանում է…" : "Պահպանել փակ ժամանակը"}
                         </Button>
                         <Button variant="secondary" onClick={() => setBlockOpen(false)}>Փակել</Button>
                     </div>
 
                     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-xs leading-6 text-slate-600">
-                        • Block-ը կարող է լինել staff-ի կամ ամբողջ business-ի համար • Mobile/day view-ում block-ը tap անելով կարող ես ջնջել
+                        Փակ ժամանակը կարող է վերաբերել մեկ մասնագետի կամ ամբողջ բիզնեսին։ Այն ջնջելու համար սեղմիր օրացույցում։
                     </div>
                 </div>
             </Modal>
@@ -2390,7 +2425,7 @@ export function Calendar() {
                 open={createOpen}
                 onClose={resetCreateState}
                 title="Նոր ամրագրում"
-                description="Ստեղծիր single, sequential multi կամ advanced multi-lines ամրագրում՝ նույն պրոֆեսիոնալ flow-ով, ինչ public booking-ում։"
+                description="Ընտրիր ծառայությունները, մասնագետին և ժամը, ապա պահպանիր ամրագրումը։"
                 size="screen"
                 bodyClassName="p-0"
             >
@@ -2421,9 +2456,9 @@ export function Calendar() {
                                             <div className="mt-1 text-lg font-semibold text-slate-950">{workStart}–{workEnd}</div>
                                         </div>
                                         <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
-                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Mode</div>
+                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Տեսակ</div>
                                             <div className="mt-1 text-lg font-semibold text-slate-950">
-                                                {bookingMode === "single" ? "Single" : bookingMode === "multi" ? "Multi" : "Lines"}
+                                                {bookingMode === "single" ? "Մեկ" : bookingMode === "multi" ? "Մի քանի" : "Առանձին"}
                                             </div>
                                         </div>
                                     </div>
@@ -2434,13 +2469,13 @@ export function Calendar() {
                         <section className="space-y-3">
                             <div>
                                 <div className="text-lg font-semibold text-slate-950">Ամրագրման տեսակ</div>
-                                <div className="text-sm text-slate-500">Նույն երեք ռեժիմները, ինչ public booking-ում, բայց ադմինային control-ներով։</div>
+                                <div className="text-sm text-slate-500">Ընտրիր ամենապարզ համապատասխան տարբերակը։</div>
                             </div>
                             <div className="grid gap-3 xl:grid-cols-3">
                                 <ModeCard
                                     active={bookingMode === "single"}
                                     icon={<CheckCircle2 className="h-5 w-5" />}
-                                    title="Single booking"
+                                    title="Մեկ ծառայություն"
                                     description="Մեկ ծառայություն, մեկ աշխատակից, մեկ մեկնարկի ժամ։"
                                     color="bg-sky-500"
                                     onClick={() => {
@@ -2451,7 +2486,7 @@ export function Calendar() {
                                 <ModeCard
                                     active={bookingMode === "multi"}
                                     icon={<Layers3 className="h-5 w-5" />}
-                                    title="Sequential multi"
+                                    title="Մի քանի ծառայություն"
                                     description="Մի քանի ծառայություն իրար հետևից՝ նույն աշխատակցի մոտ։"
                                     color="bg-violet-600"
                                     onClick={() => setBookingMode("multi")}
@@ -2459,7 +2494,7 @@ export function Calendar() {
                                 <ModeCard
                                     active={bookingMode === "lines"}
                                     icon={<Users2 className="h-5 w-5" />}
-                                    title="Advanced multi-lines"
+                                    title="Տարբեր ժամեր կամ մասնագետներ"
                                     description="Յուրաքանչյուր ծառայության համար առանձին աշխատակից և ժամ։"
                                     color="bg-amber-500"
                                     onClick={() => setBookingMode("lines")}
@@ -2473,13 +2508,13 @@ export function Calendar() {
                                     <Scissors className="h-5 w-5" />
                                 </div>
                                 <div>
-                                    <div className="text-lg font-semibold text-slate-950">Ծառայություններ և schedule</div>
+                                    <div className="text-lg font-semibold text-slate-950">Ծառայություններ և ժամեր</div>
                                     <div className="text-sm text-slate-500">
                                         {bookingMode === "single"
                                             ? "Ընտրիր մեկ ծառայություն և աշխատակցին։"
                                             : bookingMode === "multi"
                                                 ? "Ավելացրու մի քանի ծառայություն նույն աշխատակցի համար․ համակարգը հաշվարկում է հերթականությունը։"
-                                                : "Յուրաքանչյուր ընտրված ծառայության համար կարգավորիր առանձին staff և starts_at։"}
+                                                : "Յուրաքանչյուր ծառայության համար ընտրիր առանձին մասնագետ և ժամ։"}
                                     </div>
                                 </div>
                             </div>
@@ -2786,17 +2821,20 @@ export function Calendar() {
                                 </CreateField>
                             </div>
                             {bookingMode !== "lines" ? (
-                                <div className="mt-4 grid gap-4 md:grid-cols-3">
-                                    <CreateField label="Օգտագործել միավորներ">
-                                        <input value={redeemPoints} onChange={(e) => setRedeemPoints(e.target.value)} type="number" min={0} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Օր. 100" />
-                                    </CreateField>
-                                    <CreateField label="Նվերի քարտի կոդ">
-                                        <input value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value.toUpperCase())} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Օր. GC-AB12CD34" />
-                                    </CreateField>
-                                    <CreateField label="Նվերի քարտից գումար">
-                                        <input value={giftCardAmount} onChange={(e) => setGiftCardAmount(e.target.value)} type="number" min={0} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Լրիվ կամ մասամբ" />
-                                    </CreateField>
-                                </div>
+                                <details className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                                    <summary className="cursor-pointer text-sm font-semibold text-slate-700">Զեղչ, միավորներ կամ նվերի քարտ</summary>
+                                    <div className="mt-4 grid gap-4 md:grid-cols-3">
+                                        <CreateField label="Օգտագործել միավորներ">
+                                            <input value={redeemPoints} onChange={(e) => setRedeemPoints(e.target.value)} type="number" min={0} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Օր. 100" />
+                                        </CreateField>
+                                        <CreateField label="Նվերի քարտի կոդ">
+                                            <input value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value.toUpperCase())} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Օր. GC-AB12CD34" />
+                                        </CreateField>
+                                        <CreateField label="Նվերի քարտից գումար">
+                                            <input value={giftCardAmount} onChange={(e) => setGiftCardAmount(e.target.value)} type="number" min={0} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Լրիվ կամ մասամբ" />
+                                        </CreateField>
+                                    </div>
+                                </details>
                             ) : null}
                         </section>
                     </div>
@@ -2804,9 +2842,9 @@ export function Calendar() {
                     <aside className="min-w-0 border-t border-slate-200 bg-[#fcfbf8] p-5 sm:p-6 2xl:border-l 2xl:border-t-0">
                         <div className="space-y-4 2xl:sticky 2xl:top-0">
                             <div className="rounded-[28px] border border-slate-200 bg-white p-5 text-slate-900 shadow-[0_24px_60px_rgba(15,23,42,0.20)]">
-                                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Booking summary</div>
+                                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Ամրագրման ամփոփում</div>
                                 <div className="mt-3 text-2xl font-semibold tracking-tight">
-                                    {bookingMode === "single" ? "Single booking" : bookingMode === "multi" ? "Sequential multi" : "Advanced lines"}
+                                    {bookingMode === "single" ? "Մեկ ծառայություն" : bookingMode === "multi" ? "Մի քանի ծառայություն" : "Առանձին ժամեր կամ մասնագետներ"}
                                 </div>
                                 <div className="mt-2 text-sm leading-6 text-slate-500">
                                     {draft ? `${ymd(draft.startsAt)} · ${hm(draft.startsAt)}` : "Սկզբի ժամ դեռ ընտրված չէ"}
@@ -2882,17 +2920,17 @@ export function Calendar() {
                                         );
                                     }) : (
                                         <div className="rounded-2xl border border-dashed border-slate-200 px-4 py-5 text-sm text-slate-500">
-                                            Ընտրիր ծառայություններ, որ summary-ն լրացվի։
+                                            Ընտրիր ծառայություններ, որ ամփոփումը լրացվի։
                                         </div>
                                     )}
                                 </div>
 
                                 <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-600">
                                     {bookingMode === "single"
-                                        ? "Single booking-ը ամենաարագ տարբերակն է ադմինի կամ աշխատակցի համար։"
+                                        ? "Մեկ ծառայություն՝ մեկ մասնագետի մոտ։"
                                         : bookingMode === "multi"
-                                            ? "Sequential multi mode-ը ստեղծում է մեկ booking՝ մի քանի BookingItem-երով նույն staff-ի համար։"
-                                            : "Lines mode-ը ստեղծում է group booking, որտեղ յուրաքանչյուր line անկախ ժամանակ և staff ունի։"}
+                                            ? "Մի քանի ծառայություն իրար հետևից՝ նույն մասնագետի մոտ։"
+                                            : "Յուրաքանչյուր ծառայությունն ունի իր մասնագետն ու ժամը։"}
                                 </div>
 
                                 <div className="mt-5 grid gap-3">
@@ -2900,10 +2938,10 @@ export function Calendar() {
                                         {createMut.isPending || createLinesMut.isPending
                                             ? "Պահպանում է…"
                                             : bookingMode === "single"
-                                                ? "Ստեղծել single booking"
+                                                ? "Ստեղծել ամրագրումը"
                                                 : bookingMode === "multi"
-                                                    ? "Ստեղծել multi booking"
-                                                    : "Ստեղծել lines booking"}
+                                                    ? "Ստեղծել ընդհանուր ամրագրումը"
+                                                    : "Ստեղծել ամրագրումները"}
                                     </Button>
                                     <Button variant="secondary" size="lg" onClick={resetCreateState}>Փակել</Button>
                                 </div>
@@ -2947,19 +2985,19 @@ export function Calendar() {
 
             <ConfirmModal
                 open={!!confirmState}
-                title={confirmState?.type === "block" ? "Ջնջե՞լ block-ը" : "Չեղարկե՞լ ամրագրումը"}
+                title={confirmState?.type === "block" ? "Ջնջե՞լ փակ ժամանակը" : "Չեղարկե՞լ հենց այս ամրագրումը"}
                 description={
                     confirmState?.type === "block"
-                        ? `Դուք պատրաստվում եք ջնջել «${confirmState.block.reason ?? "Փակ է"}» block-ը։`
+                        ? `Դուք պատրաստվում եք ջնջել «${confirmState.block.reason ?? "Փակ է"}» փակ ժամանակը։`
                         : confirmState?.type === "booking-cancel"
-                            ? `Դուք պատրաստվում եք չեղարկել ${confirmState.booking.client_name}-ի ամրագրումը։`
+                            ? cancellationDescription
                             : undefined
                 }
                 confirmText={confirmState?.type === "block" ? "Այո, ջնջել" : "Այո, չեղարկել"}
                 danger
                 loading={deleteBlockMut.isPending || cancelMut.isPending}
                 onClose={() => {
-                    if (!deleteBlockMut.isPending && !cancelMut.isPending) confirmState?.type === "booking-cancel" ? setConfirmState(null) : setConfirmState(null);
+                    if (!deleteBlockMut.isPending && !cancelMut.isPending) setConfirmState(null);
                 }}
                 onConfirm={() => {
                     if (!confirmState) return;

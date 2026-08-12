@@ -25,6 +25,10 @@
   --bb-shadow-soft: 0 10px 24px rgba(15, 23, 42, 0.05);
 }
 
+html.dark {
+  color-scheme: dark;
+}
+
 html,
 body,
 #root {

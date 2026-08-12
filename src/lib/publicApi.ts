@@ -1,16 +1,46 @@
-import axios from "axios";
+import axios, { type AxiosError } from "axios";
+import { API_BASE_URL } from "./apiBase";
 import { resolveMediaUrl } from "./mediaUrl";
 
 const publicApi = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL: API_BASE_URL,
 });
+
+function normalizePublicBusinessType(value: unknown): "beauty" | "dental" {
+    return ["dental", "clinic", "healthcare", "medical", "doctor", "health"].includes(String(value ?? "").toLowerCase()) ? "dental" : "beauty";
+}
+
+function normalizePublicBusinessItem<T extends { business_type?: unknown; vertical?: unknown }>(item: T): Omit<T, "business_type"> & { business_type: "beauty" | "dental" } {
+    return {
+        ...item,
+        business_type: normalizePublicBusinessType(item.business_type ?? item.vertical),
+    };
+}
 
 export type PublicLocation = {
     id: number;
     name?: string | null;
     address: string;
+    city?: string | null;
+    district?: string | null;
+    lat?: number | null;
+    lng?: number | null;
+    latitude?: number | null;
+    longitude?: number | null;
     phone?: string | null;
     is_primary: boolean;
+};
+
+export type PublicBusinessCategory = {
+    id?: number;
+    slug?: string | null;
+    vertical?: "services" | "healthcare" | "beauty" | "dental" | "salon" | "clinic" | string | null;
+    name?: string | null;
+    name_hy?: string | null;
+    name_ru?: string | null;
+    name_en?: string | null;
+    description?: string | null;
+    icon?: string | null;
 };
 
 export type PublicBusiness = {
@@ -18,6 +48,9 @@ export type PublicBusiness = {
     name: string;
     slug: string;
     business_type: "beauty" | "dental";
+    vertical?: "services" | "healthcare" | string | null;
+    category?: PublicBusinessCategory | null;
+    custom_category_name?: string | null;
     address?: string | null;
     phone?: string | null;
     locations?: PublicLocation[];
@@ -34,6 +67,8 @@ export type PublicBusiness = {
     messenger_url?: string | null;
     website_url?: string | null;
     description?: string | null;
+    show_logo?: boolean;
+    show_cover?: boolean;
     show_staff?: boolean;
     show_services?: boolean;
     settings?: {
@@ -48,6 +83,9 @@ export type PublicDirectoryBusiness = {
     name: string;
     slug: string;
     business_type: "beauty" | "dental";
+    vertical?: "services" | "healthcare" | string | null;
+    category?: PublicBusinessCategory | null;
+    custom_category_name?: string | null;
     address: string | null;
     phone: string | null;
     locations?: PublicLocation[];
@@ -66,6 +104,24 @@ export type PublicDirectoryBusiness = {
     services_count: number;
     staff_count: number;
     is_featured: boolean;
+};
+
+
+export type PublicMapPin = {
+    business_id: number;
+    name: string;
+    slug: string;
+    vertical?: string | null;
+    category_slug?: string | null;
+    category_name?: string | null;
+    icon?: string | null;
+    location_id: number;
+    location_name?: string | null;
+    address?: string | null;
+    lat: number;
+    lng: number;
+    distance_km?: number | null;
+    booking_url?: string | null;
 };
 
 export type PublicService = {
@@ -116,7 +172,7 @@ export type PublicBookingResponse = {
         expires_at: string;
     };
     meta?: {
-        business_type?: "beauty" | "dental";
+        business_type?: "services" | "healthcare";
     };
 };
 
@@ -189,45 +245,226 @@ export type PublicVerifyBookingResponse = {
     data: PublicBookingDetail;
 };
 
-export async function fetchPublicBusinesses(params?: {
-    type?: "beauty" | "dental" | "all";
+
+export async function fetchPublicCategories(params?: {
+    vertical?: "services" | "healthcare" | "beauty" | "dental" | "salon" | "clinic" | string;
+    locale?: string;
+}): Promise<PublicBusinessCategory[]> {
+    const query: Record<string, string> = {};
+    if (params?.vertical) query.vertical = params.vertical;
+    if (params?.locale) query.locale = params.locale;
+
+    const endpoints = ["/v1/public/categories", "/public/categories"];
+
+    for (const endpoint of endpoints) {
+        try {
+            const { data } = await publicApi.get(endpoint, { params: query });
+            const list = data?.data || data?.categories || data;
+            if (Array.isArray(list)) {
+                return list;
+            }
+        } catch {
+            // Not all backend builds have category endpoints yet.
+            // Do not break the public site; callers can derive categories from businesses.
+        }
+    }
+
+    return [];
+}
+
+function extractBusinessList(payload: unknown): PublicDirectoryBusiness[] {
+    const data = payload && typeof payload === "object" ? payload as Record<string, unknown> : {};
+    const list: unknown[] = Array.isArray(data.data)
+        ? data.data
+        : Array.isArray(data.businesses)
+            ? data.businesses
+            : Array.isArray(payload)
+                ? payload
+                : [];
+
+    return list.map((value) => {
+        const item = value as PublicDirectoryBusiness;
+        return {
+            ...normalizePublicBusinessItem(item),
+            cover_url: resolveMediaUrl(item.cover_url),
+            logo_url: resolveMediaUrl(item.logo_url),
+        };
+    });
+}
+
+function buildPublicBusinessQuery(params?: {
+    type?: "services" | "healthcare" | "beauty" | "dental" | "all";
     search?: string;
     featured?: boolean;
     per_page?: number;
-}): Promise<PublicDirectoryBusiness[]> {
+}, includePerPage = true): Record<string, string | number> {
     const query: Record<string, string | number> = {};
 
     if (params?.type && params.type !== "all") {
         query.type = params.type;
     }
 
-    if (params?.search) {
-        query.search = params.search;
+    if (params?.search?.trim()) {
+        query.search = params.search.trim();
     }
 
     if (params?.featured) {
         query.featured = 1;
     }
 
-    if (params?.per_page) {
+    if (includePerPage && params?.per_page) {
         query.per_page = params.per_page;
     }
 
-    const { data } = await publicApi.get("/public/businesses", { params: query });
-    return (data.data || data).map((item: PublicDirectoryBusiness) => ({
-        ...item,
-        cover_url: resolveMediaUrl(item.cover_url),
-        logo_url: resolveMediaUrl(item.logo_url),
-    }));
+    return query;
+}
+
+export async function fetchPublicBusinesses(params?: {
+    type?: "services" | "healthcare" | "beauty" | "dental" | "all";
+    search?: string;
+    featured?: boolean;
+    per_page?: number;
+}): Promise<PublicDirectoryBusiness[]> {
+    const endpoints = ["/v1/public/businesses", "/public/businesses"];
+    const attempts: Array<Record<string, string | number>> = [
+        buildPublicBusinessQuery(params, true),
+        buildPublicBusinessQuery(params, false),
+        {},
+    ];
+
+    let lastError: unknown = null;
+
+    for (const endpoint of endpoints) {
+        for (const query of attempts) {
+            try {
+                const { data } = await publicApi.get(endpoint, { params: query });
+                return extractBusinessList(data);
+            } catch (error) {
+                lastError = error;
+                const status = (error as AxiosError)?.response?.status;
+                // 404 means this endpoint version is missing; try the next route.
+                // 422 means the backend does not accept one of our optional query params; try simpler params.
+                if (status === 404 || status === 422) continue;
+            }
+        }
+    }
+
+    throw lastError;
+}
+
+
+
+type RawPublicMapPin = {
+    business_id?: unknown;
+    id?: unknown;
+    name?: unknown;
+    slug?: unknown;
+    vertical?: unknown;
+    category_slug?: unknown;
+    category_name?: unknown;
+    icon?: unknown;
+    location_id?: unknown;
+    location_name?: unknown;
+    address?: unknown;
+    lat?: unknown;
+    lng?: unknown;
+    latitude?: unknown;
+    longitude?: unknown;
+    distance_km?: unknown;
+    booking_url?: unknown;
+    category?: { slug?: unknown; name?: unknown; name_hy?: unknown } | null;
+    location?: { id?: unknown; name?: unknown; address?: unknown; lat?: unknown; lng?: unknown; latitude?: unknown; longitude?: unknown } | null;
+};
+
+function normalizeMapPin(pin: RawPublicMapPin): PublicMapPin {
+    const slug = String(pin.slug ?? "");
+    const categorySlug = pin.category_slug ?? pin.category?.slug;
+    const categoryName = pin.category_name ?? pin.category?.name ?? pin.category?.name_hy;
+
+    return {
+        business_id: Number(pin.business_id ?? pin.id),
+        name: String(pin.name ?? ""),
+        slug,
+        vertical: pin.vertical == null ? null : String(pin.vertical),
+        category_slug: categorySlug == null ? null : String(categorySlug),
+        category_name: categoryName == null ? null : String(categoryName),
+        icon: pin.icon == null ? null : String(pin.icon),
+        location_id: Number(pin.location_id ?? pin.location?.id ?? pin.id),
+        location_name: pin.location_name == null && pin.location?.name == null ? null : String(pin.location_name ?? pin.location?.name),
+        address: pin.address == null && pin.location?.address == null ? null : String(pin.address ?? pin.location?.address),
+        lat: Number(pin.lat ?? pin.latitude ?? pin.location?.lat ?? pin.location?.latitude),
+        lng: Number(pin.lng ?? pin.longitude ?? pin.location?.lng ?? pin.location?.longitude),
+        distance_km: pin.distance_km == null ? null : Number(pin.distance_km),
+        booking_url: pin.booking_url == null ? (slug ? `/book/${slug}` : null) : String(pin.booking_url),
+    };
+}
+
+function extractMapPins(payload: unknown): PublicMapPin[] {
+    const data = payload && typeof payload === "object" ? payload as Record<string, unknown> : {};
+    const list: unknown[] = Array.isArray(data.data) ? data.data : Array.isArray(data.pins) ? data.pins : Array.isArray(payload) ? payload : [];
+
+    return list
+        .map((pin) => normalizeMapPin(pin as RawPublicMapPin))
+        .filter((pin: PublicMapPin) => Number.isFinite(pin.lat) && Number.isFinite(pin.lng) && !!pin.slug);
+}
+
+export async function fetchPublicMapPins(params?: {
+    type?: "services" | "healthcare" | "beauty" | "dental" | "all";
+    vertical?: string;
+    category?: string;
+    category_id?: number;
+    lat?: number;
+    lng?: number;
+    radius?: number;
+    search?: string;
+}): Promise<PublicMapPin[]> {
+    const query: Record<string, string | number> = {};
+    if (params?.type && params.type !== "all") query.type = params.type;
+    if (params?.vertical) query.vertical = params.vertical;
+    if (params?.category) query.category = params.category;
+    if (params?.category_id) query.category_id = params.category_id;
+    if (typeof params?.lat === "number") query.lat = params.lat;
+    if (typeof params?.lng === "number") query.lng = params.lng;
+    if (typeof params?.radius === "number") query.radius = params.radius;
+    if (params?.search?.trim()) query.search = params.search.trim();
+
+    const endpoints = ["/v1/public/businesses/map", "/public/businesses/map"];
+    let lastError: unknown = null;
+
+    for (const endpoint of endpoints) {
+        try {
+            const { data } = await publicApi.get(endpoint, { params: query });
+            return extractMapPins(data);
+        } catch (error) {
+            lastError = error;
+            const status = (error as AxiosError)?.response?.status;
+            if (status === 404 || status === 422) continue;
+        }
+    }
+
+    throw lastError;
 }
 
 export async function fetchPublicBusiness(slug: string): Promise<PublicBusiness> {
-    const { data } = await publicApi.get(`/public/businesses/${slug}`);
-    return {
-        ...data,
-        cover_url: resolveMediaUrl(data.cover_url),
-        logo_url: resolveMediaUrl(data.logo_url),
-    };
+    const endpoints = [`/v1/public/businesses/${slug}`, `/public/businesses/${slug}`];
+    let lastError: unknown = null;
+
+    for (const endpoint of endpoints) {
+        try {
+            const { data } = await publicApi.get(endpoint);
+            return {
+                ...normalizePublicBusinessItem(data?.data ?? data),
+                cover_url: resolveMediaUrl((data?.data ?? data).cover_url),
+                logo_url: resolveMediaUrl((data?.data ?? data).logo_url),
+            } as PublicBusiness;
+        } catch (error) {
+            lastError = error;
+            const status = (error as AxiosError)?.response?.status;
+            if (status === 404) continue;
+        }
+    }
+
+    throw lastError;
 }
 
 export async function fetchPublicServices(slug: string, params?: { location_id?: number }): Promise<PublicService[]> {

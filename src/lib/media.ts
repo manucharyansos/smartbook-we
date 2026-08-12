@@ -1,5 +1,4 @@
-const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
-const API_ORIGIN = API_URL ? new URL(API_URL).origin : (typeof window !== 'undefined' ? window.location.origin : '');
+import { API_ORIGIN } from './apiBase';
 
 export function normalizeMediaUrl(url?: string | null): string | null {
   if (!url) return null;

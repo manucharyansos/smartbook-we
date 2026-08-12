@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useAuth } from "../store/auth";
+import { API_BASE_URL } from "./apiBase";
 
 export const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL: API_BASE_URL,
 });
 
 api.interceptors.request.use((config) => {
@@ -23,7 +24,9 @@ api.interceptors.response.use(
         if (status === 401) {
             try {
                 useAuth.getState().clear();
-            } catch {}
+            } catch {
+                // A storage cleanup failure must not block the login redirect.
+            }
 
             if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
                 window.location.replace("/login");

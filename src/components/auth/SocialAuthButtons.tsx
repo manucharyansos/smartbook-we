@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { cn } from "../../lib/cn";
 import { getDeviceFingerprint } from "../../lib/fingerprint";
 import { fadeUp } from "../../lib/motion";
+import { API_BASE_URL } from "../../lib/apiBase";
 
 type Provider = "google" | "facebook";
 type Audience = "business" | "client";
@@ -72,7 +73,7 @@ function getRedirectUrl(
     audience: Audience,
     businessType?: BusinessType
 ) {
-    const apiBase = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
+    const apiBase = API_BASE_URL;
     const frontendBase = window.location.origin;
     const callbackUrl = `${frontendBase}/auth/social/callback`;
 

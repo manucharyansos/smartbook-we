@@ -20,7 +20,7 @@ export default function LanguageToggle({ className, compact = false }: { classNa
         aria-label="Փոխել լեզուն"
         className={cn("cursor-pointer appearance-none bg-transparent font-bold uppercase outline-none", compact ? "w-10" : "w-12")}
       >
-        {options.map((option) => <option key={option.value} value={option.value} className="bg-slate-950 text-white">{option.label}</option>)}
+        {options.map((option) => <option key={option.value} value={option.value} className="bg-white text-slate-950 dark:bg-slate-950 dark:text-white">{option.label}</option>)}
       </select>
     </label>
   );

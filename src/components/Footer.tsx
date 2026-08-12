@@ -27,7 +27,7 @@ export default function Footer() {
     ],
   };
   return (
-      <footer className="relative border-t border-slate-200 bg-white">
+      <footer className="relative border-t border-slate-200 bg-white transition-colors dark:border-white/10 dark:bg-[#050816]">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
           <motion.div
               initial={{ opacity: 0, y: 18, scale: 0.97 }}
@@ -79,23 +79,23 @@ export default function Footer() {
                 </div>
 
                 <div>
-                  <div className="text-lg font-semibold tracking-tight text-slate-950">
+                  <div className="text-lg font-semibold tracking-tight text-slate-950 dark:text-white">
                     Vizit
                   </div>
-                  <div className="text-xs text-slate-500">{t("footer.platformTagline")}</div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400">{t("footer.platformTagline")}</div>
                 </div>
               </Link>
 
-              <p className="mt-5 max-w-md text-sm leading-7 text-slate-600">
+              <p className="mt-5 max-w-md text-sm leading-7 text-slate-600 dark:text-slate-400">
                 {t("footer.description")}
               </p>
 
               <div className="mt-5 flex flex-wrap gap-2">
-                <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700">
+                <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-300">
                   <ShieldCheck className="h-3.5 w-3.5 text-violet-600" />
                   {t("footer.onlineBooking")}
                 </div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700">
+                <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-300">
                   <Mail className="h-3.5 w-3.5 text-violet-600" />
                   {t("footer.supportAvailable")}
                 </div>
@@ -103,10 +103,10 @@ export default function Footer() {
             </div>
 
             <div>
-              <div className="text-sm font-semibold text-slate-950">{t("footer.navigation")}</div>
-              <div className="mt-4 flex flex-col gap-3 text-sm text-slate-600">
+              <div className="text-sm font-semibold text-slate-950 dark:text-white">{t("footer.navigation")}</div>
+              <div className="mt-4 flex flex-col gap-3 text-sm text-slate-600 dark:text-slate-400">
                 {links.navigation.map((item) => (
-                    <Link key={item.to} to={item.to} className="transition hover:text-slate-950">
+                    <Link key={item.to} to={item.to} className="transition hover:text-slate-950 dark:hover:text-white">
                       {item.label}
                     </Link>
                 ))}
@@ -114,10 +114,10 @@ export default function Footer() {
             </div>
 
             <div>
-              <div className="text-sm font-semibold text-slate-950">{t("footer.platform")}</div>
-              <div className="mt-4 flex flex-col gap-3 text-sm text-slate-600">
+              <div className="text-sm font-semibold text-slate-950 dark:text-white">{t("footer.platform")}</div>
+              <div className="mt-4 flex flex-col gap-3 text-sm text-slate-600 dark:text-slate-400">
                 {links.product.map((item) => (
-                    <Link key={item.to} to={item.to} className="transition hover:text-slate-950">
+                    <Link key={item.to} to={item.to} className="transition hover:text-slate-950 dark:hover:text-white">
                       {item.label}
                     </Link>
                 ))}
@@ -125,10 +125,10 @@ export default function Footer() {
             </div>
 
             <div>
-              <div className="text-sm font-semibold text-slate-950">{t("footer.legal")}</div>
-              <div className="mt-4 flex flex-col gap-3 text-sm text-slate-600">
+              <div className="text-sm font-semibold text-slate-950 dark:text-white">{t("footer.legal")}</div>
+              <div className="mt-4 flex flex-col gap-3 text-sm text-slate-600 dark:text-slate-400">
                 {links.legal.map((item) => (
-                    <Link key={item.to} to={item.to} className="transition hover:text-slate-950">
+                    <Link key={item.to} to={item.to} className="transition hover:text-slate-950 dark:hover:text-white">
                       {item.label}
                     </Link>
                 ))}
@@ -136,7 +136,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="mt-8 flex flex-col gap-2 border-t border-slate-200 pt-5 text-center text-sm text-slate-500 sm:mt-10 sm:flex-row sm:items-center sm:justify-between sm:text-left">
+          <div className="mt-8 flex flex-col gap-2 border-t border-slate-200 pt-5 text-center text-sm text-slate-500 dark:border-white/10 dark:text-slate-400 sm:mt-10 sm:flex-row sm:items-center sm:justify-between sm:text-left">
             <span>© {new Date().getFullYear()} Vizit. {t("footer.rights")}</span>
             <span>{t("footer.appointmentBusinesses")}</span>
           </div>

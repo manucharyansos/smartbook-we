@@ -539,7 +539,7 @@ function localizePlanName(plan: PublicPlan) {
 }
 
 function SectionBadge({ children }: { children: ReactNode }) {
-  return <div className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.07] px-4 py-2 text-xs font-bold text-cyan-100 shadow-[0_18px_60px_rgba(0,0,0,0.18)] backdrop-blur-2xl sm:text-sm">{children}</div>;
+  return <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-cyan-50 px-4 py-2 text-xs font-bold text-cyan-700 shadow-sm backdrop-blur-2xl dark:border-white/12 dark:bg-white/[0.07] dark:text-cyan-100 dark:shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:text-sm">{children}</div>;
 }
 
 function SearchPanel({ search, setSearch, onSubmit }: { search: string; setSearch: (value: string) => void; onSubmit: () => void }) {
@@ -650,7 +650,7 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
       whileInView="visible"
       viewport={{ once: true, amount: 0.16 }}
       transition={{ delay: index * 0.025 }}
-      className="group overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.07] shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-2xl transition duration-300 hover:-translate-y-1 hover:bg-white/[0.10]"
+      className="group overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl transition duration-300 hover:-translate-y-1 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)] dark:hover:bg-white/[0.10]"
     >
       <div className="vizit-preserve-dark relative h-48 overflow-hidden bg-slate-900">
         {item.cover_url ? <img src={item.cover_url} alt={item.name} className="h-full w-full object-cover opacity-82 transition duration-700 group-hover:scale-105" /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(168,85,247,0.36),transparent_35%),radial-gradient(circle_at_80%_20%,rgba(34,211,238,0.18),transparent_32%),linear-gradient(135deg,#111827,#312e81,#0f172a)]" />}
@@ -667,14 +667,14 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
         </div>
       </div>
       <div className="p-5 sm:p-6">
-        <p className="line-clamp-2 min-h-[48px] text-sm leading-6 text-slate-300">{item.short_description || t("business.card.defaultDescription")}</p>
-        <div className="mt-5 grid grid-cols-2 gap-3 text-xs text-slate-300">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3"><span className="block text-lg font-black text-white">{item.services_count ?? 0}</span> {t("business.card.services")}</div>
-          <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-3"><span className="block text-lg font-black text-white">{item.staff_count ?? 0}</span> {t("business.card.staff")}</div>
+        <p className="line-clamp-2 min-h-[48px] text-sm leading-6 text-slate-600 dark:text-slate-300">{item.short_description || t("business.card.defaultDescription")}</p>
+        <div className="mt-5 grid grid-cols-2 gap-3 text-xs text-slate-600 dark:text-slate-300">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-white/10 dark:bg-white/[0.06]"><span className="block text-lg font-black text-slate-950 dark:text-white">{item.services_count ?? 0}</span> {t("business.card.services")}</div>
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-white/10 dark:bg-white/[0.06]"><span className="block text-lg font-black text-slate-950 dark:text-white">{item.staff_count ?? 0}</span> {t("business.card.staff")}</div>
         </div>
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <Link to={bookingUrl} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-black text-slate-950 transition hover:bg-slate-100">{t("business.card.book")} <ArrowRight className="h-4 w-4" /></Link>
-          <Link to={`/businesses/${item.slug}`} className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm font-bold text-white transition hover:bg-white/[0.10]">{t("business.card.view")}</Link>
+          <Link to={`/businesses/${item.slug}`} className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-100 dark:border-white/10 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/[0.10]">{t("business.card.view")}</Link>
         </div>
       </div>
     </motion.article>
@@ -692,26 +692,26 @@ function HomePlansSection() {
   });
 
   return (
-    <section id="plans" className="bg-[#050b16] px-5 py-16 text-white sm:px-8 lg:py-20">
+    <section id="plans" className="bg-slate-50 px-5 py-16 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8 lg:py-20">
       <div className="mx-auto max-w-[1320px]">
         <div className="mb-9 grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
           <div>
             <SectionBadge><BadgeCheck className="h-4 w-4" /> {t("plans.badge")}</SectionBadge>
-            <h2 className="mt-5 text-3xl font-black tracking-[-0.04em] text-white sm:text-5xl">{t("plans.title")}</h2>
+            <h2 className="mt-5 text-3xl font-black tracking-[-0.04em] text-slate-950 dark:text-white sm:text-5xl">{t("plans.title")}</h2>
           </div>
-          <Link to="/pricing" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/12 bg-white/[0.07] px-6 py-3 text-sm font-bold text-white transition hover:bg-white/[0.12]">{t("cta.pricing")} <ArrowRight className="h-4 w-4" /></Link>
+          <Link to="/pricing" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-100 dark:border-white/12 dark:bg-white/[0.07] dark:text-white dark:hover:bg-white/[0.12]">{t("cta.pricing")} <ArrowRight className="h-4 w-4" /></Link>
         </div>
         {plansQ.isLoading ? (
-          <div className="grid gap-5 md:grid-cols-3">{Array.from({ length: 3 }).map((_, idx) => <div key={idx} className="h-[230px] animate-pulse rounded-[26px] border border-white/10 bg-white/[0.06]" />)}</div>
+          <div className="grid gap-5 md:grid-cols-3">{Array.from({ length: 3 }).map((_, idx) => <div key={idx} className="h-[230px] animate-pulse rounded-[26px] border border-slate-200 bg-white dark:border-white/10 dark:bg-white/[0.06]" />)}</div>
         ) : plansQ.isError ? (
           <div className="rounded-[24px] border border-rose-300/20 bg-rose-500/10 p-6 text-rose-100">{t("status.errorPlans")}</div>
         ) : (
           <div className="grid gap-5 md:grid-cols-3">
             {(plansQ.data ?? []).slice(0, 3).map((plan) => (
-              <div key={plan.id} className="rounded-[28px] border border-white/10 bg-white/[0.07] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-2xl">
+              <div key={plan.id} className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
                 <div className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-slate-950">{plan.code}</div>
-                <h3 className="mt-5 text-2xl font-black text-white">{localizePlanName(plan)}</h3>
-                <div className="mt-4 text-3xl font-black text-white">{formatPrice(plan.monthly_price, plan.currency ?? undefined)}</div>
+                <h3 className="mt-5 text-2xl font-black text-slate-950 dark:text-white">{localizePlanName(plan)}</h3>
+                <div className="mt-4 text-3xl font-black text-slate-950 dark:text-white">{formatPrice(plan.monthly_price, plan.currency ?? undefined)}</div>
                 <p className="mt-3 min-h-[48px] text-sm leading-6 text-slate-400">{plan.description || "Vizit business-ի համար պատրաստ պլան։"}</p>
               </div>
             ))}
@@ -799,34 +799,34 @@ export default function Index() {
 
 
   return (
-    <div className="vizit-dark-public min-h-screen overflow-x-clip bg-[#050816] text-white">
+    <div className="vizit-public-page min-h-screen overflow-x-clip bg-slate-50 text-slate-950 transition-colors dark:bg-[#050816] dark:text-white">
       <Seo title={t("seo.homeTitle")} description={t("seo.homeDescription")} image="/og-default.svg" />
       <LandingNavbar />
 
       <main>
-        <section className="relative overflow-hidden bg-[#050816] px-5 pb-8 pt-[108px] sm:px-8 sm:pt-[126px] lg:pb-0">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_14%,rgba(125,92,255,0.22),transparent_26%),radial-gradient(circle_at_82%_18%,rgba(38,168,255,0.14),transparent_28%),linear-gradient(180deg,#07101f_0%,#080d1a_58%,#050816_100%)]" />
+        <section className="relative overflow-hidden bg-white px-5 pb-8 pt-[108px] transition-colors dark:bg-[#050816] sm:px-8 sm:pt-[126px] lg:pb-0">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_14%,rgba(125,92,255,0.14),transparent_28%),radial-gradient(circle_at_82%_18%,rgba(38,168,255,0.10),transparent_30%),linear-gradient(180deg,#ffffff_0%,#f8fafc_58%,#f1f5f9_100%)] dark:bg-[radial-gradient(circle_at_18%_14%,rgba(125,92,255,0.22),transparent_26%),radial-gradient(circle_at_82%_18%,rgba(38,168,255,0.14),transparent_28%),linear-gradient(180deg,#07101f_0%,#080d1a_58%,#050816_100%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(circle_at_top,black,transparent_76%)]" />
 
           <motion.div variants={stagger} initial="hidden" animate="visible" className="relative mx-auto grid max-w-[1320px] gap-8 xl:grid-cols-[1fr_610px] xl:items-end">
             <div className="max-w-[705px] pb-8 text-center xl:pb-[120px] xl:text-left">
-              <motion.div variants={fadeUp} className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.075] px-4 py-2 text-[12px] font-bold text-white/80 shadow-[0_16px_50px_rgba(0,0,0,0.22)] backdrop-blur-2xl xl:mx-0">
+              <motion.div variants={fadeUp} className="mx-auto inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/80 px-4 py-2 text-[12px] font-bold text-slate-700 shadow-sm backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.075] dark:text-white/80 dark:shadow-[0_16px_50px_rgba(0,0,0,0.22)] xl:mx-0">
                 <Star className="h-4 w-4 fill-[#6aa5ff] text-[#6aa5ff]" /> {t("hero.badge")}
               </motion.div>
 
-              <motion.h1 variants={fadeUp} className="mt-8 text-[42px] font-black leading-[0.96] tracking-[-0.065em] text-white sm:text-[64px] lg:text-[78px]">
+              <motion.h1 variants={fadeUp} className="mt-8 text-[42px] font-black leading-[0.96] tracking-[-0.065em] text-slate-950 dark:text-white sm:text-[64px] lg:text-[78px]">
                 {t("hero.title1")} <span className="mt-2 block bg-gradient-to-r from-[#a855f7] via-[#6c7bff] to-[#22d3ee] bg-clip-text text-transparent">{t("hero.title2")}</span>
               </motion.h1>
 
-              <motion.p variants={fadeUp} className="mx-auto mt-6 max-w-2xl text-[15px] font-medium leading-8 text-white/70 sm:text-[17px] xl:mx-0">{t("hero.subtitle")}</motion.p>
+              <motion.p variants={fadeUp} className="mx-auto mt-6 max-w-2xl text-[15px] font-medium leading-8 text-slate-600 dark:text-white/70 sm:text-[17px] xl:mx-0">{t("hero.subtitle")}</motion.p>
 
               <SearchPanel search={search} setSearch={setSearch} onSubmit={scrollToResults} />
 
-              <motion.div variants={fadeUp} className="mt-5 flex flex-wrap items-center justify-center gap-2 text-[12px] text-white/68 xl:justify-start">
+              <motion.div variants={fadeUp} className="mt-5 flex flex-wrap items-center justify-center gap-2 text-[12px] text-slate-600 dark:text-white/68 xl:justify-start">
                 <span className="mr-1 font-semibold">{t("popular")}</span>
                 {popularChips.length ? popularChips.map((category) => {
                   const label = getCategoryName(category, locale) ?? t("category.fallback");
-                  return <button key={category.slug ?? label} type="button" onClick={() => selectCategory(category)} className="rounded-full border border-white/10 bg-white/[0.065] px-4 py-2 font-semibold text-white/82 transition hover:border-cyan-200/30 hover:bg-white/[0.12] hover:text-white">{label}</button>;
+                  return <button key={category.slug ?? label} type="button" onClick={() => selectCategory(category)} className="rounded-full border border-slate-200 bg-white px-4 py-2 font-semibold text-slate-700 transition hover:border-violet-300 hover:bg-violet-50 dark:border-white/10 dark:bg-white/[0.065] dark:text-white/82 dark:hover:border-cyan-200/30 dark:hover:bg-white/[0.12] dark:hover:text-white">{label}</button>;
                 }) : null}
               </motion.div>
 
@@ -837,8 +837,8 @@ export default function Index() {
           </motion.div>
         </section>
 
-        <section id="categories" className="relative bg-[#050816] px-5 pb-8 sm:px-8">
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.18 }} className="mx-auto max-w-[1320px] rounded-[26px] border border-slate-200 bg-white p-5 text-slate-950 shadow-[0_30px_100px_rgba(2,6,23,0.24)] sm:rounded-[30px] sm:p-7">
+        <section id="categories" className="relative bg-slate-100 px-5 pb-8 transition-colors dark:bg-[#050816] sm:px-8">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.18 }} className="mx-auto max-w-[1320px] rounded-[26px] border border-slate-200 bg-white p-5 text-slate-950 shadow-[0_30px_100px_rgba(2,6,23,0.12)] dark:border-white/10 dark:bg-[#07101f] dark:text-white dark:shadow-[0_30px_100px_rgba(0,0,0,0.30)] sm:rounded-[30px] sm:p-7">
             <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <h2 className="text-2xl font-black tracking-[-0.04em] sm:text-3xl">{t("categories.title")}</h2>
               <button type="button" onClick={resetFilters} className="inline-flex items-center gap-2 rounded-full px-2 text-sm font-bold text-violet-600 transition hover:text-violet-700">{t("categories.all")} <ArrowRight className="h-4 w-4" /></button>
@@ -853,38 +853,38 @@ export default function Index() {
                   const label = getCategoryName(category, locale) ?? t("category.fallback");
                   const active = selectedCategorySlug === category.slug;
                   return (
-                    <button key={category.slug ?? label} type="button" onClick={() => selectCategory(category)} className={cn("group min-h-[138px] w-[76vw] max-w-[280px] shrink-0 snap-start rounded-[20px] border p-4 text-center shadow-[0_12px_34px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:border-violet-200 sm:w-auto sm:max-w-none", active ? "border-violet-300 bg-violet-50" : "border-slate-100 bg-white")}>
+                    <button key={category.slug ?? label} type="button" onClick={() => selectCategory(category)} className={cn("group min-h-[138px] w-[76vw] max-w-[280px] shrink-0 snap-start rounded-[20px] border p-4 text-center shadow-[0_12px_34px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:border-violet-200 dark:shadow-black/20 sm:w-auto sm:max-w-none", active ? "border-violet-300 bg-violet-50 dark:border-violet-400/50 dark:bg-violet-500/15" : "border-slate-100 bg-white dark:border-white/10 dark:bg-white/[0.06] dark:hover:bg-white/[0.10]")}>
                       <span className={cn("mx-auto grid h-[58px] w-[58px] place-items-center rounded-[18px] bg-gradient-to-br", tone)}><Icon className="h-8 w-8" /></span>
-                      <span className="mt-4 block text-[13px] font-black leading-5 text-slate-950">{label}</span>
+                      <span className="mt-4 block text-[13px] font-black leading-5 text-slate-950 dark:text-white">{label}</span>
                     </button>
                   );
                 })}
               </div>
             ) : (
-              <div className="rounded-[22px] border border-dashed border-slate-200 bg-slate-50 p-8 text-center">
+              <div className="rounded-[22px] border border-dashed border-slate-200 bg-slate-50 p-8 text-center dark:border-white/10 dark:bg-white/[0.04]">
                 <MoreHorizontal className="mx-auto h-8 w-8 text-slate-400" />
-                <h3 className="mt-4 text-lg font-black text-slate-950">{t("categories.empty.title")}</h3>
+                <h3 className="mt-4 text-lg font-black text-slate-950 dark:text-white">{t("categories.empty.title")}</h3>
               </div>
             )}
           </motion.div>
         </section>
 
-        <section id="how" className="bg-[#050816] px-5 py-14 text-white sm:px-8 lg:py-18">
-          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="mx-auto max-w-[1320px] rounded-[28px] border border-white/10 bg-[#07101f] p-6 shadow-[0_30px_100px_rgba(0,0,0,0.30)] sm:rounded-[34px] sm:p-8 lg:p-10">
-            <motion.h2 variants={fadeUp} className="text-center text-3xl font-black tracking-[-0.04em] text-white sm:text-4xl">{t("how.title")}</motion.h2>
+        <section id="how" className="bg-white px-5 py-14 text-slate-950 transition-colors dark:bg-[#050816] dark:text-white sm:px-8 lg:py-18">
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="mx-auto max-w-[1320px] rounded-[28px] border border-slate-200 bg-slate-50 p-6 shadow-[0_30px_100px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-[#07101f] dark:shadow-[0_30px_100px_rgba(0,0,0,0.30)] sm:rounded-[34px] sm:p-8 lg:p-10">
+            <motion.h2 variants={fadeUp} className="text-center text-3xl font-black tracking-[-0.04em] text-slate-950 dark:text-white sm:text-4xl">{t("how.title")}</motion.h2>
             <motion.div variants={fadeUp} className="mx-auto mt-3 h-1 w-16 rounded-full bg-gradient-to-r from-violet-500 to-cyan-400" />
 
             <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
               {benefitCards.map(({ title, text, Icon, tone }) => (
-                <motion.div key={title} variants={fadeUp} className="rounded-[22px] border border-white/10 bg-white/[0.065] p-5 text-center shadow-[0_18px_60px_rgba(0,0,0,0.18)] backdrop-blur-2xl sm:text-left">
+                <motion.div key={title} variants={fadeUp} className="rounded-[22px] border border-slate-200 bg-white p-5 text-center shadow-[0_18px_60px_rgba(15,23,42,0.07)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.065] dark:shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:text-left">
                   <span className={cn("mx-auto grid h-[60px] w-[60px] place-items-center rounded-[18px] bg-gradient-to-br sm:mx-0", tone)}><Icon className="h-7 w-7" /></span>
-                  <h3 className="mt-4 text-[16px] font-black text-white">{title}</h3>
-                  <p className="mt-2 text-[13px] font-medium leading-6 text-white/68">{text}</p>
+                  <h3 className="mt-4 text-[16px] font-black text-slate-950 dark:text-white">{title}</h3>
+                  <p className="mt-2 text-[13px] font-medium leading-6 text-slate-600 dark:text-white/68">{text}</p>
                 </motion.div>
               ))}
             </div>
 
-            <motion.div variants={fadeUp} className="mt-6 grid gap-3 rounded-[22px] border border-white/10 bg-white/[0.055] p-4 sm:grid-cols-2 xl:grid-cols-4">
+            <motion.div variants={fadeUp} className="mt-6 grid gap-3 rounded-[22px] border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.055] sm:grid-cols-2 xl:grid-cols-4">
               {[
                 { value: businessesQ.isLoading ? "..." : stats.total, label: t("stats.businesses"), Icon: Building2 },
                 { value: businessesQ.isLoading ? "..." : stats.services, label: t("stats.services"), Icon: Sparkles },
@@ -893,18 +893,18 @@ export default function Index() {
               ].map(({ value, label, Icon }) => (
                 <div key={label} className="flex min-w-0 items-center justify-center gap-4 rounded-[18px] px-3 py-4 text-center sm:text-left xl:justify-center">
                   <Icon className="h-7 w-7 shrink-0 text-[#6aa5ff]" />
-                  <span className="min-w-0"><span className="block bg-gradient-to-r from-[#7b65ff] to-[#35b7ff] bg-clip-text text-[26px] font-black leading-none text-transparent">{value}</span><span className="mt-2 block text-[12px] font-semibold leading-4 text-white/76">{label}</span></span>
+                  <span className="min-w-0"><span className="block bg-gradient-to-r from-[#7b65ff] to-[#35b7ff] bg-clip-text text-[26px] font-black leading-none text-transparent">{value}</span><span className="mt-2 block text-[12px] font-semibold leading-4 text-slate-600 dark:text-white/76">{label}</span></span>
                 </div>
               ))}
             </motion.div>
           </motion.div>
         </section>
 
-        <section id="map" className="bg-[#050b16] px-5 py-16 text-white sm:px-8 lg:py-20">
+        <section id="map" className="bg-slate-50 px-5 py-16 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8 lg:py-20">
           <div className="mx-auto max-w-[1320px]">
             <div className="mb-8">
               <SectionBadge><MapPin className="h-4 w-4" /> {t("map.badge")}</SectionBadge>
-              <h2 className="mt-5 max-w-3xl text-3xl font-black tracking-[-0.04em] text-white sm:text-5xl">{t("map.title")}</h2>
+              <h2 className="mt-5 max-w-3xl text-3xl font-black tracking-[-0.04em] text-slate-950 dark:text-white sm:text-5xl">{t("map.title")}</h2>
             </div>
 
             <div className="grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
@@ -916,31 +916,31 @@ export default function Index() {
                 userLocation={null}
               />
 
-              <div className="rounded-[30px] border border-white/10 bg-white/[0.07] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-2xl">
+              <div className="rounded-[30px] border border-slate-200 bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
                 {selectedPin ? (
                   <div>
-                    <div className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.08] px-3 py-2 text-xs font-bold text-cyan-100"><MapPin className="h-3.5 w-3.5" /> {t("map.selectedAddress")}</div>
-                    <h3 className="mt-4 text-2xl font-black text-white">{selectedPin.name}</h3>
-                    <p className="mt-2 text-sm font-semibold text-slate-300">{selectedPin.categoryName || (selectedPin.vertical === "healthcare" ? "Բժշկական" : "Ծառայություններ")}</p>
-                    <p className="mt-4 text-sm leading-7 text-slate-400">{selectedPin.locationName ? `${selectedPin.locationName} · ` : ""}{selectedPin.address || t("business.card.noAddress")}</p>
+                    <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs font-bold text-cyan-700 dark:border-white/12 dark:bg-white/[0.08] dark:text-cyan-100"><MapPin className="h-3.5 w-3.5" /> {t("map.selectedAddress")}</div>
+                    <h3 className="mt-4 text-2xl font-black text-slate-950 dark:text-white">{selectedPin.name}</h3>
+                    <p className="mt-2 text-sm font-semibold text-slate-600 dark:text-slate-300">{selectedPin.categoryName || (selectedPin.vertical === "healthcare" ? "Բժշկական" : "Ծառայություններ")}</p>
+                    <p className="mt-4 text-sm leading-7 text-slate-500 dark:text-slate-400">{selectedPin.locationName ? `${selectedPin.locationName} · ` : ""}{selectedPin.address || t("business.card.noAddress")}</p>
                     <div className="mt-5 grid gap-3">
                       <Link to={selectedPin.bookingUrl} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-slate-100">{t("map.bookAddress")} <ArrowRight className="h-4 w-4" /></Link>
-                      <Link to={`/businesses/${selectedPin.slug}`} className="inline-flex items-center justify-center rounded-2xl border border-white/12 bg-white/[0.06] px-5 py-3 text-sm font-bold text-white transition hover:bg-white/[0.10]">{t("business.card.view")}</Link>
+                      <Link to={`/businesses/${selectedPin.slug}`} className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 px-5 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-100 dark:border-white/12 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/[0.10]">{t("business.card.view")}</Link>
                     </div>
                   </div>
                 ) : (
                   <div className="text-center">
                     <MapPin className="mx-auto h-10 w-10 text-cyan-200" />
-                    <h3 className="mt-4 text-xl font-black text-white">{t("map.choosePin")}</h3>
+                    <h3 className="mt-4 text-xl font-black text-slate-950 dark:text-white">{t("map.choosePin")}</h3>
                     <p className="mt-3 text-sm leading-7 text-slate-400">{t("map.choosePinText")}</p>
                   </div>
                 )}
 
                 {pins.length ? <div className="mt-6 max-h-[280px] space-y-2 overflow-y-auto pr-1">
                   {pins.slice(0, 8).map((pin) => (
-                    <button key={`list-${pin.businessId}-${pin.locationId}`} type="button" onClick={() => setSelectedPinKey(`${pin.businessId}-${pin.locationId}`)} className="flex w-full items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.045] p-3 text-left transition hover:bg-white/[0.09]">
+                    <button key={`list-${pin.businessId}-${pin.locationId}`} type="button" onClick={() => setSelectedPinKey(`${pin.businessId}-${pin.locationId}`)} className="flex w-full items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-left transition hover:bg-slate-100 dark:border-white/10 dark:bg-white/[0.045] dark:hover:bg-white/[0.09]">
                       <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-slate-950"><MapPin className="h-4 w-4" /></span>
-                      <span className="min-w-0"><span className="block truncate text-sm font-black text-white">{pin.name}</span><span className="mt-1 block truncate text-xs text-slate-400">{pin.address}</span></span>
+                      <span className="min-w-0"><span className="block truncate text-sm font-black text-slate-950 dark:text-white">{pin.name}</span><span className="mt-1 block truncate text-xs text-slate-500 dark:text-slate-400">{pin.address}</span></span>
                     </button>
                   ))}
                 </div> : null}
@@ -949,21 +949,21 @@ export default function Index() {
           </div>
         </section>
 
-        <section id="businesses" className="bg-[#050b16] px-5 py-16 text-white sm:px-8 lg:py-20">
+        <section id="businesses" className="bg-white px-5 py-16 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8 lg:py-20">
           <div className="mx-auto max-w-[1320px]">
             <div className="mb-8 grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
               <div>
                 <SectionBadge><Star className="h-4 w-4" /> {t("businesses.badge")}</SectionBadge>
-                <h2 className="mt-5 max-w-3xl text-3xl font-black tracking-[-0.04em] text-white sm:text-5xl">{t("businesses.title")}</h2>
+                <h2 className="mt-5 max-w-3xl text-3xl font-black tracking-[-0.04em] text-slate-950 dark:text-white sm:text-5xl">{t("businesses.title")}</h2>
               </div>
-              <div className="rounded-[18px] border border-white/12 bg-white/[0.07] p-1 backdrop-blur-xl">
+              <div className="rounded-[18px] border border-slate-200 bg-slate-50 p-1 backdrop-blur-xl dark:border-white/12 dark:bg-white/[0.07]">
                 <div className="flex gap-1 overflow-x-auto">
                   {[
                     { key: "all", label: t("businesses.all") },
                     { key: "services", label: t("businesses.services") },
                     { key: "healthcare", label: t("businesses.healthcare") },
                   ].map((item) => (
-                    <button key={item.key} type="button" onClick={() => { setFilter(item.key as BusinessFilter); setSelectedCategorySlug(null); }} className={cn("whitespace-nowrap rounded-[14px] px-4 py-2.5 text-sm font-black transition", filter === item.key && !selectedCategorySlug ? "bg-white text-slate-950" : "text-slate-300 hover:bg-white/[0.08] hover:text-white")}>{item.label}</button>
+                    <button key={item.key} type="button" onClick={() => { setFilter(item.key as BusinessFilter); setSelectedCategorySlug(null); }} className={cn("whitespace-nowrap rounded-[14px] px-4 py-2.5 text-sm font-black transition", filter === item.key && !selectedCategorySlug ? "bg-white text-slate-950 shadow-sm dark:bg-white dark:text-slate-950" : "text-slate-600 hover:bg-white hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/[0.08] dark:hover:text-white")}>{item.label}</button>
                   ))}
                 </div>
               </div>
@@ -992,13 +992,13 @@ export default function Index() {
             ) : null}
 
             {businessesQ.isLoading ? (
-              <div className="grid gap-6 lg:grid-cols-2 2xl:grid-cols-3">{Array.from({ length: 6 }).map((_, idx) => <div key={idx} className="h-[420px] animate-pulse rounded-[26px] border border-white/10 bg-white/[0.06]" />)}</div>
+              <div className="grid gap-6 lg:grid-cols-2 2xl:grid-cols-3">{Array.from({ length: 6 }).map((_, idx) => <div key={idx} className="h-[420px] animate-pulse rounded-[26px] border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/[0.06]" />)}</div>
             ) : businessesQ.isError ? (
               <div className="rounded-[24px] border border-rose-300/20 bg-rose-500/10 p-6 text-rose-100">{t("status.errorBusinesses")}</div>
             ) : !filteredBusinesses.length ? (
-              <div className="rounded-[28px] border border-white/10 bg-white/[0.07] p-10 text-center backdrop-blur-2xl">
+              <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-10 text-center backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.07]">
                 <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-white text-slate-950"><Building2 className="h-7 w-7" /></div>
-                <h3 className="mt-5 text-2xl font-black text-white">{t("businesses.empty.title")}</h3>
+                <h3 className="mt-5 text-2xl font-black text-slate-950 dark:text-white">{t("businesses.empty.title")}</h3>
               </div>
             ) : (
               <div className="grid gap-6 lg:grid-cols-2 2xl:grid-cols-3">{filteredBusinesses.map((item, index) => <BusinessCard key={item.id} item={item} index={index} />)}</div>
@@ -1008,17 +1008,17 @@ export default function Index() {
 
         <HomePlansSection />
 
-        <section className="bg-[#050b16] px-5 pb-20 text-white sm:px-8">
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="mx-auto max-w-[1320px] overflow-hidden rounded-[34px] border border-white/12 bg-[radial-gradient(circle_at_20%_0%,rgba(34,211,238,0.18),transparent_30%),radial-gradient(circle_at_86%_8%,rgba(236,72,153,0.20),transparent_32%),rgba(255,255,255,0.07)] p-8 shadow-[0_34px_120px_rgba(0,0,0,0.28)] backdrop-blur-2xl sm:p-10 lg:p-12">
+        <section className="bg-white px-5 pb-20 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="mx-auto max-w-[1320px] overflow-hidden rounded-[34px] border border-violet-200 bg-[radial-gradient(circle_at_20%_0%,rgba(34,211,238,0.12),transparent_30%),radial-gradient(circle_at_86%_8%,rgba(236,72,153,0.12),transparent_32%),rgba(248,250,252,0.96)] p-8 shadow-[0_34px_120px_rgba(15,23,42,0.10)] backdrop-blur-2xl dark:border-white/12 dark:bg-[radial-gradient(circle_at_20%_0%,rgba(34,211,238,0.18),transparent_30%),radial-gradient(circle_at_86%_8%,rgba(236,72,153,0.20),transparent_32%),rgba(255,255,255,0.07)] dark:shadow-[0_34px_120px_rgba(0,0,0,0.28)] sm:p-10 lg:p-12">
             <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
               <div>
                 <SectionBadge><BadgeCheck className="h-4 w-4" /> {t("cta.badge")}</SectionBadge>
-                <h2 className="mt-5 max-w-3xl text-3xl font-black tracking-[-0.04em] text-white sm:text-5xl">{t("cta.title")}</h2>
-                <p className="mt-4 max-w-2xl text-base leading-8 text-slate-300">{t("cta.text")}</p>
+                <h2 className="mt-5 max-w-3xl text-3xl font-black tracking-[-0.04em] text-slate-950 dark:text-white sm:text-5xl">{t("cta.title")}</h2>
+                <p className="mt-4 max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-300">{t("cta.text")}</p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
                 <Link to="/register" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3.5 text-sm font-black text-slate-950 transition hover:bg-slate-100">{t("nav.start")} <ArrowRight className="h-4 w-4" /></Link>
-                <Link to="/pricing" className="inline-flex items-center justify-center rounded-2xl border border-white/12 bg-white/[0.06] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/[0.10]">{t("cta.pricing")}</Link>
+                <Link to="/pricing" className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-3.5 text-sm font-bold text-slate-800 transition hover:bg-slate-100 dark:border-white/12 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/[0.10]">{t("cta.pricing")}</Link>
               </div>
             </div>
           </motion.div>

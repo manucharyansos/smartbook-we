@@ -50,15 +50,15 @@ function deliveryTone(status?: string | null) {
 
 function SummaryCard({ label, value, icon: Icon }: { label: string; value: string; icon: typeof Contact }) {
   return (
-    <Card className="rounded-[28px] border border-white/70 bg-white/90 p-5 shadow-sm">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <div className="text-sm text-slate-500">{label}</div>
-          <div className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">{value}</div>
+    <Card className="h-full min-h-[150px] rounded-[22px] border border-slate-200 bg-white/95 p-4 shadow-sm sm:min-h-[156px] sm:p-5">
+      <div className="flex h-full flex-col justify-between gap-4">
+        <div className="flex min-h-[48px] items-start justify-between gap-2">
+          <div className="max-w-[calc(100%-48px)] text-[13px] font-medium leading-5 text-slate-500 sm:text-sm">{label}</div>
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-violet-500/15 to-fuchsia-500/15 text-violet-600 sm:h-11 sm:w-11 sm:rounded-2xl">
+            <Icon className="h-5 w-5" />
+          </div>
         </div>
-        <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-violet-500/15 to-fuchsia-500/15 text-violet-700">
-          <Icon className="h-5 w-5" />
-        </div>
+        <div className="text-[28px] font-semibold leading-none tracking-tight text-slate-950 sm:text-3xl">{value}</div>
       </div>
     </Card>
   );

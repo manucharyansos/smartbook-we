@@ -31,7 +31,7 @@ const baseNavItems: NavItem[] = [
   { to: "/app/settings", label: "Կարգավորումներ", icon: Settings, color: "from-slate-700 to-slate-900" },
 ];
 
-const mobileBottomPaths = ["/app/dashboard", "/app/calendar", "/app/clients", "/app/services", "/app/settings"];
+const mobileBottomPaths = ["/app/dashboard", "/app/calendar", "/app/services", "/app/clients"];
 
 export function AppLayout() {
   const navigate = useNavigate();
@@ -372,7 +372,7 @@ export function AppLayout() {
                   <div className={cn("grid h-8 w-8 place-items-center rounded-xl transition-all", isActive && "bg-violet-100")}>
                     <item.icon size={20} className={isActive ? "text-violet-700" : "text-slate-400"} />
                   </div>
-                  <span className="max-w-[52px] truncate">{item.label}</span>
+                  <span className="max-w-[68px] truncate">{item.label}</span>
                 </>
               )}
             </NavLink>

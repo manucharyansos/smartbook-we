@@ -58,6 +58,11 @@ type LocationDraft = {
   is_primary: boolean;
 };
 
+type MapCoordinates = {
+  latitude: number | null;
+  longitude: number | null;
+};
+
 const emptyLocationDraft = (): LocationDraft => ({
   id: null,
   name: "",
@@ -176,6 +181,8 @@ export default function BusinessSettingsPage() {
   const [locationDraft, setLocationDraft] = useState<LocationDraft>(emptyLocationDraft());
   const [editingLocationId, setEditingLocationId] = useState<number | null>(null);
   const [isLocationEditorOpen, setIsLocationEditorOpen] = useState(false);
+  const [selectedMapLocationId, setSelectedMapLocationId] = useState<number | null>(null);
+  const [mapDrafts, setMapDrafts] = useState<Record<number, MapCoordinates>>({});
 
   useEffect(() => {
     if (settingsQ.data) setForm(settingsQ.data);
@@ -196,6 +203,16 @@ export default function BusinessSettingsPage() {
   const locationLimit = Number(form.location_limit ?? settingsQ.data?.location_limit ?? 1);
   const locations = (form.locations ?? settingsQ.data?.locations ?? []) as BusinessLocation[];
   const canAddLocation = canEdit && locations.length < locationLimit;
+  const primaryLocation = locations.find((location) => location.is_primary) ?? locations[0] ?? null;
+  const mapLocation = locations.find((location) => location.id === selectedMapLocationId) ?? primaryLocation;
+  const mapCoordinates = mapLocation
+    ? (Object.prototype.hasOwnProperty.call(mapDrafts, mapLocation.id)
+        ? mapDrafts[mapLocation.id]
+        : {
+            latitude: mapLocation.latitude == null ? null : Number(mapLocation.latitude),
+            longitude: mapLocation.longitude == null ? null : Number(mapLocation.longitude),
+          })
+    : null;
 
   function syncLocations(nextLocations: BusinessLocation[], nextLimit?: number) {
     const primary = nextLocations.find((item) => item.is_primary) ?? nextLocations[0];
@@ -272,7 +289,11 @@ export default function BusinessSettingsPage() {
         : createBusinessLocation(payload);
     },
     onSuccess: async (data) => {
+      const savedLocation = editingLocationId
+        ? data.locations.find((location) => location.id === editingLocationId)
+        : data.locations[data.locations.length - 1];
       syncLocations(data.locations, data.location_limit);
+      if (savedLocation) setSelectedMapLocationId(savedLocation.id);
       resetLocationEditor();
       await qc.invalidateQueries({ queryKey: ['business-settings'] });
       setToast({ open: true, text: editingLocationId ? 'Հասցեն թարմացվեց ✅' : 'Հասցեն ավելացվեց ✅', type: 'success' });
@@ -298,6 +319,36 @@ export default function BusinessSettingsPage() {
     onError: (error: unknown) => {
       setToast({ open: true, text: getErrorMessage(error, 'Չհաջողվեց ջնջել հասցեն'), type: 'error' });
       setTimeout(() => setToast((p) => ({ ...p, open: false })), 2600);
+    },
+  });
+
+  const saveMapLocationMut = useMutation({
+    mutationFn: ({ location, coordinates }: { location: BusinessLocation; coordinates: MapCoordinates }) =>
+      updateBusinessLocation(location.id, {
+        name: location.name ?? null,
+        address: location.address,
+        phone: location.phone ?? null,
+        latitude: coordinates.latitude,
+        longitude: coordinates.longitude,
+        is_primary: location.is_primary,
+      }),
+    onSuccess: async (data) => {
+      const savedId = mapLocation?.id;
+      syncLocations(data.locations, data.location_limit);
+      if (savedId) {
+        setMapDrafts((prev) => {
+          const next = { ...prev };
+          delete next[savedId];
+          return next;
+        });
+      }
+      await qc.invalidateQueries({ queryKey: ["business-settings"] });
+      setToast({ open: true, text: "Քարտեզի դիրքը պահպանվեց ✅", type: "success" });
+      setTimeout(() => setToast((prev) => ({ ...prev, open: false })), 2200);
+    },
+    onError: (error: unknown) => {
+      setToast({ open: true, text: getErrorMessage(error, "Չհաջողվեց պահպանել քարտեզի դիրքը"), type: "error" });
+      setTimeout(() => setToast((prev) => ({ ...prev, open: false })), 2600);
     },
   });
 
@@ -411,6 +462,21 @@ export default function BusinessSettingsPage() {
                       </button>
                     </div>
                 )}
+
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => {
+                    if (!mapLocation) {
+                      startLocationCreate();
+                      return;
+                    }
+                    document.getElementById("business-location-map")?.scrollIntoView({ behavior: "smooth", block: "center" });
+                  }}
+                  className="gap-2"
+                >
+                  <MapPin size={16} /> Քարտեզում նշել
+                </Button>
 
                 <Button onClick={saveAll} disabled={!canEdit || loading || saving} className="gap-2">
                   {saving ? <Spinner size={16} /> : <Save size={16} />}
@@ -726,6 +792,64 @@ export default function BusinessSettingsPage() {
                           ))}
                         </div>
 
+                        {mapLocation && mapCoordinates ? (
+                          <div id="business-location-map" className="mt-4 scroll-mt-24 overflow-hidden rounded-[22px] border border-violet-200 bg-white shadow-sm">
+                            <div className="border-b border-slate-200 bg-gradient-to-r from-violet-50 to-cyan-50 px-4 py-4">
+                              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <div>
+                                  <div className="flex items-center gap-2 text-base font-semibold text-slate-950">
+                                    <MapPin className="h-5 w-5 text-violet-600" /> Բիզնեսի տեղը քարտեզում
+                                  </div>
+                                  <div className="mt-1 text-xs leading-5 text-slate-600">
+                                    Քարտեզը միշտ այստեղ է․ դիր նշիչը հենց մուտքի վրա և պահպանիր։
+                                  </div>
+                                </div>
+                                {locations.length > 1 ? (
+                                  <select
+                                    value={mapLocation.id}
+                                    onChange={(event) => setSelectedMapLocationId(Number(event.target.value))}
+                                    className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none"
+                                  >
+                                    {locations.map((location) => (
+                                      <option key={location.id} value={location.id}>
+                                        {location.name || location.address || `Հասցե ${location.sort_order}`}
+                                      </option>
+                                    ))}
+                                  </select>
+                                ) : null}
+                              </div>
+                            </div>
+                            <div className="p-3 sm:p-4">
+                              <LocationMapPicker
+                                key={`visible-location-map-${mapLocation.id}`}
+                                latitude={mapCoordinates.latitude}
+                                longitude={mapCoordinates.longitude}
+                                disabled={!canEdit || saveMapLocationMut.isPending}
+                                onChange={(coordinates) => setMapDrafts((prev) => ({
+                                  ...prev,
+                                  [mapLocation.id]: {
+                                    latitude: coordinates?.latitude ?? null,
+                                    longitude: coordinates?.longitude ?? null,
+                                  },
+                                }))}
+                              />
+                              <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                <div className="text-xs leading-5 text-slate-500">
+                                  Ընտրված հասցե՝ <span className="font-medium text-slate-700">{mapLocation.address || "Հասցե նշված չէ"}</span>
+                                </div>
+                                <Button
+                                  type="button"
+                                  onClick={() => saveMapLocationMut.mutate({ location: mapLocation, coordinates: mapCoordinates })}
+                                  disabled={!canEdit || saveMapLocationMut.isPending || mapCoordinates.latitude == null || mapCoordinates.longitude == null}
+                                >
+                                  {saveMapLocationMut.isPending ? <Spinner size={16} /> : <MapPin className="h-4 w-4" />}
+                                  Պահպանել դիրքը
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ) : null}
+
                         {isLocationEditorOpen ? (
                           <div className="mt-4 rounded-[22px] border border-violet-200 bg-white p-4 shadow-sm">
                             <div className="text-sm font-semibold text-slate-900">{editingLocationId ? 'Խմբագրել հասցեն' : 'Նոր հասցե'}</div>
@@ -752,27 +876,6 @@ export default function BusinessSettingsPage() {
                               className="mt-3 min-h-[96px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100 disabled:bg-slate-50"
                               placeholder="Լրիվ հասցե"
                             />
-                            <div className="mt-4 rounded-[22px] border border-slate-200 bg-slate-50/80 p-3 sm:p-4">
-                              <div className="mb-3">
-                                <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-                                  <MapPin className="h-4 w-4 text-violet-600" /> Դիր հասցեն քարտեզի վրա
-                                </div>
-                                <div className="mt-1 text-xs leading-5 text-slate-500">
-                                  Քաշիր քարտեզը մինչև նշիչը հայտնվի բիզնեսի մուտքի վրա։ Սա պետք է գլխավոր էջի քարտեզի և մոտակա վայրերի որոնման համար։
-                                </div>
-                              </div>
-                              <LocationMapPicker
-                                key={editingLocationId ?? "new-location"}
-                                latitude={locationDraft.latitude}
-                                longitude={locationDraft.longitude}
-                                disabled={!canEdit || saveLocationMut.isPending}
-                                onChange={(coordinates) => setLocationDraft((prev) => ({
-                                  ...prev,
-                                  latitude: coordinates?.latitude ?? null,
-                                  longitude: coordinates?.longitude ?? null,
-                                }))}
-                              />
-                            </div>
                             <label className="mt-3 inline-flex items-center gap-2 text-sm text-slate-600">
                               <input type="checkbox" checked={locationDraft.is_primary} onChange={(e) => setLocationDraft((prev) => ({ ...prev, is_primary: e.target.checked }))} />
                               Սարքել գլխավոր հասցե

@@ -896,6 +896,35 @@ export default function PublicBooking() {
         setNotes("");
     }
 
+    function startNewBooking() {
+        if (activeBookingCode) {
+            try {
+                sessionStorage.removeItem(`guest-booking-token:${activeBookingCode}`);
+            } catch {
+                // ignore storage failures
+            }
+        }
+
+        setActiveBookingCode("");
+        setGuestToken("");
+        setOtp("");
+        setOtpExpiresAt(null);
+        setOtpPanelOpen(false);
+        setResultCode(null);
+        setMsg(null);
+        setTime("");
+        setSingleSlotKey("");
+        setMultiTime("");
+        setMultiSlotKey("");
+        resetClientForm();
+
+        const next = new URLSearchParams(searchParams);
+        next.delete("booking");
+        next.delete("token");
+        setSearchParams(next, { replace: true });
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
     const selectedSingleService = useMemo(
         () => services.find((s) => s.id === serviceId),
         [services, serviceId]
@@ -1203,7 +1232,7 @@ export default function PublicBooking() {
                             </div>
                         </div>
 
-                        <div className="rounded-[24px] border border-white/70 bg-white/88 p-4 shadow-lg backdrop-blur-xl sm:p-5">
+                        {!activeBookingCode && <div className="rounded-[24px] border border-white/70 bg-white/88 p-4 shadow-lg backdrop-blur-xl sm:p-5">
                             <div className="text-sm font-semibold text-slate-900">Ընտրիր ամրագրման տարբերակը</div>
                             <div className="mt-1 text-xs leading-5 text-slate-500">Երեք տարբերակն էլ հասանելի են՝ ըստ ծառայությունների, մասնագետների և ժամերի քանակի։</div>
                             <div className="mt-4 grid gap-2.5">
@@ -1232,7 +1261,7 @@ export default function PublicBooking() {
                                     color="from-amber-500 to-orange-500"
                                 />
                             </div>
-                        </div>
+                        </div>}
                     </div>
 
                     <div className="rounded-[24px] sm:rounded-[30px] bg-white/80 backdrop-blur-xl border border-white/70 shadow-2xl p-4 sm:p-6">
@@ -1306,6 +1335,7 @@ export default function PublicBooking() {
                             </div>
                         )}
 
+                        {!activeBookingCode ? (
                         <form onSubmit={handleSubmit} className="space-y-8">
                             {locationNotice ? (
                                 <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
@@ -1769,6 +1799,18 @@ export default function PublicBooking() {
                                 </div>
                             </div>
                         </form>
+                        ) : (
+                            <div className="mt-2 border-t border-slate-200 pt-5">
+                                <button
+                                    type="button"
+                                    onClick={startNewBooking}
+                                    className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-violet-200 bg-violet-50 px-5 py-3.5 text-sm font-semibold text-violet-700 transition hover:border-violet-300 hover:bg-violet-100 sm:w-auto"
+                                >
+                                    <CalendarDays className="h-4 w-4" />
+                                    Նոր ամրագրում կատարել
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </motion.div>
 

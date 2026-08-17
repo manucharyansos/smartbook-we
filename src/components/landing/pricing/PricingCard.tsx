@@ -5,23 +5,26 @@ import { Check, ArrowRight } from "lucide-react";
 import type {BusinessType} from "@/types/landing.types";
 import { fadeInScale } from "@/utils/animations";
 import { PremiumButton } from "@/components/common/PremiumButton";
+import { formatPlanPrice, isCustomPlan, localizePlanName, monthlyPlanPrice } from "@/lib/planPresentation";
+import type { PublicPlan } from "@/lib/planApi";
 
 interface PricingCardProps {
-    plan: any;
+    plan: PublicPlan;
     selectedType: BusinessType;
 }
 
 const PricingCard: React.FC<PricingCardProps> = ({ plan, selectedType }) => {
     const [, setIsHovered] = useState(false);
+    const custom = isCustomPlan(plan);
 
     // Format features from backend
-    const features = plan.features ? [
-        plan.features.staff_limit && `Մինչև ${plan.features.staff_limit} աշխատակից`,
-        plan.features.sms_reminders && `SMS հիշեցումներ (${plan.features.sms_reminders === 'unlimited' ? 'անսահմանափակ' : plan.features.sms_reminders + '/ամիս'})`,
-        plan.features.api_access && 'API հասանելիություն',
-        plan.features.priority_support && 'Առաջնահերթ աջակցություն',
-        plan.features.dedicated_manager && 'Անհատական մենեջեր',
-    ].filter(Boolean) : [];
+    const features: string[] = plan.features ? [
+        Number(plan.features.staff_limit ?? 0) > 0 ? (custom ? "16+ ակտիվ մասնագետ" : `Մինչև ${Number(plan.features.staff_limit)} աշխատակից`) : null,
+        plan.features.sms_reminders ? `SMS հիշեցումներ (${plan.features.sms_reminders === 'unlimited' ? 'անսահմանափակ' : `${String(plan.features.sms_reminders)}/ամիս`})` : null,
+        plan.features.api_access === true ? 'API հասանելիություն' : null,
+        plan.features.priority_support === true ? 'Առաջնահերթ աջակցություն' : null,
+        plan.features.dedicated_manager === true ? 'Անհատական մենեջեր' : null,
+    ].filter((feature): feature is string => Boolean(feature)) : [];
 
     return (
         <motion.div
@@ -52,15 +55,15 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, selectedType }) => {
 
             <div className="relative flex-grow">
                 <h3 className={`text-2xl font-light mb-2 ${plan.code === 'business' ? 'text-[#8F6B58]' : 'text-[#2C2C2C]'}`}>
-                    {plan.name}
+                    {localizePlanName(plan)}
                 </h3>
                 <p className="text-[#8F6B58] text-sm font-light mb-6">{plan.description || ''}</p>
 
                 <div className="flex items-baseline gap-1 mb-8">
                     <span className="text-5xl font-light text-[#2C2C2C]">
-                        {plan.price?.toLocaleString()}
+                        {formatPlanPrice(monthlyPlanPrice(plan), plan.currency ?? "AMD")}
                     </span>
-                    <span className="text-[#8F6B58] text-sm font-light">/{plan.period || 'ամիս'}</span>
+                    {!custom ? <span className="text-[#8F6B58] text-sm font-light">/{plan.period || 'ամիս'}</span> : null}
                 </div>
 
                 <ul className="space-y-4 mb-8">
@@ -80,12 +83,12 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, selectedType }) => {
             </div>
 
             <PremiumButton
-                to={`/register?type=${selectedType || 'beauty'}`}
+                to={custom ? "/contact?subject=custom-plan" : `/register?type=${selectedType || 'beauty'}`}
                 variant={plan.code === 'business' ? "primary" : "outline"}
                 className="w-full justify-center mt-auto"
                 icon={ArrowRight}
             >
-                Սկսել անվճար
+                {custom ? "Ստանալ առաջարկ" : "Սկսել անվճար"}
             </PremiumButton>
         </motion.div>
     );

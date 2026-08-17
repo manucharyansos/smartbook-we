@@ -35,6 +35,7 @@ interface Plan {
     currency: string;
     seats?: number | null;
     staff_limit?: number | null;
+    services_limit?: number | null;
     features: any;
     duration_days: number;
     locations: number | null;
@@ -103,13 +104,15 @@ export default function AdminPlans() {
 
     const getPlanIcon = (code: string) => {
         switch (code) {
+            case 'start':
             case 'starter':
                 return <Package size={20} className="text-gray-600" />;
-            case 'pro':
-                return <Crown size={20} className="text-blue-600" />;
             case 'studio':
-            case 'business':
                 return <BadgePercent size={20} className="text-purple-600" />;
+            case 'scale':
+            case 'business':
+                return <Crown size={20} className="text-blue-600" />;
+            case 'custom':
             case 'enterprise':
                 return <Crown size={20} className="text-amber-600" />;
             default:
@@ -120,6 +123,8 @@ export default function AdminPlans() {
     const formatPrice = (price: number, currency: string) => {
         return new Intl.NumberFormat('hy-AM').format(price) + ' ' + currency;
     };
+
+    const isCustomPlan = (plan: Plan) => plan.code === 'custom' || plan.features?.custom_pricing === true;
 
     const handleSavePlan = (planData: any) => {
         if (editingPlan) {
@@ -164,7 +169,7 @@ export default function AdminPlans() {
     return (
         <div className="space-y-6">
             <PageHero
-                eyebrow={<><Package className="h-4 w-4" /> Plan management</>}
+                eyebrow={<><Package className="h-4 w-4" /> Պլանների կառավարում</>}
                 title="Բաժանորդագրության փաթեթներ"
                 description="Ընդհանուր plan-երը կառավարիր այստեղ, իսկ business-specific անհատական առաջարկները տրվում են կոնկրետ բիզնեսի էջից։"
                 actions={
@@ -173,10 +178,10 @@ export default function AdminPlans() {
                             variant="secondary"
                             onClick={() => setShowHidden(!showHidden)}
                             className="gap-2"
-                            title={showHidden ? 'Hide hidden' : 'Show hidden'}
+                            title={showHidden ? 'Թաքցնել չցուցադրվող պլանները' : 'Ցույց տալ չցուցադրվող պլանները'}
                         >
                             {showHidden ? <Eye size={18} /> : <EyeOff size={18} />}
-                            {showHidden ? 'Թաքցնել hidden' : 'Ցույց տալ hidden'}
+                            {showHidden ? 'Թաքցնել չցուցադրվողները' : 'Ցույց տալ չցուցադրվողները'}
                         </Button>
                         <Button
                             onClick={() => {
@@ -212,9 +217,9 @@ export default function AdminPlans() {
                                 <div className="flex items-center gap-3">
                                     <div className={cn(
                                         "w-12 h-12 rounded-xl flex items-center justify-center",
-                                        plan.code === 'starter' ? 'bg-gray-100' :
-                                            plan.code === 'pro' ? 'bg-blue-100' :
-                                                plan.code === 'business' ? 'bg-purple-100' :
+                                        plan.code === 'start' || plan.code === 'starter' ? 'bg-gray-100' :
+                                            plan.code === 'scale' || plan.code === 'business' ? 'bg-blue-100' :
+                                                plan.code === 'studio' ? 'bg-purple-100' :
                                                     'bg-amber-100'
                                     )}>
                                         {getPlanIcon(plan.code)}
@@ -234,17 +239,17 @@ export default function AdminPlans() {
                                     )}
                                     {!plan.business_type && (
                                         <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
-                                            Both
+                                            Բոլոր ուղղությունների համար
                                         </span>
                                     )}
                                     {!plan.is_visible && (
                                         <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
-                                            Hidden
+                                            Չցուցադրվող
                                         </span>
                                     )}
                                     {!plan.is_active && (
                                         <span className="px-2 py-1 bg-red-100 text-red-600 rounded-full text-xs">
-                                            Inactive
+                                            Ոչ ակտիվ
                                         </span>
                                     )}
                                 </div>
@@ -258,11 +263,11 @@ export default function AdminPlans() {
                             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                                 <div className="rounded-2xl bg-violet-50 p-3">
                                     <div className="text-xs font-medium text-violet-600">Ամսական</div>
-                                    <div className="mt-1 text-lg font-semibold text-violet-700">{formatPrice(plan.monthly_price ?? plan.price ?? plan.price_beauty ?? 0, plan.currency)}</div>
+                                    <div className="mt-1 text-lg font-semibold text-violet-700">{isCustomPlan(plan) ? 'Անհատական' : formatPrice(plan.monthly_price ?? plan.price ?? plan.price_beauty ?? 0, plan.currency)}</div>
                                 </div>
                                 <div className="rounded-2xl bg-emerald-50 p-3">
                                     <div className="text-xs font-medium text-emerald-600">Տարեկան</div>
-                                    <div className="mt-1 text-lg font-semibold text-emerald-700">{formatPrice(plan.yearly_price ?? ((plan.monthly_price ?? plan.price ?? plan.price_beauty ?? 0) * 10), plan.currency)}</div>
+                                    <div className="mt-1 text-lg font-semibold text-emerald-700">{isCustomPlan(plan) ? 'Անհատական' : formatPrice(plan.yearly_price ?? ((plan.monthly_price ?? plan.price ?? plan.price_beauty ?? 0) * 10), plan.currency)}</div>
                                 </div>
                             </div>
 
@@ -270,7 +275,7 @@ export default function AdminPlans() {
                             <div className="mt-4 space-y-2">
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
                                     <Users size={16} />
-                                    <span>Մինչև {plan.staff_limit ?? plan.features?.staff_limit ?? plan.seats ?? "—"} ակտիվ staff</span>
+                                    <span>{isCustomPlan(plan) ? '16+ ակտիվ մասնագետ' : `Մինչև ${plan.staff_limit ?? plan.features?.staff_limit ?? plan.seats ?? "—"} ակտիվ մասնագետ`}</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
                                     <Clock size={16} />
@@ -282,21 +287,21 @@ export default function AdminPlans() {
                                         <span>{plan.locations > 1 ? `Մինչև ${plan.locations} հասցե` : '1 հասցե'}</span>
                                     </div>
                                 )}
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <Settings size={16} />
+                                    <span>{isCustomPlan(plan) ? 'Ծառայությունների սահմանափակում չկա' : `Մինչև ${plan.services_limit ?? plan.features?.services_limit ?? "—"} ծառայություն`}</span>
+                                </div>
                             </div>
 
                             {/* Features preview */}
                             {plan.features && (
                                 <div className="mt-4 pt-4 border-t border-gray-100">
-                                    <div className="text-xs font-medium text-gray-500 mb-2">Առանձնահատկություններ</div>
-                                    <div className="space-y-1">
-                                        {Object.entries(plan.features).map(([key, value]) => (
-                                            <div key={key} className="flex justify-between text-xs">
-                                                <span className="text-gray-500">{key}:</span>
-                                                <span className="text-gray-700 font-medium">
-                                                    {value === true ? 'Այո' : value === false ? 'Ոչ' : String(value)}
-                                                </span>
-                                            </div>
-                                        ))}
+                                    <div className="text-xs font-medium text-gray-500 mb-2">Հատուկ պայմաններ</div>
+                                    <div className="flex flex-wrap gap-2 text-xs">
+                                        {plan.features.priority_support ? <span className="rounded-full bg-violet-50 px-3 py-1 text-violet-700">Առաջնահերթ աջակցություն</span> : null}
+                                        {plan.features.custom_pricing ? <span className="rounded-full bg-amber-50 px-3 py-1 text-amber-700">Անհատական գին</span> : null}
+                                        {plan.features.partner_terms ? <span className="rounded-full bg-emerald-50 px-3 py-1 text-emerald-700">Գործընկերային պայմաններ</span> : null}
+                                        {!plan.features.priority_support && !plan.features.custom_pricing && !plan.features.partner_terms ? <span className="text-gray-500">Ստանդարտ պայմաններ</span> : null}
                                     </div>
                                 </div>
                             )}

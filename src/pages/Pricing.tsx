@@ -6,44 +6,30 @@ import { Link } from "react-router-dom";
 
 import MarketingPageShell from "../components/marketing/MarketingPageShell";
 import { publicPlansApi, type PublicPlan } from "../lib/planApi";
+import { formatPlanPrice, isCustomPlan, localizePlanName, monthlyPlanPrice, yearlyPlanPrice } from "../lib/planPresentation";
 import { cn } from "../lib/cn";
 import { fadeUp, scaleIn, staggerContainer } from "../lib/motion";
 
 type BillingCycle = "monthly" | "yearly";
 
-function formatPrice(value: number | null | undefined, currency = "AMD") {
-  if (value == null) return "Անհատական";
-  const suffix = currency === "AMD" ? "֏" : currency;
-  return `${value.toLocaleString("hy-AM")} ${suffix}`;
-}
-
 function planFeatures(plan: PublicPlan) {
   const features = plan.features ?? {};
   const staffLimit = Number(plan.staff_limit ?? features.staff_limit ?? 0);
 
-  const servicesLimit = Number((plan as any).services_limit ?? features.services_limit ?? 0);
+  const servicesLimit = Number(plan.services_limit ?? features.services_limit ?? 0);
 
+  const custom = isCustomPlan(plan);
   const items = [
-    staffLimit >= 999 ? "16+ ակտիվ մասնագետ" : `Մինչև ${staffLimit} ակտիվ մասնագետ`,
+    custom || staffLimit >= 999 ? "16+ ակտիվ մասնագետ" : `Մինչև ${staffLimit} ակտիվ մասնագետ`,
     `Սեփականատերեր և մենեջերներ՝ անսահմանափակ`,
     `${Number(plan.locations ?? 1) > 1 ? `Մինչև ${plan.locations} հասցե` : "1 հասցե"}`,
-    servicesLimit > 0 ? `Մինչև ${servicesLimit} ծառայություն` : "Ծառայությունների սահմանափակում չկա",
+    custom || servicesLimit >= 999 ? "Ծառայությունների սահմանափակում չկա" : servicesLimit > 0 ? `Մինչև ${servicesLimit} ծառայություն` : "Ծառայությունների սահմանափակում չկա",
     "Բոլոր հիմնական գործիքները ներառված են",
     "Օրացույց, ամրագրումներ, առաջադրանքներ և analytics",
     "Հաճախորդի cabinet, loyalty, նվերի քարտեր և աղբյուրների հետևում",
   ];
 
   return items;
-}
-
-
-function localizePlanName(plan: PublicPlan) {
-  const value = String(plan.name || plan.code || "").toLowerCase();
-  if (value.includes("start")) return "Սկիզբ";
-  if (value.includes("studio")) return "Ստուդիա";
-  if (value.includes("business")) return "Բիզնես";
-  if (value.includes("custom")) return "Անհատական";
-  return plan.name;
 }
 
 export default function Pricing() {
@@ -60,13 +46,15 @@ export default function Pricing() {
 
   const plans = useMemo(() => {
     return (plansQ.data ?? []).map((plan) => {
-      const baseMonthly = plan.price ?? null;
-      const yearlyPrice = plan.yearly_offer?.price ?? (baseMonthly != null ? baseMonthly * 10 : null);
-      const displayPrice = billingCycle === "yearly" ? yearlyPrice : baseMonthly;
+      const custom = isCustomPlan(plan);
+      const baseMonthly = monthlyPlanPrice(plan);
+      const yearlyPrice = yearlyPlanPrice(plan);
+      const displayPrice = custom ? null : billingCycle === "yearly" ? yearlyPrice : baseMonthly;
       const discountAmount = baseMonthly != null && yearlyPrice != null ? (plan.yearly_offer?.discount_amount ?? Math.max(baseMonthly * 12 - yearlyPrice, 0)) : 0;
 
       return {
         ...plan,
+        isCustom: custom,
         yearlyPrice,
         displayPrice,
         discountAmount,
@@ -87,11 +75,11 @@ export default function Pricing() {
       }
       title={
         <>
-          Պլաններ, որոնք հաշվարկվում են միայն
-          <span className="text-violet-600"> ակտիվ մասնագետներով</span>
+          Պարզ պլաններ՝ ըստ
+          <span className="text-violet-600"> քո բիզնեսի չափի</span>
         </>
       }
-      description="Բոլոր պլաններում հասանելի են հիմնական գործիքները, իսկ տարբերությունը գալիս է միայն ակտիվ մասնագետների քանակից։"
+      description="Բոլոր պլաններում հասանելի են հիմնական գործիքները․ ընտրությունը կախված է ակտիվ մասնագետների, ծառայությունների և հասցեների քանակից։"
     >
       <motion.section
         variants={staggerContainer(0.08, 0.05)}
@@ -109,7 +97,7 @@ export default function Pricing() {
                 Պարզ գնային համակարգ
               </h2>
               <p className="mt-3 text-base leading-7 text-slate-600">
-                Ընտրիր պլանը ըստ ակտիվ մասնագետների քանակի և քո բիզնեսի չափի։
+                Ընտրիր պլանը ըստ ակտիվ մասնագետների, ծառայությունների և հասցեների անհրաժեշտ քանակի։
               </p>
             </div>
 
@@ -169,10 +157,10 @@ export default function Pricing() {
             Չհաջողվեց բեռնել պլանները։
           </motion.div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             {plans.map((plan) => {
               const highlighted = plan.code === "studio";
-              const isCustom = false;
+              const isCustom = plan.isCustom;
               return (
                 <motion.article
                   key={plan.id}
@@ -223,17 +211,17 @@ export default function Pricing() {
                   <div className="mt-6">
                     <div className="flex flex-wrap items-end gap-3">
                       <div className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                        {formatPrice(plan.displayPrice, plan.currency || "AMD")}
+                        {formatPlanPrice(plan.displayPrice, plan.currency || "AMD")}
                       </div>
                       {billingCycle === "yearly" && !isCustom && (
                         <div className={cn("pb-1 text-sm line-through", highlighted ? "text-white/50" : "text-slate-500")}>
-                          {formatPrice((plan.price ?? 0) * 12, plan.currency || "AMD")}
+                          {formatPlanPrice((plan.monthly_price ?? plan.price ?? 0) * 12, plan.currency || "AMD")}
                         </div>
                       )}
                     </div>
 
                     <div className={cn("mt-1 text-sm", highlighted ? "text-white/60" : "text-slate-500")}>
-                      {billingCycle === "yearly" ? "տարեկան վճարում" : "ամսական վճարում"}
+                      {isCustom ? "գինը սահմանվում է առաջարկով" : billingCycle === "yearly" ? "տարեկան վճարում" : "ամսական վճարում"}
                     </div>
 
                     {billingCycle === "yearly" && !isCustom && (
@@ -244,7 +232,7 @@ export default function Pricing() {
                         )}
                       >
                         Վճարում ես {plan.monthsCharged} ամիս, ստանում ես {plan.monthsFree} ամիս նվեր։
-                        Միջին արժեքը՝ <span className="font-semibold">{formatPrice(plan.perMonthEffective, plan.currency || "AMD")}/ամիս</span>
+                        Միջին արժեքը՝ <span className="font-semibold">{formatPlanPrice(plan.perMonthEffective, plan.currency || "AMD")}/ամիս</span>
                       </div>
                     )}
                   </div>
@@ -262,19 +250,19 @@ export default function Pricing() {
 
                   <div className="mt-8 space-y-3">
                     <Link
-                      to="/register?intent=business"
+                      to={isCustom ? "/contact?subject=custom-plan" : "/register?intent=business"}
                       className={cn(
                         "inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 text-sm font-medium transition",
                         highlighted ? "bg-white text-slate-950 hover:bg-slate-100" : "bg-violet-600 text-white hover:bg-violet-700"
                       )}
                     >
-                      Սկսել 14 օր անվճար
+                      {isCustom ? "Ստանալ անհատական առաջարկ" : "Սկսել 14 օր անվճար"}
                       <ArrowRight className="h-4 w-4" />
                     </Link>
 
                     {!isCustom && billingCycle === "yearly" && (
                       <div className={cn("text-center text-xs", highlighted ? "text-white/60" : "text-slate-500")}>
-                        Տնտեսում ես {formatPrice(plan.discountAmount, plan.currency || "AMD")}
+                        Տնտեսում ես {formatPlanPrice(plan.discountAmount, plan.currency || "AMD")}
                       </div>
                     )}
                   </div>
@@ -291,13 +279,13 @@ export default function Pricing() {
           <div>
             <h2 className="text-2xl font-semibold tracking-tight text-slate-950">Որ պլանն ընտրել</h2>
             <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
-              Եթե նոր ես սկսում, ընտրիր փոքր պլանը։ Ավելի մեծ թիմի կամ մի քանի հասցեի դեպքում ընտրիր ավելի բարձր պլանը։ Եթե պետք է առանձին պայման, կստանաս անհատական առաջարկ։
+              Եթե նոր ես սկսում, ընտրիր «Սկիզբ» պլանը։ Թիմի, ծառայությունների կամ հասցեների աճին զուգահեռ ընտրիր ավելի բարձր պլան։ 16+ մասնագետի կամ ցանցային բիզնեսի դեպքում կստանաս անհատական առաջարկ։
             </p>
 
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               {[
-                "Սկիզբ պլանը հարմար է փոքր թիմերի համար։",
-                "Ավելի մեծ թիմի կամ երկրորդ հասցեի դեպքում ընտրիր բարձր պլան։",
+                "«Սկիզբ» պլանը նախատեսված է մեկ ակտիվ մասնագետի համար։",
+                "Յուրաքանչյուր պլանի staff, ծառայությունների և հասցեների սահմանաչափերը երևում են քարտում։",
                 "Տարեկան տարբերակը ավելի շահավետ է երկարաժամկետ աշխատանքի համար։",
                 "Անհատական առաջարկը տրվում է միայն ընտրված բիզնեսներին։",
               ].map((item) => (

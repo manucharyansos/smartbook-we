@@ -29,10 +29,13 @@ interface Plan {
         api_access: boolean;
         priority_support: boolean;
         dedicated_manager: boolean;
+        custom_pricing: boolean;
+        partner_terms: boolean;
         [k: string]: any;
     };
     is_active?: boolean;
     is_visible?: boolean;
+    sort_order?: number;
 }
 
 interface PlanModalProps {
@@ -58,13 +61,16 @@ const emptyForm: Plan = {
     features: {
         staff_limit: 1,
         services_limit: 10,
-        sms_reminders: 50 as SmsReminders,
+        sms_reminders: "unlimited" as SmsReminders,
         api_access: false,
         priority_support: false,
         dedicated_manager: false,
+        custom_pricing: false,
+        partner_terms: false,
     },
     is_active: true,
     is_visible: true,
+    sort_order: 0,
 };
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
@@ -98,15 +104,19 @@ export function PlanModal({
                 duration_days: plan.duration_days || 30,
                 locations: plan.locations ?? 1,
                 features: {
+                    ...(plan.features ?? {}),
                     staff_limit: plan.staff_limit ?? plan.features?.staff_limit ?? plan.seats ?? 1,
                     services_limit: plan.services_limit ?? plan.features?.services_limit ?? 10,
-                    sms_reminders: plan.features?.sms_reminders ?? 50,
+                    sms_reminders: plan.features?.sms_reminders ?? "unlimited",
                     api_access: !!plan.features?.api_access,
                     priority_support: !!plan.features?.priority_support,
                     dedicated_manager: !!plan.features?.dedicated_manager,
+                    custom_pricing: !!plan.features?.custom_pricing || plan.code === "custom",
+                    partner_terms: !!plan.features?.partner_terms || plan.code === "custom",
                 },
                 is_active: plan.is_active ?? true,
                 is_visible: plan.is_visible ?? true,
+                sort_order: plan.sort_order ?? 0,
             });
         } else {
             setFormData({ ...emptyForm });
@@ -339,6 +349,18 @@ export function PlanModal({
                                                 <option value="EUR">EUR</option>
                                             </select>
                                         </div>
+
+                                        <div>
+                                            <label className="mb-2 block text-sm font-medium text-slate-700">Հերթականություն</label>
+                                            <input
+                                                type="number"
+                                                name="sort_order"
+                                                value={formData.sort_order ?? 0}
+                                                onChange={handleChange}
+                                                min="0"
+                                                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                            />
+                                        </div>
                                     </div>
                                 </motion.div>
 
@@ -418,9 +440,9 @@ export function PlanModal({
 
                                     <div className="grid gap-3 sm:grid-cols-2">
                                         {[
-                                            { name: "features.api_access", label: "API հասանելիություն" },
                                             { name: "features.priority_support", label: "Առաջնահերթ աջակցություն" },
-                                            { name: "features.dedicated_manager", label: "Անհատական մենեջեր" },
+                                            { name: "features.custom_pricing", label: "Անհատական գնագոյացում" },
+                                            { name: "features.partner_terms", label: "Գործընկերային պայմաններ" },
                                             { name: "is_active", label: "Ակտիվ" },
                                             { name: "is_visible", label: "Ցուցադրել" },
                                         ].map((item) => {

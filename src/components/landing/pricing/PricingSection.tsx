@@ -5,6 +5,7 @@ import PricingCard from "./PricingCard";
 import { PremiumBadge } from "@/components/common/PremiumBadge";
 import { staggerContainer } from "@/utils/animations";
 import { publicPlansApi } from "@/lib/planApi";
+import type { PublicPlan } from "@/lib/planApi";
 
 interface PricingSectionProps {
     selectedType: BusinessType;
@@ -24,7 +25,7 @@ export default function PricingSection({ selectedType }: PricingSectionProps) {
         enabled: !!selectedType,
         queryFn: async () => {
             const r = await publicPlansApi.list((selectedType ?? "beauty") as "beauty" | "dental");
-            return (r.data?.data ?? []) as never[];
+            return (r.data?.data ?? []) as PublicPlan[];
         },
     });
 
@@ -93,7 +94,7 @@ export default function PricingSection({ selectedType }: PricingSectionProps) {
                         viewport={{ once: true }}
                         className="grid gap-6 md:grid-cols-2 xl:grid-cols-4"
                     >
-                        {plans.map((plan: any) => (
+                        {plans.map((plan) => (
                             <PricingCard
                                 key={plan.id ?? plan.code ?? JSON.stringify(plan)}
                                 plan={plan}

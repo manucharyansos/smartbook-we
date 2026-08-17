@@ -40,6 +40,7 @@ import {
   type PublicMapPin,
 } from "../lib/publicApi";
 import { publicPlansApi, type PublicPlan } from "../lib/planApi";
+import { formatPlanPrice, localizePlanName, monthlyPlanPrice } from "../lib/planPresentation";
 import heroWoman from "../assets/vizit-hero-woman.png";
 
 type BusinessFilter = "all" | "services" | "healthcare";
@@ -517,21 +518,6 @@ function InteractiveBusinessMap({
   );
 }
 
-function formatPrice(value: number | null | undefined, currency = "AMD") {
-  if (value == null) return "Անհատական";
-  const suffix = currency === "AMD" ? "֏" : currency;
-  return `${value.toLocaleString("hy-AM")} ${suffix}`;
-}
-
-function localizePlanName(plan: PublicPlan) {
-  const value = String(plan.name || plan.code || "").toLowerCase();
-  if (value.includes("start")) return "Սկիզբ";
-  if (value.includes("studio")) return "Ստուդիա";
-  if (value.includes("business")) return "Բիզնես";
-  if (value.includes("custom")) return "Անհատական";
-  return plan.name;
-}
-
 function SectionBadge({ children }: { children: ReactNode }) {
   return <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-cyan-50 px-4 py-2 text-xs font-bold text-cyan-700 shadow-sm backdrop-blur-2xl dark:border-white/12 dark:bg-white/[0.07] dark:text-cyan-100 dark:shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:text-sm">{children}</div>;
 }
@@ -709,7 +695,7 @@ function HomePlansSection() {
               <div key={plan.id} className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
                 <div className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-slate-950">{plan.code}</div>
                 <h3 className="mt-5 text-2xl font-black text-slate-950 dark:text-white">{localizePlanName(plan)}</h3>
-                <div className="mt-4 text-3xl font-black text-slate-950 dark:text-white">{formatPrice(plan.monthly_price, plan.currency ?? undefined)}</div>
+                <div className="mt-4 text-3xl font-black text-slate-950 dark:text-white">{formatPlanPrice(monthlyPlanPrice(plan), plan.currency ?? undefined)}</div>
                 <p className="mt-3 min-h-[48px] text-sm leading-6 text-slate-500 dark:text-slate-300">{plan.description || "Vizit business-ի համար պատրաստ պլան։"}</p>
               </div>
             ))}

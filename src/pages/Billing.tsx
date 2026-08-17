@@ -24,27 +24,10 @@ import { api } from "@/lib/api";
 import { cn } from "@/lib/cn";
 import { fetchBillingMe } from "@/lib/billingMeApi";
 import { createCheckoutSession, getInvoicePaymentStatus, type PaymentTransaction } from "@/lib/paymentsApi";
+import type { PublicPlan } from "@/lib/planApi";
+import { isCustomPlan, localizePlanName } from "@/lib/planPresentation";
 
 type BillingCycle = "monthly" | "yearly";
-
-type Plan = {
-  id: number;
-  code: string;
-  name: string;
-  description?: string | null;
-  price: number;
-  currency: string;
-  staff_limit?: number | null;
-  services_limit?: number | null;
-  locations?: number | null;
-  yearly_offer?: {
-    enabled: boolean;
-    price: number;
-    months_charged: number;
-    months_free: number;
-    discount_amount: number;
-  } | null;
-};
 
 type IndividualOffer = {
   id: number;
@@ -89,9 +72,9 @@ type Invoice = {
   plan?: { name: string; code?: string | null } | null;
 };
 
-type UpgradeResponse = {
+type InvoiceUpgradeResponse = {
   ok: boolean;
-  mode: "instant" | "invoice";
+  mode: "invoice";
   data: Invoice;
   provider?: {
     default: "idbank" | "idbank_mock";
@@ -100,11 +83,23 @@ type UpgradeResponse = {
   };
 };
 
-async function fetchPlans(businessType?: string | null): Promise<Plan[]> {
+type InstantUpgradeResponse = {
+  ok: boolean;
+  mode: "instant";
+  data: {
+    invoice_id: number;
+    subscription_status: string;
+    plan: { code: string; name: string; price: number; currency: string };
+  };
+};
+
+type UpgradeResponse = InvoiceUpgradeResponse | InstantUpgradeResponse;
+
+async function fetchPlans(businessType?: string | null): Promise<PublicPlan[]> {
   const r = await api.get("/plans", {
     params: { business_type: businessType ?? undefined },
   });
-  return r.data.data as Plan[];
+  return r.data.data as PublicPlan[];
 }
 
 async function fetchInvoices(): Promise<Invoice[]> {
@@ -138,6 +133,11 @@ function statusBadge(status?: string | null) {
   return "bg-slate-100 text-slate-700 border-slate-200";
 }
 
+function requestErrorMessage(error: unknown) {
+  const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+  return message || "Չհաջողվեց ստեղծել վճարման հաշիվը։ Փորձիր կրկին։";
+}
+
 function SectionCard({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <Card className={cn("rounded-[32px] border border-slate-200/80 bg-white shadow-[0_18px_60px_rgba(124,58,237,0.08)]", className)}>
@@ -151,6 +151,7 @@ export default function Billing() {
   const [billingCycle, setBillingCycle] = useState<BillingCycle>("yearly");
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [currentInvoiceId, setCurrentInvoiceId] = useState<number | null>(null);
+  const [upgradeError, setUpgradeError] = useState<string | null>(null);
 
   const billingQ = useQuery({ queryKey: ["billing", "me"], queryFn: fetchBillingMe, staleTime: 20_000 });
   const currentBusinessType = billingQ.data?.business.business_type ?? null;
@@ -176,11 +177,14 @@ export default function Billing() {
 
   const requestMut = useMutation({
     mutationFn: ({ planCode, cycle }: { planCode: string; cycle: BillingCycle }) => requestUpgrade(planCode, cycle),
+    onMutate: () => setUpgradeError(null),
     onSuccess: (data) => {
-      if (data?.data?.id) setCurrentInvoiceId(data.data.id);
+      const invoiceId = data.mode === "invoice" ? data.data.id : data.data.invoice_id;
+      if (invoiceId) setCurrentInvoiceId(invoiceId);
       void queryClient.invalidateQueries({ queryKey: ["billing", "invoices"] });
       void queryClient.invalidateQueries({ queryKey: ["billing", "me"] });
     },
+    onError: (error) => setUpgradeError(requestErrorMessage(error)),
     onSettled: () => setSelectedPlan(null),
   });
 
@@ -196,18 +200,18 @@ export default function Billing() {
   const pricing = billingQ.data?.pricing ?? null;
   const currentTransaction = paymentStatusQ.data?.data.transaction ?? null;
 
-  const individualOffers = billingQ.data?.individual_offers ?? [];
+  const individualOffers = useMemo(() => billingQ.data?.individual_offers ?? [], [billingQ.data?.individual_offers]);
 
   const presentationPlans = useMemo(() => {
-    const standardPlans = (plansQ.data ?? []).map((plan) => {
-      const monthlyPrice = plan.price;
-      const yearlyPrice = plan.yearly_offer?.price ?? monthlyPrice * 10;
+    const standardPlans = (plansQ.data ?? []).filter((plan) => !isCustomPlan(plan)).map((plan) => {
+      const monthlyPrice = Number(plan.monthly_price ?? plan.price ?? 0);
+      const yearlyPrice = Number(plan.yearly_offer?.price ?? monthlyPrice * 10);
       return {
         id: `plan-${plan.id}`,
         code: plan.code,
-        name: plan.name,
+        name: localizePlanName(plan),
         description: plan.description,
-        currency: plan.currency,
+        currency: plan.currency ?? "AMD",
         staff_limit: plan.staff_limit,
         services_limit: plan.services_limit,
         locations: plan.locations,
@@ -225,11 +229,12 @@ export default function Billing() {
     const offerCards = (individualOffers as IndividualOffer[]).map((offer) => {
       const monthlyPrice = offer.effective_monthly_price;
       const yearlyPrice = offer.effective_yearly_price;
+      const isCustomBase = offer.base_plan.code === "custom" || offer.base_plan.staff_limit >= 999;
       return {
         id: `offer-${offer.id}`,
         code: offer.base_plan.code,
         name: offer.title,
-        description: `${offer.base_plan.name} · մինչև ${offer.base_plan.staff_limit} ակտիվ մասնագետ`,
+        description: `${offer.base_plan.name} · ${isCustomBase ? "16+ ակտիվ մասնագետ" : `մինչև ${offer.base_plan.staff_limit} ակտիվ մասնագետ`}`,
         currency: offer.base_plan.currency,
         staff_limit: offer.base_plan.staff_limit,
         services_limit: offer.base_plan.services_limit,
@@ -251,7 +256,9 @@ export default function Billing() {
   }, [plansQ.data, individualOffers, billingCycle]);
 
   const currentPlanCode = subscription?.plan?.code ?? null;
-  const currentPlanName = currentPlanCode === "custom" && pricing?.has_override ? "Անհատական առաջարկ" : (subscription?.plan?.name ?? null);
+  const currentPlanName = currentPlanCode === "custom" && pricing?.has_override
+    ? "Անհատական առաջարկ"
+    : subscription?.plan ? localizePlanName(subscription.plan) : null;
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="admin-page space-y-4">
@@ -263,7 +270,7 @@ export default function Billing() {
             </div>
             <h1 className="mt-6 text-4xl font-semibold leading-tight tracking-tight text-slate-950 md:text-5xl">Պլան և վճարումներ</h1>
             <p className="mt-4 max-w-2xl text-base leading-8 text-slate-600">
-              Պլանները կապված են միայն ակտիվ մասնագետների քանակին։ Սեփականատիրոջ և մենեջերի հաշիվները անսահմանափակ են, իսկ եթե քո բիզնեսի համար կա անհատական առաջարկ, այն կերևա հենց այստեղ։
+              Ընտրիր պլանը ըստ ակտիվ մասնագետների, ծառայությունների և հասցեների քանակի։ Սեփականատիրոջ և մենեջերի հաշիվները սահմանաչափում չեն հաշվվում, իսկ անհատական առաջարկը կերևա հենց այստեղ։
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link to="/app/settings"><Button variant="secondary">Ընդհանուր կարգավորումներ</Button></Link>
@@ -276,36 +283,36 @@ export default function Billing() {
           <div className="w-full rounded-[32px] border border-slate-200 bg-white/90 p-6 shadow-[0_24px_80px_rgba(124,58,237,0.10)]">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <div className="text-sm font-medium text-slate-500">Current plan</div>
-                <div className="mt-2 text-2xl font-semibold text-slate-950">{currentPlanName ?? "Subscription pending"}</div>
+                <div className="text-sm font-medium text-slate-500">Ընթացիկ պլան</div>
+                <div className="mt-2 text-2xl font-semibold text-slate-950">{currentPlanName ?? "Ակտիվացում է սպասվում"}</div>
               </div>
               <div className="grid h-14 w-14 place-items-center rounded-3xl bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white shadow-lg"><Landmark className="h-6 w-6" /></div>
             </div>
 
             <div className="mt-4 grid gap-3 grid-cols-2 xl:grid-cols-5">
               <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Status</div>
+                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Կարգավիճակ</div>
                 <div className="mt-2"><span className={cn("rounded-full border px-3 py-1 text-xs font-semibold", statusBadge(subscription?.status))}>{subscription?.status ?? "inactive"}</span></div>
               </div>
               <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Seats</div>
+                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Մասնագետներ</div>
                 <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.seats.active_staff ?? 0} / {billingQ.data?.seats.staff_limit ?? "∞"}</div>
-                <div className="mt-1 text-xs text-slate-500">Owner / manager unlimited</div>
+                <div className="mt-1 text-xs text-slate-500">Սեփականատերը և մենեջերը չեն հաշվվում</div>
               </div>
               <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Services</div>
+                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Ծառայություններ</div>
                 <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.usage?.services_count ?? 0} / {billingQ.data?.usage?.services_limit ?? "∞"}</div>
                 <div className="mt-1 text-xs text-slate-500">Ընթացիկ ծառայությունների քանակ</div>
               </div>
               <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Locations</div>
+                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Հասցեներ</div>
                 <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.usage?.locations_count ?? 0} / {billingQ.data?.usage?.locations_limit ?? "∞"}</div>
-                <div className="mt-1 text-xs text-slate-500">Մասնաճյուղերի/հասցեների limit</div>
+                <div className="mt-1 text-xs text-slate-500">Մասնաճյուղերի և հասցեների սահմանաչափ</div>
               </div>
               <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
                 <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Վճարման provider</div>
                 <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.payment_provider?.default === "idbank" ? "IDBank Live" : "IDBank Test"}</div>
-                <div className="mt-1 text-xs text-slate-500">Provider-ը որոշում է backend-ը, ոչ թե frontend hardcode-ը</div>
+                <div className="mt-1 text-xs text-slate-500">Վճարման անվտանգ միջավայր</div>
               </div>
 
             </div>
@@ -313,7 +320,7 @@ export default function Billing() {
             <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Effective monthly</div>
+                  <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Արդյունավետ ամսական արժեք</div>
                   <div className="mt-2 text-2xl font-semibold text-slate-950">{formatMoney(pricing?.effective_monthly_price ?? subscription?.plan?.monthly_price, subscription?.plan?.currency ?? pricing?.currency ?? "AMD")}</div>
                 </div>
                 {pricing?.has_override ? <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">Անհատական պայմաններն ակտիվ են</span> : null}
@@ -332,7 +339,7 @@ export default function Billing() {
               <ShieldCheck className="h-3.5 w-3.5" /> Բոլոր հիմնական գործիքները ներառված են բոլոր պլաններում
             </div>
             <h2 className="mt-4 text-2xl font-semibold text-slate-950">Փոխել պլանը</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">Ընտրիր պլանը ըստ ակտիվ մասնագետների քանակի։ Եթե քո բիզնեսի համար սուպեր ադմինը ստեղծել է անհատական առաջարկ, այս բաժնում սովորական custom պլանի փոխարեն կտեսնես հենց քո առաջարկը։</p>
+            <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">Համեմատիր բոլոր իրական սահմանաչափերը։ Եթե սուպեր ադմինը ստեղծել է անհատական առաջարկ, այն կերևա որպես առանձին քարտ՝ իր գործող գնով և ժամկետով։</p>
           </div>
 
           <div className="inline-flex items-center rounded-2xl border border-slate-200 bg-slate-50 p-1">
@@ -340,6 +347,14 @@ export default function Billing() {
             <button type="button" onClick={() => setBillingCycle("yearly")} className={cn("rounded-[14px] px-4 py-2.5 text-sm font-medium transition", billingCycle === "yearly" ? "bg-violet-600 text-white" : "text-slate-600")}>Տարեկան</button>
           </div>
         </div>
+
+        {plansQ.isError ? (
+          <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">Չհաջողվեց բեռնել հասանելի պլանները։</div>
+        ) : null}
+
+        {upgradeError ? (
+          <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{upgradeError}</div>
+        ) : null}
 
         <div className="mt-4 grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-4">
           {presentationPlans.map((plan) => {
@@ -365,7 +380,7 @@ export default function Billing() {
                   <div>{billingCycle === "yearly" ? `Արդյունավետ՝ ~${formatMoney(plan.perMonthEffective, plan.currency)}/ամիս` : `${formatMoney(plan.monthlyPrice, plan.currency)} / ամիս`}</div>
                   {billingCycle === "yearly" ? <div>{plan.isIndividualOffer ? `Անհատական տարեկան առաջարկ՝ ${formatMoney(plan.yearlyPrice, plan.currency)}` : `Խնայողություն՝ ${formatMoney(plan.discountAmount, plan.currency)}`}</div> : null}
                   <div>{plan.locations && plan.locations > 1 ? `Մինչև ${plan.locations} հասցե` : "1 հասցե"}</div>
-                  <div>{plan.services_limit ? `Մինչև ${plan.services_limit} ծառայություն` : 'Ծառայությունների սահմանափակում չկա'}</div>
+                  <div>{plan.services_limit && plan.services_limit < 999 ? `Մինչև ${plan.services_limit} ծառայություն` : 'Ծառայությունների սահմանափակում չկա'}</div>
                   {plan.billingCyclesLimit ? <div>Վավեր է մինչև {plan.billingCyclesLimit} վճարային շրջան</div> : null}
                 </div>
 

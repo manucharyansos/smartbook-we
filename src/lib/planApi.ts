@@ -15,6 +15,8 @@ export type PublicPlan = {
     services_limit?: number | null;
     locations?: number | null;
     features?: Record<string, unknown> | null;
+    is_custom?: boolean;
+    self_serve?: boolean;
     pricing_model?: {
         staff_based: boolean;
         owners_unlimited: boolean;

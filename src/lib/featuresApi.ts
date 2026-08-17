@@ -3,6 +3,11 @@ import { api } from "./api";
 export type FeaturesResponse = {
   business_id: number | null;
   business_type?: string | null;
+  business_status?: string | null;
+  billing_status?: string | null;
+  is_billable?: boolean;
+  reason?: "business_suspended" | "billing_suspended" | "no_subscription" | "subscription_inactive" | null;
+  support_whatsapp?: string | null;
   plan_code: string | null;
   plan_name?: string | null;
   features: Record<string, boolean | number | string>;
@@ -21,6 +26,6 @@ export async function fetchFeatures(): Promise<FeaturesResponse> {
 
 export function hasFeature(features: FeaturesResponse | undefined, key: string): boolean {
   if (!features) return false;
-  const v = (features.features as any)?.[key];
+  const v = features.features?.[key];
   return v === true;
 }

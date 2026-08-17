@@ -65,7 +65,7 @@ const AdminLogs = lazy(() => import("./admin/pages/AdminLogs"));
 const AdminPlans = lazy(() => import("./admin/pages/AdminPlans"));
 
 export default function App() {
-    const mockBankEnabled = String(import.meta.env.VITE_ENABLE_MOCK_BANK ?? "true").toLowerCase() === "true";
+    const mockBankEnabled = String(import.meta.env.VITE_ENABLE_MOCK_BANK ?? import.meta.env.DEV).toLowerCase() === "true";
 
     return (
         <Suspense fallback={<AppRouteLoader />}>

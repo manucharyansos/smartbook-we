@@ -45,6 +45,8 @@ export type BillingMeResponse = {
     discount_type?: string | null;
     discount_value?: number | null;
     billing_cycles_limit?: number | null;
+    used_billing_cycles?: number;
+    remaining_billing_cycles?: number | null;
     starts_at?: string | null;
     ends_at?: string | null;
     note?: string | null;
@@ -70,6 +72,8 @@ export type BillingMeResponse = {
       discount_type?: string | null;
       discount_value?: number | null;
       billing_cycles_limit?: number | null;
+      used_billing_cycles?: number;
+      remaining_billing_cycles?: number | null;
       starts_at?: string | null;
       ends_at?: string | null;
       note?: string | null;

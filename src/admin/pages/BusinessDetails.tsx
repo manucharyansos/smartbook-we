@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -17,6 +17,7 @@ import {
   Sparkles,
   Trash2,
   Users,
+  type LucideIcon,
 } from "lucide-react";
 
 import { adminBusinessesApi } from "../services/adminBusinessesApi";
@@ -44,6 +45,8 @@ type PricingOverride = {
   discount_type?: "percent" | "fixed" | "extra_trial_days" | null;
   discount_value?: number | null;
   billing_cycles_limit?: number | null;
+  used_billing_cycles?: number;
+  remaining_billing_cycles?: number | null;
   starts_at?: string | null;
   ends_at?: string | null;
   note?: string | null;
@@ -122,6 +125,9 @@ type OverrideForm = {
   is_active: boolean;
 };
 
+const EMPTY_AVAILABLE_PLANS: AvailablePlan[] = [];
+const EMPTY_PRICING_OVERRIDES: PricingOverride[] = [];
+
 const initialForm: OverrideForm = {
   plan_id: "",
   custom_monthly_price: "",
@@ -153,7 +159,7 @@ function Panel({ className, children }: { className?: string; children: React.Re
   );
 }
 
-function Stat({ icon: Icon, label, value, hint }: { icon: any; label: string; value: React.ReactNode; hint?: string }) {
+function Stat({ icon: Icon, label, value, hint }: { icon: LucideIcon; label: string; value: React.ReactNode; hint?: string }) {
   return (
     <div className="rounded-[24px] border border-[#E8D5C4]/30 bg-gradient-to-br from-white to-[#FFF8F3] p-5">
       <div className="flex items-center justify-between gap-3">
@@ -239,23 +245,14 @@ export default function BusinessDetails() {
   });
 
   const data = detailsQ.data;
-  const plans = data?.available_plans ?? [];
-  const overrides = data?.pricing_overrides ?? [];
+  const plans = data?.available_plans ?? EMPTY_AVAILABLE_PLANS;
+  const overrides = data?.pricing_overrides ?? EMPTY_PRICING_OVERRIDES;
 
   const activePlan = data?.subscription?.plan ?? null;
   const effectivePrice = data?.subscription?.pricing ?? null;
 
-  const currentPlanDefault = useMemo(() => {
-    if (!plans.length) return "";
-    if (activePlan?.code) return activePlan.code;
-    return plans[0]?.code ?? "";
-  }, [plans, activePlan?.code]);
-
-  const currentPlanId = useMemo(() => {
-    if (!plans.length) return "";
-    if (activePlan?.id) return String(activePlan.id);
-    return String(plans[0]?.id ?? "");
-  }, [plans, activePlan?.id]);
+  const currentPlanDefault = activePlan?.code ?? plans[0]?.code ?? "";
+  const currentPlanId = activePlan?.id ? String(activePlan.id) : String(plans[0]?.id ?? "");
 
   if (detailsQ.isLoading) {
     return <div className="grid min-h-[55vh] place-items-center"><Loader2 className="h-10 w-10 animate-spin text-[#C5A28A]" /></div>;
@@ -482,7 +479,7 @@ export default function BusinessDetails() {
                         <div>Monthly: {formatMoney(override.effective_monthly_price ?? override.custom_monthly_price, activePlan?.currency || "AMD")}</div>
                         <div>Yearly: {formatMoney(override.effective_yearly_price ?? override.custom_yearly_price, activePlan?.currency || "AMD")}</div>
                         <div>Discount: {override.discount_type ? `${override.discount_type} · ${override.discount_value ?? 0}` : "—"}</div>
-                        <div>Cycles: {override.billing_cycles_limit ?? "unlimited"}</div>
+                        <div>Cycles: {override.billing_cycles_limit == null ? "unlimited" : `${override.used_billing_cycles ?? 0} / ${override.billing_cycles_limit} used · ${override.remaining_billing_cycles ?? 0} remaining`}</div>
                         <div>Start: {formatDate(override.starts_at)}</div>
                         <div>End: {formatDate(override.ends_at)}</div>
                       </div>

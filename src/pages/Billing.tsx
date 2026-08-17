@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -20,6 +20,7 @@ import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { FullScreenLoader } from "@/components/ui/FullScreenLoader";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/cn";
 import { fetchBillingMe } from "@/lib/billingMeApi";
@@ -45,6 +46,8 @@ type IndividualOffer = {
   effective_yearly_price: number;
   discount_amount: number;
   billing_cycles_limit?: number | null;
+  used_billing_cycles?: number;
+  remaining_billing_cycles?: number | null;
   starts_at?: string | null;
   ends_at?: string | null;
   note?: string | null;
@@ -138,6 +141,11 @@ function requestErrorMessage(error: unknown) {
   return message || "Չհաջողվեց ստեղծել վճարման հաշիվը։ Փորձիր կրկին։";
 }
 
+function checkoutErrorMessage(error: unknown) {
+  const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+  return message || "Չհաջողվեց բացել վճարման էջը։ Փորձիր կրկին։";
+}
+
 function SectionCard({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <Card className={cn("rounded-[32px] border border-slate-200/80 bg-white shadow-[0_18px_60px_rgba(124,58,237,0.08)]", className)}>
@@ -152,6 +160,7 @@ export default function Billing() {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [currentInvoiceId, setCurrentInvoiceId] = useState<number | null>(null);
   const [upgradeError, setUpgradeError] = useState<string | null>(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   const billingQ = useQuery({ queryKey: ["billing", "me"], queryFn: fetchBillingMe, staleTime: 20_000 });
   const currentBusinessType = billingQ.data?.business.business_type ?? null;
@@ -183,6 +192,7 @@ export default function Billing() {
       if (invoiceId) setCurrentInvoiceId(invoiceId);
       void queryClient.invalidateQueries({ queryKey: ["billing", "invoices"] });
       void queryClient.invalidateQueries({ queryKey: ["billing", "me"] });
+      void queryClient.invalidateQueries({ queryKey: ["features"] });
     },
     onError: (error) => setUpgradeError(requestErrorMessage(error)),
     onSettled: () => setSelectedPlan(null),
@@ -190,15 +200,25 @@ export default function Billing() {
 
   const checkoutMut = useMutation({
     mutationFn: (invoiceId: number) => createCheckoutSession({ invoice_id: invoiceId, payment_method: "card" }),
+    onMutate: () => setCheckoutError(null),
     onSuccess: (data) => {
       setCurrentInvoiceId(data.data.invoice_id);
       if (data.data.checkout_url) window.location.href = data.data.checkout_url;
     },
+    onError: (error) => setCheckoutError(checkoutErrorMessage(error)),
   });
 
   const subscription = billingQ.data?.subscription ?? null;
   const pricing = billingQ.data?.pricing ?? null;
   const currentTransaction = paymentStatusQ.data?.data.transaction ?? null;
+
+  useEffect(() => {
+    if (currentTransaction?.status !== "paid") return;
+
+    void queryClient.invalidateQueries({ queryKey: ["billing", "invoices"] });
+    void queryClient.invalidateQueries({ queryKey: ["billing", "me"] });
+    void queryClient.invalidateQueries({ queryKey: ["features"] });
+  }, [currentTransaction?.status, queryClient]);
 
   const individualOffers = useMemo(() => billingQ.data?.individual_offers ?? [], [billingQ.data?.individual_offers]);
 
@@ -223,6 +243,7 @@ export default function Billing() {
         isIndividualOffer: false,
         note: null as string | null,
         billingCyclesLimit: null as number | null,
+        remainingBillingCycles: null as number | null,
       };
     });
 
@@ -247,6 +268,7 @@ export default function Billing() {
         isIndividualOffer: true,
         note: offer.note ?? null,
         billingCyclesLimit: offer.billing_cycles_limit ?? null,
+        remainingBillingCycles: offer.remaining_billing_cycles ?? null,
       };
     });
 
@@ -256,12 +278,46 @@ export default function Billing() {
   }, [plansQ.data, individualOffers, billingCycle]);
 
   const currentPlanCode = subscription?.plan?.code ?? null;
+  const hasUsableSubscription = billingQ.data?.is_billable === true
+    && (subscription?.status === "active" || subscription?.status === "trialing");
   const currentPlanName = currentPlanCode === "custom" && pricing?.has_override
     ? "Անհատական առաջարկ"
     : subscription?.plan ? localizePlanName(subscription.plan) : null;
+  const paymentProviderUnavailable = billingQ.data?.payment_provider?.default === "idbank"
+    && billingQ.data.payment_provider.live_ready !== true;
+  const paymentInvoice = paymentStatusQ.data?.data.invoice;
+  const latestInvoiceStatus = paymentInvoice && latestInvoice && paymentInvoice.id === latestInvoice.id
+    ? paymentInvoice.status
+    : latestInvoice?.status;
+
+  if (billingQ.isLoading) {
+    return <FullScreenLoader title="Բեռնում ենք պլանը…" subtitle="Ստուգում ենք բաժանորդագրությունն ու առաջարկները" />;
+  }
+
+  if (billingQ.isError) {
+    return (
+      <div className="grid min-h-[60vh] place-items-center px-4">
+        <SectionCard className="max-w-lg p-8 text-center">
+          <h1 className="text-xl font-semibold text-slate-950">Չհաջողվեց բեռնել պլանի տվյալները</h1>
+          <p className="mt-3 text-sm leading-7 text-slate-600">Ստուգիր կապը և փորձիր կրկին։</p>
+          <Button className="mt-5" onClick={() => void billingQ.refetch()}>Կրկնել</Button>
+        </SectionCard>
+      </div>
+    );
+  }
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="admin-page space-y-4">
+      {!billingQ.data?.is_billable ? (
+        <div className={cn("rounded-3xl border px-5 py-4 text-sm leading-7", billingQ.data?.reason === "business_suspended" ? "border-rose-200 bg-rose-50 text-rose-800" : "border-amber-200 bg-amber-50 text-amber-800")} role="alert">
+          {billingQ.data?.reason === "business_suspended"
+            ? "Բիզնեսը կասեցված է։ Վերականգնման համար կապվիր աջակցության հետ։"
+            : billingQ.data?.reason === "billing_suspended"
+              ? "Վճարումները կասեցված են։ Ընտրիր գործող առաջարկը և ավարտիր վճարումը՝ աշխատանքային տարածքը վերականգնելու համար։"
+              : "Բաժանորդագրությունն ակտիվ չէ։ Ընտրիր պլանը և ավարտիր վճարումը՝ աշխատանքային տարածքը վերականգնելու համար։"}
+        </div>
+      ) : null}
+
       <SectionCard className="overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.14),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(236,72,153,0.10),transparent_35%),white] p-8">
         <div className="flex flex-col gap-5 sm:gap-8 xl:flex-row xl:items-center xl:justify-between">
           <div className="max-w-3xl">
@@ -273,7 +329,7 @@ export default function Billing() {
               Ընտրիր պլանը ըստ ակտիվ մասնագետների, ծառայությունների և հասցեների քանակի։ Սեփականատիրոջ և մենեջերի հաշիվները սահմանաչափում չեն հաշվվում, իսկ անհատական առաջարկը կերևա հենց այստեղ։
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/app/settings"><Button variant="secondary">Ընդհանուր կարգավորումներ</Button></Link>
+              {billingQ.data?.is_billable ? <Link to="/app/settings"><Button variant="secondary">Ընդհանուր կարգավորումներ</Button></Link> : null}
               <a href="https://idbank.am/en/business/instruments/trade-finance/v-pos-virtual-pos-terminal-0/" target="_blank" rel="noreferrer">
                 <Button>IDBank V-POS <ExternalLink className="h-4 w-4" /></Button>
               </a>
@@ -311,7 +367,7 @@ export default function Billing() {
               </div>
               <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
                 <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Վճարման provider</div>
-                <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.payment_provider?.default === "idbank" ? "IDBank Live" : "IDBank Test"}</div>
+                <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.payment_provider?.live_ready ? "IDBank Live" : billingQ.data?.payment_provider?.default === "idbank" ? "Սպասում է միացման" : "IDBank Test"}</div>
                 <div className="mt-1 text-xs text-slate-500">Վճարման անվտանգ միջավայր</div>
               </div>
 
@@ -356,9 +412,16 @@ export default function Billing() {
           <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{upgradeError}</div>
         ) : null}
 
+        {plansQ.isLoading ? (
+          <div className="mt-6 flex items-center justify-center gap-2 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-8 text-sm text-slate-600">
+            <Loader2 className="h-4 w-4 animate-spin" /> Բեռնում ենք հասանելի պլանները…
+          </div>
+        ) : null}
+
         <div className="mt-4 grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-4">
           {presentationPlans.map((plan) => {
-            const isCurrent = currentPlanCode === plan.code;
+            const isCurrent = hasUsableSubscription && !plan.isIndividualOffer && currentPlanCode === plan.code;
+            const isRenewal = !hasUsableSubscription && currentPlanCode === plan.code;
             const isBusy = requestMut.isPending && selectedPlan === plan.code;
             return (
               <motion.div key={plan.id} whileHover={{ y: -4 }} className={cn("relative rounded-[30px] border p-6 pt-14 shadow-sm", isCurrent ? "border-violet-600 bg-violet-600 text-white shadow-[0_24px_60px_rgba(124,58,237,0.22)]" : plan.isIndividualOffer ? "border-emerald-200 bg-emerald-50/40" : "border-slate-200 bg-white")}> 
@@ -381,7 +444,7 @@ export default function Billing() {
                   {billingCycle === "yearly" ? <div>{plan.isIndividualOffer ? `Անհատական տարեկան առաջարկ՝ ${formatMoney(plan.yearlyPrice, plan.currency)}` : `Խնայողություն՝ ${formatMoney(plan.discountAmount, plan.currency)}`}</div> : null}
                   <div>{plan.locations && plan.locations > 1 ? `Մինչև ${plan.locations} հասցե` : "1 հասցե"}</div>
                   <div>{plan.services_limit && plan.services_limit < 999 ? `Մինչև ${plan.services_limit} ծառայություն` : 'Ծառայությունների սահմանափակում չկա'}</div>
-                  {plan.billingCyclesLimit ? <div>Վավեր է մինչև {plan.billingCyclesLimit} վճարային շրջան</div> : null}
+                  {plan.billingCyclesLimit ? <div>Վավեր է ևս {plan.remainingBillingCycles ?? plan.billingCyclesLimit} վճարային շրջան</div> : null}
                 </div>
 
                 <div className="mt-5 space-y-2">
@@ -392,9 +455,9 @@ export default function Billing() {
 
                 {plan.note ? <div className={cn("mt-4 rounded-2xl px-4 py-3 text-sm", isCurrent ? "bg-white/10 text-white/85" : plan.isIndividualOffer ? "border border-emerald-200 bg-white text-emerald-800" : "bg-violet-50 text-violet-700")}>{plan.note}</div> : null}
 
-                <Button className={cn("mt-6 w-full", isCurrent ? "bg-white text-violet-700 hover:bg-white/90" : "")} loading={isBusy} disabled={isCurrent} onClick={() => { setSelectedPlan(plan.code); requestMut.mutate({ planCode: plan.code, cycle: billingCycle }); }}>
+                <Button className={cn("mt-6 w-full", isCurrent ? "bg-white text-violet-700 hover:bg-white/90" : "")} loading={isBusy} disabled={isCurrent || requestMut.isPending || billingQ.data?.reason === "business_suspended"} onClick={() => { setSelectedPlan(plan.code); requestMut.mutate({ planCode: plan.code, cycle: billingCycle }); }}>
                   {isCurrent ? <BadgeCheck className="h-4 w-4" /> : plan.isIndividualOffer ? <Handshake className="h-4 w-4" /> : <Crown className="h-4 w-4" />}
-                  {isCurrent ? "Ընթացիկ պլան" : plan.isIndividualOffer ? (billingCycle === "yearly" ? "Ստեղծել վճարման հաշիվ ըստ անհատական առաջարկի" : "Ստեղծել վճարման հաշիվ ըստ անհատական առաջարկի") : billingCycle === "yearly" ? "Ստեղծել տարեկան վճարման հաշիվ" : "Ստեղծել ամսական վճարման հաշիվ"}
+                  {isCurrent ? "Ընթացիկ պլան" : isRenewal ? "Վերականգնել այս պլանը" : plan.isIndividualOffer ? "Ստեղծել հաշիվ ըստ անհատական առաջարկի" : billingCycle === "yearly" ? "Ստեղծել տարեկան վճարման հաշիվ" : "Ստեղծել ամսական վճարման հաշիվ"}
                 </Button>
               </motion.div>
             );
@@ -405,7 +468,11 @@ export default function Billing() {
       <div className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
         <SectionCard className="space-y-4 p-6">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-700"><Landmark className="h-4 w-4 text-violet-600" /> Վերջին վճարման հաշիվ և checkout</div>
-          {!latestInvoice ? (
+          {invoicesQ.isLoading ? (
+            <div className="flex items-center justify-center gap-2 py-12 text-sm text-slate-600"><Loader2 className="h-4 w-4 animate-spin" /> Բեռնում ենք վճարման հաշիվները…</div>
+          ) : invoicesQ.isError ? (
+            <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">Չհաջողվեց բեռնել վճարման հաշիվները։</div>
+          ) : !latestInvoice ? (
             <EmptyState icon={Receipt} title="Վճարման հաշիվ դեռ չկա" description="Ընտրիր պլան վերևից, ստեղծիր վճարման հաշիվ և հետո բացիր բանկի checkout-ը։" className="border-0 shadow-none" />
           ) : (
             <>
@@ -419,17 +486,25 @@ export default function Billing() {
                 </div>
                 <div className="rounded-3xl border border-slate-200 bg-white p-4">
                   <div className="text-xs uppercase tracking-wide text-slate-400">Վիճակ</div>
-                  <div className="mt-2 text-lg font-semibold text-slate-950">{latestInvoice.status}</div>
+                  <div className="mt-2 text-lg font-semibold text-slate-950">{latestInvoiceStatus}</div>
                   <div className="mt-1 text-sm text-slate-600">{new Date(latestInvoice.created_at).toLocaleString("hy-AM")}</div>
                 </div>
               </div>
-              <div className="rounded-3xl border border-slate-200 bg-white p-5">
-                <div className="text-base font-semibold text-slate-950">Բացել bank checkout-ը</div>
-                <p className="mt-2 text-sm leading-7 text-slate-600">Checkout session-ը ստեղծվում է backend-ում, և frontend-ը այլևս provider hardcode չի անում։</p>
-                <Button className="mt-4" loading={checkoutMut.isPending} onClick={() => checkoutMut.mutate(latestInvoice.id)}>
-                  {checkoutMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />} {billingQ.data?.payment_provider?.default === "idbank" ? "Բացել IDBank checkout-ը" : "Բացել IDBank test checkout-ը"}
-                </Button>
-              </div>
+              {latestInvoiceStatus === "pending" ? (
+                <div className="rounded-3xl border border-slate-200 bg-white p-5">
+                  <div className="text-base font-semibold text-slate-950">Բացել բանկի վճարման էջը</div>
+                  <p className="mt-2 text-sm leading-7 text-slate-600">Վճարումը բացվում է առանձին անվտանգ էջում, իսկ հաստատումից հետո պլանն ակտիվանում է ավտոմատ։</p>
+                  {paymentProviderUnavailable ? <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">IDBank live վճարումը դեռ միացված չէ։ Կապվիր աջակցության հետ։</div> : null}
+                  {checkoutError ? <div className="mt-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{checkoutError}</div> : null}
+                  <Button className="mt-4" loading={checkoutMut.isPending} disabled={paymentProviderUnavailable || billingQ.data?.reason === "business_suspended"} onClick={() => checkoutMut.mutate(latestInvoice.id)}>
+                    {checkoutMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />} {billingQ.data?.payment_provider?.default === "idbank" ? "Բացել IDBank checkout-ը" : "Բացել IDBank test checkout-ը"}
+                  </Button>
+                </div>
+              ) : latestInvoiceStatus === "approved" ? (
+                <div className="rounded-3xl border border-emerald-200 bg-emerald-50 p-5 text-sm leading-7 text-emerald-800">Վճարումը հաստատված է, և պլանն ակտիվացված է։</div>
+              ) : (
+                <div className="rounded-3xl border border-amber-200 bg-amber-50 p-5 text-sm leading-7 text-amber-800">Այս հաշիվն այլևս վճարման ենթակա չէ։ Ընտրիր պլանը և ստեղծիր նոր հաշիվ։</div>
+              )}
             </>
           )}
         </SectionCard>

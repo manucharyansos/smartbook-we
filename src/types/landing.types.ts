@@ -1,5 +1,7 @@
 // src/types/landing.types.ts
 // Keep in sync with backend business types
+import type { LucideIcon } from 'lucide-react';
+
 export type BusinessType = 'beauty' | 'dental' | null;
 
 export interface PricingPlan {
@@ -17,7 +19,7 @@ export interface PricingPlan {
 }
 
 export interface Feature {
-    icon: never;
+    icon: LucideIcon;
     title: string;
     description: string;
     gradient?: string;
@@ -28,7 +30,7 @@ export interface BusinessTypeCardProps {
     type: BusinessType;
     title: string;
     description: string;
-    icon: any;
+    icon: LucideIcon;
     features: string[];
     price?: string;
     isSelected: boolean;

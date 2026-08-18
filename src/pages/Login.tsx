@@ -7,14 +7,24 @@ import { Eye, EyeOff, Lock, LogIn, Mail } from "lucide-react";
 import AuthShell from "../components/AuthShell";
 import SocialAuthButtons from "../components/auth/SocialAuthButtons";
 import { api } from "../lib/api";
+import { getErrorMessage } from "../lib/http";
 import { cn } from "../lib/cn";
 import { fadeUp, staggerContainer } from "../lib/motion";
 import { useAuth } from "../store/auth";
+import { useLanguage } from "../contexts/LanguageContext";
+
+const copy = {
+    hy: { title: "Մուտք գործել", subtitle: "Մուտք գործեք ձեր Vizit հաշիվ", sideTitle: "Կառավարեք բիզնեսը մեկ պարզ միջավայրում", sideText: "Շարունակեք աշխատել օրացույցի, թիմի և ամրագրումների հետ մեկ անվտանգ workspace-ում։", noAccount: "Չունե՞ք հաշիվ", register: "Գրանցվել", email: "Էլ. փոստ", password: "Գաղտնաբառ", forgot: "Մոռացե՞լ եք գաղտնաբառը", hide: "Թաքցնել գաղտնաբառը", show: "Ցույց տալ գաղտնաբառը", loading: "Մուտք է կատարվում…", submit: "Մուտք գործել", error: "Մուտքը չհաջողվեց։ Ստուգեք տվյալները և փորձեք նորից։" },
+    ru: { title: "Войти", subtitle: "Войдите в свой аккаунт Vizit", sideTitle: "Управляйте бизнесом в одном понятном пространстве", sideText: "Продолжайте работу с календарём, командой и записями в безопасном рабочем пространстве.", noAccount: "Нет аккаунта?", register: "Зарегистрироваться", email: "Электронная почта", password: "Пароль", forgot: "Забыли пароль?", hide: "Скрыть пароль", show: "Показать пароль", loading: "Вход…", submit: "Войти", error: "Не удалось войти. Проверьте данные и попробуйте снова." },
+    en: { title: "Sign in", subtitle: "Sign in to your Vizit account", sideTitle: "Manage your business in one clear workspace", sideText: "Continue working with your calendar, team and bookings in one secure workspace.", noAccount: "Don't have an account?", register: "Register", email: "Email", password: "Password", forgot: "Forgot your password?", hide: "Hide password", show: "Show password", loading: "Signing in…", submit: "Sign in", error: "Sign-in failed. Check your details and try again." },
+} as const;
 
 export default function Login() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { setAuth } = useAuth();
+    const { locale } = useLanguage();
+    const text = copy[locale];
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -37,12 +47,8 @@ export default function Login() {
             navigate(user.needs_onboarding ? "/app/onboarding" : "/app/dashboard", {
                 replace: true,
             });
-        } catch (err: any) {
-            setError(
-                err?.response?.data?.message ??
-                err?.response?.data?.errors?.email?.[0] ??
-                "Մուտքը չհաջողվեց։ Ստուգիր տվյալները և փորձիր նորից։"
-            );
+        } catch (error: unknown) {
+            setError(getErrorMessage(error, text.error));
         } finally {
             setLoading(false);
         }
@@ -50,15 +56,15 @@ export default function Login() {
 
     return (
         <AuthShell
-            title="Մուտք գործել"
-            subtitle="Մուտք գործիր քո Vizit հաշիվ"
-            sideTitle="Կառավարիր բիզնեսդ մեկ պարզ միջավայրում"
-            sideText="Մուտք գործիր workspace ու շարունակիր աշխատել օրացույցի, թիմի և ամրագրումների հետ։"
+            title={text.title}
+            subtitle={text.subtitle}
+            sideTitle={text.sideTitle}
+            sideText={text.sideText}
             footer={
                 <div className="text-center text-sm text-slate-500">
-                    Չունե՞ս հաշիվ{" "}
+                    {text.noAccount}{" "}
                     <Link to="/register" className="font-medium text-violet-700 hover:text-violet-600">
-                        Գրանցվել
+                        {text.register}
                     </Link>
                 </div>
             }
@@ -80,10 +86,13 @@ export default function Login() {
                 ) : null}
 
                 <motion.div variants={fadeUp}>
-                    <label className="mb-2 block text-sm font-medium text-slate-700">Էլ. փոստ</label>
+                    <label htmlFor="business-login-email" className="mb-2 block text-sm font-medium text-slate-700">{text.email}</label>
                     <div className="relative">
                         <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                         <input
+                            id="business-login-email"
+                            name="email"
+                            autoComplete="username"
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -96,18 +105,21 @@ export default function Login() {
 
                 <motion.div variants={fadeUp}>
                     <div className="mb-2 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
-                        <label className="block text-sm font-medium text-slate-700">Գաղտնաբառ</label>
+                        <label htmlFor="business-login-password" className="block text-sm font-medium text-slate-700">{text.password}</label>
                         <Link
                             to="/forgot-password"
                             className="text-xs font-medium text-slate-500 transition hover:text-violet-700"
                         >
-                            Մոռացե՞լ եք գաղտնաբառը
+                            {text.forgot}
                         </Link>
                     </div>
 
                     <div className="relative">
                         <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                         <input
+                            id="business-login-password"
+                            name="password"
+                            autoComplete="current-password"
                             type={showPassword ? "text" : "password"}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -118,6 +130,8 @@ export default function Login() {
                         <button
                             type="button"
                             onClick={() => setShowPassword((s) => !s)}
+                            aria-label={showPassword ? text.hide : text.show}
+                            aria-pressed={showPassword}
                             className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-violet-700"
                         >
                             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -135,7 +149,7 @@ export default function Login() {
                     )}
                 >
                     <LogIn className="h-4 w-4" />
-                    {loading ? "Մուտք է կատարվում..." : "Մուտք գործել"}
+                    {loading ? text.loading : text.submit}
                 </motion.button>
 
                 <SocialAuthButtons mode="login" audience="business" />

@@ -16,44 +16,22 @@ import {
     AlertCircle
 } from 'lucide-react';
 import { adminPlansApi } from '../services/adminPlansApi';
-import { PlanModal } from '../components/PlanModal';
+import { PlanModal, type Plan } from '../components/PlanModal';
 import { cn } from '@/lib/cn';
 import { PageHero } from '@/components/ui/PageHero';
 import { Button } from '@/components/ui/Button';
-
-interface Plan {
-    id: number;
-    name: string;
-    code: string;
-    business_type: "beauty" | "dental" | null;
-    description: string | null;
-    price?: number | null;
-    monthly_price?: number | null;
-    yearly_price?: number | null;
-    price_beauty?: number | null;
-    price_dental?: number | null;
-    currency: string;
-    seats?: number | null;
-    staff_limit?: number | null;
-    services_limit?: number | null;
-    features: any;
-    duration_days: number;
-    locations: number | null;
-    is_active?: boolean;
-    is_visible?: boolean;
-    sort_order?: number;
-    created_at?: string;
-    updated_at?: string;
-}
+import { getErrorMessage } from '@/lib/http';
 
 interface ApiResponse {
     success: boolean;
-    data: Plan[];
+    data: PersistedPlan[];
 }
+
+type PersistedPlan = Plan & { id: number };
 
 export default function AdminPlans() {
     const [showHidden, setShowHidden] = useState(false);
-    const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
+    const [editingPlan, setEditingPlan] = useState<PersistedPlan | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalError, setModalError] = useState<string | null>(null);
 
@@ -63,33 +41,33 @@ export default function AdminPlans() {
         queryKey: ['admin', 'plans', showHidden],
         queryFn: async () => {
             const res = await adminPlansApi.list(showHidden);
-            return res.data as ApiResponse;
+            return res.data as ApiResponse | PersistedPlan[];
         },
     });
 
     const createMutation = useMutation({
-        mutationFn: (data: any) => adminPlansApi.create(data),
+        mutationFn: (data: Plan) => adminPlansApi.create(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'plans'] });
             setIsModalOpen(false);
             setEditingPlan(null);
             setModalError(null);
         },
-        onError: (err: any) => {
-            setModalError(err.response?.data?.message || 'Սխալ փաթեթի ստեղծման ժամանակ');
+        onError: (error: unknown) => {
+            setModalError(getErrorMessage(error, 'Սխալ փաթեթի ստեղծման ժամանակ'));
         },
     });
 
     const updateMutation = useMutation({
-        mutationFn: ({ id, data }: { id: number; data: any }) => adminPlansApi.update(id, data),
+        mutationFn: ({ id, data }: { id: number; data: Plan }) => adminPlansApi.update(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'plans'] });
             setIsModalOpen(false);
             setEditingPlan(null);
             setModalError(null);
         },
-        onError: (err: any) => {
-            setModalError(err.response?.data?.message || 'Սխալ փաթեթի թարմացման ժամանակ');
+        onError: (error: unknown) => {
+            setModalError(getErrorMessage(error, 'Սխալ փաթեթի թարմացման ժամանակ'));
         },
     });
 
@@ -100,7 +78,7 @@ export default function AdminPlans() {
         },
     });
 
-    const plans = Array.isArray(data) ? data : (data?.data || []);
+    const plans: PersistedPlan[] = Array.isArray(data) ? data : (data?.data || []);
 
     const getPlanIcon = (code: string) => {
         switch (code) {
@@ -126,7 +104,7 @@ export default function AdminPlans() {
 
     const isCustomPlan = (plan: Plan) => plan.code === 'custom' || plan.features?.custom_pricing === true;
 
-    const handleSavePlan = (planData: any) => {
+    const handleSavePlan = (planData: Plan) => {
         if (editingPlan) {
             updateMutation.mutate({ id: editingPlan.id, data: planData });
         } else {
@@ -200,7 +178,7 @@ export default function AdminPlans() {
 
             {/* Plans Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-6">
-                {plans.map((plan: Plan, index: number) => (
+                {plans.map((plan: PersistedPlan, index: number) => (
                     <motion.div
                         key={plan.id}
                         initial={{ opacity: 0, y: 20 }}

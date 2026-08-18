@@ -1,8 +1,10 @@
 import type {ReactNode} from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, CalendarDays, ShieldCheck, Sparkles } from "lucide-react";
 import { fadeDown, fadeUp, pageTransition, scaleIn, staggerContainer, hoverLift } from "../lib/motion";
+import { useLanguage } from "../contexts/LanguageContext";
+import LanguageToggle from "./LanguageToggle";
 
 type AuthShellProps = {
     title: string;
@@ -21,9 +23,14 @@ export default function AuthShell({
                                       sideTitle,
                                       sideText,
                                       children,
-                                      footer,
+                                  footer,
                                   }: AuthShellProps) {
-    const navigate = useNavigate();
+    const { locale } = useLanguage();
+    const text = {
+        hy: { home: "Գլխավոր", homeAria: "Վերադառնալ գլխավոր էջ", tagline: "Ամրագրման միջավայր", features: ["Հանրային ամրագրում և օրացույց", "Թիմի ու ծառայությունների կառավարում", "Մաքուր ու պրոֆեսիոնալ միջավայր"] },
+        ru: { home: "Главная", homeAria: "Вернуться на главную", tagline: "Платформа онлайн-записи", features: ["Публичная запись и календарь", "Управление командой и услугами", "Понятное профессиональное пространство"] },
+        en: { home: "Home", homeAria: "Return home", tagline: "Online booking platform", features: ["Public booking and calendar", "Staff and service management", "A clean professional workspace"] },
+    }[locale];
 
     return (
         <motion.div
@@ -36,14 +43,19 @@ export default function AuthShell({
             <div className="absolute -top-20 left-[-80px] h-72 w-72 rounded-full bg-orange-200/20 blur-3xl" />
             <div className="absolute bottom-[-80px] right-[-60px] h-80 w-80 rounded-full bg-violet-200/20 blur-3xl" />
 
-            <motion.button
+            <motion.div
                 variants={fadeDown}
-                onClick={() => navigate(-1)}
                 className="absolute left-2.5 top-2.5 z-20 inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/90 px-2 py-1.5 text-xs text-slate-700 shadow-sm backdrop-blur transition hover:border-violet-200 hover:bg-white sm:left-6 sm:top-6 sm:px-4 sm:py-2 sm:text-sm"
             >
-                <ArrowLeft className="h-4 w-4" />
-                <span className="hidden sm:inline">Հետ</span>
-            </motion.button>
+                <Link to="/" className="inline-flex items-center gap-2" aria-label={text.homeAria}>
+                    <ArrowLeft className="h-4 w-4" />
+                    <span className="hidden sm:inline">{text.home}</span>
+                </Link>
+            </motion.div>
+
+            <motion.div variants={fadeDown} className="absolute right-2.5 top-2.5 z-30 rounded-full border border-white/70 bg-white/90 text-slate-700 shadow-sm backdrop-blur sm:right-6 sm:top-6">
+                <LanguageToggle compact />
+            </motion.div>
 
             <div className="relative z-10 mx-auto grid min-h-screen max-w-7xl items-start gap-6 px-3 pb-8 pt-20 sm:gap-8 sm:px-6 sm:pb-12 sm:pt-24 lg:px-8 2xl:grid-cols-[0.95fr_1.05fr] 2xl:items-center">
                 <motion.div
@@ -65,7 +77,7 @@ export default function AuthShell({
                                     Vizit
                                 </div>
                                 <div className="text-sm text-slate-500">
-                                    Ամրագրման միջավայր
+                                    {text.tagline}
                                 </div>
                             </div>
                         </Link>
@@ -82,11 +94,7 @@ export default function AuthShell({
                         variants={staggerContainer(0.08, 0.15)}
                         className="mt-10 grid gap-4"
                     >
-                        {[
-                            "Հանրային ամրագրում և օրացույցի հոսք",
-                            "Թիմի ու ծառայությունների կառավարում",
-                            "Մաքուր ու պրոֆեսիոնալ միջավայր",
-                        ].map((item) => (
+                        {text.features.map((item) => (
                             <motion.div
                                 key={item}
                                 variants={scaleIn}
@@ -113,7 +121,7 @@ export default function AuthShell({
                                         </div>
                                         <div className="text-left">
                                             <div className="text-lg font-semibold text-slate-950">Vizit</div>
-                                            <div className="text-xs text-slate-500">Ամրագրման միջավայր</div>
+                                            <div className="text-xs text-slate-500">{text.tagline}</div>
                                         </div>
                                     </Link>
 

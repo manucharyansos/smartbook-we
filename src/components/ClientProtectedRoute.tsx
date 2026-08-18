@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../store/auth";
 import { fetchClientMe } from "../lib/clientAuthApi";
 import { FullScreenLoader } from "./ui/FullScreenLoader";
+import { getErrorMessage, getHttpStatus } from "../lib/http";
 
 export function ClientProtectedRoute() {
   const { token, user, setUser, clear, bootstrapped, bootstrapFromStorage } = useAuth();
   const loc = useLocation();
-  const [meError, setMeError] = useState<string | null>(null);
+  const [meFailure, setMeFailure] = useState<{ token: string; message: string } | null>(null);
+  const meError = token && meFailure?.token === token ? meFailure.message : null;
 
   useEffect(() => {
     if (!bootstrapped) bootstrapFromStorage();
@@ -19,21 +21,19 @@ export function ClientProtectedRoute() {
     if (!token) return;
     if (user) return;
 
-    setMeError(null);
-
     fetchClientMe()
       .then((me) => {
         if (cancelled) return;
         setUser(me);
       })
-      .catch((err: any) => {
+      .catch((error: unknown) => {
         if (cancelled) return;
-        const status = err?.response?.status;
+        const status = getHttpStatus(error);
         if (status === 401) {
           clear();
           return;
         }
-        setMeError(err?.response?.data?.message || "Չհաջողվեց բացել client cabinet-ը։");
+        setMeFailure({ token, message: getErrorMessage(error, "Չհաջողվեց բացել հաճախորդի հաշիվը։") });
       });
 
     return () => {
@@ -45,7 +45,13 @@ export function ClientProtectedRoute() {
     return <FullScreenLoader title="Ստուգում ենք սեսիան…" subtitle="Մի պահ սպասիր" />;
   }
 
-  if (!token) return <Navigate to="/login" replace state={{ from: loc }} />;
+  if (!token) return <Navigate to="/client/login" replace state={{ from: loc }} />;
+
+  // A business session must stay in the business workspace. This also handles
+  // legacy persisted business users that predate the explicit audience field.
+  if (user && user.audience !== "client" && user.role !== "client") {
+    return <Navigate to="/app/dashboard" replace />;
+  }
 
   if (token && !user && !meError) {
     return <FullScreenLoader title="Բացում ենք cabinet-ը…" subtitle="Բեռնում ենք քո ամրագրումները" />;

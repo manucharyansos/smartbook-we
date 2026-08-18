@@ -69,7 +69,7 @@ export default function Loyalty() {
   });
 
   const program = programQ.data;
-  const clients = clientsQ.data ?? [];
+  const clients = useMemo(() => clientsQ.data ?? [], [clientsQ.data]);
   const totalBalance = useMemo(() => clients.reduce((sum, client) => sum + client.points, 0), [clients]);
 
   return (

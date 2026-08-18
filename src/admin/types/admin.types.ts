@@ -19,8 +19,8 @@ export interface AdminLog {
     action: string;
     model_type?: string;
     model_id?: number;
-    old_values?: any;
-    new_values?: any;
+    old_values?: Record<string, unknown> | null;
+    new_values?: Record<string, unknown> | null;
     ip_address?: string;
     user_agent?: string;
     created_at: string;

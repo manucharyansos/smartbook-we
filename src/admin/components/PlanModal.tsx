@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- modal form state intentionally resets when the selected server record changes */
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, AlertCircle, Sparkles, Award, Save } from "lucide-react";
@@ -7,7 +8,7 @@ import { cn } from "@/lib/cn.ts";
 type BusinessType = "beauty" | "dental" | null;
 type SmsReminders = number | "unlimited";
 
-interface Plan {
+export interface Plan {
     id?: number;
     name: string;
     code: string;
@@ -21,17 +22,19 @@ interface Plan {
     currency: string;
     seats?: number | null;
     staff_limit?: number | null;
+    services_limit?: number | null;
     duration_days: number;
     locations: number | null;
     features: {
         staff_limit: number;
+        services_limit: number;
         sms_reminders: SmsReminders;
         api_access: boolean;
         priority_support: boolean;
         dedicated_manager: boolean;
         custom_pricing: boolean;
         partner_terms: boolean;
-        [k: string]: any;
+        [k: string]: unknown;
     };
     is_active?: boolean;
     is_visible?: boolean;
@@ -40,9 +43,9 @@ interface Plan {
 
 interface PlanModalProps {
     open: boolean;
-    plan: any | null;
+    plan: Plan | null;
     onClose: () => void;
-    onSave: (plan: any) => void;
+    onSave: (plan: Plan) => void;
     saving?: boolean;
     error?: string | null;
 }
@@ -135,7 +138,7 @@ export function PlanModal({
 
             if (parent === "features") {
                 setFormData((prev) => {
-                    let nextValue: any;
+                    let nextValue: string | number | boolean;
 
                     if (type === "checkbox" && target instanceof HTMLInputElement) {
                         nextValue = target.checked;
@@ -449,7 +452,9 @@ export function PlanModal({
                                             const checked =
                                                 item.name.startsWith("features.")
                                                     ? Boolean(formData.features[item.name.split(".")[1] as keyof typeof formData.features])
-                                                    : Boolean((formData as any)[item.name]);
+                                                    : item.name === "is_active"
+                                                        ? Boolean(formData.is_active)
+                                                        : Boolean(formData.is_visible);
 
                                             return (
                                                 <label

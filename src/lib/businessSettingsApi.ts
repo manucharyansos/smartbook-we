@@ -65,7 +65,8 @@ export type BusinessSettings = {
   };
 };
 
-function mapSettings(data: any): BusinessSettings {
+function mapSettings(payload: unknown): BusinessSettings {
+  const data = payload as BusinessSettings;
   return {
     ...data,
     work_start: normalizeTime(data.work_start),

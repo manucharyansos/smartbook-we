@@ -241,9 +241,9 @@ export function DentalHistoryPanel({ client, clientId, canManage, formatDateTime
     setSelectedTooth((prev) => (ALL_TEETH_SET.has(prev) ? prev : preferredTooth));
   }, [client.dental_chart]);
 
-  const treatmentRecords = client.dental_treatments ?? [];
+  const treatmentRecords = useMemo(() => client.dental_treatments ?? [], [client.dental_treatments]);
   const dentalStats = client.crm?.dental;
-  const chartRecords = client.dental_chart ?? [];
+  const chartRecords = useMemo(() => client.dental_chart ?? [], [client.dental_chart]);
 
   const chartMap = useMemo(() => new Map(chartRecords.map((record) => [record.tooth_number, record])), [chartRecords]);
   const toothTreatmentCounts = useMemo(() => {

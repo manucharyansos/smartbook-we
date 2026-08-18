@@ -27,7 +27,7 @@ export default function LanguageToggle({ className, compact = false }: { classNa
     <div ref={rootRef} className={cn("relative", compact ? "inline-flex" : "w-full", className)}>
       {compact ? (
         <>
-          <button type="button" onClick={() => setOpen((value) => !value)} aria-label="Փոխել լեզուն" aria-expanded={open} className="inline-flex h-10 min-w-[70px] items-center justify-center gap-2 rounded-full px-3 text-sm font-bold sm:h-11">
+          <button type="button" onClick={() => setOpen((value) => !value)} aria-label={{ hy: "Փոխել լեզուն", ru: "Изменить язык", en: "Change language" }[locale]} aria-expanded={open} className="inline-flex h-10 min-w-[70px] items-center justify-center gap-2 rounded-full px-3 text-sm font-bold sm:h-11">
             <span className="text-xl leading-none" aria-hidden="true">{selected.flag}</span>
             <ChevronDown className={cn("h-3.5 w-3.5 transition", open && "rotate-180")} />
           </button>

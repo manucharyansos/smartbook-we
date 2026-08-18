@@ -4,31 +4,38 @@ import type { ReactNode } from "react";
 
 import MarketingPageShell from "./MarketingPageShell";
 import { fadeUp, scaleIn } from "../../lib/motion";
+import { useLanguage } from "../../contexts/LanguageContext";
 
-type ԻրավականSection = {
+type LegalSection = {
   title: string;
   content: ReactNode;
 };
 
-type ԻրավականPageTemplateProps = {
+type LegalPageTemplateProps = {
   title: string;
   description: string;
   updatedAt?: string;
-  sections: ԻրավականSection[];
+  sections: LegalSection[];
 };
 
-export default function ԻրավականPageTemplate({
+export default function LegalPageTemplate({
   title,
   description,
   updatedAt,
   sections,
-}: ԻրավականPageTemplateProps) {
+}: LegalPageTemplateProps) {
+  const { locale } = useLanguage();
+  const labels = {
+    hy: { legal: "Իրավական", updated: "Վերջին թարմացում" },
+    ru: { legal: "Правовая информация", updated: "Последнее обновление" },
+    en: { legal: "Legal", updated: "Last updated" },
+  }[locale];
   return (
     <MarketingPageShell
       badge={
         <>
           <ShieldCheck className="h-4 w-4" />
-          Իրավական
+          {labels.legal}
         </>
       }
       title={title}
@@ -39,7 +46,7 @@ export default function ԻրավականPageTemplate({
         variants={scaleIn}
         className="rounded-[32px] border border-white/70 bg-white/90 p-6 shadow-sm backdrop-blur sm:p-8"
       >
-        {updatedAt ? <div className="text-sm text-slate-500">Վերջին թարմացում՝ {updatedAt}</div> : null}
+        {updatedAt ? <div className="text-sm text-slate-500">{labels.updated}: {updatedAt}</div> : null}
 
         <div className="mt-6 space-y-5">
           {sections.map((section) => (

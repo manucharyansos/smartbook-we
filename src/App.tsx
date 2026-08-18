@@ -11,6 +11,7 @@ import { RequireBusinessRoles } from "./components/RequireBusinessRoles";
 import { AppRouteLoader } from "./components/AppRouteLoader";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { ScrollToTopButton } from "./components/ScrollToTopButton";
+import { RouteSeo } from "./components/RouteSeo";
 
 const Index = lazy(() => import("./pages/Index"));
 const Login = lazy(() => import("./pages/Login"));
@@ -71,6 +72,7 @@ export default function App() {
         <Suspense fallback={<AppRouteLoader />}>
             <ScrollToTop />
             <ScrollToTopButton />
+            <RouteSeo />
             <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />

@@ -3,13 +3,15 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../store/auth";
 import { fetchMe } from "../lib/authApi";
 import { FullScreenLoader } from "./ui/FullScreenLoader";
+import { getErrorMessage, getHttpStatus } from "../lib/http";
 
 export function ProtectedRoute() {
     const { token, user, setUser, clear, bootstrapped, bootstrapFromStorage } =
         useAuth();
     const loc = useLocation();
 
-    const [meError, setMeError] = useState<string | null>(null);
+    const [meFailure, setMeFailure] = useState<{ token: string; message: string } | null>(null);
+    const meError = token && meFailure?.token === token ? meFailure.message : null;
 
     // 1) hydrate storage once
     useEffect(() => {
@@ -23,17 +25,15 @@ export function ProtectedRoute() {
         if (!token) return;
         if (user) return;
 
-        setMeError(null);
-
         fetchMe()
             .then((me) => {
                 if (cancelled) return;
                 setUser(me);
             })
-            .catch((err: any) => {
+            .catch((error: unknown) => {
                 if (cancelled) return;
 
-                const status = err?.response?.status;
+                const status = getHttpStatus(error);
 
                 // ✅ ONLY logout on 401 (unauthorized)
                 if (status === 401) {
@@ -42,10 +42,8 @@ export function ProtectedRoute() {
                 }
 
                 // ✅ for 403/500/network: keep token, show error
-                const msg =
-                    err?.response?.data?.message ||
-                    (status ? `Սխալ (${status})՝ չհաջողվեց բեռնել սեսիան` : "Չհաջողվեց կապվել սերվերին");
-                setMeError(msg);
+                const fallback = status ? `Սխալ (${status})՝ չհաջողվեց բեռնել սեսիան` : "Չհաջողվեց կապվել սերվերին";
+                setMeFailure({ token, message: getErrorMessage(error, fallback) });
             });
 
         return () => {
@@ -59,7 +57,13 @@ export function ProtectedRoute() {
     }
 
     // 3) no token -> login
-    if (!token) return <Navigate to="/" replace state={{ from: loc }} />;
+    if (!token) return <Navigate to="/login" replace state={{ from: loc }} />;
+
+    // Keep client sessions in the client area instead of rendering business routes
+    // with the wrong token audience.
+    if (user && (user.audience === "client" || user.role === "client")) {
+        return <Navigate to="/client/cabinet" replace />;
+    }
 
     // 4) token exists but user still loading
     if (token && !user && !meError) {

@@ -26,6 +26,7 @@ import { api } from "../lib/api";
 import { cn } from "../lib/cn";
 import { Spinner } from "../components/ui/Spinner";
 import { useAuth } from "../store/auth";
+import { getErrorMessage, getHttpStatus, type HttpError } from "../lib/http";
 
 const steps = [
   {
@@ -60,8 +61,8 @@ type SeatLimitError = {
   current?: number | null;
 };
 
-function extractErrorMessage(e: any) {
-  return e?.response?.data?.message || e?.message || "Սխալ է տեղի ունեցել";
+function extractSeatLimitError(error: unknown): SeatLimitError {
+  return ((error as HttpError).response?.data ?? {}) as SeatLimitError;
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -113,7 +114,7 @@ export default function Onboarding() {
 
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const { user, setUser } = useAuth() as any;
+  const { user, setUser } = useAuth();
   const businessName = user?.business_name ?? "Քո բիզնեսը";
 
   const bookingLink = useMemo(
@@ -142,8 +143,8 @@ export default function Onboarding() {
 
       await qc.invalidateQueries({ queryKey: ["services"] });
       setCurrentStep(1);
-    } catch (e: any) {
-      setError(extractErrorMessage(e) || "Չհաջողվեց ստեղծել ծառայությունը");
+    } catch (e: unknown) {
+      setError(getErrorMessage(e, "Չհաջողվեց ստեղծել ծառայությունը"));
     } finally {
       setSaving(false);
     }
@@ -170,14 +171,14 @@ export default function Onboarding() {
 
       await qc.invalidateQueries({ queryKey: ["staff"] });
       setCurrentStep(2);
-    } catch (e: any) {
-      if (e?.response?.status === 409) {
-        const d = (e.response.data ?? {}) as SeatLimitError;
+    } catch (e: unknown) {
+      if (getHttpStatus(e) === 409) {
+        const d = extractSeatLimitError(e);
         const limit = d.limit ?? "—";
         const current = d.current ?? "—";
         setError(`Չհաջողվեց ավելացնել աշխատակից․ տեղերի սահմանաչափը լրացել է: ${current} / ${limit}։`);
       } else {
-        setError(extractErrorMessage(e) || "Չհաջողվեց ավելացնել աշխատակից");
+        setError(getErrorMessage(e, "Չհաջողվեց ավելացնել աշխատակից"));
       }
     } finally {
       setSaving(false);
@@ -202,8 +203,8 @@ export default function Onboarding() {
 
       await qc.invalidateQueries();
       setCurrentStep(3);
-    } catch (e: any) {
-      setError(extractErrorMessage(e) || "Չհաջողվեց պահպանել աշխատանքային ժամերը");
+    } catch (e: unknown) {
+      setError(getErrorMessage(e, "Չհաջողվեց պահպանել աշխատանքային ժամերը"));
     } finally {
       setSaving(false);
     }
@@ -229,8 +230,8 @@ export default function Onboarding() {
 
       await qc.invalidateQueries();
       navigate("/app/dashboard", { replace: true });
-    } catch (e: any) {
-      setError(extractErrorMessage(e) || "Չստացվեց ավարտել onboarding-ը");
+    } catch (e: unknown) {
+      setError(getErrorMessage(e, "Չստացվեց ավարտել onboarding-ը"));
     } finally {
       setSaving(false);
     }

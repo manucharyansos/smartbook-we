@@ -41,6 +41,7 @@ import {
 } from "../lib/staffApi";
 import { uploadMedia } from "../lib/mediaApi";
 import { fetchBusinessSettings } from "../lib/businessSettingsApi";
+import { getErrorMessage } from "../lib/http";
 
 type StaffRoleForm = "staff" | "manager";
 
@@ -204,8 +205,8 @@ export default function Staff() {
     },
   });
 
-  const staff = staffQ.data ?? [];
-  const locations = settingsQ.data?.locations ?? [];
+  const staff = useMemo(() => staffQ.data ?? [], [staffQ.data]);
+  const locations = useMemo(() => settingsQ.data?.locations ?? [], [settingsQ.data?.locations]);
   const usage = settingsQ.data?.usage;
   const locationNameById = useMemo(() => new Map(locations.map((location) => [location.id, location.name || (location.is_primary ? "Գլխավոր հասցե" : location.address)])), [locations]);
 
@@ -334,8 +335,8 @@ export default function Staff() {
       }
 
       closePanel();
-    } catch (error: any) {
-      setFormError(error?.response?.data?.message || "Չհաջողվեց պահպանել փոփոխությունները։");
+    } catch (error: unknown) {
+      setFormError(getErrorMessage(error, "Չհաջողվեց պահպանել փոփոխությունները։"));
     }
   }
 
@@ -560,7 +561,7 @@ export default function Staff() {
                       <Button
                         variant="secondary"
                         onClick={() => {
-                          const ok = window.confirm(`Անակտիվացնե՞լ \"${person.name}\" աշխատակցին`);
+                          const ok = window.confirm(`Անակտիվացնե՞լ "${person.name}" աշխատակցին`);
                           if (ok) deactivateMut.mutate(person.id);
                         }}
                         className="w-full gap-2 rounded-2xl border border-amber-200 text-amber-700 hover:bg-amber-50"

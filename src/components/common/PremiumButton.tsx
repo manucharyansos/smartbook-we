@@ -1,14 +1,14 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, type LucideIcon } from "lucide-react";
 
 interface PremiumButtonProps {
     to?: string;
     children: React.ReactNode;
     variant?: "primary" | "secondary" | "outline";
     className?: string;
-    icon?: any;
+    icon?: LucideIcon;
     onClick?: () => void;
 }
 

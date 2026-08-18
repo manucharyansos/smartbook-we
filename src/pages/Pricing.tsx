@@ -6,33 +6,69 @@ import { Link } from "react-router-dom";
 
 import MarketingPageShell from "../components/marketing/MarketingPageShell";
 import { publicPlansApi, type PublicPlan } from "../lib/planApi";
-import { formatPlanPrice, isCustomPlan, localizePlanName, monthlyPlanPrice, yearlyPlanPrice } from "../lib/planPresentation";
+import { formatPlanPrice, isCustomPlan, localizePlanDescription, localizePlanNameForLocale, monthlyPlanPrice, yearlyPlanPrice } from "../lib/planPresentation";
 import { cn } from "../lib/cn";
 import { fadeUp, scaleIn, staggerContainer } from "../lib/motion";
+import { useLanguage, type Locale } from "../contexts/LanguageContext";
 
 type BillingCycle = "monthly" | "yearly";
 
-function planFeatures(plan: PublicPlan) {
+const copy = {
+  hy: {
+    badge: "Vizit գնացուցակ · պարզ և հասկանալի", titleLead: "Պարզ պլաններ՝ ըստ", titleAccent: "ձեր բիզնեսի չափի", intro: "Հիմնական գործիքները հասանելի են բոլոր պլաններում, իսկ ընտրությունը կախված է ակտիվ մասնագետների, ծառայությունների և հասցեների քանակից։",
+    systemTitle: "Պարզ գնային համակարգ", systemText: "Ընտրեք պլանը ըստ ակտիվ մասնագետների, ծառայությունների և հասցեների անհրաժեշտ քանակի։", monthly: "Ամսական", yearly: "Տարեկան", loadingError: "Չհաջողվեց բեռնել պլանները։",
+    cards: [["Միայն ակտիվ մասնագետներ", "Սեփականատերն ու մենեջերը չեն մտնում սահմանաչափի մեջ։"], ["Հիմնական գործիքները ներառված են", "Օրացույցը, ամրագրումները և հաճախորդների կառավարումը հասանելի են բոլոր պլաններում։"], ["Տարեկան՝ 2 ամիս նվեր", "Տարեկան տարբերակում վճարում եք 10 ամիս, օգտվում՝ 12 ամիս։"], ["Անհատական առաջարկներ", "Առանձին պայմանները սահմանվում են ընտրված մեծ բիզնեսների համար։"]],
+    twoFree: "2 ամիս անվճար", popular: "Ամենապահանջվածը", businessPlan: "Պլան բիզնեսի համար", customPrice: "գինը սահմանվում է առաջարկով", yearlyPayment: "տարեկան վճարում", monthlyPayment: "ամսական վճարում", pay: "Վճարում եք", months: "ամիս", receive: "ստանում եք", gift: "ամիս նվեր", average: "Միջին արժեքը", perMonth: "ամիս", customCta: "Ստանալ անհատական առաջարկ", trialCta: "Սկսել 14 օր անվճար", save: "Տնտեսում եք",
+    chooseTitle: "Ո՞ր պլանն ընտրել", chooseText: "Եթե նոր եք սկսում, ընտրեք «Սկիզբ» պլանը։ Թիմի, ծառայությունների կամ հասցեների աճին զուգահեռ ընտրեք ավելի բարձր պլան։ 16+ մասնագետի կամ ցանցային բիզնեսի դեպքում կստանաք անհատական առաջարկ։",
+    chooseItems: ["«Սկիզբ» պլանը նախատեսված է մեկ ակտիվ մասնագետի համար։", "Յուրաքանչյուր պլանի մասնագետների, ծառայությունների և հասցեների սահմանաչափերը նշված են քարտում։", "Տարեկան տարբերակն ավելի շահավետ է երկարաժամկետ աշխատանքի համար։", "Անհատական առաջարկը նախատեսված է մեծ և ցանցային բիզնեսների համար։"],
+    startBadge: "Սկսեք ձեր բիզնեսը", startTitle: "Սկսեք ձեզ հարմար ճանապարհով", startText: "Սկսեք փորձաշրջանից, ընտրեք հարմար պլանը կամ կապվեք անհատական պայմանների համար։", startTrial: "Սկսել փորձաշրջանը", partner: "Դառնալ գործընկեր",
+  },
+  ru: {
+    badge: "Тарифы Vizit · просто и понятно", titleLead: "Понятные тарифы для", titleAccent: "вашего масштаба", intro: "Основные инструменты доступны во всех тарифах; выбор зависит от числа активных специалистов, услуг и адресов.",
+    systemTitle: "Простая система тарифов", systemText: "Выберите тариф по необходимому числу активных специалистов, услуг и адресов.", monthly: "Ежемесячно", yearly: "Ежегодно", loadingError: "Не удалось загрузить тарифы.",
+    cards: [["Только активные специалисты", "Владелец и менеджер не входят в лимит."], ["Основные инструменты включены", "Календарь, записи и управление клиентами доступны во всех тарифах."], ["2 месяца в подарок", "При годовой оплате платите за 10 месяцев и пользуетесь 12."], ["Индивидуальные условия", "Отдельные условия доступны выбранным крупным компаниям."]],
+    twoFree: "2 месяца бесплатно", popular: "Самый популярный", businessPlan: "Тариф для бизнеса", customPrice: "цена по запросу", yearlyPayment: "оплата за год", monthlyPayment: "оплата за месяц", pay: "Оплачиваете", months: "месяцев", receive: "получаете", gift: "месяца в подарок", average: "Средняя стоимость", perMonth: "месяц", customCta: "Получить предложение", trialCta: "Начать 14 дней бесплатно", save: "Экономия",
+    chooseTitle: "Какой тариф выбрать", chooseText: "Если вы только начинаете, выберите «Старт». По мере роста команды, услуг или адресов переходите на следующий тариф. Для 16+ специалистов и сетевого бизнеса доступны индивидуальные условия.",
+    chooseItems: ["«Старт» рассчитан на одного активного специалиста.", "Лимиты специалистов, услуг и адресов указаны в каждой карточке.", "Годовая оплата выгоднее для долгосрочной работы.", "Индивидуальные условия предназначены для крупных и сетевых компаний."],
+    startBadge: "Запустите свой бизнес", startTitle: "Начните удобным способом", startText: "Начните с пробного периода, выберите тариф или свяжитесь с нами для индивидуальных условий.", startTrial: "Начать пробный период", partner: "Стать партнёром",
+  },
+  en: {
+    badge: "Vizit pricing · simple and clear", titleLead: "Clear plans for", titleAccent: "your business size", intro: "Core tools are available in every plan; choose based on active staff, services and locations.",
+    systemTitle: "Simple pricing", systemText: "Choose a plan by the number of active staff, services and locations you need.", monthly: "Monthly", yearly: "Yearly", loadingError: "Could not load plans.",
+    cards: [["Only active staff count", "Owners and managers do not count toward the limit."], ["Core tools included", "Calendar, bookings and client management are available in every plan."], ["2 months free yearly", "Pay for 10 months and use Vizit for 12."], ["Tailored offers", "Custom terms are available to selected larger businesses."]],
+    twoFree: "2 months free", popular: "Most popular", businessPlan: "Business plan", customPrice: "priced by proposal", yearlyPayment: "yearly payment", monthlyPayment: "monthly payment", pay: "Pay for", months: "months", receive: "receive", gift: "months free", average: "Average cost", perMonth: "month", customCta: "Request a custom offer", trialCta: "Start 14 days free", save: "You save",
+    chooseTitle: "Which plan should you choose?", chooseText: "If you are just starting, choose Start. Move up as your team, services or locations grow. Businesses with 16+ specialists or multiple locations can request a tailored offer.",
+    chooseItems: ["Start is designed for one active specialist.", "Staff, service and location limits are shown on each card.", "Yearly billing offers better value for long-term use.", "Tailored offers are intended for larger and multi-location businesses."],
+    startBadge: "Start your business", startTitle: "Begin in the way that suits you", startText: "Start with a trial, choose a plan or contact us for tailored terms.", startTrial: "Start a trial", partner: "Become a partner",
+  },
+};
+
+function planFeatures(plan: PublicPlan, locale: Locale) {
   const features = plan.features ?? {};
   const staffLimit = Number(plan.staff_limit ?? features.staff_limit ?? 0);
 
   const servicesLimit = Number(plan.services_limit ?? features.services_limit ?? 0);
 
   const custom = isCustomPlan(plan);
+  const labels = {
+    hy: { active: (n: number) => `Մինչև ${n} ակտիվ մասնագետ`, activeUnlimited: "16+ ակտիվ մասնագետ", managers: "Սեփականատերեր և մենեջերներ՝ անսահմանափակ", location: "1 հասցե", locations: (n: number) => `Մինչև ${n} հասցե`, services: (n: number) => `Մինչև ${n} ծառայություն`, unlimitedServices: "Ծառայությունների սահմանափակում չկա", core: "Բոլոր հիմնական գործիքները ներառված են", operations: "Օրացույց, ամրագրումներ, առաջադրանքներ և վերլուծություն", growth: "Հաճախորդի cabinet, loyalty, նվերի քարտեր և աղբյուրների հետևում" },
+    ru: { active: (n: number) => `До ${n} активных специалистов`, activeUnlimited: "16+ активных специалистов", managers: "Владельцы и менеджеры — без ограничений", location: "1 адрес", locations: (n: number) => `До ${n} адресов`, services: (n: number) => `До ${n} услуг`, unlimitedServices: "Без ограничения услуг", core: "Все основные инструменты включены", operations: "Календарь, записи, задачи и аналитика", growth: "Кабинет клиента, лояльность, подарочные карты и источники" },
+    en: { active: (n: number) => `Up to ${n} active staff`, activeUnlimited: "16+ active staff", managers: "Unlimited owners and managers", location: "1 location", locations: (n: number) => `Up to ${n} locations`, services: (n: number) => `Up to ${n} services`, unlimitedServices: "Unlimited services", core: "All core tools included", operations: "Calendar, bookings, tasks and analytics", growth: "Client cabinet, loyalty, gift cards and source tracking" },
+  }[locale];
   const items = [
-    custom || staffLimit >= 999 ? "16+ ակտիվ մասնագետ" : `Մինչև ${staffLimit} ակտիվ մասնագետ`,
-    `Սեփականատերեր և մենեջերներ՝ անսահմանափակ`,
-    `${Number(plan.locations ?? 1) > 1 ? `Մինչև ${plan.locations} հասցե` : "1 հասցե"}`,
-    custom || servicesLimit >= 999 ? "Ծառայությունների սահմանափակում չկա" : servicesLimit > 0 ? `Մինչև ${servicesLimit} ծառայություն` : "Ծառայությունների սահմանափակում չկա",
-    "Բոլոր հիմնական գործիքները ներառված են",
-    "Օրացույց, ամրագրումներ, առաջադրանքներ և analytics",
-    "Հաճախորդի cabinet, loyalty, նվերի քարտեր և աղբյուրների հետևում",
+    custom || staffLimit >= 999 ? labels.activeUnlimited : labels.active(staffLimit),
+    labels.managers,
+    Number(plan.locations ?? 1) > 1 ? labels.locations(Number(plan.locations)) : labels.location,
+    custom || servicesLimit >= 999 || servicesLimit <= 0 ? labels.unlimitedServices : labels.services(servicesLimit),
+    labels.core, labels.operations, labels.growth,
   ];
 
   return items;
 }
 
 export default function Pricing() {
+  const { locale } = useLanguage();
+  const text = copy[locale];
   const [billingCycle, setBillingCycle] = useState<BillingCycle>("yearly");
 
   const plansQ = useQuery({
@@ -70,16 +106,15 @@ export default function Pricing() {
       badge={
         <>
           <Sparkles className="h-4 w-4" />
-          Vizit գնացուցակ · պարզ և հասկանալի
+          {text.badge}
         </>
       }
       title={
         <>
-          Պարզ պլաններ՝ ըստ
-          <span className="text-violet-600"> քո բիզնեսի չափի</span>
+          {text.titleLead} <span className="text-violet-600">{text.titleAccent}</span>
         </>
       }
-      description="Բոլոր պլաններում հասանելի են հիմնական գործիքները․ ընտրությունը կախված է ակտիվ մասնագետների, ծառայությունների և հասցեների քանակից։"
+      description={text.intro}
     >
       <motion.section
         variants={staggerContainer(0.08, 0.05)}
@@ -94,10 +129,10 @@ export default function Pricing() {
           <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-3xl">
               <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                Պարզ գնային համակարգ
+                {text.systemTitle}
               </h2>
               <p className="mt-3 text-base leading-7 text-slate-600">
-                Ընտրիր պլանը ըստ ակտիվ մասնագետների, ծառայությունների և հասցեների անհրաժեշտ քանակի։
+                {text.systemText}
               </p>
             </div>
 
@@ -110,7 +145,7 @@ export default function Pricing() {
                   billingCycle === "monthly" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600"
                 )}
               >
-                Ամսական
+                {text.monthly}
               </button>
               <button
                 type="button"
@@ -120,18 +155,14 @@ export default function Pricing() {
                   billingCycle === "yearly" ? "bg-violet-600 text-white" : "text-slate-600"
                 )}
               >
-                Տարեկան
+                {text.yearly}
               </button>
             </div>
           </div>
 
           <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {[
-              { icon: Users, title: "Միայն ակտիվ մասնագետներ", text: "Սեփականատերն ու մենեջերը չեն մտնում սահմանաչափի մեջ։" },
-              { icon: ShieldCheck, title: "Հիմնական գործիքները ներառված են", text: "Օրացույցը, ամրագրումները և հաճախորդների կառավարումը հասանելի են բոլոր պլաններում։" },
-              { icon: BadgePercent, title: "Տարեկան՝ 2 ամիս նվեր", text: "Տարեկան տարբերակում վճարում ես 10 ամիս, օգտվում՝ 12 ամիս։" },
-              { icon: Handshake, title: "Անհատական առաջարկներ", text: "Առանձին պայմանները սահմանվում են միայն ընտրված բիզնեսների համար։" },
-            ].map((item) => {
+            {text.cards.map(([title, cardText], index) => {
+              const item = { icon: [Users, ShieldCheck, BadgePercent, Handshake][index], title, text: cardText };
               const Icon = item.icon;
               return (
                 <div key={item.title} className="rounded-[24px] border border-slate-200 bg-slate-50 p-4">
@@ -154,7 +185,7 @@ export default function Pricing() {
           </div>
         ) : plansQ.isError ? (
           <motion.div variants={fadeUp} className="rounded-[28px] border border-rose-200 bg-rose-50 p-5 text-rose-700">
-            Չհաջողվեց բեռնել պլանները։
+            {text.loadingError}
           </motion.div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
@@ -181,13 +212,13 @@ export default function Pricing() {
                             highlighted ? "bg-white/10 text-white" : "border border-emerald-200 bg-emerald-50 text-emerald-700"
                           )}
                         >
-                          2 ամիս անվճար
+                          {text.twoFree}
                         </div>
                       ) : <span />}
 
                       {highlighted ? (
                         <div className="rounded-full bg-white px-3 py-1.5 text-[11px] font-semibold text-slate-950 sm:text-xs">
-                          Ամենապահանջվածը
+                          {text.popular}
                         </div>
                       ) : null}
                     </div>
@@ -200,12 +231,12 @@ export default function Pricing() {
                     )}
                   >
                     <ShieldCheck className="h-3.5 w-3.5" />
-                    Պլան բիզնեսի համար
+                    {text.businessPlan}
                   </div>
 
-                  <h3 className="mt-6 text-2xl font-semibold tracking-tight sm:mt-5">{localizePlanName(plan)}</h3>
+                  <h3 className="mt-6 text-2xl font-semibold tracking-tight sm:mt-5">{localizePlanNameForLocale(plan, locale)}</h3>
                   <p className={cn("mt-3 text-sm leading-6", highlighted ? "text-white/70" : "text-slate-600")}>
-                    {plan.description}
+                    {localizePlanDescription(plan, locale)}
                   </p>
 
                   <div className="mt-6">
@@ -221,7 +252,7 @@ export default function Pricing() {
                     </div>
 
                     <div className={cn("mt-1 text-sm", highlighted ? "text-white/60" : "text-slate-500")}>
-                      {isCustom ? "գինը սահմանվում է առաջարկով" : billingCycle === "yearly" ? "տարեկան վճարում" : "ամսական վճարում"}
+                      {isCustom ? text.customPrice : billingCycle === "yearly" ? text.yearlyPayment : text.monthlyPayment}
                     </div>
 
                     {billingCycle === "yearly" && !isCustom && (
@@ -231,14 +262,13 @@ export default function Pricing() {
                           highlighted ? "bg-white/10 text-white/90" : "border border-violet-100 bg-violet-50 text-slate-700"
                         )}
                       >
-                        Վճարում ես {plan.monthsCharged} ամիս, ստանում ես {plan.monthsFree} ամիս նվեր։
-                        Միջին արժեքը՝ <span className="font-semibold">{formatPlanPrice(plan.perMonthEffective, plan.currency || "AMD")}/ամիս</span>
+                        {text.pay} {plan.monthsCharged} {text.months}, {text.receive} {plan.monthsFree} {text.gift}. {text.average}: <span className="font-semibold">{formatPlanPrice(plan.perMonthEffective, plan.currency || "AMD")}/{text.perMonth}</span>
                       </div>
                     )}
                   </div>
 
                   <div className="mt-6 space-y-3">
-                    {planFeatures(plan).map((item) => (
+                    {planFeatures(plan, locale).map((item) => (
                       <div key={item} className="flex items-start gap-3">
                         <div className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-600">
                           <Check className="h-3.5 w-3.5" />
@@ -250,19 +280,19 @@ export default function Pricing() {
 
                   <div className="mt-8 space-y-3">
                     <Link
-                      to={isCustom ? "/contact?subject=custom-plan" : "/register?intent=business"}
+                      to={isCustom ? "/contact?subject=custom-plan" : `/register?intent=business&plan=${encodeURIComponent(plan.code)}`}
                       className={cn(
                         "inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 text-sm font-medium transition",
                         highlighted ? "bg-white text-slate-950 hover:bg-slate-100" : "bg-violet-600 text-white hover:bg-violet-700"
                       )}
                     >
-                      {isCustom ? "Ստանալ անհատական առաջարկ" : "Սկսել 14 օր անվճար"}
+                      {isCustom ? text.customCta : text.trialCta}
                       <ArrowRight className="h-4 w-4" />
                     </Link>
 
                     {!isCustom && billingCycle === "yearly" && (
                       <div className={cn("text-center text-xs", highlighted ? "text-white/60" : "text-slate-500")}>
-                        Տնտեսում ես {formatPlanPrice(plan.discountAmount, plan.currency || "AMD")}
+                        {text.save} {formatPlanPrice(plan.discountAmount, plan.currency || "AMD")}
                       </div>
                     )}
                   </div>
@@ -277,18 +307,13 @@ export default function Pricing() {
           className="grid gap-6 rounded-[32px] border border-slate-200 bg-white p-5 shadow-[0_18px_60px_rgba(124,58,237,0.06)] sm:p-6 2xl:grid-cols-[1.3fr_0.7fr]"
         >
           <div>
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-950">Որ պլանն ընտրել</h2>
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-950">{text.chooseTitle}</h2>
             <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
-              Եթե նոր ես սկսում, ընտրիր «Սկիզբ» պլանը։ Թիմի, ծառայությունների կամ հասցեների աճին զուգահեռ ընտրիր ավելի բարձր պլան։ 16+ մասնագետի կամ ցանցային բիզնեսի դեպքում կստանաս անհատական առաջարկ։
+              {text.chooseText}
             </p>
 
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              {[
-                "«Սկիզբ» պլանը նախատեսված է մեկ ակտիվ մասնագետի համար։",
-                "Յուրաքանչյուր պլանի staff, ծառայությունների և հասցեների սահմանաչափերը երևում են քարտում։",
-                "Տարեկան տարբերակը ավելի շահավետ է երկարաժամկետ աշխատանքի համար։",
-                "Անհատական առաջարկը տրվում է միայն ընտրված բիզնեսներին։",
-              ].map((item) => (
+              {text.chooseItems.map((item) => (
                 <div key={item} className="rounded-[22px] border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-600">
                   {item}
                 </div>
@@ -299,11 +324,11 @@ export default function Pricing() {
           <div className="rounded-[28px] border border-violet-200 bg-[linear-gradient(180deg,#f5f3ff_0%,#ffffff_100%)] p-5">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/80 px-3 py-1.5 text-xs font-semibold text-violet-700 shadow-sm">
               <Building2 className="h-3.5 w-3.5" />
-              Սկսիր քո բիզնեսը
+              {text.startBadge}
             </div>
-            <h3 className="mt-4 text-xl font-semibold text-slate-950">Սկսիր քեզ հարմար ճանապարհով</h3>
+            <h3 className="mt-4 text-xl font-semibold text-slate-950">{text.startTitle}</h3>
             <p className="mt-3 text-sm leading-7 text-slate-600">
-              Սկսիր փորձնական շրջանից, ընտրիր քեզ հարմար պլանը կամ կապ հաստատիր անհատական պայմանների համար։
+              {text.startText}
             </p>
 
             <div className="mt-5 space-y-3">
@@ -311,13 +336,13 @@ export default function Pricing() {
                 to="/register?intent=business"
                 className="inline-flex h-11 w-full items-center justify-center rounded-2xl bg-violet-600 px-4 text-sm font-medium text-white transition hover:bg-violet-700"
               >
-                Սկսել փորձնական շրջան
+                {text.startTrial}
               </Link>
               <Link
                 to="/contact"
                 className="inline-flex h-11 w-full items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
               >
-                Դառնալ գործընկեր
+                {text.partner}
               </Link>
             </div>
           </div>

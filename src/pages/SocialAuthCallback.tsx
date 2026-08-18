@@ -6,44 +6,93 @@ import { AlertCircle, LoaderCircle, ShieldCheck } from "lucide-react";
 import AuthShell from "../components/AuthShell";
 import { api } from "../lib/api";
 import { fadeUp, staggerContainer } from "../lib/motion";
-import { useAuth } from "../store/auth";
+import { useAuth, type User } from "../store/auth";
+import { useLanguage } from "../contexts/LanguageContext";
+
+function getErrorMessage(error: unknown, fallback: string): string {
+    if (!error || typeof error !== "object") return fallback;
+
+    const response = "response" in error ? error.response : null;
+    if (!response || typeof response !== "object" || !("data" in response)) return fallback;
+
+    const data = response.data;
+    if (!data || typeof data !== "object") return fallback;
+
+    if ("message" in data && typeof data.message === "string" && data.message.trim()) {
+        return data.message;
+    }
+
+    if ("errors" in data && data.errors && typeof data.errors === "object" && "code" in data.errors) {
+        const codeErrors = data.errors.code;
+        if (Array.isArray(codeErrors) && typeof codeErrors[0] === "string") return codeErrors[0];
+    }
+
+    return fallback;
+}
 
 export default function SocialAuthCallback() {
     const navigate = useNavigate();
     const [params] = useSearchParams();
     const { setAuth } = useAuth();
+    const { locale } = useLanguage();
+
+    const text = {
+        hy: {
+            title: "Սոցիալական մուտք",
+            subtitle: "Ստուգում ենք սոցիալական մուտքի տվյալները",
+            sideTitle: "Մուտք գործիր ավելի արագ",
+            sideText: "Google կամ Facebook մուտքը թույլ է տալիս արագ ու անվտանգ բացել քո հաշիվը։",
+            failed: "Սոցիալական մուտքը չհաջողվեց։ Փորձիր նորից։",
+            waiting: "Սպասիր մի պահ…",
+            loading: "Ավարտում ենք մուտքը և բեռնում ենք քո հաշիվը։",
+            secure: "Մուտքի տվյալները փոխանցվում և ստուգվում են անվտանգ կապով։",
+        },
+        ru: {
+            title: "Вход через соцсеть",
+            subtitle: "Проверяем данные для входа",
+            sideTitle: "Войдите быстрее",
+            sideText: "Google или Facebook помогут быстро и безопасно открыть ваш аккаунт.",
+            failed: "Не удалось войти через соцсеть. Попробуйте ещё раз.",
+            waiting: "Подождите немного…",
+            loading: "Завершаем вход и загружаем ваш аккаунт.",
+            secure: "Данные входа передаются и проверяются по защищённому соединению.",
+        },
+        en: {
+            title: "Social sign-in",
+            subtitle: "Verifying your sign-in details",
+            sideTitle: "Sign in faster",
+            sideText: "Google or Facebook lets you open your account quickly and securely.",
+            failed: "Social sign-in failed. Please try again.",
+            waiting: "One moment…",
+            loading: "Finishing sign-in and loading your account.",
+            secure: "Your sign-in details are transmitted and verified over a secure connection.",
+        },
+    }[locale];
 
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         async function boot() {
             const exchangeCode = params.get("code");
-            const legacyToken = params.get("token");
             const message = params.get("message");
-            const provider = params.get("provider");
             const audience = params.get("audience") === "business" ? "business" : "client";
 
-            if (!exchangeCode && !legacyToken) {
-                setError(message || "Սոցիալական մուտքը չհաջողվեց։");
+            if (!exchangeCode) {
+                setError(message || text.failed);
                 return;
             }
 
             try {
-                let token = legacyToken;
-                let user: any = null;
-
-                if (exchangeCode) {
-                    const exchange = await api.post("/auth/social/exchange", { code: exchangeCode });
-                    token = exchange.data?.token ?? null;
-                    user = exchange.data?.user ?? null;
-                }
+                const exchange = await api.post<{ token?: string; user?: User }>("/auth/social/exchange", { code: exchangeCode });
+                const token = exchange.data?.token ?? null;
+                let user = exchange.data?.user ?? null;
 
                 if (!token) {
                     throw new Error("Missing social auth token");
                 }
 
                 if (!user) {
-                    const res = await api.get(audience === "client" ? "/client/auth/me" : "/auth/me", {
+                    const res = await api.get<{ user: User }>(audience === "client" ? "/client/auth/me" : "/auth/me", {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -61,24 +110,20 @@ export default function SocialAuthCallback() {
                             : "/app/dashboard",
                     { replace: true }
                 );
-            } catch (e: any) {
-                setError(
-                    e?.response?.data?.message ??
-                    e?.response?.data?.errors?.code?.[0] ??
-                    `${provider ? `${provider}-ով ` : ""}մուտքը չհաջողվեց։`
-                );
+            } catch (error: unknown) {
+                setError(getErrorMessage(error, text.failed));
             }
         }
 
         boot();
-    }, [navigate, params, setAuth]);
+    }, [navigate, params, setAuth, text.failed]);
 
     return (
         <AuthShell
-            title="Social sign in"
-            subtitle="Ստուգում ենք սոցիալական մուտքի տվյալները"
-            sideTitle="Մուտք գործիր ավելի արագ"
-            sideText="Google կամ Facebook մուտքը թույլ է տալիս հաճախորդին ու բիզնեսին ավելի արագ մտնել իրենց հաշիվ։"
+            title={text.title}
+            subtitle={text.subtitle}
+            sideTitle={text.sideTitle}
+            sideText={text.sideText}
             footer={null}
         >
             <motion.div
@@ -107,24 +152,19 @@ export default function SocialAuthCallback() {
                                 <LoaderCircle className="h-5 w-5 animate-spin" />
                             </div>
                             <div>
-                                <div className="font-medium text-slate-900">Սպասիր մի պահ…</div>
+                                <div className="font-medium text-slate-900">{text.waiting}</div>
                                 <div className="mt-1 text-slate-500">
-                                    Ավարտում ենք social login-ը և բեռնում ենք քո հաշիվը։
+                                    {text.loading}
                                 </div>
                             </div>
                         </div>
                     </motion.div>
                 )}
 
-                <motion.div
-                    variants={fadeUp}
-                    className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-600"
-                >
+                <motion.div variants={fadeUp} className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-600">
                     <div className="flex items-start gap-3">
                         <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-violet-600" />
-                        <div>
-                            Callback փուլում token-ը այլևս URL-ով չի փոխանցվում։ Frontend-ը ստանում է one-time code և իրական token-ը վերցնում է API-ից։
-                        </div>
+                        <div>{text.secure}</div>
                     </div>
                 </motion.div>
             </motion.div>

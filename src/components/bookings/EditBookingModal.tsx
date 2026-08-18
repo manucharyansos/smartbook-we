@@ -1,9 +1,10 @@
-// src/components/EditBookingModal.tsx
+/* eslint-disable react-hooks/set-state-in-effect -- The reusable modal must reset its draft whenever a different booking is opened. */
 import { useEffect, useState } from "react";
 import { Modal } from "./../ui/Modal.tsx";
 import type { Booking } from "@/lib/bookingsApi";
 import { updateBookingTime } from "@/lib/bookingsApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { getErrorMessage } from "@/lib/http";
 
 function toDatetimeLocal(dt: string) {
     return dt.replace(" ", "T").slice(0, 16);
@@ -41,8 +42,8 @@ export function EditBookingModal({ open, booking, onClose, onSaved }: EditBookin
             onClose();
             if (onSaved) onSaved();
         },
-        onError: (err: any) => {
-            setError(err.response?.data?.message || "Սխալ ժամանակի թարմացման ժամանակ");
+        onError: (err: unknown) => {
+            setError(getErrorMessage(err, "Սխալ ժամանակի թարմացման ժամանակ"));
         },
     });
 

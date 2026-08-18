@@ -40,7 +40,7 @@ export default function AdminLogs() {
   });
 
   const pagination = data?.data;
-  const logs = pagination?.data ?? [];
+  const logs = useMemo(() => pagination?.data ?? [], [pagination?.data]);
 
   const exportPayload = useMemo(
     () =>

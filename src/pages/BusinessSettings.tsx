@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- Query results intentionally hydrate the editable settings and schedule drafts. */
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -505,16 +506,16 @@ export default function BusinessSettingsPage() {
                     <textarea value={form.description ?? ""} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} className="min-h-[140px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100" />
                   </InputShell>
                   <div className="grid gap-3 sm:grid-cols-2">
-                    {[
+                    {([
                       ["is_public_profile_enabled", "Public էջ ակտիվ"],
                       ["is_marketplace_visible", "Ցուցադրել գլխավորում"],
                       ["show_logo", "Ցուցադրել logo"],
                       ["show_cover", "Ցուցադրել banner"],
                       ["show_staff", "Ցուցադրել թիմը"],
                       ["show_services", "Ցուցադրել ծառայությունները"],
-                    ].map(([key, label]) => (
+                    ] as const).map(([key, label]) => (
                       <label key={key} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm transition hover:border-violet-200 hover:bg-violet-50/40">
-                        <input type="checkbox" checked={Boolean((form as any)[key])} onChange={(e) => setForm((p) => ({ ...p, [key]: e.target.checked }))} />
+                        <input type="checkbox" checked={Boolean(form[key])} onChange={(e) => setForm((p) => ({ ...p, [key]: e.target.checked }))} />
                         <span>{label}</span>
                       </label>
                     ))}

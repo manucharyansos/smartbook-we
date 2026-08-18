@@ -7,6 +7,7 @@ type SeoProps = {
   canonical?: string;
   type?: "website" | "article";
   jsonLd?: Record<string, unknown> | null;
+  robots?: string;
 };
 
 function setMeta(selector: string, attr: "content" | "href", value: string) {
@@ -28,16 +29,19 @@ function setMeta(selector: string, attr: "content" | "href", value: string) {
   el.setAttribute(attr, value);
 }
 
-export default function Seo({ title, description, image, canonical, type = "website", jsonLd }: SeoProps) {
+export default function Seo({ title, description, image, canonical, type = "website", jsonLd, robots = "index,follow,max-image-preview:large" }: SeoProps) {
   useEffect(() => {
-    const url = canonical || window.location.href;
-    const img = image || `${window.location.origin}/og-default.svg`;
+    const url = canonical
+      ? new URL(canonical, window.location.origin).href
+      : `${window.location.origin}${window.location.pathname}`;
+    const img = new URL(image || "/og-default.svg", window.location.origin).href;
+    const locale = { hy: "hy_AM", ru: "ru_RU", en: "en_US" }[document.documentElement.lang] ?? "hy_AM";
 
     document.title = title;
     setMeta('meta[name="description"]', "content", description);
-    setMeta('meta[name="robots"]', "content", "index,follow,max-image-preview:large");
+    setMeta('meta[name="robots"]', "content", robots);
     setMeta('link[rel="canonical"]', "href", url);
-    setMeta('meta[property="og:locale"]', "content", "hy_AM");
+    setMeta('meta[property="og:locale"]', "content", locale);
     setMeta('meta[property="og:site_name"]', "content", "Vizit");
     setMeta('meta[property="og:type"]', "content", type);
     setMeta('meta[property="og:title"]', "content", title);
@@ -61,7 +65,7 @@ export default function Seo({ title, description, image, canonical, type = "webs
       if (jsonLd) script.textContent = JSON.stringify(jsonLd);
       else script.remove();
     }
-  }, [title, description, image, canonical, type, jsonLd]);
+  }, [title, description, image, canonical, type, jsonLd, robots]);
 
   return null;
 }

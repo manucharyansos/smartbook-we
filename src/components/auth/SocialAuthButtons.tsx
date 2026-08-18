@@ -3,6 +3,7 @@ import { cn } from "../../lib/cn";
 import { getDeviceFingerprint } from "../../lib/fingerprint";
 import { fadeUp } from "../../lib/motion";
 import { API_BASE_URL } from "../../lib/apiBase";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 type Provider = "google" | "facebook";
 type Audience = "business" | "client";
@@ -12,6 +13,7 @@ type SocialAuthButtonsProps = {
     mode?: "login" | "register";
     audience?: Audience;
     businessType?: BusinessType;
+    planCode?: string;
     className?: string;
 };
 
@@ -71,7 +73,8 @@ function getRedirectUrl(
     provider: Provider,
     mode: "login" | "register",
     audience: Audience,
-    businessType?: BusinessType
+    businessType?: BusinessType,
+    planCode?: string
 ) {
     const apiBase = API_BASE_URL;
     const frontendBase = window.location.origin;
@@ -87,6 +90,10 @@ function getRedirectUrl(
         params.set("business_type", businessType);
     }
 
+    if (audience === "business" && mode === "register" && planCode) {
+        params.set("plan_code", planCode);
+    }
+
     const fingerprint = getDeviceFingerprintSafe();
     if (fingerprint) {
         params.set("device_fingerprint", fingerprint);
@@ -100,17 +107,24 @@ export default function SocialAuthButtons({
     className,
     audience = "client",
     businessType,
+    planCode,
 }: SocialAuthButtonsProps) {
+    const { locale } = useLanguage();
     const enabledProviders = getEnabledProviders();
 
     if (!enabledProviders.length) {
         return null;
     }
 
-    const actionText = mode === "register" ? "Շարունակել" : "Մուտք գործել";
+    const text = {
+        hy: { register: "Շարունակել", login: "Մուտք գործել", or: "կամ", suffix: "-ով", note: "Շարունակելով՝ կբացվի ընտրված ծառայության անվտանգ մուտքի էջը։" },
+        ru: { register: "Продолжить", login: "Войти", or: "или", suffix: "", note: "Вы перейдёте на защищённую страницу входа выбранного сервиса." },
+        en: { register: "Continue", login: "Sign in", or: "or", suffix: "", note: "You will be redirected to the selected provider's secure sign-in page." },
+    }[locale];
+    const actionText = mode === "register" ? text.register : text.login;
 
     function startSocialAuth(provider: Provider) {
-        window.location.assign(getRedirectUrl(provider, mode, audience, businessType));
+        window.location.assign(getRedirectUrl(provider, mode, audience, businessType, planCode));
     }
 
     return (
@@ -118,7 +132,7 @@ export default function SocialAuthButtons({
             <div className="relative">
                 <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-slate-200" />
                 <div className="relative mx-auto w-fit rounded-full bg-white px-3 text-xs font-medium text-slate-400">
-                    կամ
+                    {text.or}
                 </div>
             </div>
 
@@ -150,14 +164,14 @@ export default function SocialAuthButtons({
                             >
                                 {item.short}
                             </span>
-                            {actionText} {item.label}-ով
+                            {actionText} {locale === "hy" ? `${item.label}${text.suffix}` : `${locale === "ru" ? "через " : "with "}${item.label}`}
                         </button>
                     );
                 })}
             </div>
 
             <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs leading-6 text-slate-500">
-                Social login-ը հիմա աշխատում է միայն այն provider-ների համար, որոնք environment-ով միացված են և backend credential-ներ ունեն։
+                {text.note}
             </div>
         </motion.div>
     );

@@ -13,6 +13,61 @@ import { Link } from "react-router-dom";
 import LandingNavbar from "../components/LandingNavbar";
 import Footer from "../components/Footer";
 import { fadeUp, pageTransition, scaleIn, staggerContainer } from "../lib/motion";
+import { useLanguage } from "../contexts/LanguageContext";
+
+const copy = {
+    hy: {
+        badge: "Vizit-ի մասին", heroLead: "Մենք կառուցում ենք", heroHighlight: "ամրագրման հարթակ", heroTail: "ծառայություն մատուցող բիզնեսների համար",
+        intro: "Vizit-ը ստեղծված է, որպեսզի սրահները, կլինիկաները և այլ ծառայողական բիզնեսները ընդունեն օնլայն ամրագրումներ, ունենան պրոֆեսիոնալ թվային ներկայություն և ապահովեն հարմար հաճախորդային փորձ։",
+        start: "Սկսել անվճար", pricing: "Տեսնել գները",
+        audiences: [
+            { title: "Գեղեցկության սրահներ", text: "Բրենդային հանրային էջ, ծառայություններ և թիմի կառավարում մեկ վայրում։" },
+            { title: "Կլինիկաներ", text: "Պացիենտների պարզ ամրագրման հոսք և կազմակերպված ժամանակացույց։" },
+            { title: "Պրոֆեսիոնալ փորձ", text: "Խելացի օրացույց, մաքուր հանրային էջ և վստահելի առաջին տպավորություն։" },
+        ],
+        missionBadge: "Մեր առաքելությունը", missionTitle: "Օգնել ծառայողական բիզնեսներին գործել ավելի պրոֆեսիոնալ", missionText: "Մեր նպատակը պարզ է՝ ստեղծել հարթակ, որտեղ բիզնեսն ունի գեղեցիկ հանրային ներկայություն, իսկ հաճախորդը՝ արագ ու վստահելի ամրագրման ճանապարհ։",
+        features: [
+            { title: "Խելացի ամրագրում", text: "Արագ ամրագրման հոսք և ծառայության ու մասնագետի հարմար ընտրություն։" },
+            { title: "Թիմի կառավարում", text: "Աշխատակիցների դերեր, հասանելիություն և կազմակերպված ժամանակացույց։" },
+            { title: "Հանրային ներկայություն", text: "Յուրաքանչյուր բիզնեսի համար պրոֆեսիոնալ հանրային ներկայացում։" },
+            { title: "Բարձրակարգ փորձ", text: "Մաքուր տեսք և UX, որը վստահություն է ստեղծում առաջին այցից։" },
+        ],
+    },
+    ru: {
+        badge: "О Vizit", heroLead: "Мы создаём", heroHighlight: "платформу онлайн-записи", heroTail: "для сервисного бизнеса",
+        intro: "Vizit помогает салонам, клиникам и другим сервисным компаниям принимать онлайн-записи, создавать профессиональное цифровое присутствие и улучшать клиентский опыт.",
+        start: "Начать бесплатно", pricing: "Посмотреть тарифы",
+        audiences: [
+            { title: "Салоны красоты", text: "Публичная страница бренда, услуги и управление командой в одном месте." },
+            { title: "Клиники", text: "Удобная запись пациентов и организованное управление расписанием." },
+            { title: "Профессиональный опыт", text: "Умный календарь, понятная публичная страница и сильное первое впечатление." },
+        ],
+        missionBadge: "Наша миссия", missionTitle: "Помогать сервисному бизнесу работать профессиональнее", missionText: "Мы создаём платформу, где бизнес получает профессиональное присутствие, а клиент — быстрый и надёжный путь к записи.",
+        features: [
+            { title: "Умная запись", text: "Быстрый процесс записи и удобный выбор услуги и специалиста." },
+            { title: "Управление командой", text: "Роли сотрудников, доступность и организованное расписание." },
+            { title: "Публичное присутствие", text: "Профессиональная публичная страница для каждого бизнеса." },
+            { title: "Качественный опыт", text: "Чистый интерфейс и UX, который вызывает доверие с первого визита." },
+        ],
+    },
+    en: {
+        badge: "About Vizit", heroLead: "We are building a", heroHighlight: "booking platform", heroTail: "for service businesses",
+        intro: "Vizit helps salons, clinics and other service businesses accept online bookings, build a professional digital presence and deliver a better customer experience.",
+        start: "Start free", pricing: "View pricing",
+        audiences: [
+            { title: "Beauty salons", text: "A branded public page, services and team management in one place." },
+            { title: "Clinics", text: "A simple patient booking flow and organized schedule management." },
+            { title: "Professional experience", text: "A smart calendar, clear public page and strong first impression." },
+        ],
+        missionBadge: "Our mission", missionTitle: "Help service businesses operate more professionally", missionText: "We are creating a platform where businesses have a strong public presence and customers have a fast, reliable path to booking.",
+        features: [
+            { title: "Smart booking", text: "A fast booking flow with convenient service and provider selection." },
+            { title: "Team management", text: "Staff roles, availability and an organized schedule." },
+            { title: "Public presence", text: "A professional public profile for every business." },
+            { title: "Premium experience", text: "A clean interface and UX that builds trust from the first visit." },
+        ],
+    },
+};
 
 function FeatureCard({
                          icon,
@@ -38,6 +93,10 @@ function FeatureCard({
 }
 
 export default function About() {
+    const { locale } = useLanguage();
+    const text = copy[locale];
+    const audienceIcons = [<Building2 className="h-5 w-5" />, <Stethoscope className="h-5 w-5" />, <CalendarDays className="h-5 w-5" />];
+    const featureIcons = [<CalendarDays className="h-5 w-5" />, <Users className="h-5 w-5" />, <Building2 className="h-5 w-5" />, <Sparkles className="h-5 w-5" />];
     return (
         <motion.div
             variants={pageTransition}
@@ -62,26 +121,21 @@ export default function About() {
                                     className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm"
                                 >
                                     <Sparkles className="h-4 w-4 text-violet-600" />
-                                    Vizit-ի մասին
+                                    {text.badge}
                                 </motion.div>
 
                                 <motion.h1
                                     variants={fadeUp}
                                     className="mt-6 text-[2rem] font-semibold leading-tight tracking-tight text-slate-950 sm:text-4xl lg:text-6xl"
                                 >
-                                    Մենք կառուցում ենք{" "}
-                                    <span className="text-violet-600">ամրագրման հարթակ</span>{" "}
-                                    ծառայողական բիզնեսների համար
+                                    {text.heroLead} <span className="text-violet-600">{text.heroHighlight}</span> {text.heroTail}
                                 </motion.h1>
 
                                 <motion.p
                                     variants={fadeUp}
                                     className="mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg"
                                 >
-                                    Vizit-ը ստեղծված է, որպեսզի գեղեցկության սրահներն ու
-                                    ատամնաբուժական կլինիկաները ոչ միայն ընդունեն online bookings,
-                                    այլև ունենան պրոֆեսիոնալ թվային ներկայություն և ավելի հարմար
-                                    հաճախորդային փորձ։
+                                    {text.intro}
                                 </motion.p>
 
                                 <motion.div
@@ -92,7 +146,7 @@ export default function About() {
                                         to="/register"
                                         className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-violet-600 px-6 text-sm font-medium text-white transition hover:bg-violet-700"
                                     >
-                                        Սկսել անվճար
+                                        {text.start}
                                         <ArrowRight className="h-4 w-4" />
                                     </Link>
 
@@ -100,7 +154,7 @@ export default function About() {
                                         to="/pricing"
                                         className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
                                     >
-                                        Տեսնել գները
+                                        {text.pricing}
                                     </Link>
                                 </motion.div>
                             </div>
@@ -109,30 +163,14 @@ export default function About() {
                                 <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-[0_24px_60px_rgba(15,23,42,0.06)] sm:p-6">
                                     <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4 sm:p-5">
                                         <div className="grid gap-4">
-                                            {[
-                                                {
-                                                    icon: <Building2 className="h-5 w-5" />,
-                                                    title: "Գեղեցկության սրահներ",
-                                                    text: "Մեկ վայրում բրենդային public էջ, ծառայություններ և staff management",
-                                                },
-                                                {
-                                                    icon: <Stethoscope className="h-5 w-5" />,
-                                                    title: "Կլինիկաներ",
-                                                    text: "Պացիենտային booking flow և ավելի organized schedule management",
-                                                },
-                                                {
-                                                    icon: <CalendarDays className="h-5 w-5" />,
-                                                    title: "Պրեմիում փորձ",
-                                                    text: "Խելացի օրացույցներ, մաքուր հանրային փորձ և ուժեղ առաջին տպավորություն",
-                                                },
-                                            ].map((item) => (
+                                            {text.audiences.map((item, index) => (
                                                 <div
                                                     key={item.title}
                                                     className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm"
                                                 >
                                                     <div className="flex items-start gap-4">
                                                         <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-violet-50 text-violet-600">
-                                                            {item.icon}
+                                                            {audienceIcons[index]}
                                                         </div>
                                                         <div>
                                                             <div className="font-semibold text-slate-900">{item.title}</div>
@@ -160,41 +198,22 @@ export default function About() {
                         <motion.div variants={fadeUp} className="max-w-3xl">
                             <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm">
                                 <ShieldCheck className="h-4 w-4 text-violet-600" />
-                                Մեր առաքելությունը
+                                {text.missionBadge}
                             </div>
 
                             <h2 className="mt-5 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-                                Օգնել ծառայողական բիզնեսներին գործել ավելի պրոֆեսիոնալ
+                                {text.missionTitle}
                             </h2>
 
                             <p className="mt-4 text-base leading-8 text-slate-600">
-                                Մեր նպատակը պարզ է՝ ստեղծել հարթակ, որտեղ բիզնեսը կարող է ունենալ
-                                գեղեցիկ public ներկայություն, իսկ հաճախորդը՝ պարզ, արագ ու վստահելի
-                                booking journey։
+                                {text.missionText}
                             </p>
                         </motion.div>
 
                         <div className="mt-8 grid gap-6 sm:grid-cols-2 2xl:grid-cols-4">
-                            <FeatureCard
-                                icon={<CalendarDays className="h-5 w-5" />}
-                                title="Խելացի ամրագրում"
-                                text="Արագ booking flow, ծառայությունների և մասնագետների հարմար ընտրություն։"
-                            />
-                            <FeatureCard
-                                icon={<Users className="h-5 w-5" />}
-                                title="Թիմի կառավարում"
-                                text="Աշխատակիցների կառուցվածք, հասանելիություն և կազմակերպված schedule։"
-                            />
-                            <FeatureCard
-                                icon={<Building2 className="h-5 w-5" />}
-                                title="Հանրային ներկայություն"
-                                text="Յուրաքանչյուր բիզնեսի համար ավելի պրոֆեսիոնալ հանրային ներկայացում։"
-                            />
-                            <FeatureCard
-                                icon={<Sparkles className="h-5 w-5" />}
-                                title="Պրեմիում զգացողություն"
-                                text="Արտաքին տեսք, շարժում և UX, որը հարթակին տալիս է թանկ ու modern զգացողություն։"
-                            />
+                            {text.features.map((feature, index) => (
+                                <FeatureCard key={feature.title} icon={featureIcons[index]} title={feature.title} text={feature.text} />
+                            ))}
                         </div>
                     </motion.div>
                 </section>

@@ -8,7 +8,8 @@ export function resolveMediaUrl(value?: string | null): string | null {
   if (/^https?:\/\//i.test(trimmed)) {
     try {
       const url = new URL(trimmed);
-      if (url.pathname.startsWith('/api/media/file/') || url.pathname.startsWith('/storage/')) {
+      const belongsToApi = url.origin === API_ORIGIN;
+      if (belongsToApi && (url.pathname.startsWith('/api/media/file/') || url.pathname.startsWith('/storage/'))) {
         return `${API_ORIGIN}${url.pathname}${url.search}`;
       }
       return trimmed;

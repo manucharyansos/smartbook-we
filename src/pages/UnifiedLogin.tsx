@@ -9,21 +9,14 @@ import { api } from "../lib/api";
 import { cn } from "../lib/cn";
 import { fadeUp, staggerContainer } from "../lib/motion";
 import { useAuth, type User } from "../store/auth";
+import { getErrorMessage as getHttpErrorMessage, getHttpStatus, type HttpError } from "../lib/http";
 
-function getErrorMessage(err: any) {
-  return (
-    err?.response?.data?.message ??
-    err?.response?.data?.errors?.email?.[0] ??
-    err?.response?.data?.errors?.identity?.[0] ??
-    "Մուտքը չհաջողվեց։ Ստուգիր տվյալները և փորձիր նորից։"
-  );
-}
-
-function shouldFallbackToClient(identity: string, err: any) {
+function shouldFallbackToClient(identity: string, err: unknown) {
   if (!identity.includes("@")) return false;
-  const status = err?.response?.status;
-  const message = String(err?.response?.data?.message ?? "").toLowerCase();
-  const emailError = String(err?.response?.data?.errors?.email?.[0] ?? "").toLowerCase();
+  const data = (err as HttpError).response?.data;
+  const status = getHttpStatus(err);
+  const message = String(data?.message ?? "").toLowerCase();
+  const emailError = String(data?.errors?.email?.[0] ?? "").toLowerCase();
   return status === 422 || message.includes("invalid credentials") || emailError.includes("invalid");
 }
 
@@ -71,7 +64,7 @@ export default function UnifiedLogin() {
         try {
           await tryBusiness(trimmed, password);
           return;
-        } catch (err: any) {
+        } catch (err: unknown) {
           if (!shouldFallbackToClient(trimmed, err)) {
             throw err;
           }
@@ -79,8 +72,8 @@ export default function UnifiedLogin() {
       }
 
       await tryClient(trimmed, password);
-    } catch (err: any) {
-      setError(getErrorMessage(err));
+    } catch (err: unknown) {
+      setError(getHttpErrorMessage(err, "Մուտքը չհաջողվեց։ Ստուգիր տվյալները և փորձիր նորից։"));
     } finally {
       setLoading(false);
     }

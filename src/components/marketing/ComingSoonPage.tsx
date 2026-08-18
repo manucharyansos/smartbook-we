@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import MarketingPageShell from "./MarketingPageShell";
 import { fadeUp, hoverLift, scaleIn } from "../../lib/motion";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 type ComingSoonPageProps = {
   badge: string;
@@ -18,6 +19,13 @@ export default function ComingSoonPage({
   description,
   bullets,
 }: ComingSoonPageProps) {
+  const { locale } = useLanguage();
+  const text = {
+    hy: { preparing: "Բաժինը պատրաստվում է", moreTitle: "Մինչ այդ՝ բացահայտիր Vizit-ի հնարավորությունները", moreText: "Հանրային ամրագրումը, օրացույցը, թիմի կառավարումն ու բիզնեսի հիմնական գործիքներն արդեն հասանելի են։ Նոր նյութերը կհրապարակվեն պատրաստ լինելուն պես։", start: "Սկսել անվճար", contact: "Կապվել թիմի հետ" },
+    ru: { preparing: "Раздел готовится", moreTitle: "А пока изучите возможности Vizit", moreText: "Онлайн-запись, календарь, управление командой и основные бизнес-инструменты уже доступны. Новые материалы появятся после подготовки.", start: "Начать бесплатно", contact: "Связаться с командой" },
+    en: { preparing: "This section is being prepared", moreTitle: "Meanwhile, explore Vizit's features", moreText: "Public booking, the calendar, team management and core business tools are already available. New materials will be published when ready.", start: "Start for free", contact: "Contact the team" },
+  }[locale];
+
   return (
     <MarketingPageShell
       badge={
@@ -37,7 +45,7 @@ export default function ComingSoonPage({
         >
           <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-700">
             <Clock3 className="h-4 w-4" />
-            Շուտով ավելի լիարժեք բաժին
+            {text.preparing}
           </div>
 
           <div className="mt-6 space-y-4">
@@ -58,11 +66,9 @@ export default function ComingSoonPage({
           variants={scaleIn}
           className="rounded-[32px] border border-slate-200 bg-[linear-gradient(145deg,#0f172a_0%,#4c1d95_55%,#7c2d12_100%)] p-6 text-white shadow-[0_24px_80px_rgba(15,23,42,0.22)] sm:p-8"
         >
-          <h2 className="text-2xl font-semibold tracking-tight">Մինչ այդ՝ փորձիր Vizit-ը գործող ռեժիմում</h2>
+          <h2 className="text-2xl font-semibold tracking-tight">{text.moreTitle}</h2>
           <p className="mt-4 text-sm leading-7 text-white/75">
-            Core product-ը արդեն կենտրոնացած է public booking experience-ի, calendar-ի,
-            staff control-ի և business operations-ի վրա։ Այս secondary բաժինն էլ բերեցի նոր
-            դիզայնին, որպեսզի ամբողջ կայքի ընդհանուր փորձը միասնական լինի։
+            {text.moreText}
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -70,14 +76,14 @@ export default function ComingSoonPage({
               to="/register"
               className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
             >
-              Սկսել անվճար
+              {text.start}
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               to="/contact"
               className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/10 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/15"
             >
-              Կապվել թիմի հետ
+              {text.contact}
             </Link>
           </div>
         </motion.div>

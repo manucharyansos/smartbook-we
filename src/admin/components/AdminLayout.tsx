@@ -1,5 +1,5 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { LogOut, Menu, ShieldCheck, Sparkles, User } from 'lucide-react';
 
@@ -23,20 +23,13 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
-      setSidebarExpanded(true);
-      setMobileSidebarOpen(false);
-    }
-  }, []);
-
   const admin = useMemo(() => {
     try {
       return JSON.parse(localStorage.getItem('admin') || '{}');
     } catch {
       return {};
     }
-  }, [location.pathname]);
+  }, []);
 
   const pageTitle = titleMap[location.pathname] || 'Admin workspace';
 

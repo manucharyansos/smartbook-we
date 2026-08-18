@@ -152,7 +152,10 @@ export default function LocationMapPicker({ latitude, longitude, onChange, addre
           </div>
         </div>
       </div>
-      <div className="text-xs leading-5 text-slate-500 dark:text-slate-400">Քարտեզում երևալու համար հասցեն և կոորդինատները պետք է պահպանված լինեն։</div>
+      <div className="flex flex-wrap items-center justify-between gap-2 text-xs leading-5 text-slate-500 dark:text-slate-400">
+        <span>Քարտեզում երևալու համար հասցեն և կոորդինատները պետք է պահպանված լինեն։</span>
+        <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer" className="font-medium underline underline-offset-2 hover:text-violet-700">© OpenStreetMap</a>
+      </div>
     </div>
   );
 }

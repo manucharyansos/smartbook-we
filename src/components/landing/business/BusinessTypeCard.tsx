@@ -1,13 +1,13 @@
 // src/components/landing/business/BusinessTypeCard.tsx
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check, type LucideIcon } from "lucide-react";
 
 interface BusinessTypeCardProps {
     type: 'beauty' | 'dental';
     title: string;
     description: string;
-    icon: any;
+    icon: LucideIcon;
     features: string[];
     price?: string;
     isSelected: boolean;
@@ -94,7 +94,7 @@ const BusinessTypeCard: React.FC<BusinessTypeCardProps> = ({
                 <div className="space-y-4">
                     {features.map((feature, i) => (
                         <motion.div
-                            key={i}
+                            key={feature}
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: i * 0.1 }}

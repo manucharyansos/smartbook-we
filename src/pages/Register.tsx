@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,18 +22,29 @@ import {
 import AuthShell from "../components/AuthShell";
 import SocialAuthButtons from "../components/auth/SocialAuthButtons";
 import { api } from "../lib/api";
+import { getApiErrorCode, getErrorMessage, getValidationMessages } from "../lib/http";
 import { cn } from "../lib/cn";
 import { getDeviceFingerprint } from "../lib/fingerprint";
 import { fadeUp, scaleIn, staggerContainer } from "../lib/motion";
 import { useAuth } from "../store/auth";
+import { useLanguage } from "../contexts/LanguageContext";
 
 type BusinessType = "beauty" | "dental";
+
+const copy = {
+    hy: { title: "Գրանցվել", subtitle: "Ստեղծեք ձեր Vizit բիզնես հաշիվը", sideTitle: "Սկսեք Vizit-ը ձեր բիզնեսի համար", sideText: "Գրանցվեք, լրացրեք սկզբնական կարգավորումները և պատրաստեք աշխատանքային միջավայրը։", hasAccount: "Արդեն ունե՞ք հաշիվ", login: "Մուտք գործել", beautyLabel: "Գեղեցկության սրահ", beautyShort: "Գեղեցկություն", dentalLabel: "Ատամնաբուժական կլինիկա", dentalShort: "Կլինիկա", businessNameRequired: "Նշեք բիզնեսի անունը։", phoneRequired: "Հեռախոսահամարը պարտադիր է։", addressRequired: "Հասցեն պարտադիր է։", ownerRequired: "Նշեք պատասխանատուի անունը։", emailRequired: "Նշեք էլ. փոստը։", passwordShort: "Գաղտնաբառը պետք է պարունակի առնվազն 8 նիշ։", passwordMismatch: "Գաղտնաբառերը չեն համընկնում։", registerError: "Գրանցումը չհաջողվեց։", businessLogin: "Մուտք բիզնես հաշվով", resetPassword: "Վերականգնել գաղտնաբառը", contactSupport: "Կապվել աջակցման թիմի հետ", chooseType: "Ընտրեք բիզնեսի տեսակը", basics: "Սկսենք բիզնեսի հիմնական տվյալներից։", businessName: "Բիզնեսի անուն", salonPlaceholder: "Իմ սրահը", clinicPlaceholder: "Իմ կլինիկան", phone: "Հեռախոս", address: "Հասցե", addressPlaceholder: "Երևան, Հայաստան", continue: "Շարունակել", ownerName: "Պատասխանատուի անուն", ownerPlaceholder: "Անուն Ազգանուն", email: "Էլ. փոստ", password: "Գաղտնաբառ", confirmPassword: "Կրկնել գաղտնաբառը", strength: "Ուժգնություն", weak: "թույլ", medium: "միջին", strong: "ուժեղ", show: "Ցույց տալ գաղտնաբառը", hide: "Թաքցնել գաղտնաբառը", socialNote: "Google կամ Facebook մուտքը կարող եք միացնել նաև ավելի ուշ։", back: "Վերադառնալ", creating: "Ստեղծվում է…", create: "Ստեղծել հաշիվ" },
+    ru: { title: "Регистрация", subtitle: "Создайте бизнес-аккаунт Vizit", sideTitle: "Запустите Vizit для своего бизнеса", sideText: "Зарегистрируйтесь, завершите начальную настройку и подготовьте рабочее пространство.", hasAccount: "Уже есть аккаунт?", login: "Войти", beautyLabel: "Салон красоты", beautyShort: "Красота", dentalLabel: "Стоматологическая клиника", dentalShort: "Клиника", businessNameRequired: "Укажите название бизнеса.", phoneRequired: "Номер телефона обязателен.", addressRequired: "Адрес обязателен.", ownerRequired: "Укажите имя ответственного лица.", emailRequired: "Укажите электронную почту.", passwordShort: "Пароль должен содержать не менее 8 символов.", passwordMismatch: "Пароли не совпадают.", registerError: "Не удалось зарегистрироваться.", businessLogin: "Войти в бизнес-аккаунт", resetPassword: "Восстановить пароль", contactSupport: "Связаться с поддержкой", chooseType: "Выберите тип бизнеса", basics: "Начнём с основной информации о бизнесе.", businessName: "Название бизнеса", salonPlaceholder: "Мой салон", clinicPlaceholder: "Моя клиника", phone: "Телефон", address: "Адрес", addressPlaceholder: "Ереван, Армения", continue: "Продолжить", ownerName: "Имя ответственного лица", ownerPlaceholder: "Имя Фамилия", email: "Электронная почта", password: "Пароль", confirmPassword: "Повторите пароль", strength: "Надёжность", weak: "слабый", medium: "средний", strong: "надёжный", show: "Показать пароль", hide: "Скрыть пароль", socialNote: "Вход через Google или Facebook можно подключить позже.", back: "Назад", creating: "Создание…", create: "Создать аккаунт" },
+    en: { title: "Register", subtitle: "Create your Vizit business account", sideTitle: "Start using Vizit for your business", sideText: "Register, complete the initial setup and prepare your workspace.", hasAccount: "Already have an account?", login: "Sign in", beautyLabel: "Beauty salon", beautyShort: "Beauty", dentalLabel: "Dental clinic", dentalShort: "Clinic", businessNameRequired: "Enter the business name.", phoneRequired: "Phone number is required.", addressRequired: "Address is required.", ownerRequired: "Enter the account owner's name.", emailRequired: "Enter an email address.", passwordShort: "Password must be at least 8 characters.", passwordMismatch: "Passwords do not match.", registerError: "Registration failed.", businessLogin: "Sign in to a business account", resetPassword: "Reset password", contactSupport: "Contact support", chooseType: "Choose the business type", basics: "Let's start with the essential business details.", businessName: "Business name", salonPlaceholder: "My salon", clinicPlaceholder: "My clinic", phone: "Phone", address: "Address", addressPlaceholder: "Yerevan, Armenia", continue: "Continue", ownerName: "Account owner name", ownerPlaceholder: "First and last name", email: "Email", password: "Password", confirmPassword: "Confirm password", strength: "Strength", weak: "weak", medium: "medium", strong: "strong", show: "Show password", hide: "Hide password", socialNote: "You can connect Google or Facebook sign-in later.", back: "Back", creating: "Creating…", create: "Create account" },
+} as const;
 
 export default function Register() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { setAuth } = useAuth();
+    const { locale } = useLanguage();
+    const text = copy[locale];
     const [searchParams] = useSearchParams();
+    const requestedPlanCode = searchParams.get("plan")?.trim() || undefined;
 
     const initialType = (searchParams.get("type") as BusinessType) || "beauty";
 
@@ -75,32 +86,34 @@ export default function Register() {
         else setPasswordStrength("strong");
     }, [password]);
 
-    const businessMeta = useMemo(
-        () => ({
+    const businessMeta = {
             beauty: {
-                label: "Գեղեցկության սրահ",
-                short: "Գեղեցկություն",
+                label: text.beautyLabel,
+                short: text.beautyShort,
                 icon: Sparkles,
             },
             dental: {
-                label: "Ատամնաբուժական կլինիկա",
-                short: "Կլինիկա",
+                label: text.dentalLabel,
+                short: text.dentalShort,
                 icon: Stethoscope,
             },
-        }),
-        []
-    );
+        };
 
     const CurrentIcon = businessMeta[business_type].icon;
 
     function validateStepOne() {
         if (!business_name.trim()) {
-            setError("Նշիր բիզնեսի անունը։");
+            setError(text.businessNameRequired);
             return false;
         }
 
         if (!business_phone.trim()) {
-            setError("Հեռախոսահամարը պարտադիր է։");
+            setError(text.phoneRequired);
+            return false;
+        }
+
+        if (!business_address.trim()) {
+            setError(text.addressRequired);
             return false;
         }
 
@@ -123,22 +136,22 @@ export default function Register() {
         setError(null);
 
         if (!owner_name.trim()) {
-            setError("Նշիր պատասխանատուի անունը։");
+            setError(text.ownerRequired);
             return;
         }
 
         if (!owner_email.trim()) {
-            setError("Նշիր էլ. փոստը։");
+            setError(text.emailRequired);
             return;
         }
 
         if (password.length < 8) {
-            setError("Գաղտնաբառը պետք է պարունակի առնվազն 8 նիշ։");
+            setError(text.passwordShort);
             return;
         }
 
         if (password !== password_confirmation) {
-            setError("Գաղտնաբառերը չեն համընկնում։");
+            setError(text.passwordMismatch);
             return;
         }
 
@@ -155,6 +168,7 @@ export default function Register() {
                     business_phone,
                     business_address: business_address || null,
                     business_type,
+                    plan_code: requestedPlanCode,
                     name: owner_name,
                     email: owner_email,
                     password,
@@ -171,14 +185,9 @@ export default function Register() {
             navigate("/app/onboarding", {
                 replace: true,
             });
-        } catch (err: any) {
-            const apiError = err?.response?.data;
-            const firstFieldError = apiError?.errors ? Object.values(apiError.errors)[0] : null;
-            const friendly = Array.isArray(firstFieldError) ? firstFieldError[0] : null;
-            const code = typeof apiError?.code === "string" ? apiError.code : null;
-
-            setErrorCode(code);
-            setError(friendly ?? apiError?.message ?? "Գրանցումը չհաջողվեց։");
+        } catch (error: unknown) {
+            setErrorCode(getApiErrorCode(error));
+            setError(getValidationMessages(error)[0] ?? getErrorMessage(error, text.registerError));
         } finally {
             setLoading(false);
         }
@@ -186,15 +195,15 @@ export default function Register() {
 
     return (
         <AuthShell
-            title="Գրանցվել"
-            subtitle="Ստեղծիր քո Vizit business հաշիվ"
-            sideTitle="Սկսիր Vizit-ը քո բիզնեսի համար"
-            sideText="Գրանցվիր, հետո անցիր onboarding և պատրաստիր workspace-ը աշխատանքի համար։"
+            title={text.title}
+            subtitle={text.subtitle}
+            sideTitle={text.sideTitle}
+            sideText={text.sideText}
             footer={
                 <div className="text-center text-sm text-slate-500">
-                    Արդեն ունե՞ս հաշիվ{" "}
+                    {text.hasAccount}{" "}
                     <Link to="/login" className="font-medium text-violet-700 hover:text-violet-600">
-                        Մուտք գործել
+                        {text.login}
                     </Link>
                 </div>
             }
@@ -227,21 +236,21 @@ export default function Register() {
                                             to="/business/login"
                                             className="inline-flex items-center rounded-xl bg-slate-900 px-3 py-2 text-xs font-semibold text-white"
                                         >
-                                            Մուտք բիզնես հաշվով
+                                            {text.businessLogin}
                                         </Link>
 
                                         <Link
                                             to="/forgot-password"
                                             className="inline-flex items-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700"
                                         >
-                                            Վերականգնել գաղտնաբառը
+                                            {text.resetPassword}
                                         </Link>
 
                                         <Link
                                             to="/support"
                                             className="inline-flex items-center rounded-xl border border-amber-300 bg-white px-3 py-2 text-xs font-semibold text-amber-900"
                                         >
-                                            Կապ աջակցման թիմի հետ
+                                            {text.contactSupport}
                                         </Link>
                                     </div>
                                 ) : null}
@@ -252,11 +261,11 @@ export default function Register() {
 
                 {!searchParams.get("type") ? (
                     <motion.div variants={fadeUp}>
-                        <label className="mb-3 block text-sm font-medium text-slate-700">
-                            Ընտրիր բիզնեսի տեսակը
-                        </label>
+                        <div id="business-type-label" className="mb-3 block text-sm font-medium text-slate-700">
+                            {text.chooseType}
+                        </div>
 
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <div role="radiogroup" aria-labelledby="business-type-label" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                             {(["beauty", "dental"] as BusinessType[]).map((type) => {
                                 const Icon = businessMeta[type].icon;
                                 const active = business_type === type;
@@ -266,6 +275,8 @@ export default function Register() {
                                         key={type}
                                         type="button"
                                         onClick={() => setBusinessType(type)}
+                                        role="radio"
+                                        aria-checked={active}
                                         className={cn(
                                             "flex items-center gap-3 rounded-[22px] border p-4 text-left transition",
                                             active
@@ -349,24 +360,27 @@ export default function Register() {
                                             {businessMeta[business_type].label}
                                         </div>
                                         <div className="mt-1 text-xs leading-6 text-slate-500">
-                                            Սկսենք քո բիզնեսի հիմնական տվյալներից։
+                                            {text.basics}
                                         </div>
                                     </div>
                                 </div>
                             </motion.div>
 
                             <motion.div variants={fadeUp}>
-                                <label className="mb-2 block text-sm font-medium text-slate-700">
-                                    Բիզնեսի անուն
+                                <label htmlFor="business-register-name" className="mb-2 block text-sm font-medium text-slate-700">
+                                    {text.businessName}
                                 </label>
 
                                 <div className="relative">
                                     <Store className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                                     <input
+                                        id="business-register-name"
+                                        name="business_name"
+                                        autoComplete="organization"
                                         value={business_name}
                                         onChange={(e) => setBusinessName(e.target.value)}
                                         placeholder={
-                                            business_type === "beauty" ? "Իմ սրահը" : "Իմ կլինիկան"
+                                            business_type === "beauty" ? text.salonPlaceholder : text.clinicPlaceholder
                                         }
                                         className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
                                         required
@@ -375,13 +389,17 @@ export default function Register() {
                             </motion.div>
 
                             <motion.div variants={fadeUp}>
-                                <label className="mb-2 block text-sm font-medium text-slate-700">
-                                    Հեռախոս
+                                <label htmlFor="business-register-phone" className="mb-2 block text-sm font-medium text-slate-700">
+                                    {text.phone}
                                 </label>
 
                                 <div className="relative">
                                     <Phone className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                                     <input
+                                        id="business-register-phone"
+                                        name="business_phone"
+                                        type="tel"
+                                        autoComplete="tel"
                                         value={business_phone}
                                         onChange={(e) => setBusinessPhone(e.target.value)}
                                         placeholder="+374 77 123456"
@@ -392,17 +410,21 @@ export default function Register() {
                             </motion.div>
 
                             <motion.div variants={fadeUp}>
-                                <label className="mb-2 block text-sm font-medium text-slate-700">
-                                    Հասցե
+                                <label htmlFor="business-register-address" className="mb-2 block text-sm font-medium text-slate-700">
+                                    {text.address}
                                 </label>
 
                                 <div className="relative">
                                     <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                                     <input
+                                        id="business-register-address"
+                                        name="business_address"
+                                        autoComplete="street-address"
                                         value={business_address}
                                         onChange={(e) => setBusinessAddress(e.target.value)}
-                                        placeholder="Երևան, Հայաստան"
+                                        placeholder={text.addressPlaceholder}
                                         className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        required
                                     />
                                 </div>
                             </motion.div>
@@ -413,10 +435,10 @@ export default function Register() {
                                 onClick={nextStep}
                                 className="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-violet-600 px-5 text-sm font-medium text-white transition hover:bg-violet-700"
                             >
-                                Շարունակել
+                                {text.continue}
                             </motion.button>
 
-                            <SocialAuthButtons mode="register" audience="business" businessType={business_type} />
+                            <SocialAuthButtons mode="register" audience="business" businessType={business_type} planCode={requestedPlanCode} />
 
 
                         </motion.div>
@@ -431,16 +453,19 @@ export default function Register() {
                         >
                             <div className="grid gap-5 md:grid-cols-2">
                             <motion.div variants={fadeUp}>
-                                <label className="mb-2 block text-sm font-medium text-slate-700">
-                                    Պատասխանատուի անուն
+                                <label htmlFor="business-register-owner-name" className="mb-2 block text-sm font-medium text-slate-700">
+                                    {text.ownerName}
                                 </label>
 
                                 <div className="relative">
                                     <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                                     <input
+                                        id="business-register-owner-name"
+                                        name="name"
+                                        autoComplete="name"
                                         value={owner_name}
                                         onChange={(e) => setOwnerName(e.target.value)}
-                                        placeholder="Անուն Ազգանուն"
+                                        placeholder={text.ownerPlaceholder}
                                         className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
                                         required
                                     />
@@ -448,13 +473,16 @@ export default function Register() {
                             </motion.div>
 
                             <motion.div variants={fadeUp}>
-                                <label className="mb-2 block text-sm font-medium text-slate-700">
-                                    Էլ. փոստ
+                                <label htmlFor="business-register-owner-email" className="mb-2 block text-sm font-medium text-slate-700">
+                                    {text.email}
                                 </label>
 
                                 <div className="relative">
                                     <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                                     <input
+                                        id="business-register-owner-email"
+                                        name="email"
+                                        autoComplete="email"
                                         type="email"
                                         value={owner_email}
                                         onChange={(e) => setOwnerEmail(e.target.value)}
@@ -468,13 +496,17 @@ export default function Register() {
 
                             <div className="grid gap-5 md:grid-cols-2">
                             <motion.div variants={fadeUp}>
-                                <label className="mb-2 block text-sm font-medium text-slate-700">
-                                    Գաղտնաբառ
+                                <label htmlFor="business-register-password" className="mb-2 block text-sm font-medium text-slate-700">
+                                    {text.password}
                                 </label>
 
                                 <div className="relative">
                                     <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                                     <input
+                                        id="business-register-password"
+                                        name="password"
+                                        autoComplete="new-password"
+                                        minLength={8}
                                         type={showPassword ? "text" : "password"}
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
@@ -485,6 +517,8 @@ export default function Register() {
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword((s) => !s)}
+                                        aria-label={showPassword ? text.hide : text.show}
+                                        aria-pressed={showPassword}
                                         className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-violet-700"
                                     >
                                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -513,13 +547,13 @@ export default function Register() {
                                         </div>
 
                                         <div className="mt-2 text-xs text-slate-500">
-                                            Ուժգնություն՝{" "}
+                                            {text.strength}:{" "}
                                             <span className="font-medium">
                         {passwordStrength === "weak"
-                            ? "թույլ"
+                            ? text.weak
                             : passwordStrength === "medium"
-                                ? "միջին"
-                                : "ուժեղ"}
+                                ? text.medium
+                                : text.strong}
                       </span>
                                         </div>
                                     </div>
@@ -527,13 +561,17 @@ export default function Register() {
                             </motion.div>
 
                             <motion.div variants={fadeUp}>
-                                <label className="mb-2 block text-sm font-medium text-slate-700">
-                                    Կրկնել գաղտնաբառը
+                                <label htmlFor="business-register-password-confirmation" className="mb-2 block text-sm font-medium text-slate-700">
+                                    {text.confirmPassword}
                                 </label>
 
                                 <div className="relative">
                                     <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                                     <input
+                                        id="business-register-password-confirmation"
+                                        name="password_confirmation"
+                                        autoComplete="new-password"
+                                        minLength={8}
                                         type={showConfirmPassword ? "text" : "password"}
                                         value={password_confirmation}
                                         onChange={(e) => setPasswordConfirmation(e.target.value)}
@@ -544,6 +582,8 @@ export default function Register() {
                                     <button
                                         type="button"
                                         onClick={() => setShowConfirmPassword((s) => !s)}
+                                        aria-label={showConfirmPassword ? text.hide : text.show}
+                                        aria-pressed={showConfirmPassword}
                                         className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-violet-700"
                                     >
                                         {showConfirmPassword ? (
@@ -556,7 +596,7 @@ export default function Register() {
                             </motion.div>
                             </div>
 
-                            <SocialAuthButtons mode="register" audience="business" businessType={business_type} />
+                            <SocialAuthButtons mode="register" audience="business" businessType={business_type} planCode={requestedPlanCode} />
 
                             <motion.div
                                 variants={fadeUp}
@@ -564,7 +604,7 @@ export default function Register() {
                             >
                                 <div className="flex items-start gap-2">
                                     <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-violet-600" />
-                                    <div>Google կամ Facebook մուտքը կարող ես միացնել նաև հետո։</div>
+                                    <div>{text.socialNote}</div>
                                 </div>
                             </motion.div>
 
@@ -574,7 +614,7 @@ export default function Register() {
                                     onClick={prevStep}
                                     className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-medium text-slate-700 transition hover:border-violet-200 hover:bg-violet-50"
                                 >
-                                    Վերադառնալ
+                                    {text.back}
                                 </button>
 
                                 <motion.button
@@ -586,7 +626,7 @@ export default function Register() {
                                     )}
                                 >
                                     <UserPlus className="h-4 w-4" />
-                                    {loading ? "Ստեղծվում է..." : "Ստեղծել հաշիվ"}
+                                    {loading ? text.creating : text.create}
                                 </motion.button>
                             </motion.div>
                         </motion.div>

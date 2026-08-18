@@ -40,3 +40,43 @@ export function localizePlanName(plan: PlanLike): string {
   if (value.includes("custom")) return "Անհատական";
   return plan.name ?? "Պլան";
 }
+
+export function localizePlanNameForLocale(plan: PlanLike, locale: "hy" | "ru" | "en" = "hy"): string {
+  const value = String(plan.name || plan.code || "").toLowerCase();
+  const names = {
+    hy: { start: "Սկիզբ", studio: "Ստուդիա", scale: "Աճ", business: "Բիզնես", custom: "Անհատական", fallback: "Պլան" },
+    ru: { start: "Старт", studio: "Студия", scale: "Рост", business: "Бизнес", custom: "Индивидуальный", fallback: "Тариф" },
+    en: { start: "Start", studio: "Studio", scale: "Scale", business: "Business", custom: "Custom", fallback: "Plan" },
+  }[locale];
+  const key = (["start", "studio", "scale", "business", "custom"] as const).find((item) => value.includes(item));
+  return key ? names[key] : (plan.name ?? names.fallback);
+}
+
+export function localizePlanDescription(plan: PlanLike, locale: "hy" | "ru" | "en" = "hy"): string {
+  const value = String(plan.code || plan.name || "").toLowerCase();
+  const descriptions = {
+    hy: {
+      start: "Անհատ մասնագետների և փոքր բիզնեսների մեկնարկային գործիքներ։",
+      studio: "Աճող թիմերի համար՝ ավելի շատ մասնագետներ, ծառայություններ և հասցեներ։",
+      scale: "Մեծ թիմերի և ընդլայնվող բիզնեսների համար։",
+      custom: "Անհատական պայմաններ ցանցային և մեծ բիզնեսների համար։",
+      fallback: "Vizit-ի կառավարման և օնլայն ամրագրման գործիքներ բիզնեսի համար։",
+    },
+    ru: {
+      start: "Стартовые инструменты для частных специалистов и малого бизнеса.",
+      studio: "Для растущих команд: больше специалистов, услуг и адресов.",
+      scale: "Для крупных команд и развивающегося бизнеса.",
+      custom: "Индивидуальные условия для сетевых и крупных компаний.",
+      fallback: "Инструменты Vizit для управления бизнесом и онлайн-записи.",
+    },
+    en: {
+      start: "Essential tools for independent professionals and small businesses.",
+      studio: "For growing teams that need more staff, services and locations.",
+      scale: "For larger teams and expanding businesses.",
+      custom: "Tailored terms for multi-location and larger businesses.",
+      fallback: "Vizit tools for business management and online booking.",
+    },
+  }[locale];
+  const key = (["start", "studio", "scale", "custom"] as const).find((item) => value.includes(item));
+  return key ? descriptions[key] : descriptions.fallback;
+}

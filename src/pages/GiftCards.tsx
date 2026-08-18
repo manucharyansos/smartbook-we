@@ -88,7 +88,7 @@ export function GiftCards() {
     },
   });
 
-  const list = listQ.data ?? [];
+  const list = useMemo(() => listQ.data ?? [], [listQ.data]);
   const totalBalance = useMemo(() => list.reduce((sum, item) => sum + item.balance, 0), [list]);
 
   return (
@@ -173,7 +173,7 @@ export function GiftCards() {
   );
 }
 
-function CreateGiftCardModal({ open, onClose, onCreate, loading }: { open: boolean; onClose: () => void; onCreate: (payload: any) => void; loading: boolean }) {
+function CreateGiftCardModal({ open, onClose, onCreate, loading }: { open: boolean; onClose: () => void; onCreate: (payload: Parameters<typeof createGiftCard>[0]) => void; loading: boolean }) {
   const [amount, setAmount] = useState('10000');
   const [code, setCode] = useState('');
   const [issuedToName, setIssuedToName] = useState('');

@@ -21,9 +21,9 @@ export type StaffUser = {
     location?: { id: number; name?: string | null; address?: string | null; is_primary?: boolean } | null;
 };
 
-export async function fetchStaff(params?: any) {
-    const query = params && typeof params === "object" && "location_id" in params
-        ? { location_id: (params as { location_id?: number }).location_id }
+export async function fetchStaff(params?: { location_id?: number }) {
+    const query = params && "location_id" in params
+        ? { location_id: params.location_id }
         : undefined;
     const res = await api.get("/staff", { params: { only_active: false, ...query } });
     return (res.data.data as StaffUser[]).map((item) => ({ ...item, avatar_url: resolveMediaUrl(item.avatar_url) }));

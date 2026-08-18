@@ -273,11 +273,11 @@ export default function Tasks() {
     queryKey: ["booking-board", from, to],
     queryFn: () => fetchBookings(from, to),
   });
-  const staffQ = useQuery({ queryKey: ["staff", "booking-board"], queryFn: fetchStaff, enabled: !isStaff });
-  const servicesQ = useQuery({ queryKey: ["services", "booking-board"], queryFn: fetchServices });
+  const staffQ = useQuery({ queryKey: ["staff", "booking-board"], queryFn: () => fetchStaff(), enabled: !isStaff });
+  const servicesQ = useQuery({ queryKey: ["services", "booking-board"], queryFn: () => fetchServices() });
 
-  const staff = staffQ.data ?? [];
-  const services = servicesQ.data ?? [];
+  const staff = useMemo(() => staffQ.data ?? [], [staffQ.data]);
+  const services = useMemo(() => servicesQ.data ?? [], [servicesQ.data]);
   const serviceById = useMemo(() => new Map(services.map((service) => [service.id, service])), [services]);
   const staffById = useMemo(() => new Map(staff.map((member) => [member.id, member.name])), [staff]);
 

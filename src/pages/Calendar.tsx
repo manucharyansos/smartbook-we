@@ -1,4 +1,6 @@
-import { type ReactNode, useEffect, useMemo, useState } from "react";
+/* eslint-disable react-hooks/set-state-in-effect -- Calendar query, selection, and smart-slot effects intentionally reconcile draft UI state. */
+/* eslint-disable react-hooks/preserve-manual-memoization -- FullCalendar data is memoized at integration boundaries; React Compiler cannot infer the library contracts. */
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -89,6 +91,14 @@ type ConfirmState =
 
 type BookingMode = "single" | "multi" | "lines";
 type ViewMode = "day" | "week";
+
+type CalendarExtendedProps = {
+    type?: "booking" | "block";
+    booking?: Booking;
+    block?: Block;
+    staffName?: string;
+    serviceName?: string;
+};
 
 function parseLocalDateTime(dt?: string | null): Date | null {
     if (!dt) return null;
@@ -1192,8 +1202,8 @@ export function Calendar() {
     const blocksQ = useQuery({ queryKey: ["blocks", businessId, from, to], queryFn: () => fetchBlocks(from, to), enabled: !!businessId && canManageBlocks, staleTime: 10_000 });
 
     const settings = settingsQ.data ?? null;
-    const services = (servicesQ.data ?? []) as Service[];
-    const staff = (staffQ.data ?? []) as StaffUser[];
+    const services = useMemo(() => (servicesQ.data ?? []) as Service[], [servicesQ.data]);
+    const staff = useMemo(() => (staffQ.data ?? []) as StaffUser[], [staffQ.data]);
     const bookings = useMemo(() => {
         const unique = new Map<number, Booking>();
         for (const booking of (bookingsQ.data ?? []) as Booking[]) {
@@ -1201,9 +1211,9 @@ export function Calendar() {
         }
         return Array.from(unique.values());
     }, [bookingsQ.data]);
-    const blocks = (blocksQ.data ?? []) as Block[];
+    const blocks = useMemo(() => (blocksQ.data ?? []) as Block[], [blocksQ.data]);
     const clientSuggestions = (clientsQ.data?.data ?? []) as ClientRow[];
-    const smartSlots = (smartAvailabilityQ.data ?? []) as Slot[];
+    const smartSlots = useMemo(() => (smartAvailabilityQ.data ?? []) as Slot[], [smartAvailabilityQ.data]);
     const recommendedSmartSlots = useMemo(() => smartSlots.filter((slot) => slot.is_recommended).slice(0, 3), [smartSlots]);
     const activeSmartSlotKey = useMemo(() => {
         if (!draft) return "";
@@ -1337,7 +1347,7 @@ export function Calendar() {
                     },
                 };
             })
-            .filter(Boolean) as any[];
+            .filter((event): event is NonNullable<typeof event> => event !== null);
 
         const blockEvents = filteredBlocks
             .map((bl) => {
@@ -1357,7 +1367,7 @@ export function Calendar() {
                     extendedProps: { type: "block" as const, block: bl },
                 };
             })
-            .filter(Boolean) as any[];
+            .filter((event): event is NonNullable<typeof event> => event !== null);
 
         return [...blockEvents, ...bookingEvents];
     }, [visibleBookings, filteredBlocks, serviceById, staffById]);
@@ -1526,15 +1536,16 @@ export function Calendar() {
     }
 
     function onEventClick(arg: EventClickArg) {
-        const type = (arg.event.extendedProps as any)?.type as "booking" | "block" | undefined;
+        const extendedProps = arg.event.extendedProps as CalendarExtendedProps;
+        const type = extendedProps.type;
         if (type === "block") {
-            const bl = (arg.event.extendedProps as any)?.block as Block | undefined;
+            const bl = extendedProps.block;
             if (!bl || !canManageBlocks) return;
             setConfirmState({ type: "block", block: bl });
             return;
         }
 
-        const b = (arg.event.extendedProps as any)?.booking as Booking | undefined;
+        const b = extendedProps.booking;
         if (!b) return;
         setSelectedBooking(b);
     }
@@ -1545,7 +1556,7 @@ export function Calendar() {
     }
 
     function onEventDrop(arg: EventDropArg) {
-        const type = (arg.event.extendedProps as any)?.type as string | undefined;
+        const type = (arg.event.extendedProps as CalendarExtendedProps).type;
         if (type === "block") {
             arg.revert();
             return;
@@ -1573,7 +1584,7 @@ export function Calendar() {
     }
 
     function onEventResize(arg: EventResizeDoneArg) {
-        const type = (arg.event.extendedProps as any)?.type as string | undefined;
+        const type = (arg.event.extendedProps as CalendarExtendedProps).type;
         if (type === "block") {
             arg.revert();
             return;
@@ -1665,7 +1676,7 @@ export function Calendar() {
         if (!notes.trim() && client.notes) setNotes(client.notes);
     }
 
-    function handleSmartSlotSelect(slot: Slot) {
+    const handleSmartSlotSelect = useCallback((slot: Slot) => {
         const nextStart = parseLocalDateTime(slot.starts_at);
         const nextEnd = parseLocalDateTime(slot.ends_at);
         if (!nextStart || !nextEnd) return;
@@ -1674,7 +1685,7 @@ export function Calendar() {
         if (!isStaff && slot.staff_id) {
             setStaffId(slot.staff_id);
         }
-    }
+    }, [isStaff]);
 
     function updateDraftDate(nextDate: string) {
         if (!draft) return;
@@ -1701,7 +1712,7 @@ export function Calendar() {
         if (!createOpen || bookingMode === "lines" || !smartSlots.length || hasMatchingSmartSlot) return;
         const preferred = recommendedSmartSlots[0] ?? smartSlots[0];
         if (preferred) handleSmartSlotSelect(preferred);
-    }, [createOpen, bookingMode, smartSlots, recommendedSmartSlots, hasMatchingSmartSlot]);
+    }, [createOpen, bookingMode, smartSlots, recommendedSmartSlots, hasMatchingSmartSlot, handleSmartSlotSelect]);
 
     function submitCreateBooking() {
         if (!draft) return;
@@ -1779,7 +1790,7 @@ export function Calendar() {
         if (bookingMode === "multi") return serviceIds.length < 2 || !(staffId || selectedSmartSlot?.staff_id) || !hasMatchingSmartSlot;
         if (!serviceIds.length || !lineDrafts.length || lineDrafts.length !== serviceIds.length) return true;
         return lineDrafts.some((line) => !line.starts_at || !(isStaff ? user?.id : line.staff_id));
-    }, [draft, clientName, clientPhone, bookingMode, serviceIds, staffId, lineDrafts, isStaff, user?.id, hasMatchingSmartSlot]);
+    }, [draft, clientName, clientPhone, bookingMode, serviceIds, staffId, selectedSmartSlot?.staff_id, lineDrafts, isStaff, user?.id, hasMatchingSmartSlot]);
 
     const bookingActionOptions = useMemo(() => {
         if (!selectedBooking) return [];
@@ -2262,8 +2273,8 @@ export function Calendar() {
                                         eventDrop={onEventDrop}
                                         eventResize={onEventResize}
                                         eventContent={(arg) => {
-                                            const ext = arg.event.extendedProps as any;
-                                            const booking = ext?.booking as Booking | undefined;
+                                            const ext = arg.event.extendedProps as CalendarExtendedProps;
+                                            const booking = ext.booking;
                                             if (!booking) {
                                                 return <div className="px-2 py-1 text-[11px] font-medium text-rose-700">{arg.event.title}</div>;
                                             }

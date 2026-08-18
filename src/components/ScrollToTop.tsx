@@ -16,7 +16,7 @@ export function ScrollToTop() {
     }
 
     window.scrollTo(0, 0);
-  }, [location.pathname]);
+  }, [location.hash, location.pathname]);
 
   return null;
 }

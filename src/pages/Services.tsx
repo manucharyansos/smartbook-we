@@ -130,7 +130,7 @@ export default function ServicesPage() {
     });
 
     const updateMut = useMutation({
-        mutationFn: ({ id, payload }: { id: number; payload: any }) => updateService(id, payload),
+        mutationFn: ({ id, payload }: { id: number; payload: Parameters<typeof updateService>[1] }) => updateService(id, payload),
         onSuccess: async () => {
             await Promise.all([
                 queryClient.invalidateQueries({ queryKey: ["services"] }),
@@ -174,17 +174,17 @@ export default function ServicesPage() {
         },
     });
 
-    const locations = settingsQ.data?.locations ?? [];
+    const locations = useMemo(() => settingsQ.data?.locations ?? [], [settingsQ.data?.locations]);
     const serviceUsage = settingsQ.data?.usage;
     const serviceLimitReached = serviceUsage?.services_limit != null && serviceUsage.services_count >= serviceUsage.services_limit;
     const locationNameById = useMemo(() => new Map(locations.map((location) => [location.id, location.name || (location.is_primary ? "Գլխավոր հասցե" : location.address)])), [locations]);
 
     const hasMultipleLocations = locations.length > 1;
-    const preferredLocationId = useMemo<number | "">(() => {
+    const preferredLocationId: number | "" = (() => {
         if (selectedLocationId) return selectedLocationId;
         if (locations.length === 1) return locations[0].id;
         return "";
-    }, [locations, selectedLocationId]);
+    })();
 
     const services = useMemo(() => {
         const rows = servicesQ.data ?? [];

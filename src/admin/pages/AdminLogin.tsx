@@ -6,6 +6,7 @@ import { AlertCircle, ArrowLeft, CalendarDays, Eye, EyeOff, Lock, Mail, ShieldCh
 import { adminService } from '../services/adminApi';
 import { fadeUp, pageTransition, scaleIn } from '../../lib/motion';
 import { cn } from '../../lib/cn';
+import { getErrorMessage, getHttpStatus, getValidationMessages, type HttpError } from '../../lib/http';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -33,14 +34,16 @@ export default function AdminLogin() {
       } else {
         setError('Սերվերի պատասխանը սպասված կառուցվածք չունի');
       }
-    } catch (err: any) {
-      if (err.response?.status === 422) {
-        const errors = err.response.data.errors ?? {};
+    } catch (err: unknown) {
+      if (getHttpStatus(err) === 422) {
+        const fieldErrors = (err as HttpError).response?.data?.errors ?? {};
+        const errors = Object.fromEntries(
+          Object.entries(fieldErrors).map(([field, messages]) => [field, messages ?? []]),
+        );
         setValidationErrors(errors);
-        const firstKey = Object.keys(errors)[0];
-        setError(errors[firstKey]?.[0] || 'Վավերացման սխալ');
+        setError(getValidationMessages(err)[0] || 'Վավերացման սխալ');
       } else {
-        setError(err.response?.data?.message || 'Մուտքի սխալ։ Փորձեք կրկին։');
+        setError(getErrorMessage(err, 'Մուտքի սխալ։ Փորձեք կրկին։'));
       }
     } finally {
       setLoading(false);
@@ -89,18 +92,21 @@ export default function AdminLogin() {
 
                 <form onSubmit={handleSubmit} className="mt-8 space-y-5">
                   {error ? (
-                    <div className="flex items-start gap-3 rounded-2xl border border-rose-400/25 bg-rose-500/10 px-4 py-3 text-sm text-rose-100">
+                    <div role="alert" className="flex items-start gap-3 rounded-2xl border border-rose-400/25 bg-rose-500/10 px-4 py-3 text-sm text-rose-100">
                       <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
                       <span>{error}</span>
                     </div>
                   ) : null}
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-white/80">Էլ. փոստ</label>
+                    <label htmlFor="admin-email" className="mb-2 block text-sm font-medium text-white/80">Էլ. փոստ</label>
                     <div className="relative">
                       <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35" />
                       <input
+                        id="admin-email"
+                        name="email"
                         type="email"
+                        autoComplete="username"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className={cn(
@@ -114,11 +120,14 @@ export default function AdminLogin() {
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-white/80">Գաղտնաբառ</label>
+                    <label htmlFor="admin-password" className="mb-2 block text-sm font-medium text-white/80">Գաղտնաբառ</label>
                     <div className="relative">
                       <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35" />
                       <input
+                        id="admin-password"
+                        name="password"
                         type={showPassword ? 'text' : 'password'}
+                        autoComplete="current-password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className={cn(
@@ -128,7 +137,7 @@ export default function AdminLogin() {
                         placeholder="••••••••"
                         required
                       />
-                      <button type="button" onClick={() => setShowPassword((s) => !s)} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white">
+                      <button type="button" onClick={() => setShowPassword((s) => !s)} aria-label={showPassword ? 'Թաքցնել գաղտնաբառը' : 'Ցույց տալ գաղտնաբառը'} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white">
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
                     </div>

@@ -8,7 +8,6 @@ import {
   Building2,
   CalendarDays,
   Car,
-  ChevronDown,
   Dumbbell,
   HeartPulse,
   LocateFixed,
@@ -40,10 +39,11 @@ import {
   type PublicMapPin,
 } from "../lib/publicApi";
 import { publicPlansApi, type PublicPlan } from "../lib/planApi";
-import { formatPlanPrice, localizePlanName, monthlyPlanPrice } from "../lib/planPresentation";
+import { formatPlanPrice, localizePlanDescription, localizePlanNameForLocale, monthlyPlanPrice } from "../lib/planPresentation";
 import heroWoman from "../assets/vizit-hero-woman.png";
 
 type BusinessFilter = "all" | "services" | "healthcare";
+type LocationStatus = "idle" | "loading" | "active" | "error" | "unsupported";
 
 const defaultPublicCategories: PublicBusinessCategory[] = [
   { slug: "beauty-salon", vertical: "services", name_hy: "Գեղեցկության սրահ", name_ru: "Салон красоты", name_en: "Beauty salon", icon: "sparkles" },
@@ -184,7 +184,7 @@ function deriveCategories(businesses: PublicDirectoryBusiness[]): PublicBusiness
         map.set(slug, {
           id: category.id ?? business.id,
           slug,
-          name: category.name ?? category.name_hy ?? category.name_ru ?? category.name_en ?? business.custom_category_name ?? "Կատեգորիա",
+          name: category.name ?? category.name_hy ?? category.name_ru ?? category.name_en ?? business.custom_category_name ?? "Category",
           name_hy: category.name_hy ?? category.name ?? business.custom_category_name ?? undefined,
           name_ru: category.name_ru,
           name_en: category.name_en,
@@ -203,6 +203,8 @@ function deriveCategories(businesses: PublicDirectoryBusiness[]): PublicBusiness
         slug,
         name: vertical === "healthcare" ? "Բժշկական" : "Ծառայություններ",
         name_hy: vertical === "healthcare" ? "Բժշկական" : "Ծառայություններ",
+        name_ru: vertical === "healthcare" ? "Медицина" : "Услуги",
+        name_en: vertical === "healthcare" ? "Healthcare" : "Services",
         vertical,
       });
     }
@@ -225,6 +227,25 @@ function mergeCategories(primary: PublicBusinessCategory[], secondary: PublicBus
 function numberOrNull(value: unknown): number | null {
   const n = Number(value);
   return Number.isFinite(n) ? n : null;
+}
+
+function distanceKm(from: { lat: number; lng: number }, to: { lat: number; lng: number }) {
+  const earthRadiusKm = 6371;
+  const radians = (value: number) => (value * Math.PI) / 180;
+  const dLat = radians(to.lat - from.lat);
+  const dLng = radians(to.lng - from.lng);
+  const a = Math.sin(dLat / 2) ** 2
+    + Math.cos(radians(from.lat)) * Math.cos(radians(to.lat)) * Math.sin(dLng / 2) ** 2;
+  return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function nearestBusinessDistance(item: PublicDirectoryBusiness, userLocation: { lat: number; lng: number }) {
+  const distances = (item.locations ?? []).flatMap((location) => {
+    const lat = numberOrNull(location.lat ?? location.latitude);
+    const lng = numberOrNull(location.lng ?? location.longitude);
+    return lat === null || lng === null ? [] : [distanceKm(userLocation, { lat, lng })];
+  });
+  return distances.length ? Math.min(...distances) : Number.POSITIVE_INFINITY;
 }
 
 function buildPinsFromBusinesses(businesses: PublicDirectoryBusiness[], locale: string): MapPinItem[] {
@@ -368,6 +389,7 @@ function InteractiveBusinessMap({
   setSelectedPinKey: (key: string) => void;
   userLocation: { lat: number; lng: number } | null;
 }) {
+  const { t } = useLanguage();
   const [center, setCenter] = useState(() => defaultMapCenter(pins, userLocation));
   const [zoom, setZoom] = useState(() => chooseMapZoom(pins));
   const [isDragging, setIsDragging] = useState(false);
@@ -445,13 +467,13 @@ function InteractiveBusinessMap({
 
       <div className="absolute left-3 top-3 z-30 flex max-w-[calc(100%-96px)] items-center gap-2 rounded-2xl border border-white/14 bg-slate-950/76 px-3 py-2 text-[11px] font-bold text-white shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl sm:left-5 sm:top-5 sm:px-4 sm:py-3 sm:text-xs">
         <MapPin className="h-3.5 w-3.5 shrink-0 text-cyan-200" />
-        <span className="truncate">Քաշիր քարտեզը, մեծացրու/փոքրացրու, սեղմիր pin-ը</span>
+        <span className="truncate">{t("map.instructions")}</span>
       </div>
 
-      <div className="absolute right-3 top-3 z-30 grid overflow-hidden rounded-2xl border border-white/14 bg-slate-950/78 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl sm:right-5 sm:top-5">
-        <button type="button" onClick={() => zoomMap(1)} className="grid h-10 w-10 place-items-center border-b border-white/10 text-lg font-black text-white transition hover:bg-white/10" aria-label="Մեծացնել քարտեզը">+</button>
-        <button type="button" onClick={() => zoomMap(-1)} className="grid h-10 w-10 place-items-center border-b border-white/10 text-lg font-black text-white transition hover:bg-white/10" aria-label="Փոքրացնել քարտեզը">−</button>
-        <button type="button" onClick={fitMap} className="grid h-10 w-10 place-items-center text-white transition hover:bg-white/10" aria-label="Կենտրոնացնել քարտեզը"><LocateFixed className="h-4 w-4" /></button>
+      <div onPointerDown={(event) => event.stopPropagation()} className="absolute right-3 top-3 z-30 grid overflow-hidden rounded-2xl border border-white/14 bg-slate-950/78 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl sm:right-5 sm:top-5">
+        <button type="button" onClick={() => zoomMap(1)} className="grid h-10 w-10 place-items-center border-b border-white/10 text-lg font-black text-white transition hover:bg-white/10" aria-label={t("map.zoomIn")}>+</button>
+        <button type="button" onClick={() => zoomMap(-1)} className="grid h-10 w-10 place-items-center border-b border-white/10 text-lg font-black text-white transition hover:bg-white/10" aria-label={t("map.zoomOut")}>−</button>
+        <button type="button" onClick={fitMap} className="grid h-10 w-10 place-items-center text-white transition hover:bg-white/10" aria-label={t("map.center")}><LocateFixed className="h-4 w-4" /></button>
       </div>
 
       {userLocation ? (() => {
@@ -460,7 +482,7 @@ function InteractiveBusinessMap({
           <div
             className="absolute z-30 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white bg-cyan-400 shadow-[0_0_0_12px_rgba(34,211,238,0.18)]"
             style={{ left: `calc(50% + ${point.left}px)`, top: `calc(50% + ${point.top}px)` }}
-            title="Քո տեղանքը"
+            title={t("search.location")}
           />
         );
       })() : null}
@@ -473,6 +495,7 @@ function InteractiveBusinessMap({
           <button
             key={key}
             type="button"
+            onPointerDown={(event) => event.stopPropagation()}
             onClick={(event) => {
               event.stopPropagation();
               setSelectedPinKey(key);
@@ -505,15 +528,21 @@ function InteractiveBusinessMap({
         <div className="absolute inset-0 z-10 grid place-items-center p-6 text-center">
           <div className="max-w-md rounded-[28px] border border-white/12 bg-slate-950/78 p-7 backdrop-blur-2xl">
             <MapPin className="mx-auto h-10 w-10 text-cyan-200" />
-            <h3 className="mt-4 text-2xl font-black text-white">Քարտեզի pin-եր դեռ չկան</h3>
-            <p className="mt-3 text-sm leading-7 text-slate-300">Քարտեզում ցուցադրվող հասցեներ դեռ չկան։</p>
+            <h3 className="mt-4 text-2xl font-black text-white">{t("map.emptyTitle")}</h3>
+            <p className="mt-3 text-sm leading-7 text-slate-300">{t("map.emptyText")}</p>
           </div>
         </div>
       )}
 
-      <div className="absolute bottom-3 right-3 z-20 rounded-full bg-white/90 px-3 py-1.5 text-[10px] font-bold text-slate-700 shadow-sm">
+      <a
+        href="https://www.openstreetmap.org/copyright"
+        target="_blank"
+        rel="noopener noreferrer"
+        onPointerDown={(event) => event.stopPropagation()}
+        className="absolute bottom-3 right-3 z-20 rounded-full bg-white/90 px-3 py-1.5 text-[10px] font-bold text-slate-700 shadow-sm"
+      >
         © OpenStreetMap contributors
-      </div>
+      </a>
     </div>
   );
 }
@@ -522,8 +551,31 @@ function SectionBadge({ children }: { children: ReactNode }) {
   return <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-cyan-50 px-4 py-2 text-xs font-bold text-cyan-700 shadow-sm backdrop-blur-2xl dark:border-white/12 dark:bg-white/[0.07] dark:text-cyan-100 dark:shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:text-sm">{children}</div>;
 }
 
-function SearchPanel({ search, setSearch, onSubmit }: { search: string; setSearch: (value: string) => void; onSubmit: () => void }) {
+function SearchPanel({
+  search,
+  setSearch,
+  onSubmit,
+  locationStatus,
+  onUseLocation,
+}: {
+  search: string;
+  setSearch: (value: string) => void;
+  onSubmit: () => void;
+  locationStatus: LocationStatus;
+  onUseLocation: () => void;
+}) {
   const { t } = useLanguage();
+  const locationValue = locationStatus === "loading"
+    ? t("search.locating")
+    : locationStatus === "active"
+      ? t("search.currentLocation")
+      : t("search.city");
+  const locationError = locationStatus === "unsupported"
+    ? t("search.locationUnsupported")
+    : locationStatus === "error"
+      ? t("search.locationError")
+      : null;
+
   return (
     <motion.form
       variants={fadeUp}
@@ -539,6 +591,10 @@ function SearchPanel({ search, setSearch, onSubmit }: { search: string; setSearc
           <span className="min-w-0 flex-1">
             <span className="block text-[13px] font-bold text-slate-500 sm:text-[14px]">{t("search.label")}</span>
             <input
+              id="public-business-search"
+              name="search"
+              type="search"
+              autoComplete="off"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder={t("search.placeholder")}
@@ -547,19 +603,27 @@ function SearchPanel({ search, setSearch, onSubmit }: { search: string; setSearc
           </span>
         </label>
 
-        <button type="button" className="flex min-h-[58px] items-center rounded-[16px] px-3 text-left transition hover:bg-slate-50 sm:px-4">
+        <button
+          type="button"
+          onClick={onUseLocation}
+          disabled={locationStatus === "loading"}
+          className="flex min-h-[58px] items-center rounded-[16px] px-3 text-left transition hover:bg-slate-50 disabled:cursor-wait disabled:opacity-70 sm:px-4"
+          aria-label={t("search.useLocation")}
+          title={t("search.useLocation")}
+        >
           <MapPin className="mr-3 h-[21px] w-[21px] shrink-0 text-slate-400" />
           <span className="min-w-0 flex-1">
             <span className="block text-[13px] font-bold text-slate-500 sm:text-[14px]">{t("search.location")}</span>
-            <span className="mt-1 block truncate text-[13px] font-semibold text-slate-500">{t("search.city")}</span>
+            <span className="mt-1 block truncate text-[13px] font-semibold text-slate-500" aria-live="polite">{locationValue}</span>
           </span>
-          <ChevronDown className="h-4 w-4 text-slate-400" />
+          <LocateFixed className="ml-2 h-4 w-4 shrink-0 text-violet-500" />
         </button>
 
         <button type="submit" className="inline-flex h-[54px] items-center justify-center gap-2 rounded-[16px] bg-gradient-to-r from-[#9a55ff] to-[#26a8ff] px-5 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(38,168,255,0.32)] md:h-auto">
           <Search className="h-4 w-4" /> {t("search.button")}
         </button>
       </div>
+      {locationError ? <p className="px-3 pb-1 pt-2 text-left text-xs font-medium text-rose-600" role="status">{locationError}</p> : null}
     </motion.form>
   );
 }
@@ -666,7 +730,7 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
 }
 
 function HomePlansSection() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const plansQ = useQuery({
     queryKey: ["home-public-plans-preview"],
     queryFn: async () => {
@@ -693,10 +757,10 @@ function HomePlansSection() {
           <div className="grid gap-5 md:grid-cols-3">
             {(plansQ.data ?? []).slice(0, 3).map((plan) => (
               <div key={plan.id} className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
-                <div className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-slate-950">{plan.code}</div>
-                <h3 className="mt-5 text-2xl font-black text-slate-950 dark:text-white">{localizePlanName(plan)}</h3>
+                <div className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-slate-950">{t("plans.businessPlan")}</div>
+                <h3 className="mt-5 text-2xl font-black text-slate-950 dark:text-white">{localizePlanNameForLocale(plan, locale)}</h3>
                 <div className="mt-4 text-3xl font-black text-slate-950 dark:text-white">{formatPlanPrice(monthlyPlanPrice(plan), plan.currency ?? undefined)}</div>
-                <p className="mt-3 min-h-[48px] text-sm leading-6 text-slate-500 dark:text-slate-300">{plan.description || "Vizit business-ի համար պատրաստ պլան։"}</p>
+                <p className="mt-3 min-h-[48px] text-sm leading-6 text-slate-500 dark:text-slate-300">{localizePlanDescription(plan, locale)}</p>
               </div>
             ))}
           </div>
@@ -712,6 +776,8 @@ export default function Index() {
   const [filter, setFilter] = useState<BusinessFilter>("all");
   const [selectedCategorySlug, setSelectedCategorySlug] = useState<string | null>(null);
   const [selectedPinKey, setSelectedPinKey] = useState<string | null>(null);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
 
   const businessesQ = useQuery({
     queryKey: ["public-businesses-home-final"],
@@ -728,11 +794,14 @@ export default function Index() {
   });
 
   const mapPinsQ = useQuery({
-    queryKey: ["public-business-map-pins", filter, selectedCategorySlug, search],
+    queryKey: ["public-business-map-pins", filter, selectedCategorySlug, search, userLocation?.lat ?? null, userLocation?.lng ?? null],
     queryFn: async () => fetchPublicMapPins({
       vertical: filter !== "all" ? filter : undefined,
       category: selectedCategorySlug ?? undefined,
       search: search || undefined,
+      lat: userLocation?.lat,
+      lng: userLocation?.lng,
+      radius: userLocation ? 100 : undefined,
     }).catch(() => []),
     retry: false,
     staleTime: 60_000,
@@ -740,12 +809,17 @@ export default function Index() {
 
   const allBusinesses = useMemo(() => businessesQ.data ?? [], [businessesQ.data]);
   const categories = useMemo(() => mergeCategories(mergeCategories(categoriesQ.data ?? [], defaultPublicCategories), deriveCategories(allBusinesses)), [allBusinesses, categoriesQ.data]);
-  const filteredBusinesses = useMemo(() => allBusinesses.filter((business) => matchesFilter(business, filter) && matchesCategory(business, selectedCategorySlug) && matchesSearch(business, search)), [allBusinesses, filter, search, selectedCategorySlug]);
+  const filteredBusinesses = useMemo(() => {
+    const matching = allBusinesses.filter((business) => matchesFilter(business, filter) && matchesCategory(business, selectedCategorySlug) && matchesSearch(business, search));
+    return userLocation
+      ? [...matching].sort((a, b) => nearestBusinessDistance(a, userLocation) - nearestBusinessDistance(b, userLocation))
+      : matching;
+  }, [allBusinesses, filter, search, selectedCategorySlug, userLocation]);
   const apiPins = useMemo(() => (mapPinsQ.data ?? []).map(publicPinToMapPin).filter((pin) => matchesPinSearch(pin, search)), [mapPinsQ.data, search]);
   const pins = useMemo(() => {
-    const source = apiPins.length ? apiPins : buildPinsFromBusinesses(filteredBusinesses, locale);
+    const source = apiPins.length || userLocation ? apiPins : buildPinsFromBusinesses(filteredBusinesses, locale);
     return source.filter((pin) => matchesPinSearch(pin, search));
-  }, [apiPins, filteredBusinesses, locale, search]);
+  }, [apiPins, filteredBusinesses, locale, search, userLocation]);
   const selectedPin = pins.find((pin) => `${pin.businessId}-${pin.locationId}` === selectedPinKey) ?? pins[0] ?? null;
   const popularChips = categories.slice(0, 5);
 
@@ -784,6 +858,25 @@ export default function Index() {
     requestAnimationFrame(() => document.getElementById("businesses")?.scrollIntoView({ behavior: "smooth", block: "start" }));
   }
 
+  function useCurrentLocation() {
+    if (!("geolocation" in navigator)) {
+      setLocationStatus("unsupported");
+      return;
+    }
+
+    setLocationStatus("loading");
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
+        setSelectedPinKey(null);
+        setLocationStatus("active");
+        requestAnimationFrame(() => document.getElementById("map")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+      },
+      () => setLocationStatus("error"),
+      { enableHighAccuracy: false, timeout: 10_000, maximumAge: 5 * 60_000 },
+    );
+  }
+
 
   return (
     <div className="vizit-public-page min-h-screen overflow-x-clip bg-slate-50 text-slate-950 transition-colors dark:bg-[#050816] dark:text-white">
@@ -807,7 +900,7 @@ export default function Index() {
 
               <motion.p variants={fadeUp} className="mx-auto mt-5 max-w-2xl text-[15px] font-medium leading-7 text-slate-600 dark:text-slate-200 sm:mt-6 sm:text-[17px] sm:leading-8 xl:mx-0">{t("hero.subtitle")}</motion.p>
 
-              <SearchPanel search={search} setSearch={setSearch} onSubmit={scrollToResults} />
+              <SearchPanel search={search} setSearch={setSearch} onSubmit={scrollToResults} locationStatus={locationStatus} onUseLocation={useCurrentLocation} />
 
               {businessesQ.isError ? (
                 <motion.div variants={fadeUp} className="mt-4 rounded-2xl border border-rose-300/30 bg-rose-500/12 px-4 py-3 text-sm font-semibold text-rose-100">
@@ -902,12 +995,12 @@ export default function Index() {
 
             <div className="grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
               <InteractiveBusinessMap
-                key={pins.map((pin) => `${pin.locationId}:${pin.lat.toFixed(5)},${pin.lng.toFixed(5)}`).join("|")}
+                key={`${userLocation?.lat ?? "none"}:${userLocation?.lng ?? "none"}|${pins.map((pin) => `${pin.locationId}:${pin.lat.toFixed(5)},${pin.lng.toFixed(5)}`).join("|")}`}
                 pins={pins}
                 selectedPin={selectedPin}
                 selectedPinKey={selectedPinKey}
                 setSelectedPinKey={setSelectedPinKey}
-                userLocation={null}
+                userLocation={userLocation}
               />
 
               <div className="rounded-[30px] border border-slate-200 bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
@@ -915,7 +1008,7 @@ export default function Index() {
                   <div>
                     <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs font-bold text-cyan-700 dark:border-white/12 dark:bg-white/[0.08] dark:text-cyan-100"><MapPin className="h-3.5 w-3.5" /> {t("map.selectedAddress")}</div>
                     <h3 className="mt-4 text-2xl font-black text-slate-950 dark:text-white">{selectedPin.name}</h3>
-                    <p className="mt-2 text-sm font-semibold text-slate-600 dark:text-slate-300">{selectedPin.categoryName || (selectedPin.vertical === "healthcare" ? "Բժշկական" : "Ծառայություններ")}</p>
+                    <p className="mt-2 text-sm font-semibold text-slate-600 dark:text-slate-300">{selectedPin.categoryName || (selectedPin.vertical === "healthcare" ? t("businesses.healthcare") : t("businesses.services"))}</p>
                     <p className="mt-4 text-sm leading-7 text-slate-500 dark:text-slate-300">{selectedPin.locationName ? `${selectedPin.locationName} · ` : ""}{selectedPin.address || t("business.card.noAddress")}</p>
                     <div className="mt-5 grid gap-3">
                       <Link to={selectedPin.bookingUrl} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-slate-100">{t("map.bookAddress")} <ArrowRight className="h-4 w-4" /></Link>

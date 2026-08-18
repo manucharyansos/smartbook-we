@@ -1,11 +1,12 @@
 // src/components/common/PremiumBadge.tsx
 import React from "react";
 import { motion } from "framer-motion";
+import type { LucideIcon } from "lucide-react";
 
 interface PremiumBadgeProps {
     children: React.ReactNode;
     className?: string;
-    icon?: any;
+    icon?: LucideIcon;
 }
 
 export const PremiumBadge: React.FC<PremiumBadgeProps> = ({ children, className = "", icon: Icon }) => {

@@ -3,7 +3,7 @@ import { adminApi } from "./adminApi";
 import type { User } from "../types/admin.types";
 
 export const adminUsersApi = {
-    list: (params?: any) => adminApi.get<{ data: User[] }>("/users", { params }),
+    list: (params?: Record<string, string | number | boolean | undefined>) => adminApi.get<{ data: User[] }>("/users", { params }),
 
     get: (id: number) => adminApi.get<{ data: User }>(`/users/${id}`),
 

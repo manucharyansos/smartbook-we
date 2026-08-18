@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- The editor draft intentionally follows the booking selected in the parent calendar. */
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { NotebookText, Pencil, Phone, RotateCcw, Save, Scissors, X } from "lucide-react";

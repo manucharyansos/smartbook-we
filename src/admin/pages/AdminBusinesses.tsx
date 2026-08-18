@@ -67,7 +67,7 @@ export default function AdminBusinesses() {
     },
   });
 
-  const businesses = data?.data?.data || [];
+  const businesses = useMemo(() => data?.data?.data || [], [data?.data?.data]);
   const pagination = data?.data;
 
   const summary = useMemo(() => {

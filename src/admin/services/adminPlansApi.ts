@@ -1,4 +1,5 @@
 import { adminApi } from "./adminApi";
+import type { Plan } from "../components/PlanModal";
 
 export const adminPlansApi = {
     list: (showHidden?: boolean) =>
@@ -7,10 +8,10 @@ export const adminPlansApi = {
     get: (id: number) =>
         adminApi.get(`/plans/${id}`),
 
-    create: (data: any) =>
+    create: (data: Plan) =>
         adminApi.post("/plans", data),
 
-    update: (id: number, data: any) =>
+    update: (id: number, data: Plan) =>
         adminApi.put(`/plans/${id}`, data),
 
     delete: (id: number) =>

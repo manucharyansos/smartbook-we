@@ -29,7 +29,6 @@ const BusinessTypeSelector: React.FC<BusinessTypeSelectorProps> = ({ selectedTyp
         'Հիշեցումներ SMS-ով և email-ով',
     ];
 
-    // @ts-ignore
     return (
         <motion.div
             variants={staggerContainer}

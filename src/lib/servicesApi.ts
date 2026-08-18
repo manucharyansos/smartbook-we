@@ -15,9 +15,9 @@ export type Service = {
     updated_at?: string;
 };
 
-export async function fetchServices(params?: any): Promise<Service[]> {
-    const query = params && typeof params === "object" && "location_id" in params
-        ? { location_id: (params as { location_id?: number }).location_id }
+export async function fetchServices(params?: { location_id?: number }): Promise<Service[]> {
+    const query = params && "location_id" in params
+        ? { location_id: params.location_id }
         : undefined;
     const res = await api.get("/services", { params: query });
     return (res.data.data ?? []).map((item: Service) => ({ ...item, image_url: resolveMediaUrl(item.image_url) }));

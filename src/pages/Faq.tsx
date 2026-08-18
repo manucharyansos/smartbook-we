@@ -4,41 +4,58 @@ import { Link } from "react-router-dom";
 
 import MarketingPageShell from "../components/marketing/MarketingPageShell";
 import { fadeUp, hoverLift, scaleIn } from "../lib/motion";
+import { useLanguage } from "../contexts/LanguageContext";
 
-const items = [
-  {
-    q: "Vizit-ը ում համար է նախատեսված?",
-    a: "Հարթակը հիմնականում կառուցված է գեղեցկության սրահների, կոսմետոլոգիական ծառայությունների, ատամնաբուժական կլինիկաների և appointment-based այլ բիզնեսների համար։",
+const copy = {
+  hy: {
+    badge: "ՀՏՀ", title: "Հաճախ տրվող հարցեր", description: "Vizit-ի կարգավորումների, հանրային ամրագրման և հասանելիությունների մասին ամենատարածված հարցերը։",
+    missing: "Չգտա՞ք պատասխանը", contactTitle: "Կապվեք թիմի հետ", contactText: "Եթե ունեք կարգավորման, հանրային ամրագրման կամ վճարումների կոնկրետ հարց, կապվեք աջակցության թիմի հետ։", support: "Աջակցության կենտրոն", contact: "Կապ մեզ հետ",
+    items: [
+      { q: "Vizit-ը ո՞ւմ համար է նախատեսված", a: "Հարթակը նախատեսված է գեղեցկության սրահների, կլինիկաների, մասնավոր մասնագետների և ամրագրումով աշխատող այլ բիզնեսների համար։" },
+      { q: "Կարո՞ղ եմ ունենալ իմ բիզնեսի ամրագրման էջը", a: "Այո։ Յուրաքանչյուր բիզնես կարող է ունենալ առանձին էջ՝ ծառայություններով, հասցեներով, թիմով և օնլայն ամրագրմամբ։" },
+      { q: "Թիմի անդամների համար տարբեր դերեր կա՞ն", a: "Այո։ Սեփականատիրոջ, մենեջերի և աշխատակցի հասանելիությունները տարբեր են՝ թիմի անվտանգ կառավարման համար։" },
+      { q: "Նվերի քարտերն ու loyalty-ն հասանելի՞ են բոլոր պլաններում", a: "Որոշ հնարավորություններ կախված են ակտիվ պլանից։ Յուրաքանչյուր պլանի սահմանները նշված են գնային էջում։" },
+    ],
   },
-  {
-    q: "Կարո՞ղ եմ ունենալ public booking էջ իմ բիզնեսի համար?",
-    a: "Այո․ յուրաքանչյուր բիզնես կարող է ունենալ առանձին public էջ՝ ծառայություններով, հասցեով, թիմով և օնլայն booking հոսքով։",
+  ru: {
+    badge: "FAQ", title: "Частые вопросы", description: "Ответы на популярные вопросы о настройке Vizit, публичной записи и доступных возможностях.",
+    missing: "Не нашли ответ?", contactTitle: "Свяжитесь с командой", contactText: "Если у вас есть конкретный вопрос о настройке, онлайн-записи или оплате, обратитесь в поддержку.", support: "Центр поддержки", contact: "Связаться с нами",
+    items: [
+      { q: "Для кого предназначен Vizit?", a: "Платформа создана для салонов красоты, клиник, частных специалистов и других компаний, работающих по записи." },
+      { q: "Можно ли создать отдельную страницу записи?", a: "Да. У каждого бизнеса может быть публичная страница с услугами, адресами, командой и онлайн-записью." },
+      { q: "Есть ли разные роли для сотрудников?", a: "Да. Права владельца, менеджера и сотрудника различаются для безопасного управления командой." },
+      { q: "Подарочные карты и программа лояльности входят во все тарифы?", a: "Некоторые возможности зависят от активного тарифа. Ограничения каждого тарифа указаны на странице цен." },
+    ],
   },
-  {
-    q: "Աշխատակիցների համար տարբեր role-եր կա՞ն?",
-    a: "Այո․ owner, manager և staff role-երով հասանելիությունները տարբերակված են, որպեսզի թիմի կառավարումն ավելի անվտանգ լինի։",
+  en: {
+    badge: "FAQ", title: "Frequently asked questions", description: "Answers to common questions about Vizit setup, public booking and available features.",
+    missing: "Still have a question?", contactTitle: "Talk to our team", contactText: "For specific setup, public booking or payment questions, contact the support team.", support: "Support center", contact: "Contact us",
+    items: [
+      { q: "Who is Vizit for?", a: "Vizit is built for beauty salons, clinics, independent professionals and other appointment-based businesses." },
+      { q: "Can my business have its own booking page?", a: "Yes. Each business can have a public page with services, locations, staff and online booking." },
+      { q: "Are there different staff roles?", a: "Yes. Owner, manager and staff permissions are separated to keep team management secure." },
+      { q: "Are gift cards and loyalty included in every plan?", a: "Some features depend on the active plan. Each plan's limits are shown on the pricing page." },
+    ],
   },
-  {
-    q: "Gift cards և loyalty հնարավորությունները բոլոր plan-երում կա՞ն?",
-    a: "Ոչ միշտ․ որոշ feature-ներ plan-gated են և կախված են քո ակտիվ բաժանորդագրությունից։",
-  },
-];
+};
 
 export default function Faq() {
+  const { locale } = useLanguage();
+  const text = copy[locale];
   return (
     <MarketingPageShell
       badge={
         <>
-          <ShieldCheck className="h-4 w-4" /> ՀՏՀ
+          <ShieldCheck className="h-4 w-4" /> {text.badge}
         </>
       }
-      title="Հաճախ տրվող հարցեր"
-      description="Ամենատարածված հարցերը Vizit-ի setup-ի, public booking flow-ի և role/feature հնարավորությունների մասին։"
+      title={text.title}
+      description={text.description}
       maxWidthClassName="max-w-5xl"
     >
       <div className="grid gap-6 2xl:grid-cols-[1.05fr_0.95fr]">
         <div className="space-y-4">
-          {items.map((item) => (
+          {text.items.map((item) => (
             <motion.div
               key={item.q}
               variants={fadeUp}
@@ -64,25 +81,24 @@ export default function Faq() {
         >
           <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white/85">
             <MessageCircle className="h-4 w-4" />
-            Չգտա՞ր պատասխանը
+            {text.missing}
           </div>
-          <h2 className="mt-6 text-2xl font-semibold">Կապվիր թիմի հետ</h2>
+          <h2 className="mt-6 text-2xl font-semibold">{text.contactTitle}</h2>
           <p className="mt-4 text-sm leading-7 text-white/75">
-            Եթե ունես կոնկրետ setup-ի խնդիր, public booking customization կամ վճարումների
-            հարց, support/contact էջերից ավելի արագ կկարողանաս ստանալ ուղղորդում։
+            {text.contactText}
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               to="/support"
               className="inline-flex items-center justify-center rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
             >
-              Աջակցության կենտրոն
+              {text.support}
             </Link>
             <Link
               to="/contact"
               className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/10 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/15"
             >
-              Կապ մեզ հետ
+              {text.contact}
             </Link>
           </div>
         </motion.div>

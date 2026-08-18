@@ -22,7 +22,7 @@ const variants: Variants = {
         transition: {
             delay,
             duration: 0.6,
-            ease: [0.16, 1, 0.3, 1] as any,
+            ease: [0.16, 1, 0.3, 1] as const,
         },
     }),
 };

@@ -138,7 +138,7 @@ export default function Clients() {
     queryFn: () => fetchClients({ search: search || undefined, page: pageNumber, per_page: 20, segment: segment || undefined, status: status || undefined, group: group || undefined }),
   });
 
-  const clients = clientsQ.data?.data ?? [];
+  const clients = useMemo(() => clientsQ.data?.data ?? [], [clientsQ.data?.data]);
   const selectedClient = selectedClientId ?? clients[0]?.id ?? null;
 
   const clientQ = useQuery({

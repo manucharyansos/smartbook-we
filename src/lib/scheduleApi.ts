@@ -9,14 +9,15 @@ function normalizeTime(value: unknown): string | null {
     return time.slice(0, 5);
 }
 
-function normalizeDay(day: any): ScheduleDay {
+function normalizeDay(value: unknown): ScheduleDay {
+    const day = value && typeof value === "object" ? value as Record<string, unknown> : {};
     return {
-        weekday: Number(day?.weekday ?? 1),
-        is_closed: Boolean(day?.is_closed),
-        start: normalizeTime(day?.start),
-        end: normalizeTime(day?.end),
-        break_start: normalizeTime(day?.break_start),
-        break_end: normalizeTime(day?.break_end),
+        weekday: Number(day.weekday ?? 1),
+        is_closed: Boolean(day.is_closed),
+        start: normalizeTime(day.start),
+        end: normalizeTime(day.end),
+        break_start: normalizeTime(day.break_start),
+        break_end: normalizeTime(day.break_end),
     };
 }
 
@@ -40,7 +41,7 @@ export async function fetchSchedule(): Promise<ScheduleResponse> {
     return {
         ...raw,
         days: Array.isArray(raw?.days ?? raw)
-            ? ((raw?.days ?? raw) as any[]).map(normalizeDay)
+            ? ((raw?.days ?? raw) as unknown[]).map(normalizeDay)
             : [],
     };
 }

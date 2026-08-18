@@ -61,7 +61,7 @@ export function Modal({
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] as any }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] as const }}
             className={cn(
               "relative flex w-full flex-col overflow-hidden overflow-x-hidden bg-white shadow-[0_30px_100px_rgba(15,23,42,0.28)]",
               "max-h-[94dvh] rounded-t-[28px] sm:max-h-[92vh] sm:rounded-[32px] sm:border sm:border-white/70",

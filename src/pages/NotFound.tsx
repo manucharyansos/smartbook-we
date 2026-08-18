@@ -1,69 +1,60 @@
-// pages/NotFound.tsx
-// Only import hooks; the React namespace itself is not needed with the new JSX transform
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Home, ArrowLeft } from "lucide-react";
-import Navigation from "../components/Navigation";
+import { ArrowLeft, Home } from "lucide-react";
+
+import Footer from "../components/Footer";
+import LandingNavbar from "../components/LandingNavbar";
+import Seo from "../components/Seo";
+import { useLanguage } from "../contexts/LanguageContext";
+
+const copy = {
+    hy: {
+        title: "Էջը չի գտնվել",
+        description: "Ձեր փնտրած էջը գոյություն չունի կամ տեղափոխվել է։",
+        home: "Գլխավոր էջ",
+        contact: "Կապվել մեզ հետ",
+    },
+    ru: {
+        title: "Страница не найдена",
+        description: "Запрашиваемая страница не существует или была перемещена.",
+        home: "На главную",
+        contact: "Связаться с нами",
+    },
+    en: {
+        title: "Page not found",
+        description: "The page you requested does not exist or has moved.",
+        home: "Go home",
+        contact: "Contact us",
+    },
+};
 
 export default function NotFound() {
-    const [isScrolled, setIsScrolled] = useState(false);
-
-    useEffect(() => {
-        const handleScroll = () => setIsScrolled(window.scrollY > 50);
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    const { locale } = useLanguage();
+    const text = copy[locale];
 
     return (
-        <div className="min-h-screen bg-[#FDFAF7]">
-            <Navigation isScrolled={isScrolled} />
+        <div className="min-h-screen bg-slate-50">
+            <Seo title={`404 — ${text.title} | Vizit`} description={text.description} robots="noindex,nofollow" />
+            <LandingNavbar />
 
-            <div className="min-h-screen flex items-center justify-center px-4">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-center max-w-2xl"
-                >
-                    <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: 0.2, type: "spring" as const }}
-                        className="text-9xl font-light text-[#C5A28A] mb-8"
-                    >
-                        404
-                    </motion.div>
+            <main className="flex min-h-[75vh] items-center justify-center px-4 pb-16 pt-32 sm:pt-36">
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl text-center">
+                    <div className="bg-gradient-to-r from-violet-600 to-cyan-500 bg-clip-text text-8xl font-black tracking-tight text-transparent sm:text-9xl">404</div>
+                    <h1 className="mt-6 text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{text.title}</h1>
+                    <p className="mx-auto mt-4 max-w-xl text-base leading-8 text-slate-600 sm:text-lg">{text.description}</p>
 
-                    <h1 className="text-4xl md:text-5xl font-light text-[#2C2C2C] mb-6">
-                        Էջը չի գտնվել
-                    </h1>
-
-                    <p className="text-xl text-[#8F6B58] font-light mb-12">
-                        Ներեցեք, բայց Ձեր փնտրած էջը գոյություն չունի կամ տեղափոխվել է
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <Link
-                            to="/"
-                            className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r
-                       from-[#C5A28A] to-[#B88E72] text-white rounded-full
-                       hover:shadow-xl transition-all"
-                        >
-                            <Home size={18} />
-                            Գլխավոր էջ
+                    <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                        <Link to="/" className="inline-flex items-center gap-2 rounded-2xl bg-violet-600 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-violet-700">
+                            <Home className="h-4 w-4" /> {text.home}
                         </Link>
-
-                        <button
-                            onClick={() => window.history.back()}
-                            className="flex items-center gap-2 px-8 py-4 border border-[#C5A28A]/30
-                       text-[#8F6B58] rounded-full hover:border-[#C5A28A] transition-all"
-                        >
-                            <ArrowLeft size={18} />
-                            Վերադառնալ
-                        </button>
+                        <Link to="/contact" className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-3.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
+                            <ArrowLeft className="h-4 w-4" /> {text.contact}
+                        </Link>
                     </div>
                 </motion.div>
-            </div>
+            </main>
+
+            <Footer />
         </div>
     );
 }

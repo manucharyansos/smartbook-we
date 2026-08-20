@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AlertCircle, LoaderCircle, ShieldCheck } from "lucide-react";
@@ -6,6 +6,10 @@ import { AlertCircle, LoaderCircle, ShieldCheck } from "lucide-react";
 import AuthShell from "../components/AuthShell";
 import { api } from "../lib/api";
 import { fadeUp, staggerContainer } from "../lib/motion";
+import {
+    clearPendingSocialBusinessProfile,
+    getPendingSocialBusinessProfile,
+} from "../lib/socialAuth";
 import { useAuth, type User } from "../store/auth";
 import { useLanguage } from "../contexts/LanguageContext";
 
@@ -22,9 +26,12 @@ function getErrorMessage(error: unknown, fallback: string): string {
         return data.message;
     }
 
-    if ("errors" in data && data.errors && typeof data.errors === "object" && "code" in data.errors) {
-        const codeErrors = data.errors.code;
-        if (Array.isArray(codeErrors) && typeof codeErrors[0] === "string") return codeErrors[0];
+    if ("errors" in data && data.errors && typeof data.errors === "object") {
+        for (const fieldErrors of Object.values(data.errors)) {
+            if (Array.isArray(fieldErrors) && typeof fieldErrors[0] === "string") {
+                return fieldErrors[0];
+            }
+        }
     }
 
     return fallback;
@@ -70,12 +77,18 @@ export default function SocialAuthCallback() {
     }[locale];
 
     const [error, setError] = useState<string | null>(null);
+    const exchangeStarted = useRef(false);
 
     useEffect(() => {
+        if (exchangeStarted.current) return;
+        exchangeStarted.current = true;
+
         async function boot() {
             const exchangeCode = params.get("code");
             const message = params.get("message");
             const audience = params.get("audience") === "business" ? "business" : "client";
+            const provider = params.get("provider");
+            const mode = params.get("mode");
 
             if (!exchangeCode) {
                 setError(message || text.failed);
@@ -83,7 +96,24 @@ export default function SocialAuthCallback() {
             }
 
             try {
-                const exchange = await api.post<{ token?: string; user?: User }>("/auth/social/exchange", { code: exchangeCode });
+                const pendingBusinessProfile =
+                    audience === "business" && mode === "register"
+                        ? getPendingSocialBusinessProfile()
+                        : null;
+                const exchangePayload =
+                    pendingBusinessProfile && pendingBusinessProfile.provider === provider
+                        ? {
+                            code: exchangeCode,
+                            business_name: pendingBusinessProfile.business_name,
+                            business_phone: pendingBusinessProfile.business_phone,
+                            business_address: pendingBusinessProfile.business_address,
+                        }
+                        : { code: exchangeCode };
+
+                const exchange = await api.post<{ token?: string; user?: User }>(
+                    "/auth/social/exchange",
+                    exchangePayload,
+                );
                 const token = exchange.data?.token ?? null;
                 let user = exchange.data?.user ?? null;
 
@@ -101,6 +131,9 @@ export default function SocialAuthCallback() {
                 }
 
                 setAuth(token, user);
+                if (audience === "business" && mode === "register") {
+                    clearPendingSocialBusinessProfile();
+                }
 
                 navigate(
                     audience === "client"

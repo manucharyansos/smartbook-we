@@ -438,7 +438,15 @@ export default function Register() {
                                 {text.continue}
                             </motion.button>
 
-                            <SocialAuthButtons mode="register" audience="business" businessType={business_type} planCode={requestedPlanCode} />
+                            <SocialAuthButtons
+                                mode="register"
+                                audience="business"
+                                businessType={business_type}
+                                businessName={business_name}
+                                businessPhone={business_phone}
+                                businessAddress={business_address}
+                                planCode={requestedPlanCode}
+                            />
 
 
                         </motion.div>
@@ -595,8 +603,6 @@ export default function Register() {
                                 </div>
                             </motion.div>
                             </div>
-
-                            <SocialAuthButtons mode="register" audience="business" businessType={business_type} planCode={requestedPlanCode} />
 
                             <motion.div
                                 variants={fadeUp}

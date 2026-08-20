@@ -22,6 +22,7 @@ export default function ResetPassword() {
   const [sp] = useSearchParams();
   const token = sp.get("token") || "";
   const emailFromQuery = sp.get("email") || "";
+  const isClient = sp.get("audience") === "client";
 
   const [email, setEmail] = useState(emailFromQuery);
   const [password, setPassword] = useState("");
@@ -30,6 +31,7 @@ export default function ResetPassword() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [isError, setIsError] = useState(false);
 
   const canSubmit = useMemo(() => !!token && !!email && password.length >= 8 && password === password_confirmation, [token, email, password, password_confirmation]);
 
@@ -37,10 +39,14 @@ export default function ResetPassword() {
     e.preventDefault();
     setLoading(true);
     setMsg(null);
+    setIsError(false);
     try {
-      const r = await api.post("/auth/reset-password", { token, email, password, password_confirmation });
-      setMsg(r.data?.message || text.success);
+      await api.post(isClient ? "/client/auth/reset-password" : "/auth/reset-password", { token, email, password, password_confirmation });
+      setPassword("");
+      setPasswordConfirmation("");
+      setMsg(text.success);
     } catch (error: unknown) {
+      setIsError(true);
       setMsg(getErrorMessage(error, text.error));
     } finally {
       setLoading(false);
@@ -53,11 +59,11 @@ export default function ResetPassword() {
       subtitle={text.subtitle}
       sideTitle={text.sideTitle}
       sideText={text.sideText}
-      footer={<div className="text-center text-sm text-slate-500">{text.done} <Link to="/login" className="font-medium text-violet-700 hover:text-violet-600">{text.login}</Link></div>}
+      footer={<div className="text-center text-sm text-slate-500">{text.done} <Link to={isClient ? "/client/login" : "/login"} className="font-medium text-violet-700 hover:text-violet-600">{text.login}</Link></div>}
     >
       <motion.form variants={staggerContainer(0.08)} initial="hidden" animate="show" onSubmit={submit} className="space-y-5">
         {!token ? <motion.div variants={fadeUp} className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{text.tokenMissing}</motion.div> : null}
-        {msg ? <motion.div variants={fadeUp} className="rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm text-violet-700">{msg}</motion.div> : null}
+        {msg ? <motion.div variants={fadeUp} className={cn("rounded-2xl border px-4 py-3 text-sm", isError ? "border-rose-200 bg-rose-50 text-rose-700" : "border-violet-200 bg-violet-50 text-violet-700")}>{msg}</motion.div> : null}
 
         <motion.div variants={fadeUp}>
           <label htmlFor="reset-password-email" className="mb-2 block text-sm font-medium text-slate-700">{text.email}</label>

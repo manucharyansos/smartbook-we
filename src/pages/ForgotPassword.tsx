@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Send } from "lucide-react";
 
@@ -17,20 +17,25 @@ const copy = {
 } as const;
 
 export default function ForgotPassword() {
+  const [searchParams] = useSearchParams();
+  const isClient = searchParams.get("audience") === "client";
   const { locale } = useLanguage();
   const text = copy[locale];
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [isError, setIsError] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setMsg(null);
+    setIsError(false);
     try {
-      const r = await api.post("/auth/forgot-password", { email });
-      setMsg(r.data?.message || text.success);
+      await api.post(isClient ? "/client/auth/forgot-password" : "/auth/forgot-password", { email });
+      setMsg(text.success);
     } catch (error: unknown) {
+      setIsError(true);
       setMsg(getErrorMessage(error, text.error));
     } finally {
       setLoading(false);
@@ -43,10 +48,10 @@ export default function ForgotPassword() {
       subtitle={text.subtitle}
       sideTitle={text.sideTitle}
       sideText={text.sideText}
-      footer={<div className="text-center text-sm text-slate-500">{text.remembered} <Link to="/login" className="font-medium text-violet-700 hover:text-violet-600">{text.back}</Link></div>}
+      footer={<div className="text-center text-sm text-slate-500">{text.remembered} <Link to={isClient ? "/client/login" : "/login"} className="font-medium text-violet-700 hover:text-violet-600">{text.back}</Link></div>}
     >
       <motion.form variants={staggerContainer(0.08)} initial="hidden" animate="show" onSubmit={submit} className="space-y-5">
-        {msg ? <motion.div variants={fadeUp} className="rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm text-violet-700">{msg}</motion.div> : null}
+        {msg ? <motion.div variants={fadeUp} className={cn("rounded-2xl border px-4 py-3 text-sm", isError ? "border-rose-200 bg-rose-50 text-rose-700" : "border-violet-200 bg-violet-50 text-violet-700")}>{msg}</motion.div> : null}
         <motion.div variants={fadeUp}>
           <label htmlFor="forgot-password-email" className="mb-2 block text-sm font-medium text-slate-700">{text.email}</label>
           <div className="relative">

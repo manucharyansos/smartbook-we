@@ -157,7 +157,6 @@ export default function SocialAuthButtons({
       login: "Մուտք գործել",
       or: "կամ",
       suffix: "-ով",
-      note: "Կբացվի ընտրված ծառայության անվտանգ մուտքի էջը։ Vizit-ը չի ստանում ձեր Google/Facebook գաղտնաբառը։",
       profileRequired: "Սոցիալական գրանցման համար նախ լրացրեք բիզնեսի անունը, հեռախոսը և հասցեն։",
     },
     ru: {
@@ -165,7 +164,6 @@ export default function SocialAuthButtons({
       login: "Войти",
       or: "или",
       suffix: "",
-      note: "Откроется защищённая страница выбранного сервиса. Vizit не получает ваш пароль Google/Facebook.",
       profileRequired: "Для регистрации сначала заполните название, телефон и адрес бизнеса.",
     },
     en: {
@@ -173,7 +171,6 @@ export default function SocialAuthButtons({
       login: "Sign in",
       or: "or",
       suffix: "",
-      note: "You will be redirected to the provider's secure sign-in page. Vizit never receives your Google/Facebook password.",
       profileRequired: "Enter the business name, phone number and address before social registration.",
     },
   }[locale];
@@ -248,14 +245,11 @@ export default function SocialAuthButtons({
         })}
       </div>
 
-      <div className={cn(
-        "rounded-2xl border px-4 py-3 text-xs leading-6",
-        needsBusinessProfile && !hasBusinessProfile
-          ? "border-amber-200 bg-amber-50 text-amber-800"
-          : "border-slate-200 bg-slate-50 text-slate-500",
-      )}>
-        {needsBusinessProfile && !hasBusinessProfile ? text.profileRequired : text.note}
-      </div>
+      {needsBusinessProfile && !hasBusinessProfile ? (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-6 text-amber-800">
+          {text.profileRequired}
+        </div>
+      ) : null}
     </motion.div>
   );
 }

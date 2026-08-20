@@ -20,6 +20,8 @@ type SocialAuthButtonsProps = {
   businessName?: string;
   businessPhone?: string;
   businessAddress?: string;
+  businessLatitude?: number | null;
+  businessLongitude?: number | null;
   planCode?: string;
   className?: string;
 };
@@ -127,6 +129,8 @@ export default function SocialAuthButtons({
   businessName = "",
   businessPhone = "",
   businessAddress = "",
+  businessLatitude = null,
+  businessLongitude = null,
   planCode,
 }: SocialAuthButtonsProps) {
   const { locale } = useLanguage();
@@ -157,21 +161,21 @@ export default function SocialAuthButtons({
       login: "Մուտք գործել",
       or: "կամ",
       suffix: "-ով",
-      profileRequired: "Սոցիալական գրանցման համար նախ լրացրեք բիզնեսի անունը, հեռախոսը և հասցեն։",
+      profileRequired: "Սոցիալական գրանցման համար նախ լրացրեք բիզնեսի անունը, հեռախոսը, հասցեն և քարտեզի կետը։",
     },
     ru: {
       register: "Зарегистрироваться",
       login: "Войти",
       or: "или",
       suffix: "",
-      profileRequired: "Для регистрации сначала заполните название, телефон и адрес бизнеса.",
+      profileRequired: "Для регистрации сначала заполните название, телефон, адрес и точку бизнеса на карте.",
     },
     en: {
       register: "Register",
       login: "Sign in",
       or: "or",
       suffix: "",
-      profileRequired: "Enter the business name, phone number and address before social registration.",
+      profileRequired: "Enter the business name, phone number, address and map location before social registration.",
     },
   }[locale];
   const actionText = mode === "register" ? text.register : text.login;
@@ -179,7 +183,9 @@ export default function SocialAuthButtons({
   const hasBusinessProfile =
     businessName.trim().length >= 2 &&
     businessPhone.trim().length >= 5 &&
-    businessAddress.trim().length >= 2;
+    businessAddress.trim().length >= 2 &&
+    Number.isFinite(businessLatitude) &&
+    Number.isFinite(businessLongitude);
 
   function startSocialAuth(provider: Provider) {
     if (needsBusinessProfile && !hasBusinessProfile) return;
@@ -189,6 +195,8 @@ export default function SocialAuthButtons({
         business_name: businessName.trim(),
         business_phone: businessPhone.trim(),
         business_address: businessAddress.trim(),
+        latitude: Number(businessLatitude),
+        longitude: Number(businessLongitude),
         provider,
       });
     }

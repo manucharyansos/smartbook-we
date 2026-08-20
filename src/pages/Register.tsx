@@ -21,6 +21,7 @@ import {
 
 import AuthShell from "../components/AuthShell";
 import SocialAuthButtons from "../components/auth/SocialAuthButtons";
+import { LocationMapPicker } from "../components/settings/LocationMapPicker";
 import { api } from "../lib/api";
 import { getApiErrorCode, getErrorMessage, getValidationMessages } from "../lib/http";
 import { cn } from "../lib/cn";
@@ -37,12 +38,64 @@ const copy = {
     en: { title: "Register", subtitle: "Create your Vizit business account", sideTitle: "Start using Vizit for your business", sideText: "Register, complete the initial setup and prepare your workspace.", hasAccount: "Already have an account?", login: "Sign in", beautyLabel: "Beauty salon", beautyShort: "Beauty", dentalLabel: "Dental clinic", dentalShort: "Clinic", businessNameRequired: "Enter the business name.", phoneRequired: "Phone number is required.", addressRequired: "Address is required.", ownerRequired: "Enter the account owner's name.", emailRequired: "Enter an email address.", passwordShort: "Password must be at least 8 characters.", passwordMismatch: "Passwords do not match.", registerError: "Registration failed.", businessLogin: "Sign in to a business account", resetPassword: "Reset password", contactSupport: "Contact support", chooseType: "Choose the business type", basics: "Let's start with the essential business details.", businessName: "Business name", salonPlaceholder: "My salon", clinicPlaceholder: "My clinic", phone: "Phone", address: "Address", addressPlaceholder: "Yerevan, Armenia", continue: "Continue", ownerName: "Account owner name", ownerPlaceholder: "First and last name", email: "Email", password: "Password", confirmPassword: "Confirm password", strength: "Strength", weak: "weak", medium: "medium", strong: "strong", show: "Show password", hide: "Hide password", socialNote: "You can connect Google or Facebook sign-in later.", back: "Back", creating: "Creating…", create: "Create account" },
 } as const;
 
+const locationCopy = {
+    hy: {
+        title: "Բիզնեսի տեղը քարտեզում",
+        help: "Քաշեք քարտեզը և նշիչը դրեք բիզնեսի մուտքի վրա։ Առանց ճիշտ կետի բիզնեսը քարտեզում չի երևա։",
+        required: "Քարտեզի վրա նշեք բիզնեսի ճիշտ տեղը։",
+        labels: {
+            dragHint: "Քաշեք քարտեզը և նշիչը դրեք մուտքի վրա",
+            zoomIn: "Մեծացնել քարտեզը",
+            zoomOut: "Փոքրացնել քարտեզը",
+            unavailable: "Սարքը չի տրամադրում ընթացիկ տեղադրությունը։",
+            permissionError: "Չհաջողվեց ստանալ ընթացիկ տեղադրությունը։ Թույլատրեք տեղադրության հասանելիությունը և կրկին փորձեք։",
+            emptyCoordinates: "Քարտեզի կետը դեռ հաստատված չէ։",
+            locating: "Որոշվում է…",
+            useCurrentLocation: "Իմ տեղադրությունը",
+            clear: "Մաքրել",
+        },
+    },
+    ru: {
+        title: "Расположение бизнеса на карте",
+        help: "Перетащите карту и установите маркер у входа. Без точной отметки бизнес не появится на карте.",
+        required: "Укажите точное расположение бизнеса на карте.",
+        labels: {
+            dragHint: "Перетащите карту и установите маркер у входа",
+            zoomIn: "Увеличить карту",
+            zoomOut: "Уменьшить карту",
+            unavailable: "Устройство не предоставляет текущее местоположение.",
+            permissionError: "Не удалось определить местоположение. Разрешите доступ к геолокации и попробуйте снова.",
+            emptyCoordinates: "Точка на карте ещё не подтверждена.",
+            locating: "Определяем…",
+            useCurrentLocation: "Моё местоположение",
+            clear: "Очистить",
+        },
+    },
+    en: {
+        title: "Business location on the map",
+        help: "Drag the map and place the marker at the entrance. The business will not appear on the map without a precise pin.",
+        required: "Mark the exact business location on the map.",
+        labels: {
+            dragHint: "Drag the map and place the marker at the entrance",
+            zoomIn: "Zoom in",
+            zoomOut: "Zoom out",
+            unavailable: "This device cannot provide its current location.",
+            permissionError: "We could not get your location. Allow location access and try again.",
+            emptyCoordinates: "The map location has not been confirmed yet.",
+            locating: "Locating…",
+            useCurrentLocation: "My location",
+            clear: "Clear",
+        },
+    },
+} as const;
+
 export default function Register() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { setAuth } = useAuth();
     const { locale } = useLanguage();
     const text = copy[locale];
+    const locationText = locationCopy[locale];
     const [searchParams] = useSearchParams();
     const requestedPlanCode = searchParams.get("plan")?.trim() || undefined;
 
@@ -52,6 +105,8 @@ export default function Register() {
     const [business_name, setBusinessName] = useState("");
     const [business_phone, setBusinessPhone] = useState("");
     const [business_address, setBusinessAddress] = useState("");
+    const [latitude, setLatitude] = useState<number | null>(null);
+    const [longitude, setLongitude] = useState<number | null>(null);
 
     const [owner_name, setOwnerName] = useState("");
     const [owner_email, setOwnerEmail] = useState("");
@@ -117,6 +172,11 @@ export default function Register() {
             return false;
         }
 
+        if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+            setError(locationText.required);
+            return false;
+        }
+
         setError(null);
         setErrorCode(null);
         return true;
@@ -167,6 +227,8 @@ export default function Register() {
                     business_name,
                     business_phone,
                     business_address: business_address || null,
+                    latitude,
+                    longitude,
                     business_type,
                     plan_code: requestedPlanCode,
                     name: owner_name,
@@ -429,6 +491,25 @@ export default function Register() {
                                 </div>
                             </motion.div>
 
+                            <motion.div variants={fadeUp} className="space-y-3">
+                                <div>
+                                    <div className="text-sm font-medium text-slate-700">{locationText.title}</div>
+                                    <div className="mt-1 text-xs leading-5 text-slate-500">{locationText.help}</div>
+                                </div>
+                                <LocationMapPicker
+                                    latitude={latitude}
+                                    longitude={longitude}
+                                    labels={locationText.labels}
+                                    onChange={(coordinates) => {
+                                        setLatitude(coordinates?.latitude ?? null);
+                                        setLongitude(coordinates?.longitude ?? null);
+                                        if (coordinates) {
+                                            setError((current) => current === locationText.required ? null : current);
+                                        }
+                                    }}
+                                />
+                            </motion.div>
+
                             <motion.button
                                 variants={fadeUp}
                                 type="button"
@@ -445,6 +526,8 @@ export default function Register() {
                                 businessName={business_name}
                                 businessPhone={business_phone}
                                 businessAddress={business_address}
+                                businessLatitude={latitude}
+                                businessLongitude={longitude}
                                 planCode={requestedPlanCode}
                             />
 

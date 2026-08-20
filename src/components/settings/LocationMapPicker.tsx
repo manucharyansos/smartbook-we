@@ -4,6 +4,30 @@ import { Crosshair, LocateFixed, MapPin, RotateCcw } from "lucide-react";
 type Coordinates = { latitude: number; longitude: number };
 type MapTile = { key: string; left: number; top: number; url: string };
 
+export type LocationMapPickerLabels = {
+  dragHint: string;
+  zoomIn: string;
+  zoomOut: string;
+  unavailable: string;
+  permissionError: string;
+  emptyCoordinates: string;
+  locating: string;
+  useCurrentLocation: string;
+  clear: string;
+};
+
+const defaultLabels: LocationMapPickerLabels = {
+  dragHint: "Քաշիր քարտեզը և նշիչը դիր մուտքի վրա",
+  zoomIn: "Մեծացնել քարտեզը",
+  zoomOut: "Փոքրացնել քարտեզը",
+  unavailable: "Սարքը չի տրամադրում ընթացիկ տեղադրությունը։",
+  permissionError: "Չհաջողվեց ստանալ ընթացիկ տեղադրությունը։ Թույլատրիր location access-ը և կրկին փորձիր։",
+  emptyCoordinates: "Դիր նշիչը քարտեզի վրա․ կոորդինատները կպահպանվեն հասցեի հետ։",
+  locating: "Որոշվում է…",
+  useCurrentLocation: "Իմ տեղադրությունը",
+  clear: "Մաքրել",
+};
+
 const YEREVAN_CENTER = { latitude: 40.1772, longitude: 44.5035 };
 
 function clamp(value: number, min: number, max: number) {
@@ -58,12 +82,15 @@ export function LocationMapPicker({
   longitude,
   onChange,
   disabled = false,
+  labels,
 }: {
   latitude: number | null;
   longitude: number | null;
   onChange: (coordinates: Coordinates | null) => void;
   disabled?: boolean;
+  labels?: Partial<LocationMapPickerLabels>;
 }) {
+  const text = { ...defaultLabels, ...labels };
   const hasCoordinates = Number.isFinite(latitude) && Number.isFinite(longitude);
   const [center, setCenter] = useState<Coordinates>(() => hasCoordinates
     ? { latitude: Number(latitude), longitude: Number(longitude) }
@@ -121,7 +148,7 @@ export function LocationMapPicker({
 
   function useCurrentLocation() {
     if (disabled || !navigator.geolocation) {
-      setLocationError("Սարքը չի տրամադրում ընթացիկ տեղադրությունը։");
+      setLocationError(text.unavailable);
       return;
     }
 
@@ -139,7 +166,7 @@ export function LocationMapPicker({
         setLocating(false);
       },
       () => {
-        setLocationError("Չհաջողվեց ստանալ ընթացիկ տեղադրությունը։ Թույլատրիր location access-ը և կրկին փորձիր։");
+        setLocationError(text.permissionError);
         setLocating(false);
       },
       { enableHighAccuracy: true, timeout: 10000 }
@@ -170,12 +197,12 @@ export function LocationMapPicker({
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/5 to-slate-900/10" />
 
         <div className="absolute left-3 top-3 z-20 max-w-[calc(100%-112px)] rounded-2xl border border-white/70 bg-white/92 px-3 py-2 text-xs font-medium text-slate-700 shadow-lg backdrop-blur">
-          Քաշիր քարտեզը և նշիչը դիր մուտքի վրա
+          {text.dragHint}
         </div>
 
         <div className="absolute right-3 top-3 z-20 grid overflow-hidden rounded-2xl border border-white/70 bg-white/95 shadow-lg backdrop-blur">
-          <button type="button" disabled={disabled} onClick={() => setZoom((value) => clamp(value + 1, 8, 18))} className="grid h-10 w-10 place-items-center border-b border-slate-200 text-lg font-semibold text-slate-700 disabled:opacity-50" aria-label="Մեծացնել քարտեզը">+</button>
-          <button type="button" disabled={disabled} onClick={() => setZoom((value) => clamp(value - 1, 8, 18))} className="grid h-10 w-10 place-items-center text-lg font-semibold text-slate-700 disabled:opacity-50" aria-label="Փոքրացնել քարտեզը">−</button>
+          <button type="button" disabled={disabled} onClick={() => setZoom((value) => clamp(value + 1, 8, 18))} className="grid h-10 w-10 place-items-center border-b border-slate-200 text-lg font-semibold text-slate-700 disabled:opacity-50" aria-label={text.zoomIn}>+</button>
+          <button type="button" disabled={disabled} onClick={() => setZoom((value) => clamp(value - 1, 8, 18))} className="grid h-10 w-10 place-items-center text-lg font-semibold text-slate-700 disabled:opacity-50" aria-label={text.zoomOut}>−</button>
         </div>
 
         <div className="pointer-events-none absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-full">
@@ -195,15 +222,15 @@ export function LocationMapPicker({
         <div className="text-xs leading-5 text-slate-500">
           {hasCoordinates
             ? `${Number(latitude).toFixed(6)}, ${Number(longitude).toFixed(6)}`
-            : "Դիր նշիչը քարտեզի վրա․ կոորդինատները կպահպանվեն հասցեի հետ։"}
+            : text.emptyCoordinates}
         </div>
         <div className="flex flex-wrap gap-2">
           <button type="button" disabled={disabled || locating} onClick={useCurrentLocation} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-violet-300 hover:text-violet-700 disabled:opacity-50">
-            <LocateFixed className="h-4 w-4" /> {locating ? "Որոշվում է…" : "Իմ տեղադրությունը"}
+            <LocateFixed className="h-4 w-4" /> {locating ? text.locating : text.useCurrentLocation}
           </button>
           {hasCoordinates ? (
             <button type="button" disabled={disabled} onClick={() => { updateCenter(YEREVAN_CENTER); setZoom(15); onChange(null); }} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-500 transition hover:text-rose-600 disabled:opacity-50">
-              <RotateCcw className="h-4 w-4" /> Մաքրել
+              <RotateCcw className="h-4 w-4" /> {text.clear}
             </button>
           ) : null}
         </div>

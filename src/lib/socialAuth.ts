@@ -2,6 +2,8 @@ export type PendingSocialBusinessProfile = {
   business_name: string;
   business_phone: string;
   business_address: string;
+  latitude: number;
+  longitude: number;
   provider: "google" | "facebook";
   created_at: number;
 };
@@ -33,6 +35,8 @@ export function getPendingSocialBusinessProfile(): PendingSocialBusinessProfile 
       !parsed.business_name ||
       !parsed.business_phone ||
       !parsed.business_address ||
+      !Number.isFinite(parsed.latitude) ||
+      !Number.isFinite(parsed.longitude) ||
       (parsed.provider !== "google" && parsed.provider !== "facebook") ||
       !parsed.created_at ||
       Date.now() - parsed.created_at > MAX_PROFILE_AGE_MS

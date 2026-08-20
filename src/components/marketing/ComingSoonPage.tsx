@@ -41,9 +41,9 @@ export default function ComingSoonPage({
       <div className="grid gap-6 2xl:grid-cols-[1.05fr_0.95fr]">
         <motion.div
           variants={scaleIn}
-          className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-sm backdrop-blur sm:p-8"
+          className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/[0.07] dark:shadow-black/20 sm:p-8"
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-700">
+          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-700 dark:border-amber-300/25 dark:bg-amber-300/10 dark:text-amber-200">
             <Clock3 className="h-4 w-4" />
             {text.preparing}
           </div>
@@ -54,7 +54,7 @@ export default function ComingSoonPage({
                 key={item}
                 variants={fadeUp}
                 {...hoverLift}
-                className="rounded-[24px] border border-slate-200 bg-slate-50/85 p-5 text-sm leading-7 text-slate-700"
+                className="rounded-[24px] border border-slate-200 bg-slate-50/85 p-5 text-sm leading-7 text-slate-700 dark:border-white/10 dark:bg-white/[0.055] dark:text-slate-300"
               >
                 {item}
               </motion.div>

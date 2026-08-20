@@ -110,8 +110,10 @@ export default function LandingNavbar() {
                             <button
                                 type="button"
                                 onClick={() => setMobileOpen((prev) => !prev)}
-                                className="inline-flex h-10 w-10 items-center justify-center rounded-[18px] border border-slate-200 bg-white text-slate-700 shadow-sm dark:border-white/10 dark:bg-white/[0.06] dark:text-white md:hidden sm:h-11 sm:w-11 sm:rounded-2xl"
+                                className="inline-flex h-10 w-10 items-center justify-center rounded-[18px] border border-violet-600 bg-violet-600 text-white shadow-md shadow-violet-600/20 transition hover:border-violet-700 hover:bg-violet-700 focus-visible:outline-violet-500 dark:border-violet-400 dark:bg-violet-500 dark:text-white dark:hover:border-violet-300 dark:hover:bg-violet-400 md:hidden sm:h-11 sm:w-11 sm:rounded-2xl"
                                 aria-label={t("nav.openMenu")}
+                                aria-expanded={mobileOpen}
+                                aria-controls="landing-mobile-menu"
                             >
                                 {mobileOpen ? <X className="h-[18px] w-[18px] sm:h-5 sm:w-5" /> : <Menu className="h-[18px] w-[18px] sm:h-5 sm:w-5" />}
                             </button>
@@ -132,6 +134,7 @@ export default function LandingNavbar() {
                         />
 
                         <motion.div
+                            id="landing-mobile-menu"
                             initial={{ opacity: 0, y: -12 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}

@@ -81,7 +81,7 @@ export default function Contact() {
             variants={pageTransition}
             initial="hidden"
             animate="show"
-            className="min-h-screen overflow-x-clip bg-slate-50"
+            className="vizit-public-page min-h-screen overflow-x-clip bg-slate-50 text-slate-950 transition-colors dark:bg-[#050816] dark:text-white"
         >
             <LandingNavbar />
 
@@ -94,24 +94,24 @@ export default function Contact() {
                         className="mx-auto max-w-7xl"
                     >
                         <motion.div variants={fadeUp} className="mb-10 text-center sm:mb-12">
-                            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm dark:border-white/10 dark:bg-white/[0.07] dark:text-slate-200 dark:shadow-black/20">
                                 <ShieldCheck className="h-4 w-4 text-violet-600" />
                                 {text.badge}
                             </div>
 
-                            <h1 className="mt-6 text-[1.9rem] font-semibold tracking-tight text-slate-950 sm:text-4xl lg:text-6xl">
+                            <h1 className="mt-6 text-[1.9rem] font-semibold tracking-tight text-slate-950 dark:text-white sm:text-4xl lg:text-6xl">
                                 {text.title}
                             </h1>
 
-                            <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
+                            <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-300 sm:text-lg">
                                 {text.intro}
                             </p>
                         </motion.div>
 
                         <div className="grid gap-6 2xl:grid-cols-[0.92fr_1.08fr]">
                             <motion.div variants={scaleIn} className="space-y-6">
-                                <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                                    <h2 className="text-2xl font-semibold text-slate-900">{text.contacts}</h2>
+                                <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.07] dark:shadow-black/20 sm:p-6">
+                                    <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">{text.contacts}</h2>
 
                                     <div className="mt-6 space-y-4">
                                         {[
@@ -130,17 +130,17 @@ export default function Contact() {
                                         ].map((item) => (
                                             <div
                                                 key={item.label}
-                                                className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4"
+                                                className="flex items-start gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 dark:border-white/10 dark:bg-white/[0.055]"
                                             >
-                                                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white text-violet-600 shadow-sm">
+                                                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white text-violet-600 shadow-sm dark:bg-violet-400/15 dark:text-violet-200">
                                                     {item.icon}
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <div className="text-sm text-slate-500">{item.label}</div>
+                                                    <div className="text-sm text-slate-500 dark:text-slate-400">{item.label}</div>
                                                     {item.href ? (
-                                                        <a href={item.href} className="mt-1 block break-words font-medium text-slate-900 transition hover:text-violet-700">{item.value}</a>
+                                                        <a href={item.href} className="mt-1 block break-words font-medium text-slate-900 transition hover:text-violet-700 dark:text-white dark:hover:text-violet-300">{item.value}</a>
                                                     ) : (
-                                                        <div className="mt-1 break-words font-medium text-slate-900">{item.value}</div>
+                                                        <div className="mt-1 break-words font-medium text-slate-900 dark:text-white">{item.value}</div>
                                                     )}
                                                 </div>
                                             </div>
@@ -165,13 +165,13 @@ export default function Contact() {
                             </motion.div>
 
                             <motion.div variants={scaleIn}>
-                                <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-[0_24px_60px_rgba(15,23,42,0.06)] sm:p-6">
-                                    <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4 sm:p-6">
-                                        <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
-                                            <h2 className="text-2xl font-semibold text-slate-900">
+                                <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-[0_24px_60px_rgba(15,23,42,0.06)] dark:border-white/10 dark:bg-white/[0.07] dark:shadow-black/20 sm:p-6">
+                                    <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4 dark:border-white/10 dark:bg-white/[0.05] sm:p-6">
+                                        <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-[#0d1422] sm:p-8">
+                                            <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">
                                                 {text.formTitle}
                                             </h2>
-                                            <p className="mt-2 text-sm leading-7 text-slate-500">
+                                            <p className="mt-2 text-sm leading-7 text-slate-500 dark:text-slate-400">
                                                 {text.formIntro}
                                             </p>
 
@@ -200,7 +200,7 @@ export default function Contact() {
                                                 className="mt-6 space-y-5"
                                             >
                                                 <motion.div variants={fadeUp}>
-                                                    <label htmlFor="contact-name" className="mb-2 block text-sm font-medium text-slate-700">
+                                                    <label htmlFor="contact-name" className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
                                                         {text.name}
                                                     </label>
                                                     <input
@@ -211,7 +211,7 @@ export default function Contact() {
                                                         onChange={(e) =>
                                                             setFormData({ ...formData, name: e.target.value })
                                                         }
-                                                        className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                                        className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100 dark:border-white/10 dark:bg-white/[0.06] dark:text-white dark:focus:border-violet-400 dark:focus:ring-violet-500/15"
                                                         placeholder={text.namePlaceholder}
                                                         required
                                                     />
@@ -219,7 +219,7 @@ export default function Contact() {
 
                                                 <div className="grid gap-5 sm:grid-cols-2">
                                                     <motion.div variants={fadeUp}>
-                                                        <label htmlFor="contact-email" className="mb-2 block text-sm font-medium text-slate-700">
+                                                        <label htmlFor="contact-email" className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
                                                             {text.emailField}
                                                         </label>
                                                         <input
@@ -231,13 +231,13 @@ export default function Contact() {
                                                             onChange={(e) =>
                                                                 setFormData({ ...formData, email: e.target.value })
                                                             }
-                                                            className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                                            className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100 dark:border-white/10 dark:bg-white/[0.06] dark:text-white dark:focus:border-violet-400 dark:focus:ring-violet-500/15"
                                                             placeholder="your@email.com"
                                                         />
                                                     </motion.div>
 
                                                     <motion.div variants={fadeUp}>
-                                                        <label htmlFor="contact-phone" className="mb-2 block text-sm font-medium text-slate-700">
+                                                        <label htmlFor="contact-phone" className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
                                                             {text.phoneField}
                                                         </label>
                                                         <input
@@ -249,14 +249,14 @@ export default function Contact() {
                                                             onChange={(e) =>
                                                                 setFormData({ ...formData, phone: e.target.value })
                                                             }
-                                                            className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                                            className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100 dark:border-white/10 dark:bg-white/[0.06] dark:text-white dark:focus:border-violet-400 dark:focus:ring-violet-500/15"
                                                             placeholder="+374 ..."
                                                         />
                                                     </motion.div>
                                                 </div>
 
                                                 <motion.div variants={fadeUp}>
-                                                    <label htmlFor="contact-message" className="mb-2 block text-sm font-medium text-slate-700">
+                                                    <label htmlFor="contact-message" className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
                                                         {text.message}
                                                     </label>
                                                     <textarea
@@ -267,7 +267,7 @@ export default function Contact() {
                                                         onChange={(e) =>
                                                             setFormData({ ...formData, message: e.target.value })
                                                         }
-                                                        className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                                        className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100 dark:border-white/10 dark:bg-white/[0.06] dark:text-white dark:focus:border-violet-400 dark:focus:ring-violet-500/15"
                                                         placeholder={text.messagePlaceholder}
                                                         required
                                                     />

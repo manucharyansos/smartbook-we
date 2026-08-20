@@ -60,15 +60,15 @@ export default function Faq() {
               key={item.q}
               variants={fadeUp}
               {...hoverLift}
-              className="rounded-[28px] border border-white/70 bg-white/88 p-6 shadow-sm backdrop-blur"
+              className="rounded-[28px] border border-white/70 bg-white/88 p-6 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/[0.07] dark:shadow-black/20"
             >
               <div className="flex items-start gap-3">
-                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-violet-50 text-violet-700">
+                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-violet-50 text-violet-700 dark:bg-violet-400/15 dark:text-violet-200">
                   <HelpCircle className="h-5 w-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-slate-900">{item.q}</h2>
-                  <p className="mt-2 text-sm leading-7 text-slate-600">{item.a}</p>
+                  <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{item.q}</h2>
+                  <p className="mt-2 text-sm leading-7 text-slate-600 dark:text-slate-300">{item.a}</p>
                 </div>
               </div>
             </motion.div>

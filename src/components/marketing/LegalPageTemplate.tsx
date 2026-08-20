@@ -44,15 +44,15 @@ export default function LegalPageTemplate({
     >
       <motion.div
         variants={scaleIn}
-        className="rounded-[32px] border border-white/70 bg-white/90 p-6 shadow-sm backdrop-blur sm:p-8"
+        className="rounded-[32px] border border-white/70 bg-white/90 p-6 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/[0.07] dark:shadow-black/20 sm:p-8"
       >
-        {updatedAt ? <div className="text-sm text-slate-500">{labels.updated}: {updatedAt}</div> : null}
+        {updatedAt ? <div className="text-sm text-slate-500 dark:text-slate-400">{labels.updated}: {updatedAt}</div> : null}
 
         <div className="mt-6 space-y-5">
           {sections.map((section) => (
-            <motion.section key={section.title} variants={fadeUp} className="rounded-[24px] border border-slate-200 bg-slate-50/70 p-5 sm:p-6">
-              <h2 className="text-base font-semibold text-slate-900 sm:text-lg">{section.title}</h2>
-              <div className="mt-3 space-y-3 text-sm leading-7 text-slate-700">{section.content}</div>
+            <motion.section key={section.title} variants={fadeUp} className="rounded-[24px] border border-slate-200 bg-slate-50/70 p-5 dark:border-white/10 dark:bg-white/[0.055] sm:p-6">
+              <h2 className="text-base font-semibold text-slate-900 dark:text-white sm:text-lg">{section.title}</h2>
+              <div className="mt-3 space-y-3 text-sm leading-7 text-slate-700 dark:text-slate-300">{section.content}</div>
             </motion.section>
           ))}
         </div>

@@ -111,7 +111,7 @@ function Bullet({ text, index }: { text: string; index: number }) {
   return (
     <div className="flex items-start gap-4">
       <span className={`mt-2 h-3 w-3 shrink-0 rounded-full ${palette[index % palette.length]}`} />
-      <p className="text-lg leading-9 text-slate-800">{text}</p>
+      <p className="text-lg leading-9 text-slate-800 dark:text-slate-200">{text}</p>
     </div>
   );
 }
@@ -121,18 +121,18 @@ export default function Features() {
   const text = pageCopy[locale];
   const localizedSections = sections.map((section, index) => ({ ...section, ...translatedSections[locale][index] }));
   return (
-    <motion.div variants={pageTransition} initial="hidden" animate="show" className="min-h-screen bg-[linear-gradient(180deg,#fffaf5_0%,#ffffff_18%,#faf7ff_100%)]">
+    <motion.div variants={pageTransition} initial="hidden" animate="show" className="vizit-public-page min-h-screen bg-[linear-gradient(180deg,#fffaf5_0%,#ffffff_18%,#faf7ff_100%)] text-slate-950 transition-colors dark:bg-[radial-gradient(circle_at_top,rgba(124,58,237,0.16),transparent_30%),linear-gradient(180deg,#050816_0%,#07101f_45%,#050816_100%)] dark:text-white">
       <LandingNavbar />
       <main className="pt-32 sm:pt-36 lg:pt-40">
         <section className="px-4 pb-8 sm:px-6 lg:px-8">
           <motion.div variants={staggerContainer(0.08, 0.05)} initial="hidden" animate="show" className="mx-auto max-w-7xl text-center">
-            <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/90 px-4 py-2 text-sm font-medium text-violet-700 shadow-sm">
+            <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/90 px-4 py-2 text-sm font-medium text-violet-700 shadow-sm dark:border-violet-400/30 dark:bg-violet-400/10 dark:text-violet-200 dark:shadow-black/20">
               <BarChart3 className="h-4 w-4" /> {text.badge}
             </motion.div>
-            <motion.h1 variants={fadeUp} className="mt-6 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
+            <motion.h1 variants={fadeUp} className="mt-6 text-4xl font-semibold tracking-tight text-slate-950 dark:text-white sm:text-5xl lg:text-6xl">
               {text.title}
             </motion.h1>
-            <motion.p variants={fadeUp} className="mx-auto mt-4 max-w-3xl text-lg leading-8 text-slate-600">
+            <motion.p variants={fadeUp} className="mx-auto mt-4 max-w-3xl text-lg leading-8 text-slate-600 dark:text-slate-300">
               {text.intro}
             </motion.p>
           </motion.div>
@@ -149,20 +149,20 @@ export default function Features() {
                   initial="hidden"
                   whileInView="show"
                   viewport={{ once: true, amount: 0.2 }}
-                  className="rounded-[40px] border border-white/70 bg-white/92 p-5 shadow-[0_20px_90px_rgba(15,23,42,0.08)] backdrop-blur xl:p-8"
+                  className="rounded-[40px] border border-white/70 bg-white/92 p-5 shadow-[0_20px_90px_rgba(15,23,42,0.08)] backdrop-blur dark:border-white/10 dark:bg-white/[0.07] dark:shadow-black/20 xl:p-8"
                 >
                   <div className={`grid gap-8 2xl:grid-cols-2 2xl:items-center ${section.reverse ? "2xl:[&>*:first-child]:order-2 2xl:[&>*:last-child]:order-1" : ""}`}>
                     <div>
-                      <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700">
+                      <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700 dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-200">
                         <Icon className="h-4 w-4 text-violet-600" /> {text.module}
                       </div>
-                      <h2 className="mt-5 text-[1.9rem] font-semibold tracking-tight text-slate-950 sm:text-4xl">{section.title}</h2>
+                      <h2 className="mt-5 text-[1.9rem] font-semibold tracking-tight text-slate-950 dark:text-white sm:text-4xl">{section.title}</h2>
                       <div className="mt-8 space-y-6">
                         {section.bullets.map((bullet, index) => <Bullet key={bullet} text={bullet} index={index} />)}
                       </div>
                     </div>
 
-                    <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-[#f8f8fb] p-3 shadow-inner">
+                    <div className="overflow-hidden rounded-[32px] border border-slate-200 bg-[#f8f8fb] p-3 shadow-inner dark:border-white/10 dark:bg-[#0d1422]">
                       <img src={section.image} alt={section.title} className="w-full rounded-[24px] object-cover" />
                     </div>
                   </div>

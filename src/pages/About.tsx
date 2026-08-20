@@ -81,13 +81,13 @@ function FeatureCard({
     return (
         <motion.div
             variants={scaleIn}
-            className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6"
+            className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.07] dark:shadow-black/20 sm:p-6"
         >
             <div className="grid h-12 w-12 place-items-center rounded-2xl bg-violet-600 text-white">
                 {icon}
             </div>
-            <h3 className="mt-5 text-xl font-semibold text-slate-900">{title}</h3>
-            <p className="mt-3 text-sm leading-7 text-slate-600">{text}</p>
+            <h3 className="mt-5 text-xl font-semibold text-slate-900 dark:text-white">{title}</h3>
+            <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">{text}</p>
         </motion.div>
     );
 }
@@ -102,7 +102,7 @@ export default function About() {
             variants={pageTransition}
             initial="hidden"
             animate="show"
-            className="min-h-screen overflow-x-clip bg-slate-50"
+            className="vizit-public-page min-h-screen overflow-x-clip bg-slate-50 text-slate-950 transition-colors dark:bg-[#050816] dark:text-white"
         >
             <LandingNavbar />
 
@@ -118,7 +118,7 @@ export default function About() {
                             <div>
                                 <motion.div
                                     variants={fadeUp}
-                                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm"
+                                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm dark:border-white/10 dark:bg-white/[0.07] dark:text-slate-200 dark:shadow-black/20"
                                 >
                                     <Sparkles className="h-4 w-4 text-violet-600" />
                                     {text.badge}
@@ -126,14 +126,14 @@ export default function About() {
 
                                 <motion.h1
                                     variants={fadeUp}
-                                    className="mt-6 text-[2rem] font-semibold leading-tight tracking-tight text-slate-950 sm:text-4xl lg:text-6xl"
+                                    className="mt-6 text-[2rem] font-semibold leading-tight tracking-tight text-slate-950 dark:text-white sm:text-4xl lg:text-6xl"
                                 >
                                     {text.heroLead} <span className="text-violet-600">{text.heroHighlight}</span> {text.heroTail}
                                 </motion.h1>
 
                                 <motion.p
                                     variants={fadeUp}
-                                    className="mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg"
+                                    className="mt-6 max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-300 sm:text-lg"
                                 >
                                     {text.intro}
                                 </motion.p>
@@ -152,7 +152,7 @@ export default function About() {
 
                                     <Link
                                         to="/pricing"
-                                        className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                                        className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.07] dark:text-white dark:hover:bg-white/[0.12]"
                                     >
                                         {text.pricing}
                                     </Link>
@@ -160,21 +160,21 @@ export default function About() {
                             </div>
 
                             <motion.div variants={scaleIn}>
-                                <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-[0_24px_60px_rgba(15,23,42,0.06)] sm:p-6">
-                                    <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4 sm:p-5">
+                                <div className="rounded-[30px] border border-slate-200 bg-white p-4 shadow-[0_24px_60px_rgba(15,23,42,0.06)] dark:border-white/10 dark:bg-white/[0.07] dark:shadow-black/20 sm:p-6">
+                                    <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4 dark:border-white/10 dark:bg-white/[0.05] sm:p-5">
                                         <div className="grid gap-4">
                                             {text.audiences.map((item, index) => (
                                                 <div
                                                     key={item.title}
-                                                    className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm"
+                                                    className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-white/[0.07]"
                                                 >
                                                     <div className="flex items-start gap-4">
-                                                        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-violet-50 text-violet-600">
+                                                        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-violet-50 text-violet-600 dark:bg-violet-400/15 dark:text-violet-200">
                                                             {audienceIcons[index]}
                                                         </div>
                                                         <div>
-                                                            <div className="font-semibold text-slate-900">{item.title}</div>
-                                                            <div className="mt-1 text-sm leading-6 text-slate-600">{item.text}</div>
+                                                            <div className="font-semibold text-slate-900 dark:text-white">{item.title}</div>
+                                                            <div className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">{item.text}</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -196,16 +196,16 @@ export default function About() {
                         className="mx-auto max-w-7xl"
                     >
                         <motion.div variants={fadeUp} className="max-w-3xl">
-                            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm dark:border-white/10 dark:bg-white/[0.07] dark:text-slate-200 dark:shadow-black/20">
                                 <ShieldCheck className="h-4 w-4 text-violet-600" />
                                 {text.missionBadge}
                             </div>
 
-                            <h2 className="mt-5 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+                            <h2 className="mt-5 text-3xl font-semibold tracking-tight text-slate-950 dark:text-white sm:text-4xl">
                                 {text.missionTitle}
                             </h2>
 
-                            <p className="mt-4 text-base leading-8 text-slate-600">
+                            <p className="mt-4 text-base leading-8 text-slate-600 dark:text-slate-300">
                                 {text.missionText}
                             </p>
                         </motion.div>

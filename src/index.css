@@ -27,6 +27,16 @@
 
 html.dark {
   color-scheme: dark;
+  --bb-bg: #050816;
+  --bb-bg-soft: #07101f;
+  --bb-surface: rgba(15, 23, 42, 0.9);
+  --bb-surface-strong: #0f172a;
+  --bb-border: rgba(148, 163, 184, 0.22);
+  --bb-border-strong: rgba(255, 255, 255, 0.12);
+  --bb-text: #f8fafc;
+  --bb-text-muted: #cbd5e1;
+  --bb-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
+  --bb-shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.18);
 }
 
 html,

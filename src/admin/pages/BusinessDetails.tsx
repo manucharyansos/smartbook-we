@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -17,11 +17,16 @@ import {
   Sparkles,
   Trash2,
   Users,
+  Ban,
+  RotateCcw,
   type LucideIcon,
 } from "lucide-react";
 
 import { adminBusinessesApi } from "../services/adminBusinessesApi";
 import { cn } from "@/lib/cn";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { Toast } from "@/components/ui/Toast";
+import { getErrorMessage } from "@/lib/http";
 
 type AvailablePlan = {
   id: number;
@@ -61,7 +66,8 @@ type BusinessDetailsResponse = {
     id: number;
     name: string;
     slug: string;
-    business_type: "beauty" | "dental";
+    business_type: string;
+    vertical?: "services" | "healthcare";
     phone?: string | null;
     address?: string | null;
     status: string;
@@ -185,6 +191,14 @@ export default function BusinessDetails() {
   const [trialDays, setTrialDays] = useState("14");
   const [editingOverrideId, setEditingOverrideId] = useState<number | null>(null);
   const [form, setForm] = useState<OverrideForm>(initialForm);
+  const [statusAction, setStatusAction] = useState<"suspend" | "restore" | null>(null);
+  const [toast, setToast] = useState<{ text: string; type: "success" | "error" } | null>(null);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(null), 3200);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
 
   const detailsQ = useQuery({
     queryKey: ["admin", "business", businessId],
@@ -241,6 +255,24 @@ export default function BusinessDetails() {
     mutationFn: (overrideId: number) => adminBusinessesApi.deletePricingOverride(businessId, overrideId),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["admin", "business", businessId] });
+    },
+  });
+
+  const statusMutation = useMutation({
+    mutationFn: (action: "suspend" | "restore") => action === "suspend"
+      ? adminBusinessesApi.suspend(businessId)
+      : adminBusinessesApi.restore(businessId),
+    onSuccess: async (_, action) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["admin", "business", businessId] }),
+        queryClient.invalidateQueries({ queryKey: ["admin", "businesses"] }),
+      ]);
+      setStatusAction(null);
+      setToast({ text: action === "suspend" ? "Բիզնեսը կասեցվեց" : "Բիզնեսը վերականգնվեց", type: "success" });
+    },
+    onError: (mutationError: unknown) => {
+      setStatusAction(null);
+      setToast({ text: getErrorMessage(mutationError, "Կարգավիճակը չհաջողվեց փոխել"), type: "error" });
     },
   });
 
@@ -301,8 +333,21 @@ export default function BusinessDetails() {
             <CheckCircle2 className="h-4 w-4" /> {business.status}
           </span>
           <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-medium text-violet-700">
-            <Sparkles className="h-4 w-4" /> {business.business_type === "beauty" ? "Beauty" : "Clinic"}
+            <Sparkles className="h-4 w-4" /> {['dental', 'clinic', 'healthcare'].includes(business.vertical || business.business_type) ? "Առողջապահություն" : "Ծառայություններ"}
           </span>
+          <button
+            type="button"
+            onClick={() => setStatusAction(business.status === "suspended" ? "restore" : "suspend")}
+            className={cn(
+              "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition",
+              business.status === "suspended"
+                ? "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                : "border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100",
+            )}
+          >
+            {business.status === "suspended" ? <RotateCcw className="h-4 w-4" /> : <Ban className="h-4 w-4" />}
+            {business.status === "suspended" ? "Վերականգնել" : "Կասեցնել"}
+          </button>
         </div>
       </div>
 
@@ -526,6 +571,21 @@ export default function BusinessDetails() {
           </div>
         </div>
       </Panel>
+
+      <ConfirmModal
+        open={!!statusAction}
+        title={statusAction === "suspend" ? "Կասեցնե՞լ բիզնեսը" : "Վերականգնե՞լ բիզնեսը"}
+        description={statusAction === "suspend"
+          ? "Բիզնեսի մուտքն ու հանրային հասանելիությունը կկասեցվեն, բայց օգտատերերի հաշիվների վիճակը չի փոխվի։"
+          : "Բիզնեսը կրկին ակտիվ ու հասանելի կդառնա։"}
+        confirmText={statusAction === "suspend" ? "Կասեցնել" : "Վերականգնել"}
+        danger={statusAction === "suspend"}
+        loading={statusMutation.isPending}
+        onClose={() => !statusMutation.isPending && setStatusAction(null)}
+        onConfirm={() => statusAction && statusMutation.mutate(statusAction)}
+      />
+
+      <Toast open={!!toast} text={toast?.text || ""} type={toast?.type} />
     </motion.div>
   );
 }

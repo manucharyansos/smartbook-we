@@ -29,7 +29,7 @@ export function ClientProtectedRoute() {
       .catch((error: unknown) => {
         if (cancelled) return;
         const status = getHttpStatus(error);
-        if (status === 401) {
+        if (status === 401 || status === 403) {
           clear();
           return;
         }

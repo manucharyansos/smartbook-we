@@ -30,7 +30,8 @@ export interface Business {
     id: number;
     name: string;
     slug: string;
-    business_type: 'beauty' | 'dental';
+    business_type: string;
+    vertical?: 'services' | 'healthcare';
     email?: string;
     phone?: string;
     address?: string;
@@ -136,7 +137,7 @@ export interface DashboardStats {
     recent_businesses: Array<{
         id: number;
         name: string;
-        business_type: 'beauty' | 'dental';
+        business_type: string;
         status: 'active' | 'suspended' | 'pending';
         users_count: number;
         bookings_count: number;

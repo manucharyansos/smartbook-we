@@ -18,6 +18,7 @@ const Login = lazy(() => import("./pages/Login"));
 const ClientLogin = lazy(() => import("./pages/ClientLogin"));
 const ClientRegister = lazy(() => import("./pages/ClientRegister"));
 const ClientCabinet = lazy(() => import("./pages/ClientCabinet"));
+const ClientVerifyEmail = lazy(() => import("./pages/ClientVerifyEmail"));
 const SocialAuthCallback = lazy(() => import("./pages/SocialAuthCallback"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
@@ -58,6 +59,7 @@ const AdminLogin = lazy(() => import("./admin/pages/AdminLogin"));
 const AdminDashboard = lazy(() => import("./admin/pages/AdminDashboard"));
 const AdminLayout = lazy(() => import("./admin/components/AdminLayout"));
 const ProtectedAdminRoute = lazy(() => import("./admin/components/ProtectedAdminRoute"));
+const RequireAdminRole = lazy(() => import("./admin/components/RequireAdminRole"));
 const BusinessDetails = lazy(() => import("./admin/pages/BusinessDetails"));
 const AdminBusinessesPage = lazy(() => import("./admin/pages/AdminBusinesses"));
 const AdminUsers = lazy(() => import("./admin/pages/AdminUsers"));
@@ -104,19 +106,20 @@ export default function App() {
                 <Route path="/admin/login" element={<AdminLogin />} />
                 <Route element={<ProtectedAdminRoute />}>
                     <Route path="/admin" element={<AdminLayout />}>
-                        <Route index element={<Navigate to="/admin/dashboard" replace />} />
-                        <Route path="dashboard" element={<AdminDashboard />} />
+                        <Route index element={<Navigate to="/admin/businesses" replace />} />
+                        <Route path="dashboard" element={<RequireAdminRole roles={["super_admin"]}><AdminDashboard /></RequireAdminRole>} />
                         <Route path="businesses" element={<AdminBusinessesPage />} />
-                        <Route path="businesses/:id" element={<BusinessDetails />} />
+                        <Route path="businesses/:id" element={<RequireAdminRole roles={["super_admin"]}><BusinessDetails /></RequireAdminRole>} />
                         <Route path="users" element={<AdminUsers />} />
-                        <Route path="admins" element={<AdminAdmins />} />
-                        <Route path="logs" element={<AdminLogs />} />
-                        <Route path="plans" element={<AdminPlans />} />
+                        <Route path="admins" element={<RequireAdminRole roles={["super_admin"]}><AdminAdmins /></RequireAdminRole>} />
+                        <Route path="logs" element={<RequireAdminRole roles={["super_admin"]}><AdminLogs /></RequireAdminRole>} />
+                        <Route path="plans" element={<RequireAdminRole roles={["super_admin"]}><AdminPlans /></RequireAdminRole>} />
                     </Route>
                 </Route>
 
                 <Route element={<ClientProtectedRoute />}>
                     <Route path="/client/cabinet" element={<ClientCabinet />} />
+                    <Route path="/client/verify-email/:id/:hash" element={<ClientVerifyEmail />} />
                 </Route>
 
                 <Route element={<ProtectedRoute />}>

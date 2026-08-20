@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import {
@@ -21,6 +21,8 @@ import { cn } from '@/lib/cn';
 import { PageHero } from '@/components/ui/PageHero';
 import { Button } from '@/components/ui/Button';
 import { getErrorMessage } from '@/lib/http';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { Toast } from '@/components/ui/Toast';
 
 interface ApiResponse {
     success: boolean;
@@ -34,8 +36,16 @@ export default function AdminPlans() {
     const [editingPlan, setEditingPlan] = useState<PersistedPlan | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalError, setModalError] = useState<string | null>(null);
+    const [deleteTarget, setDeleteTarget] = useState<PersistedPlan | null>(null);
+    const [toast, setToast] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
     const queryClient = useQueryClient();
+
+    useEffect(() => {
+        if (!toast) return;
+        const timer = window.setTimeout(() => setToast(null), 3200);
+        return () => window.clearTimeout(timer);
+    }, [toast]);
 
     const { data, isLoading, error } = useQuery({
         queryKey: ['admin', 'plans', showHidden],
@@ -75,6 +85,12 @@ export default function AdminPlans() {
         mutationFn: (id: number) => adminPlansApi.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['admin', 'plans'] });
+            setDeleteTarget(null);
+            setToast({ text: 'Փաթեթը ջնջվեց', type: 'success' });
+        },
+        onError: (mutationError: unknown) => {
+            setDeleteTarget(null);
+            setToast({ text: getErrorMessage(mutationError, 'Փաթեթը չհաջողվեց ջնջել'), type: 'error' });
         },
     });
 
@@ -297,11 +313,7 @@ export default function AdminPlans() {
                                 <Edit size={16} className="text-gray-600" />
                             </button>
                             <button
-                                onClick={() => {
-                                    if (window.confirm('Ջնջե՞լ փաթեթը')) {
-                                        deleteMutation.mutate(plan.id);
-                                    }
-                                }}
+                                onClick={() => setDeleteTarget(plan)}
                                 className="p-2 hover:bg-white rounded-lg transition"
                             >
                                 <Trash2 size={16} className="text-red-600" />
@@ -324,6 +336,19 @@ export default function AdminPlans() {
                 saving={createMutation.isPending || updateMutation.isPending}
                 error={modalError}
             />
+
+            <ConfirmModal
+                open={!!deleteTarget}
+                title="Ջնջե՞լ փաթեթը"
+                description={deleteTarget ? `${deleteTarget.name} · ${deleteTarget.code}` : undefined}
+                confirmText="Ջնջել"
+                danger
+                loading={deleteMutation.isPending}
+                onClose={() => !deleteMutation.isPending && setDeleteTarget(null)}
+                onConfirm={() => deleteTarget && deleteMutation.mutate(deleteTarget.id)}
+            />
+
+            <Toast open={!!toast} text={toast?.text || ''} type={toast?.type} />
         </div>
     );
 }

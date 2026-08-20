@@ -11,11 +11,16 @@ interface Props {
 }
 
 export default function AdminSidebar({ expanded, mobileOpen, onToggleExpanded, onCloseMobile }: Props) {
-  const admin = JSON.parse(localStorage.getItem('admin') || '{}');
+  let admin: { role?: string } = {};
+  try {
+    admin = JSON.parse(localStorage.getItem('admin') || '{}');
+  } catch {
+    admin = {};
+  }
   const isSuperAdmin = admin.role === 'super_admin';
 
   const menuItems = [
-    { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Վահանակ' },
+    ...(isSuperAdmin ? [{ path: '/admin/dashboard', icon: LayoutDashboard, label: 'Վահանակ' }] : []),
     { path: '/admin/businesses', icon: Building2, label: 'Բիզնեսներ' },
     { path: '/admin/users', icon: Users, label: 'Օգտատերեր' },
     ...(isSuperAdmin

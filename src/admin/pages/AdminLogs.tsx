@@ -25,7 +25,7 @@ type ApiResponse = {
 export default function AdminLogs() {
   const [search, setSearch] = useState("");
   const [expandedLog, setExpandedLog] = useState<number | null>(null);
-  const [page] = useState(1);
+  const [page, setPage] = useState(1);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin", "logs", search, page],
@@ -121,7 +121,7 @@ export default function AdminLogs() {
               type="text"
               placeholder="Որոնել գործողություններ, ադմին կամ մոդել..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
               className="pl-11 pr-4"
             />
           </div>
@@ -202,6 +202,16 @@ export default function AdminLogs() {
           ))
         )}
       </div>
+
+      {pagination && pagination.last_page > 1 ? (
+        <div className="flex flex-col gap-3 rounded-[24px] border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+          <div>Էջ {pagination.current_page} / {pagination.last_page} · {pagination.total} գրառում</div>
+          <div className="flex gap-2">
+            <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage((value) => Math.max(1, value - 1))}>Նախորդ</Button>
+            <Button variant="secondary" size="sm" disabled={page >= pagination.last_page} onClick={() => setPage((value) => value + 1)}>Հաջորդ</Button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

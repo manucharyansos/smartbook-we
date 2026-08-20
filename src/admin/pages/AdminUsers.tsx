@@ -1,11 +1,11 @@
 // src/admin/pages/AdminUsers.tsx
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useEffect, useMemo, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import {
     Users,
     Search,
-    MoreHorizontal,
+    Power,
     Mail,
     UserCircle,
     CheckCircle2,
@@ -15,6 +15,10 @@ import {
 } from 'lucide-react';
 import { adminUsersApi } from '../services/adminUsersApi';
 import { PageHero } from '@/components/ui/PageHero';
+import { Button } from '@/components/ui/Button';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { Toast } from '@/components/ui/Toast';
+import { getErrorMessage } from '@/lib/http';
 
 interface User {
     id: number;
@@ -51,10 +55,28 @@ interface ApiResponse {
 }
 
 export default function AdminUsers() {
+    const queryClient = useQueryClient();
     const [search, setSearch] = useState('');
     const [roleFilter, setRoleFilter] = useState<string>('');
     const [statusFilter, setStatusFilter] = useState<string>('');
     const [page, setPage] = useState(1);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [toast, setToast] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
+    const canManageUsers = useMemo(() => {
+        try {
+            const role = JSON.parse(localStorage.getItem('admin') || '{}')?.role;
+            return role === 'super_admin' || role === 'admin';
+        } catch {
+            return false;
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!toast) return;
+        const timer = window.setTimeout(() => setToast(null), 3200);
+        return () => window.clearTimeout(timer);
+    }, [toast]);
 
     const { data, isLoading, error } = useQuery({
         queryKey: ['admin', 'users', search, roleFilter, statusFilter, page],
@@ -67,6 +89,19 @@ export default function AdminUsers() {
                 per_page: 20,
             });
             return res.data as unknown as ApiResponse;
+        },
+    });
+
+    const toggleMutation = useMutation({
+        mutationFn: (user: User) => adminUsersApi.toggleActive(user.id),
+        onSuccess: async (_, user) => {
+            await queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
+            setSelectedUser(null);
+            setToast({ text: user.is_active ? 'Օգտատերը ապաակտիվացվեց' : 'Օգտատերը ակտիվացվեց', type: 'success' });
+        },
+        onError: (mutationError: unknown) => {
+            setSelectedUser(null);
+            setToast({ text: getErrorMessage(mutationError, 'Գործողությունը չհաջողվեց'), type: 'error' });
         },
     });
 
@@ -90,9 +125,9 @@ export default function AdminUsers() {
 
     const getBusinessTypeBadge = (type?: string) => {
         if (!type) return null;
-        return type === 'beauty'
-            ? <span className="ml-2 px-1.5 py-0.5 bg-purple-50 text-purple-600 rounded text-xs">Beauty</span>
-            : <span className="ml-2 px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded text-xs">Clinic</span>;
+        return ['dental', 'clinic', 'healthcare'].includes(type)
+            ? <span className="ml-2 px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded text-xs">Առողջապահություն</span>
+            : <span className="ml-2 px-1.5 py-0.5 bg-purple-50 text-purple-600 rounded text-xs">Ծառայություններ</span>;
     };
 
     if (isLoading) {
@@ -131,14 +166,14 @@ export default function AdminUsers() {
                             type="text"
                             placeholder="Որոնել օգտատերեր..."
                             value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                             className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-[#C5A28A]"
                         />
                     </div>
 
                     <select
                         value={roleFilter}
-                        onChange={(e) => setRoleFilter(e.target.value)}
+                        onChange={(e) => { setRoleFilter(e.target.value); setPage(1); }}
                         className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-[#C5A28A]"
                     >
                         <option value="">Բոլոր դերերը</option>
@@ -149,7 +184,7 @@ export default function AdminUsers() {
 
                     <select
                         value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
+                        onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
                         className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-[#C5A28A]"
                     >
                         <option value="">Բոլոր կարգավիճակները</option>
@@ -224,9 +259,12 @@ export default function AdminUsers() {
                                     {new Date(user.created_at).toLocaleDateString('hy-AM')}
                                 </td>
                                 <td className="px-6 py-4 text-right">
-                                    <button className="p-2 hover:bg-gray-100 rounded-lg transition">
-                                        <MoreHorizontal size={18} className="text-gray-500" />
-                                    </button>
+                                    {canManageUsers ? (
+                                        <Button variant={user.is_active ? 'danger' : 'secondary'} size="sm" onClick={() => setSelectedUser(user)}>
+                                            <Power size={15} />
+                                            {user.is_active ? 'Ապաակտիվացնել' : 'Ակտիվացնել'}
+                                        </Button>
+                                    ) : <span className="text-xs text-slate-400">Միայն դիտում</span>}
                                 </td>
                             </motion.tr>
                         ))}
@@ -269,6 +307,19 @@ export default function AdminUsers() {
                     </div>
                 )}
             </div>
+
+            <ConfirmModal
+                open={!!selectedUser}
+                title={selectedUser?.is_active ? 'Ապաակտիվացնե՞լ օգտատիրոջը' : 'Ակտիվացնե՞լ օգտատիրոջը'}
+                description={selectedUser ? `${selectedUser.name} · ${selectedUser.email}` : undefined}
+                confirmText="Հաստատել"
+                danger={!!selectedUser?.is_active}
+                loading={toggleMutation.isPending}
+                onClose={() => !toggleMutation.isPending && setSelectedUser(null)}
+                onConfirm={() => selectedUser && toggleMutation.mutate(selectedUser)}
+            />
+
+            <Toast open={!!toast} text={toast?.text || ''} type={toast?.type} />
         </div>
     );
 }

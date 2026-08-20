@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { LogOut, Menu, ShieldCheck, Sparkles, User } from 'lucide-react';
 
 import AdminSidebar from './AdminSidebar';
+import { adminService } from '../services/adminApi';
 import { pageTransition } from '../../lib/motion';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/cn';
@@ -20,6 +21,7 @@ const titleMap: Record<string, string> = {
 export default function AdminLayout() {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -31,12 +33,23 @@ export default function AdminLayout() {
     }
   }, []);
 
-  const pageTitle = titleMap[location.pathname] || 'Admin workspace';
+  const pageTitle = location.pathname.startsWith('/admin/businesses/')
+    ? 'Բիզնեսի մանրամասներ'
+    : titleMap[location.pathname] || 'Admin workspace';
 
-  const handleLogout = () => {
-    localStorage.removeItem('admin_token');
-    localStorage.removeItem('admin');
-    navigate('/admin/login');
+  const handleLogout = async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
+    try {
+      await adminService.logout();
+    } catch {
+      // Local sign-out must still complete if the session already expired.
+    } finally {
+      localStorage.removeItem('admin_token');
+      localStorage.removeItem('admin');
+      navigate('/admin/login', { replace: true });
+      setLoggingOut(false);
+    }
   };
 
   const handleMenuClick = () => {
@@ -89,7 +102,7 @@ export default function AdminLayout() {
                 <User size={18} />
               </div>
 
-              <Button variant="secondary" size="sm" onClick={handleLogout} className="px-3">
+              <Button variant="secondary" size="sm" onClick={handleLogout} loading={loggingOut} className="px-3">
                 <LogOut size={16} />
                 <span className="hidden sm:inline">Ելք</span>
               </Button>

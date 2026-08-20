@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { Building2, CalendarCheck, Download, DollarSign, RefreshCcw, ShieldCheck, TrendingUp, Users, BarChart3, CircleDollarSign, Clock3, AlarmClockCheck } from 'lucide-react';
@@ -13,14 +13,15 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { AdminStatCard } from '../components/AdminStatCard';
+import { Toast } from '@/components/ui/Toast';
 
 function fmtAMD(n: number) {
   return `${new Intl.NumberFormat('hy-AM').format(n)} ֏`;
 }
 
 function businessTypeLabel(type?: string) {
-  if (type === 'beauty') return 'Beauty';
-  if (type === 'dental' || type === 'clinic') return 'Clinic';
+  if (type === 'beauty' || type === 'salon' || type === 'services') return 'Ծառայություններ';
+  if (type === 'dental' || type === 'clinic' || type === 'healthcare') return 'Առողջապահություն';
   return 'Other';
 }
 
@@ -32,6 +33,13 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const [filters, setFilters] = useState<DashboardFilters>({ period: '30_days' });
   const [exporting, setExporting] = useState(false);
+  const [toast, setToast] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(null), 3200);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
 
   const { data, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ['admin', 'analytics-dashboard', filters],
@@ -92,8 +100,9 @@ export default function AdminDashboard() {
       const cd = res.headers?.['content-disposition'] || res.headers?.['Content-Disposition'];
       const filename = filenameFromContentDisposition(cd) || `revenue_${stats.date_range.start}_${stats.date_range.end}.csv`;
       downloadBlob(res.data, filename);
+      setToast({ text: 'Եկամուտների CSV ֆայլը պատրաստ է', type: 'success' });
     } catch {
-      alert('Չհաջողվեց ներբեռնել եկամուտների CSV ֆայլը');
+      setToast({ text: 'Չհաջողվեց ներբեռնել եկամուտների CSV ֆայլը', type: 'error' });
     } finally {
       setExporting(false);
     }
@@ -326,6 +335,7 @@ export default function AdminDashboard() {
           </div>
         </Card>
       </div>
+      <Toast open={!!toast} text={toast?.text || ''} type={toast?.type} />
     </motion.div>
   );
 }

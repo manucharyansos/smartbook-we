@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Lock, LogIn, Mail, UserRound } from "lucide-react";
@@ -14,13 +14,14 @@ import { useAuth } from "../store/auth";
 import { useLanguage } from "../contexts/LanguageContext";
 
 const copy = {
-  hy: { title: "Հաճախորդի մուտք", subtitle: "Մուտք գործեք և տեսեք առաջիկա ու անցած այցերը մեկ վայրում։", badge: "Vizit հաճախորդի հաշիվ", sideTitle: "Ձեր ամրագրումները՝ մեկ պարզ հաշվում", sideText: "Արագ և անվտանգ մուտք՝ այցերը դիտելու, կրկնելու կամ չեղարկելու համար։", noAccount: "Դեռ հաշիվ չունե՞ք", create: "ստեղծել հաճախորդի հաշիվ", businessQuestion: "Բիզնեսի մուտք է պե՞տք", businessLogin: "անցնել բիզնեսի մուտքին", identity: "Email կամ հեռախոս", identityPlaceholder: "name@email.com կամ +374...", password: "Գաղտնաբառ", forgot: "Մոռացե՞լ եք գաղտնաբառը", hide: "Թաքցնել գաղտնաբառը", show: "Ցույց տալ գաղտնաբառը", loading: "Մուտք է կատարվում…", submit: "Բացել հաճախորդի հաշիվը", note: "Եթե նույն email-ով կամ հեռախոսով նախկինում ամրագրում եք կատարել, համակարգը կփորձի այդ այցերը կապել ձեր հաշվին։", error: "Մուտքը չհաջողվեց։" },
-  ru: { title: "Вход для клиента", subtitle: "Войдите, чтобы видеть предстоящие и прошедшие визиты в одном месте.", badge: "Аккаунт клиента Vizit", sideTitle: "Ваши записи в одном понятном аккаунте", sideText: "Быстрый и безопасный доступ для просмотра, повтора или отмены визитов.", noAccount: "Ещё нет аккаунта?", create: "создать аккаунт клиента", businessQuestion: "Нужен вход для бизнеса?", businessLogin: "перейти ко входу для бизнеса", identity: "Email или телефон", identityPlaceholder: "name@email.com или +374...", password: "Пароль", forgot: "Забыли пароль?", hide: "Скрыть пароль", show: "Показать пароль", loading: "Вход…", submit: "Открыть аккаунт клиента", note: "Если вы раньше записывались с тем же email или телефоном, система попытается связать эти визиты с вашим аккаунтом.", error: "Не удалось войти." },
-  en: { title: "Client sign in", subtitle: "Sign in to see upcoming and past visits in one place.", badge: "Vizit client account", sideTitle: "Your bookings in one clear account", sideText: "Fast, secure access to view, repeat or cancel visits.", noAccount: "Don't have an account?", create: "create a client account", businessQuestion: "Need business access?", businessLogin: "go to business sign in", identity: "Email or phone", identityPlaceholder: "name@email.com or +374...", password: "Password", forgot: "Forgot your password?", hide: "Hide password", show: "Show password", loading: "Signing in…", submit: "Open client account", note: "If you previously booked with the same email or phone number, the system will try to connect those visits to your account.", error: "Sign-in failed." },
+  hy: { title: "Հաճախորդի մուտք", subtitle: "Մուտք գործեք և տեսեք առաջիկա ու անցած այցերը մեկ վայրում։", badge: "Vizit հաճախորդի հաշիվ", sideTitle: "Ձեր ամրագրումները՝ մեկ պարզ հաշվում", sideText: "Արագ և անվտանգ մուտք՝ այցերը դիտելու, կրկնելու կամ չեղարկելու համար։", noAccount: "Դեռ հաշիվ չունե՞ք", create: "ստեղծել հաճախորդի հաշիվ", businessQuestion: "Բիզնեսի մուտք է պե՞տք", businessLogin: "անցնել բիզնեսի մուտքին", identity: "Email կամ հեռախոս", identityPlaceholder: "name@email.com կամ +374...", password: "Գաղտնաբառ", forgot: "Մոռացե՞լ եք գաղտնաբառը", hide: "Թաքցնել գաղտնաբառը", show: "Ցույց տալ գաղտնաբառը", loading: "Մուտք է կատարվում…", submit: "Բացել հաճախորդի հաշիվը", note: "Նախկին ամրագրումները հաշվին կկապվեն միայն հաստատված նույն email հասցեով։", error: "Մուտքը չհաջողվեց։" },
+  ru: { title: "Вход для клиента", subtitle: "Войдите, чтобы видеть предстоящие и прошедшие визиты в одном месте.", badge: "Аккаунт клиента Vizit", sideTitle: "Ваши записи в одном понятном аккаунте", sideText: "Быстрый и безопасный доступ для просмотра, повтора или отмены визитов.", noAccount: "Ещё нет аккаунта?", create: "создать аккаунт клиента", businessQuestion: "Нужен вход для бизнеса?", businessLogin: "перейти ко входу для бизнеса", identity: "Email или телефон", identityPlaceholder: "name@email.com или +374...", password: "Пароль", forgot: "Забыли пароль?", hide: "Скрыть пароль", show: "Показать пароль", loading: "Вход…", submit: "Открыть аккаунт клиента", note: "Прошлые записи привязываются к аккаунту только по совпадающему подтверждённому email.", error: "Не удалось войти." },
+  en: { title: "Client sign in", subtitle: "Sign in to see upcoming and past visits in one place.", badge: "Vizit client account", sideTitle: "Your bookings in one clear account", sideText: "Fast, secure access to view, repeat or cancel visits.", noAccount: "Don't have an account?", create: "create a client account", businessQuestion: "Need business access?", businessLogin: "go to business sign in", identity: "Email or phone", identityPlaceholder: "name@email.com or +374...", password: "Password", forgot: "Forgot your password?", hide: "Hide password", show: "Show password", loading: "Signing in…", submit: "Open client account", note: "Earlier bookings are linked to the account only through the matching verified email address.", error: "Sign-in failed." },
 } as const;
 
 export default function ClientLogin() {
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const { setAuth } = useAuth();
   const { locale } = useLanguage();
@@ -41,7 +42,11 @@ export default function ClientLogin() {
       const res = await api.post("/client/auth/login", { identity, password });
       setAuth(res.data.token, res.data.user);
       queryClient.clear();
-      navigate("/client/cabinet", { replace: true });
+      const from = (location.state as { from?: { pathname?: string; search?: string } } | null)?.from;
+      const destination = from?.pathname?.startsWith("/client/")
+        ? `${from.pathname}${from.search || ""}`
+        : "/client/cabinet";
+      navigate(destination, { replace: true });
     } catch (error: unknown) {
       setError(getErrorMessage(error, text.error));
     } finally {

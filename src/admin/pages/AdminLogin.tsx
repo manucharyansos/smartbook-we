@@ -30,7 +30,7 @@ export default function AdminLogin() {
       if (token && admin) {
         localStorage.setItem('admin_token', token);
         localStorage.setItem('admin', JSON.stringify(admin));
-        navigate('/admin/dashboard');
+        navigate(admin.role === 'super_admin' ? '/admin/dashboard' : '/admin/businesses', { replace: true });
       } else {
         setError('Սերվերի պատասխանը սպասված կառուցվածք չունի');
       }

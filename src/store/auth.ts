@@ -15,6 +15,8 @@ export type User = {
     needs_onboarding?: boolean;
     phone?: string | null;
     audience?: "business" | "client";
+    email_verified?: boolean;
+    requires_email_verification?: boolean;
 };
 
 type AuthState = {

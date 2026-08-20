@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -10,12 +10,17 @@ import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { AdminStatCard } from '../components/AdminStatCard';
+import { adminAnalyticsService } from '../services/adminAnalyticsApi';
+import { downloadBlob, filenameFromContentDisposition } from '../lib/download';
+import { Toast } from '@/components/ui/Toast';
+import { getErrorMessage } from '@/lib/http';
 
 interface Business {
   id: number;
   name: string;
   slug: string;
-  business_type: 'beauty' | 'dental';
+  business_type: string;
+  vertical?: 'services' | 'healthcare';
   status: 'active' | 'suspended' | 'pending';
   users_count?: number;
   bookings_count?: number;
@@ -43,7 +48,7 @@ function fmtAMD(n: number) {
 }
 
 function businessTypeLabel(type: string) {
-  return type === 'beauty' ? 'Beauty' : 'Clinic';
+  return ['dental', 'clinic', 'healthcare'].includes(type) ? 'Առողջապահություն' : 'Ծառայություններ';
 }
 
 export default function AdminBusinesses() {
@@ -52,6 +57,22 @@ export default function AdminBusinesses() {
   const [statusFilter, setStatusFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [page, setPage] = useState(1);
+  const [exporting, setExporting] = useState(false);
+  const [toast, setToast] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
+  const canExport = useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem('admin') || '{}')?.role === 'super_admin';
+    } catch {
+      return false;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(null), 3200);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['admin', 'businesses', search, statusFilter, typeFilter, page],
@@ -73,9 +94,28 @@ export default function AdminBusinesses() {
   const summary = useMemo(() => {
     const totalRevenue = businesses.reduce((sum, item) => sum + Number(item.total_revenue || 0), 0);
     const active = businesses.filter((item) => item.status === 'active').length;
-    const clinic = businesses.filter((item) => item.business_type === 'dental').length;
-    return { totalRevenue, active, clinic };
+    const healthcare = businesses.filter((item) => ['dental', 'clinic', 'healthcare'].includes(item.vertical || item.business_type)).length;
+    return { totalRevenue, active, healthcare };
   }, [businesses]);
+
+  const handleExport = async () => {
+    if (exporting) return;
+    setExporting(true);
+    try {
+      const response = await adminAnalyticsService.exportBusinesses({
+        search: search || undefined,
+        status: (statusFilter || undefined) as 'active' | 'suspended' | 'pending' | undefined,
+        business_type: (typeFilter || undefined) as 'services' | 'healthcare' | undefined,
+      });
+      const disposition = response.headers?.['content-disposition'] || response.headers?.['Content-Disposition'];
+      downloadBlob(response.data, filenameFromContentDisposition(disposition) || 'vizit-businesses.csv');
+      setToast({ text: 'Բիզնեսների CSV ֆայլը պատրաստ է', type: 'success' });
+    } catch (exportError: unknown) {
+      setToast({ text: getErrorMessage(exportError, 'CSV արտահանումը չհաջողվեց'), type: 'error' });
+    } finally {
+      setExporting(false);
+    }
+  };
 
   if (isLoading) {
     return <div className="flex h-64 items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-b-2 border-slate-900" /></div>;
@@ -91,13 +131,13 @@ export default function AdminBusinesses() {
         eyebrow={<><Building2 className="h-4 w-4" /> Business management</>}
         title="Բիզնեսների կառավարում"
         description="Ընտրիր բիզնեսը, տես նրա subscription/profile վիճակը, տուր անհատական առաջարկ կամ ստուգիր health-ը մեկ տեղից։"
-        actions={<Button variant="secondary" className="gap-2"><Download className="h-4 w-4" /> Export list</Button>}
+        actions={canExport ? <Button variant="secondary" className="gap-2" onClick={handleExport} loading={exporting}><Download className="h-4 w-4" /> Արտահանել CSV</Button> : undefined}
       />
 
       <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
         <AdminStatCard title="Filtered total" value={pagination?.total ?? 0} hint="Ընթացիկ ֆիլտրերի համապատասխան բիզնեսներ" icon={Building2} tone="violet" />
         <AdminStatCard title="Active in page" value={summary.active} hint="Ընթացիկ էջի ակտիվ բիզնեսներ" icon={Sparkles} tone="emerald" />
-        <AdminStatCard title="Clinic in page" value={summary.clinic} hint="Clinic ուղղությամբ բիզնեսներ այս էջում" icon={Award} tone="sky" />
+        <AdminStatCard title="Healthcare in page" value={summary.healthcare} hint="Առողջապահական բիզնեսներ այս էջում" icon={Award} tone="sky" />
         <AdminStatCard title="Revenue in page" value={fmtAMD(summary.totalRevenue)} hint="Ընթացիկ էջի բոլոր բիզնեսների գումարային revenue" icon={HandCoins} tone="amber" />
       </div>
 
@@ -115,15 +155,15 @@ export default function AdminBusinesses() {
           </select>
           <select value={typeFilter} onChange={(e) => { setTypeFilter(e.target.value); setPage(1); }} className="bb-input">
             <option value="">Բոլոր տեսակները</option>
-            <option value="beauty">Beauty</option>
-            <option value="dental">Clinic</option>
+            <option value="services">Ծառայություններ</option>
+            <option value="healthcare">Առողջապահություն</option>
           </select>
         </div>
       </Card>
 
       <div className="space-y-3 lg:hidden">
         {businesses.map((business, index) => (
-          <motion.button key={business.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.03 }} onClick={() => navigate(`/admin/businesses/${business.id}`)} className="w-full text-left">
+          <motion.button key={business.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.03 }} onClick={() => canExport && navigate(`/admin/businesses/${business.id}`)} disabled={!canExport} className="w-full text-left disabled:cursor-default">
             <Card className="rounded-[28px] p-5">
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -158,7 +198,7 @@ export default function AdminBusinesses() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {businesses.map((business, index) => (
-                <motion.tr key={business.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.02 }} className="cursor-pointer transition hover:bg-violet-50/50" onClick={() => navigate(`/admin/businesses/${business.id}`)}>
+                <motion.tr key={business.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.02 }} className={canExport ? 'cursor-pointer transition hover:bg-violet-50/50' : ''} onClick={() => canExport && navigate(`/admin/businesses/${business.id}`)}>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-violet-100 to-fuchsia-100 text-violet-700"><Building2 className="h-5 w-5" /></div>
@@ -189,6 +229,8 @@ export default function AdminBusinesses() {
           </div>
         </div>
       ) : null}
+
+      <Toast open={!!toast} text={toast?.text || ''} type={toast?.type} />
     </div>
   );
 }

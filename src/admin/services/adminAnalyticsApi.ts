@@ -20,7 +20,7 @@ export type RevenueExportPayload = {
 
 export type BusinessesExportPayload = {
     status?: "active" | "suspended" | "pending";
-    business_type?: "beauty" | "dental";
+    business_type?: "services" | "healthcare" | "beauty" | "dental";
     from?: string;
     to?: string;
     search?: string;

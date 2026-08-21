@@ -33,6 +33,9 @@ declare global {
 
 const SCRIPT_ID = "vizit-yandex-maps-api";
 let apiPromise: Promise<YandexMapsApi> | null = null;
+let activeMapLocale: string | null = null;
+let loadingMapLocale: string | null = null;
+let loadGeneration = 0;
 
 function mapLocale(locale: Locale) {
   // Yandex currently has no Armenian map-label locale. English is the most
@@ -45,48 +48,66 @@ export function hasYandexMapsKey() {
 }
 
 export function loadYandexMaps(locale: Locale): Promise<YandexMapsApi> {
-  if (window.ymaps3) {
+  const requestedLocale = mapLocale(locale);
+
+  if (window.ymaps3 && (!activeMapLocale || activeMapLocale === requestedLocale)) {
+    activeMapLocale = requestedLocale;
     return window.ymaps3.ready.then(() => window.ymaps3 as YandexMapsApi);
   }
 
-  if (apiPromise) return apiPromise;
+  if (apiPromise && loadingMapLocale === requestedLocale) return apiPromise;
+
+  if (activeMapLocale !== requestedLocale || loadingMapLocale !== requestedLocale) {
+    loadGeneration += 1;
+    document.getElementById(SCRIPT_ID)?.remove();
+    delete window.ymaps3;
+    apiPromise = null;
+    activeMapLocale = null;
+    loadingMapLocale = null;
+  }
 
   const apiKey = import.meta.env.VITE_YANDEX_MAPS_API_KEY?.trim();
   if (!apiKey) {
     return Promise.reject(new Error("VITE_YANDEX_MAPS_API_KEY is not configured"));
   }
 
+  const generation = loadGeneration;
+  loadingMapLocale = requestedLocale;
   apiPromise = new Promise<YandexMapsApi>((resolve, reject) => {
     const finish = () => {
+      if (generation !== loadGeneration) {
+        reject(new Error("Yandex Maps API locale load was superseded"));
+        return;
+      }
       const api = window.ymaps3;
       if (!api) {
         apiPromise = null;
+        loadingMapLocale = null;
         reject(new Error("Yandex Maps API did not initialize"));
         return;
       }
-      api.ready.then(() => resolve(api)).catch((error) => {
+      api.ready.then(() => {
+        activeMapLocale = requestedLocale;
+        loadingMapLocale = null;
+        resolve(api);
+      }).catch((error) => {
         apiPromise = null;
+        loadingMapLocale = null;
         reject(error);
       });
     };
 
-    const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
-    if (existing) {
-      existing.addEventListener("load", finish, { once: true });
-      existing.addEventListener("error", () => {
-        apiPromise = null;
-        reject(new Error("Yandex Maps API failed to load"));
-      }, { once: true });
-      return;
-    }
-
     const script = document.createElement("script");
     script.id = SCRIPT_ID;
     script.async = true;
-    script.src = `https://api-maps.yandex.ru/v3/?apikey=${encodeURIComponent(apiKey)}&lang=${mapLocale(locale)}&csp=202512`;
+    script.dataset.locale = requestedLocale;
+    script.src = `https://api-maps.yandex.ru/v3/?apikey=${encodeURIComponent(apiKey)}&lang=${requestedLocale}&csp=202512`;
     script.addEventListener("load", finish, { once: true });
     script.addEventListener("error", () => {
-      apiPromise = null;
+      if (generation === loadGeneration) {
+        apiPromise = null;
+        loadingMapLocale = null;
+      }
       reject(new Error("Yandex Maps API failed to load"));
     }, { once: true });
     document.head.appendChild(script);

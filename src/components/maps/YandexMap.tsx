@@ -165,8 +165,8 @@ export default function YandexMap({
       apiRef.current = null;
       container.replaceChildren();
     };
-    // The Yandex API language is selected when its script first loads. All
-    // Vizit controls and content still react immediately to locale changes.
+    // Changing between Yandex-supported locales reloads the provider script;
+    // every Vizit overlay also reacts immediately to locale changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locale]);
 

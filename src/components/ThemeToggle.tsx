@@ -13,10 +13,11 @@ export default function ThemeToggle({ compact = false, className }: ThemeToggleP
   const { locale } = useLanguage();
   const isDark = resolvedTheme === "dark";
   const labels = {
-    hy: { light: "Միացնել բաց տեսքը", dark: "Միացնել մուգ տեսքը" },
-    ru: { light: "Включить светлую тему", dark: "Включить тёмную тему" },
-    en: { light: "Switch to light theme", dark: "Switch to dark theme" },
+    hy: { light: "Միացնել բաց տեսքը", dark: "Միացնել մուգ տեսքը", lightName: "Բաց", darkName: "Մուգ" },
+    ru: { light: "Включить светлую тему", dark: "Включить тёмную тему", lightName: "Светлая", darkName: "Тёмная" },
+    en: { light: "Switch to light theme", dark: "Switch to dark theme", lightName: "Light", darkName: "Dark" },
   }[locale];
+  const actionLabel = isDark ? labels.light : labels.dark;
 
   return (
     <button
@@ -27,11 +28,11 @@ export default function ThemeToggle({ compact = false, className }: ThemeToggleP
         compact ? "h-11 w-11" : "gap-2 px-4 py-2.5",
         className,
       )}
-      aria-label={isDark ? labels.light : labels.dark}
-      title={isDark ? "Light mode" : "Dark mode"}
+      aria-label={actionLabel}
+      title={actionLabel}
     >
       {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-      {compact ? null : <span>{isDark ? "Light" : "Dark"}</span>}
+      {compact ? null : <span>{isDark ? labels.lightName : labels.darkName}</span>}
     </button>
   );
 }

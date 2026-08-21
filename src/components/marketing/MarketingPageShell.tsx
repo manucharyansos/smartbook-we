@@ -25,7 +25,7 @@ export default function MarketingPageShell({
       variants={pageTransition}
       initial="hidden"
       animate="show"
-      className="vizit-public-page min-h-screen overflow-x-clip bg-[linear-gradient(180deg,#fffaf5_0%,#ffffff_22%,#faf7ff_100%)] text-slate-950 transition-colors dark:bg-[radial-gradient(circle_at_top,rgba(124,58,237,0.16),transparent_30%),linear-gradient(180deg,#050816_0%,#07101f_45%,#050816_100%)] dark:text-white"
+      className="vizit-public-page min-h-screen overflow-x-clip bg-[radial-gradient(circle_at_12%_0%,rgba(91,47,168,0.10),transparent_28rem),linear-gradient(180deg,#faf8fc_0%,#ffffff_28%,#faf8fc_100%)] text-[#241736] transition-colors dark:bg-[radial-gradient(circle_at_top,rgba(169,128,243,0.16),transparent_32%),linear-gradient(180deg,#090712_0%,#151020_48%,#090712_100%)] dark:text-white"
     >
       <LandingNavbar />
 
@@ -40,17 +40,17 @@ export default function MarketingPageShell({
             {(badge || title || description) && (
               <motion.div variants={fadeUp} className="mb-9 text-center sm:mb-12">
                 {badge ? (
-                  <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-violet-200 bg-white/80 px-4 py-2 text-xs font-medium text-violet-700 shadow-sm dark:border-violet-400/30 dark:bg-violet-400/10 dark:text-violet-200 dark:shadow-black/20 sm:text-sm">
+                  <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-[#1e9e92]/25 bg-[#1e9e92]/[0.08] px-4 py-2 text-xs font-semibold text-[#167d74] shadow-sm dark:border-[#58d0c4]/25 dark:bg-[#58d0c4]/10 dark:text-[#8be3da] dark:shadow-black/20 sm:text-sm">
                     {badge}
                   </div>
                 ) : null}
 
-                <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 dark:text-white sm:mt-6 sm:text-5xl lg:text-6xl">
+                <h1 className="vizit-display mt-4 text-3xl text-[#241736] dark:text-white sm:mt-6 sm:text-5xl lg:text-6xl">
                   {title}
                 </h1>
 
                 {description ? (
-                  <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 dark:text-slate-300 sm:text-lg sm:leading-8">
+                  <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-[#6b6178] dark:text-[#b7adc5] sm:text-lg sm:leading-8">
                     {description}
                   </p>
                 ) : null}

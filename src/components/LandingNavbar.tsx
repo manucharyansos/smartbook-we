@@ -40,8 +40,8 @@ export default function LandingNavbar() {
         cn(
             "inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition-colors",
             isActive
-                ? "bg-violet-600 text-white"
-                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
+                ? "bg-[#3e1f78] text-white dark:bg-[#a980f3] dark:text-[#160d22]"
+                : "text-[#6b6178] hover:bg-[#f1edf7] hover:text-[#3e1f78] dark:text-[#b7adc5] dark:hover:bg-white/10 dark:hover:text-white"
         );
 
     return (
@@ -55,19 +55,19 @@ export default function LandingNavbar() {
                         className={cn(
                             "rounded-[22px] border transition-all duration-300 sm:rounded-[24px]",
                             isScrolled
-                                ? "border-slate-200 bg-white/92 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/88 dark:shadow-black/30"
-                                : "border-slate-200/70 bg-white/94 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/94"
+                                ? "border-[#e8e2f0] bg-[#faf8fc]/92 shadow-[0_18px_50px_rgba(62,31,120,0.10)] backdrop-blur-xl dark:border-[#312641] dark:bg-[#151020]/90 dark:shadow-black/30"
+                                : "border-[#e8e2f0]/80 bg-[#faf8fc]/94 backdrop-blur-xl dark:border-[#312641] dark:bg-[#151020]/94"
                         )}
                     >
                         <div className="flex h-[54px] items-center justify-between gap-2 px-3 sm:h-16 sm:gap-4 sm:px-5">
                             <Link to="/" className="flex min-w-0 items-center gap-2.5 sm:gap-3">
-                                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-[16px] bg-gradient-to-br from-violet-600 to-fuchsia-500 text-white shadow-md shadow-violet-500/20 sm:h-11 sm:w-11 sm:rounded-2xl">
+                                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-[14px] bg-gradient-to-br from-[#5b2fa8] to-[#1e9e92] text-white shadow-md shadow-[#5b2fa8]/20 sm:h-11 sm:w-11 sm:rounded-2xl">
                                     <CalendarDays className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
                                 </div>
 
                                 <div className="min-w-0">
-                                    <div className="truncate text-[15px] font-semibold tracking-tight text-slate-950 dark:text-white sm:text-[17px]">
-                                        Vizit
+                                    <div className="vizit-display truncate text-[16px] font-bold text-[#3e1f78] dark:text-[#e3d5ff] sm:text-[18px]">
+                                        Vizit.am
                                     </div>
                                     <div className="truncate text-xs text-slate-500 dark:text-slate-400">
                                         {t("nav.tagline")}
@@ -89,18 +89,18 @@ export default function LandingNavbar() {
                             </nav>
 
                             <div className="hidden items-center gap-3 md:flex">
-                                <LanguageToggle className="border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/10" compact />
-                                <ThemeToggle className="border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/10" compact />
+                                <LanguageToggle className="border-[#e8e2f0] bg-white text-[#5f536e] hover:bg-[#f1edf7] dark:border-[#312641] dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/10" compact />
+                                <ThemeToggle className="border-[#e8e2f0] bg-white text-[#5f536e] hover:bg-[#f1edf7] dark:border-[#312641] dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/10" compact />
                                 <Link
                                     to="/login"
-                                    className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-200 dark:hover:bg-white/10"
+                                    className="inline-flex items-center justify-center rounded-full border border-[#e8e2f0] bg-white px-5 py-2.5 text-sm font-medium text-[#5f536e] transition hover:bg-[#f1edf7] dark:border-[#312641] dark:bg-white/[0.06] dark:text-slate-200 dark:hover:bg-white/10"
                                 >
                                     {t("nav.login")}
                                 </Link>
 
                                 <Link
                                     to="/register"
-                                    className="inline-flex items-center justify-center gap-2 rounded-full bg-violet-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-violet-700"
+                                    className="inline-flex items-center justify-center gap-2 rounded-full bg-[#3e1f78] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#5b2fa8] dark:bg-[#a980f3] dark:text-[#160d22] dark:hover:bg-[#bd9cf8]"
                                 >
                                     {t("nav.start")}
                                     <ArrowRight className="h-4 w-4" />
@@ -110,7 +110,7 @@ export default function LandingNavbar() {
                             <button
                                 type="button"
                                 onClick={() => setMobileOpen((prev) => !prev)}
-                                className="inline-flex h-10 w-10 items-center justify-center rounded-[18px] border border-violet-600 bg-violet-600 text-white shadow-md shadow-violet-600/20 transition hover:border-violet-700 hover:bg-violet-700 focus-visible:outline-violet-500 dark:border-violet-400 dark:bg-violet-500 dark:text-white dark:hover:border-violet-300 dark:hover:bg-violet-400 md:hidden sm:h-11 sm:w-11 sm:rounded-2xl"
+                                className="inline-flex h-10 w-10 items-center justify-center rounded-[18px] border border-[#5b2fa8] bg-[#5b2fa8] text-white shadow-md shadow-[#5b2fa8]/20 transition hover:border-[#3e1f78] hover:bg-[#3e1f78] focus-visible:outline-[#5b2fa8] dark:border-[#a980f3] dark:bg-[#a980f3] dark:text-[#160d22] dark:hover:border-[#bd9cf8] dark:hover:bg-[#bd9cf8] md:hidden sm:h-11 sm:w-11 sm:rounded-2xl"
                                 aria-label={t("nav.openMenu")}
                                 aria-expanded={mobileOpen}
                                 aria-controls="landing-mobile-menu"
@@ -139,7 +139,7 @@ export default function LandingNavbar() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
                             transition={{ duration: 0.22 }}
-                            className="fixed inset-x-0 top-[4.2rem] z-50 mx-3 max-h-[calc(100vh-5rem)] overflow-y-auto rounded-[24px] border border-slate-200 bg-white p-4 pb-5 shadow-[0_24px_80px_rgba(15,23,42,0.14)] dark:border-white/10 dark:bg-slate-950 md:hidden sm:mx-4 sm:top-[4.5rem]"
+                            className="fixed inset-x-0 top-[4.2rem] z-50 mx-3 max-h-[calc(100vh-5rem)] overflow-y-auto rounded-[24px] border border-[#e8e2f0] bg-[#faf8fc] p-4 pb-5 shadow-[0_24px_80px_rgba(62,31,120,0.16)] dark:border-[#312641] dark:bg-[#151020] md:hidden sm:mx-4 sm:top-[4.5rem]"
                         >
                             <div className="flex flex-col gap-2">
                                 {navItems.map((item) => (
@@ -151,7 +151,7 @@ export default function LandingNavbar() {
                                             cn(
                                                 "rounded-2xl px-4 py-3 text-sm font-medium transition",
                                                 isActive
-                                                    ? "bg-violet-600 text-white"
+                                                    ? "bg-[#3e1f78] text-white dark:bg-[#a980f3] dark:text-[#160d22]"
                                                     : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/10"
                                             )
                                         }
@@ -176,7 +176,7 @@ export default function LandingNavbar() {
                                 <Link
                                     to="/register"
                                     onClick={() => setMobileOpen(false)}
-                                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 text-sm font-medium text-white"
+                                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#3e1f78] px-5 py-3 text-sm font-semibold text-white dark:bg-[#a980f3] dark:text-[#160d22]"
                                 >
                                     {t("nav.start")}
                                     <ArrowRight className="h-4 w-4" />

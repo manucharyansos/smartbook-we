@@ -127,7 +127,7 @@ export default function PublicBusinessProfile() {
 
     if (businessQ.isLoading) {
         return (
-            <div className="min-h-screen bg-[linear-gradient(180deg,#fffaf5_0%,#ffffff_20%,#faf7ff_100%)]">
+            <div className="vizit-public-detail-page min-h-screen bg-[linear-gradient(180deg,#faf8fc_0%,#ffffff_20%,#f5f0fa_100%)] transition-colors dark:bg-[linear-gradient(180deg,#090712_0%,#151020_45%,#090712_100%)] dark:text-white">
                 <Seo title={`${text.notFoundTitle} | Vizit`} description={text.notFoundText} robots="noindex,nofollow" />
                 <PublicBusinessHeader secondaryHref="/" secondaryLabel="Vizit" />
                 <main className="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6 lg:px-8">
@@ -147,7 +147,7 @@ export default function PublicBusinessProfile() {
 
     if (businessQ.isError || !business) {
         return (
-            <div className="min-h-screen bg-[linear-gradient(180deg,#fffaf5_0%,#ffffff_20%,#faf7ff_100%)]">
+            <div className="vizit-public-detail-page min-h-screen bg-[linear-gradient(180deg,#faf8fc_0%,#ffffff_20%,#f5f0fa_100%)] transition-colors dark:bg-[linear-gradient(180deg,#090712_0%,#151020_45%,#090712_100%)] dark:text-white">
                 <PublicBusinessHeader secondaryHref="/" secondaryLabel="Vizit" />
                 <main className="mx-auto max-w-4xl px-4 pb-16 pt-8 sm:px-6 lg:px-8">
                     <div className="rounded-[32px] border border-rose-200 bg-white p-10 text-center shadow-sm">
@@ -174,7 +174,7 @@ export default function PublicBusinessProfile() {
     }
 
     return (
-        <div className="min-h-screen bg-[linear-gradient(180deg,#fffaf5_0%,#ffffff_22%,#faf7ff_100%)] text-slate-900">
+        <div className="vizit-public-detail-page min-h-screen bg-[linear-gradient(180deg,#faf8fc_0%,#ffffff_22%,#f5f0fa_100%)] text-slate-900 transition-colors dark:bg-[linear-gradient(180deg,#090712_0%,#151020_48%,#090712_100%)] dark:text-white">
             <Seo
                 title={`${business.name} | Vizit`}
                 description={business.short_description || text.defaultDescription}
@@ -194,7 +194,7 @@ export default function PublicBusinessProfile() {
                             className="relative overflow-hidden rounded-[38px] border border-white/70 bg-white/85 shadow-[0_24px_90px_rgba(15,23,42,0.08)] backdrop-blur-xl"
                         >
                             {business.cover_url && <img src={business.cover_url} alt={business.name} className="absolute inset-0 h-full w-full object-cover opacity-20" />}
-                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(168,85,247,0.16),transparent_25%),radial-gradient(circle_at_bottom_left,rgba(251,146,60,0.18),transparent_25%),linear-gradient(135deg,#fff7ed_0%,#faf5ff_55%,#ffffff_100%)]" />
+                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(91,47,168,0.16),transparent_27%),radial-gradient(circle_at_bottom_left,rgba(30,158,146,0.14),transparent_28%),linear-gradient(135deg,#faf8fc_0%,#f7f2fb_55%,#ffffff_100%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(169,128,243,0.20),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(88,208,196,0.12),transparent_30%),linear-gradient(135deg,#151020_0%,#1b1328_55%,#100c18_100%)]" />
 
                             <div className="relative grid gap-8 p-6 sm:p-8 2xl:grid-cols-[1fr_340px] lg:p-10">
                                 <div>

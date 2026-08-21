@@ -24,7 +24,6 @@ import {
   MapPin,
   MessagesSquare,
   MoreHorizontal,
-  Navigation,
   Scissors,
   Search,
   ShieldCheck,
@@ -33,7 +32,6 @@ import {
   Star,
   Stethoscope,
   TestTube2,
-  TrendingUp,
   Users,
   WandSparkles,
   Wrench,
@@ -55,7 +53,6 @@ import {
 } from "../lib/publicApi";
 import { publicPlansApi, type PublicPlan } from "../lib/planApi";
 import { formatPlanPrice, localizePlanDescription, localizePlanNameForLocale, monthlyPlanPrice } from "../lib/planPresentation";
-import heroWoman from "../assets/vizit-hero-woman.png";
 
 type BusinessFilter = "all" | "services" | "healthcare";
 type LocationStatus = "idle" | "loading" | "active" | "error" | "unsupported";
@@ -64,7 +61,7 @@ const defaultPublicCategories: PublicBusinessCategory[] = [
   { slug: "beauty-salon", vertical: "services", name_hy: "Գեղեցկության սրահ", name_ru: "Салон красоты", name_en: "Beauty salon", icon: "sparkles" },
   { slug: "barber-shop", vertical: "services", name_hy: "Բարբերշոփ", name_ru: "Барбершоп", name_en: "Barber shop", icon: "scissors" },
   { slug: "nail-studio", vertical: "services", name_hy: "Մատնահարդարման ստուդիա", name_ru: "Ногтевая студия", name_en: "Nail studio", icon: "hand" },
-  { slug: "massage-spa", vertical: "services", name_hy: "Մերսում և SPA", name_ru: "Массаж и SPA", name_en: "Massage & SPA", icon: "spa" },
+  { slug: "massage-spa", vertical: "services", name_hy: "Մերսում և սպա", name_ru: "Массаж и спа", name_en: "Massage & spa", icon: "spa" },
   { slug: "fitness-trainer", vertical: "services", name_hy: "Ֆիթնես մարզիչ", name_ru: "Фитнес-тренер", name_en: "Fitness trainer", icon: "dumbbell" },
   { slug: "car-wash", vertical: "services", name_hy: "Ավտոլվացում", name_ru: "Автомойка", name_en: "Car wash", icon: "car" },
   { slug: "auto-service", vertical: "services", name_hy: "Ավտոսերվիս", name_ru: "Автосервис", name_en: "Auto service", icon: "wrench" },
@@ -611,7 +608,7 @@ function InteractiveBusinessMap({
 }
 
 function SectionBadge({ children }: { children: ReactNode }) {
-  return <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-cyan-50 px-4 py-2 text-xs font-bold text-cyan-700 shadow-sm backdrop-blur-2xl dark:border-white/12 dark:bg-white/[0.07] dark:text-cyan-100 dark:shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:text-sm">{children}</div>;
+  return <div className="inline-flex items-center gap-2 rounded-full border border-[#1e9e92]/25 bg-[#1e9e92]/[0.08] px-4 py-2 text-xs font-semibold text-[#167d74] shadow-sm backdrop-blur-2xl dark:border-[#58d0c4]/25 dark:bg-[#58d0c4]/10 dark:text-[#8be3da] dark:shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:text-sm">{children}</div>;
 }
 
 function SearchPanel({
@@ -646,13 +643,13 @@ function SearchPanel({
         event.preventDefault();
         onSubmit();
       }}
-      className="mt-7 w-full max-w-[680px] rounded-[22px] bg-white p-2.5 shadow-[0_24px_90px_rgba(2,6,23,0.38)] sm:p-3"
+      className="mt-7 w-full max-w-[680px] rounded-[20px] border border-[#e8e2f0] bg-white p-2.5 shadow-[0_20px_55px_rgba(62,31,120,0.14)] dark:border-[#312641] dark:bg-[#151020] dark:shadow-[0_24px_70px_rgba(0,0,0,0.34)] sm:p-3"
     >
       <div className="grid items-stretch gap-2 md:grid-cols-[1fr_170px_118px]">
-        <label className="relative flex min-h-[62px] items-center rounded-[16px] px-3 text-left transition focus-within:bg-slate-50 sm:px-4 md:border-r md:border-slate-200">
-          <Search className="mr-3 h-[21px] w-[21px] shrink-0 text-slate-400" />
+        <label className="relative flex min-h-[62px] items-center rounded-[16px] px-3 text-left transition focus-within:bg-[#faf8fc] dark:focus-within:bg-white/[0.05] sm:px-4 md:border-r md:border-[#e8e2f0] dark:md:border-[#312641]">
+          <Search className="mr-3 h-[21px] w-[21px] shrink-0 text-[#8f829e] dark:text-[#9488a3]" />
           <span className="min-w-0 flex-1">
-            <span className="block text-[13px] font-bold text-slate-500 sm:text-[14px]">{t("search.label")}</span>
+            <span className="block text-[13px] font-semibold text-[#6b6178] dark:text-[#b7adc5] sm:text-[14px]">{t("search.label")}</span>
             <input
               id="public-business-search"
               name="search"
@@ -661,7 +658,7 @@ function SearchPanel({
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder={t("search.placeholder")}
-              className="mt-1 w-full bg-transparent text-[14px] font-semibold text-slate-700 outline-none placeholder:text-slate-400"
+              className="mt-1 w-full bg-transparent text-[14px] font-medium text-[#241736] outline-none placeholder:text-[#a79db5] dark:text-white dark:placeholder:text-[#766b83]"
             />
           </span>
         </label>
@@ -670,19 +667,19 @@ function SearchPanel({
           type="button"
           onClick={onUseLocation}
           disabled={locationStatus === "loading"}
-          className="flex min-h-[58px] items-center rounded-[16px] px-3 text-left transition hover:bg-slate-50 disabled:cursor-wait disabled:opacity-70 sm:px-4"
+          className="flex min-h-[58px] items-center rounded-[16px] px-3 text-left transition hover:bg-[#faf8fc] disabled:cursor-wait disabled:opacity-70 dark:hover:bg-white/[0.05] sm:px-4"
           aria-label={t("search.useLocation")}
           title={t("search.useLocation")}
         >
-          <MapPin className="mr-3 h-[21px] w-[21px] shrink-0 text-slate-400" />
+          <MapPin className="mr-3 h-[21px] w-[21px] shrink-0 text-[#8f829e] dark:text-[#9488a3]" />
           <span className="min-w-0 flex-1">
-            <span className="block text-[13px] font-bold text-slate-500 sm:text-[14px]">{t("search.location")}</span>
-            <span className="mt-1 block truncate text-[13px] font-semibold text-slate-500" aria-live="polite">{locationValue}</span>
+            <span className="block text-[13px] font-semibold text-[#6b6178] dark:text-[#b7adc5] sm:text-[14px]">{t("search.location")}</span>
+            <span className="mt-1 block truncate text-[13px] font-medium text-[#6b6178] dark:text-[#b7adc5]" aria-live="polite">{locationValue}</span>
           </span>
-          <LocateFixed className="ml-2 h-4 w-4 shrink-0 text-violet-500" />
+          <LocateFixed className="ml-2 h-4 w-4 shrink-0 text-[#1e9e92] dark:text-[#58d0c4]" />
         </button>
 
-        <button type="submit" className="inline-flex h-[54px] items-center justify-center gap-2 rounded-[16px] bg-gradient-to-r from-[#9a55ff] to-[#26a8ff] px-5 text-[14px] font-black text-white shadow-[0_14px_30px_rgba(38,168,255,0.32)] md:h-auto">
+        <button type="submit" className="inline-flex h-[54px] items-center justify-center gap-2 rounded-[16px] bg-[#5b2fa8] px-5 text-[14px] font-semibold text-white shadow-[0_14px_30px_rgba(91,47,168,0.24)] transition hover:bg-[#3e1f78] dark:bg-[#a980f3] dark:text-[#160d22] dark:hover:bg-[#bd9cf8] md:h-auto">
           <Search className="h-4 w-4" /> {t("search.button")}
         </button>
       </div>
@@ -691,52 +688,52 @@ function SearchPanel({
   );
 }
 
-function HeroVisual({ businessCount, servicesCount, staffCount }: { businessCount: number | string; servicesCount: number | string; staffCount: number | string }) {
+function HeroTicket() {
   const { t } = useLanguage();
   return (
-    <motion.div variants={fadeUp} className="relative hidden min-h-[560px] xl:block">
-      <div className="absolute left-[7%] top-[116px] h-[335px] w-[360px] skew-x-[-16deg] rounded-[24px] bg-gradient-to-br from-[#1b315e]/65 via-[#3d3f96]/55 to-[#8f4cff]/55 opacity-70" />
-      <div className="absolute left-[30%] top-[202px] h-[278px] w-[410px] skew-x-[-16deg] rounded-[26px] bg-gradient-to-br from-[#5231a7]/80 via-[#8d54ee]/68 to-[#273a82]/65 opacity-80" />
-      <img src={heroWoman} alt={t("seo.imageAlt")} className="absolute bottom-0 left-[56px] z-10 h-[520px] w-auto select-none object-contain drop-shadow-[0_34px_70px_rgba(0,0,0,0.35)]" draggable={false} />
+    <motion.div variants={fadeUp} className="relative mx-auto flex min-h-[390px] w-full max-w-[540px] items-center justify-center px-3 pb-12 pt-8 sm:min-h-[470px] sm:px-8 xl:min-h-[560px] xl:justify-end">
+      <div className="absolute left-[8%] top-[14%] h-40 w-40 rounded-full bg-[#1e9e92]/20 blur-3xl dark:bg-[#58d0c4]/15 sm:h-56 sm:w-56" />
+      <div className="absolute bottom-[12%] right-[4%] h-44 w-44 rounded-full bg-[#5b2fa8]/20 blur-3xl dark:bg-[#a980f3]/20 sm:h-64 sm:w-64" />
 
-      {[
-        { top: "72px", value: businessCount, label: t("stats.businesses"), Icon: Building2, color: "text-[#93b5ff]", trend: true },
-        { top: "218px", value: servicesCount, label: t("stats.services"), Icon: Sparkles, color: "text-[#ffc857]", trend: false },
-        { top: "360px", value: staffCount, label: t("stats.staff"), Icon: CalendarDays, color: "text-cyan-200", trend: false },
-      ].map(({ top, value, label, Icon, color, trend }) => (
-        <motion.div key={label} variants={fadeUp} className="absolute right-[4px] z-20 w-[224px] rounded-[20px] border border-white/10 bg-white/[0.105] p-5 text-white shadow-[0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur-2xl" style={{ top }}>
-          <div className="flex items-center gap-4">
-            <span className={cn("grid h-[52px] w-[52px] place-items-center rounded-[15px] bg-white/10", color)}>
-              <Icon className="h-7 w-7" />
-            </span>
-            <span className="min-w-0">
-              <span className="block text-[19px] font-black leading-none">{value}</span>
-              <span className="mt-2 block text-[11px] font-bold leading-4 text-white/72">{label}</span>
-              {trend ? <TrendingUp className="mt-2 h-6 w-12 text-emerald-300" /> : null}
-            </span>
+      <div aria-hidden="true" className="absolute left-[19%] top-[27%] h-[245px] w-[70%] max-w-[330px] rotate-[7deg] rounded-[24px] bg-gradient-to-br from-[#1e9e92] to-[#126c64] opacity-55 shadow-[0_28px_60px_rgba(30,158,146,0.25)] sm:h-[300px] xl:left-[22%]" />
+
+      <div role="img" aria-label={`${t("ticket.queue")} A07. ${t("ticket.confirmed")}: ${t("ticket.visitValue")}, ${t("ticket.dateValue")}, 14:30`} className="relative z-10 w-full max-w-[360px] -rotate-[2deg] rounded-[24px] bg-gradient-to-br from-[#3e1f78] via-[#53299a] to-[#6d38bd] p-6 text-white shadow-[0_34px_75px_rgba(62,31,120,0.34)] sm:p-8 dark:shadow-[0_38px_90px_rgba(0,0,0,0.48)]">
+        <div aria-hidden="true">
+          <div className="flex items-start justify-between gap-5">
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.13em] text-white/65">{t("ticket.queue")}</div>
+              <div className="vizit-display mt-2 text-5xl font-bold leading-none sm:text-6xl">A07</div>
+            </div>
+            <CalendarDays className="h-7 w-7 text-[#79ded4]" />
           </div>
-        </motion.div>
-      ))}
-    </motion.div>
-  );
-}
 
-function MobileStats({ stats }: { stats: { total: number | string; services: number | string; staff: number | string } }) {
-  const { t } = useLanguage();
-  const items = [
-    { value: stats.total, label: t("stats.businesses"), Icon: Building2 },
-    { value: stats.services, label: t("stats.services"), Icon: Sparkles },
-    { value: stats.staff, label: t("stats.staff"), Icon: Users },
-  ];
-  return (
-    <motion.div variants={fadeUp} className="mt-7 grid grid-cols-3 gap-2 xl:hidden">
-      {items.map(({ value, label, Icon }) => (
-        <div key={label} className="rounded-[18px] border border-slate-200 bg-white/80 p-3 text-center shadow-sm backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.08] sm:p-4">
-          <Icon className="mx-auto h-5 w-5 text-violet-500 dark:text-cyan-200" />
-          <div className="mt-2 text-xl font-black text-slate-950 dark:text-white sm:text-2xl">{value}</div>
-          <div className="mt-1 text-[10px] font-bold leading-4 text-slate-600 dark:text-slate-200 sm:text-xs">{label}</div>
+          <div className="relative my-6 border-t border-dashed border-white/30 before:absolute before:-left-9 before:-top-[11px] before:h-5 before:w-5 before:rounded-full before:bg-[#faf8fc] after:absolute after:-right-9 after:-top-[11px] after:h-5 after:w-5 after:rounded-full after:bg-[#faf8fc] dark:before:bg-[#090712] dark:after:bg-[#090712] sm:my-7 sm:before:-left-11 sm:after:-right-11" />
+
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.12em] text-white/60">{t("ticket.visit")}</div>
+            <div className="mt-1.5 text-sm font-semibold sm:text-base">{t("ticket.visitValue")}</div>
+          </div>
+          <div className="mt-5 grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <div className="text-white/60">{t("ticket.date")}</div>
+              <div className="mt-1 font-semibold">{t("ticket.dateValue")}</div>
+            </div>
+            <div>
+              <div className="text-white/60">{t("ticket.time")}</div>
+              <div className="mt-1 font-semibold">14:30</div>
+            </div>
+          </div>
         </div>
-      ))}
+
+        <div aria-hidden="true" className="absolute -bottom-6 right-4 grid h-[74px] w-[74px] rotate-[5deg] place-items-center rounded-full border-4 border-[#faf8fc] bg-[#e8a93c] px-2 text-center text-[11px] font-bold leading-4 text-[#3e2a08] shadow-[0_14px_30px_rgba(232,169,60,0.38)] dark:border-[#090712] sm:-right-5 sm:h-20 sm:w-20">
+          {t("ticket.confirmed")}
+        </div>
+      </div>
+
+      <div aria-hidden="true" className="absolute bottom-[12%] left-[12%] z-20 hidden rotate-[-5deg] rounded-2xl border border-[#e8e2f0] bg-white/90 px-4 py-3 text-[#3e1f78] shadow-xl backdrop-blur sm:block dark:border-[#312641] dark:bg-[#151020]/90 dark:text-[#c3a7ff]">
+        <div className="text-[10px] font-semibold uppercase tracking-[0.12em] opacity-65">{t("ticket.next")}</div>
+        <div className="vizit-display mt-1 text-xl font-bold">B14</div>
+      </div>
     </motion.div>
   );
 }
@@ -896,11 +893,10 @@ export default function Index() {
   const businessStat = (value: number) => businessesQ.isLoading ? "..." : businessesQ.isError ? "—" : value;
   const categoryStat = businessesQ.isLoading || categoriesQ.isLoading ? "..." : businessesQ.isError ? "—" : stats.categories;
 
-  const benefitCards = useMemo(() => [
-    { title: t("benefits.fast.title"), text: t("benefits.fast.text"), Icon: Sparkles, tone: "from-violet-500/30 to-violet-500/5 text-violet-200" },
-    { title: t("benefits.secure.title"), text: t("benefits.secure.text"), Icon: ShieldCheck, tone: "from-emerald-500/30 to-emerald-500/5 text-emerald-200" },
-    { title: t("benefits.real.title"), text: t("benefits.real.text"), Icon: BadgeCheck, tone: "from-fuchsia-500/30 to-fuchsia-500/5 text-fuchsia-200" },
-    { title: t("benefits.growth.title"), text: t("benefits.growth.text"), Icon: Navigation, tone: "from-sky-500/30 to-sky-500/5 text-sky-200" },
+  const bookingSteps = useMemo(() => [
+    { number: "1", title: t("steps.search.title"), text: t("steps.search.text"), Icon: Search },
+    { number: "2", title: t("steps.time.title"), text: t("steps.time.text"), Icon: CalendarDays },
+    { number: "3", title: t("steps.confirm.title"), text: t("steps.confirm.text"), Icon: BadgeCheck },
   ], [t]);
 
   function selectCategory(category: PublicBusinessCategory) {
@@ -942,54 +938,65 @@ export default function Index() {
 
 
   return (
-    <div className="vizit-public-page min-h-screen overflow-x-clip bg-slate-50 text-slate-950 transition-colors dark:bg-[#050816] dark:text-white">
+    <div className="vizit-public-page min-h-screen overflow-x-clip bg-[#faf8fc] text-[#241736] transition-colors dark:bg-[#090712] dark:text-white">
       <Seo title={t("seo.homeTitle")} description={t("seo.homeDescription")} image="/og-default.svg" />
       <LandingNavbar />
 
       <main>
-        <section className="relative overflow-hidden bg-white px-5 pb-8 pt-[108px] transition-colors dark:bg-[#050816] sm:px-8 sm:pt-[126px] lg:pb-0">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_14%,rgba(125,92,255,0.14),transparent_28%),radial-gradient(circle_at_82%_18%,rgba(38,168,255,0.10),transparent_30%),linear-gradient(180deg,#ffffff_0%,#f8fafc_58%,#f1f5f9_100%)] dark:bg-[radial-gradient(circle_at_18%_14%,rgba(125,92,255,0.22),transparent_26%),radial-gradient(circle_at_82%_18%,rgba(38,168,255,0.14),transparent_28%),linear-gradient(180deg,#07101f_0%,#080d1a_58%,#050816_100%)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(circle_at_top,black,transparent_76%)]" />
+        <section className="relative overflow-hidden bg-[#faf8fc] px-5 pb-10 pt-[108px] transition-colors dark:bg-[#090712] sm:px-8 sm:pt-[126px] lg:pb-12">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_10%,rgba(91,47,168,0.11),transparent_29%),radial-gradient(circle_at_84%_18%,rgba(30,158,146,0.10),transparent_28%),linear-gradient(180deg,#faf8fc_0%,#ffffff_64%,#faf8fc_100%)] dark:bg-[radial-gradient(circle_at_16%_10%,rgba(169,128,243,0.19),transparent_28%),radial-gradient(circle_at_84%_18%,rgba(88,208,196,0.11),transparent_28%),linear-gradient(180deg,#090712_0%,#151020_62%,#090712_100%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(91,47,168,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(91,47,168,0.035)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(circle_at_top,black,transparent_76%)] dark:opacity-50" />
 
-          <motion.div variants={stagger} initial="hidden" animate="visible" className="relative mx-auto grid max-w-[1320px] gap-8 xl:grid-cols-[1fr_610px] xl:items-end">
-            <div className="max-w-[705px] pb-8 text-center xl:pb-[120px] xl:text-left">
-              <motion.div variants={fadeUp} className="mx-auto inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/80 px-4 py-2 text-[12px] font-bold text-slate-700 shadow-sm backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.075] dark:text-slate-100 dark:shadow-[0_16px_50px_rgba(0,0,0,0.22)] xl:mx-0">
-                <Star className="h-4 w-4 fill-[#6aa5ff] text-[#6aa5ff]" /> {t("hero.badge")}
+          <motion.div variants={stagger} initial="hidden" animate="visible" className="relative mx-auto grid max-w-[1160px] gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-center xl:gap-12">
+            <div className="max-w-[650px] py-7 text-center lg:py-14 lg:text-left">
+              <motion.div variants={fadeUp} className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#1e9e92]/25 bg-[#1e9e92]/[0.08] px-4 py-2 text-[12px] font-semibold text-[#167d74] shadow-sm backdrop-blur-2xl dark:border-[#58d0c4]/25 dark:bg-[#58d0c4]/10 dark:text-[#8be3da] dark:shadow-[0_16px_50px_rgba(0,0,0,0.22)] lg:mx-0">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#1e9e92] dark:bg-[#58d0c4]" /> {t("hero.badge")}
               </motion.div>
 
-              <motion.h1 variants={fadeUp} className="mt-7 text-[clamp(2.15rem,10vw,2.75rem)] font-black leading-[1.06] tracking-[-0.045em] text-slate-950 dark:text-white sm:mt-8 sm:text-[64px] sm:leading-[0.98] sm:tracking-[-0.055em] lg:text-[78px]">
-                {t("hero.title1")} <span className="mt-2 block bg-gradient-to-r from-[#a855f7] via-[#6c7bff] to-[#22d3ee] bg-clip-text text-transparent">{t("hero.title2")}</span>
+              <motion.h1 variants={fadeUp} className="vizit-display mt-7 text-[clamp(2.25rem,10vw,3.25rem)] leading-[1.12] text-[#241736] dark:text-white sm:mt-8 sm:text-[58px] lg:text-[62px]">
+                {t("hero.title1")} <span className="text-[#5b2fa8] dark:text-[#b898f4]">{t("hero.title2")}</span>{t("hero.titlePunctuation")}
               </motion.h1>
 
-              <motion.p variants={fadeUp} className="mx-auto mt-5 max-w-2xl text-[15px] font-medium leading-7 text-slate-600 dark:text-slate-200 sm:mt-6 sm:text-[17px] sm:leading-8 xl:mx-0">{t("hero.subtitle")}</motion.p>
+              <motion.p variants={fadeUp} className="mx-auto mt-5 max-w-[560px] text-[15px] leading-7 text-[#6b6178] dark:text-[#b7adc5] sm:mt-6 sm:text-[17px] sm:leading-8 lg:mx-0">{t("hero.subtitle")}</motion.p>
 
               <SearchPanel search={search} setSearch={setSearch} onSubmit={scrollToResults} locationStatus={locationStatus} onUseLocation={useCurrentLocation} />
 
               {businessesQ.isError ? (
-                <motion.div variants={fadeUp} className="mt-4 rounded-2xl border border-rose-300/30 bg-rose-500/12 px-4 py-3 text-sm font-semibold text-rose-100">
+                <motion.div variants={fadeUp} className="mt-4 rounded-2xl border border-rose-300/50 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700 dark:border-rose-300/25 dark:bg-rose-500/10 dark:text-rose-200">
                   {t("status.errorBusinesses")}
                 </motion.div>
               ) : null}
 
-              <motion.div variants={fadeUp} className="mt-5 flex flex-wrap items-center justify-center gap-2 text-[12px] text-slate-600 dark:text-slate-200 xl:justify-start">
+              <motion.div variants={fadeUp} className="mt-5 flex flex-wrap items-center justify-center gap-2 text-[12px] text-[#6b6178] dark:text-[#b7adc5] lg:justify-start">
                 {popularChips.length ? popularChips.map((category) => {
                   const label = getCategoryName(category, locale) ?? t("category.fallback");
-                  return <button key={category.slug ?? label} type="button" onClick={() => selectCategory(category)} className="rounded-full border border-slate-200 bg-white px-4 py-2 font-semibold text-slate-700 transition hover:border-violet-300 hover:bg-violet-50 dark:border-white/15 dark:bg-white/[0.08] dark:text-slate-100 dark:hover:border-cyan-200/40 dark:hover:bg-white/[0.14] dark:hover:text-white">{label}</button>;
+                  return <button key={category.slug ?? label} type="button" onClick={() => selectCategory(category)} className="rounded-full border border-[#e8e2f0] bg-white px-4 py-2 font-medium text-[#6b6178] transition hover:border-[#5b2fa8]/40 hover:bg-[#f1edf7] hover:text-[#3e1f78] dark:border-[#312641] dark:bg-white/[0.06] dark:text-[#c9bfd5] dark:hover:border-[#a980f3]/40 dark:hover:bg-white/10 dark:hover:text-white">{label}</button>;
                 }) : null}
               </motion.div>
 
-              <MobileStats stats={{ total: businessStat(stats.total), services: businessStat(stats.services), staff: businessStat(stats.staff) }} />
+              <motion.div variants={fadeUp} className="mt-6 grid gap-2 text-left text-xs text-[#6b6178] dark:text-[#b7adc5] sm:grid-cols-3">
+                {[
+                  { label: t("hero.proof.availability"), Icon: CalendarDays },
+                  { label: t("hero.proof.noCalls"), Icon: ShieldCheck },
+                  { label: t("hero.proof.reminders"), Icon: BadgeCheck },
+                ].map(({ label, Icon }) => (
+                  <div key={label} className="flex items-center gap-2 rounded-xl px-1 py-1.5">
+                    <Icon className="h-4 w-4 shrink-0 text-[#1e9e92] dark:text-[#58d0c4]" />
+                    <span>{label}</span>
+                  </div>
+                ))}
+              </motion.div>
             </div>
 
-            <HeroVisual businessCount={businessStat(stats.total)} servicesCount={businessStat(stats.services)} staffCount={businessStat(stats.staff)} />
+            <HeroTicket />
           </motion.div>
         </section>
 
-        <section id="categories" className="relative scroll-mt-24 bg-slate-100 px-5 pb-8 transition-colors dark:bg-[#050816] sm:px-8">
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.18 }} className="mx-auto max-w-[1320px] rounded-[26px] border border-slate-200 bg-white p-5 text-slate-950 shadow-[0_30px_100px_rgba(2,6,23,0.12)] dark:border-white/10 dark:bg-[#07101f] dark:text-white dark:shadow-[0_30px_100px_rgba(0,0,0,0.30)] sm:rounded-[30px] sm:p-7">
+        <section id="categories" className="relative scroll-mt-24 bg-[#faf8fc] px-5 pb-8 transition-colors dark:bg-[#090712] sm:px-8">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.18 }} className="mx-auto max-w-[1320px] rounded-[26px] border border-[#e8e2f0] bg-white p-5 text-[#241736] shadow-[0_30px_100px_rgba(62,31,120,0.10)] dark:border-[#312641] dark:bg-[#151020] dark:text-white dark:shadow-[0_30px_100px_rgba(0,0,0,0.30)] sm:rounded-[30px] sm:p-7">
             <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <h2 className="text-2xl font-black tracking-[-0.04em] sm:text-3xl">{t("categories.title")}</h2>
-              <button type="button" onClick={resetFilters} className="inline-flex items-center gap-2 rounded-full px-2 text-sm font-bold text-violet-600 transition hover:text-violet-700">{t("categories.all")} <ArrowRight className="h-4 w-4" /></button>
+              <h2 className="vizit-display text-2xl sm:text-3xl">{t("categories.title")}</h2>
+              <button type="button" onClick={resetFilters} className="inline-flex items-center gap-2 rounded-full px-2 text-sm font-semibold text-[#5b2fa8] transition hover:text-[#3e1f78] dark:text-[#b898f4] dark:hover:text-[#d8c6fa]">{t("categories.all")} <ArrowRight className="h-4 w-4" /></button>
             </div>
 
             {(businessesQ.isLoading || categoriesQ.isLoading) ? (
@@ -1017,24 +1024,27 @@ export default function Index() {
           </motion.div>
         </section>
 
-        <section id="how" className="scroll-mt-24 bg-white px-0 py-10 text-slate-950 transition-colors dark:bg-[#050816] dark:text-white sm:px-8 sm:py-14 lg:py-18">
-          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="mx-auto max-w-[1320px] rounded-none border-y border-slate-200 bg-slate-50 p-5 shadow-[0_20px_70px_rgba(15,23,42,0.07)] dark:border-white/10 dark:bg-[#07101f] dark:shadow-[0_24px_80px_rgba(0,0,0,0.26)] sm:rounded-[34px] sm:border sm:p-8 lg:p-10">
-            <motion.h2 variants={fadeUp} className="text-center text-[27px] font-black tracking-[-0.04em] text-slate-950 dark:text-white sm:text-4xl">{t("how.title")}</motion.h2>
-            <motion.div variants={fadeUp} className="mx-auto mt-3 h-1 w-16 rounded-full bg-gradient-to-r from-violet-500 to-cyan-400" />
+        <section id="how" className="scroll-mt-24 bg-white px-0 py-10 text-[#241736] transition-colors dark:bg-[#090712] dark:text-white sm:px-8 sm:py-14 lg:py-18">
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="mx-auto max-w-[1160px] rounded-none border-y border-[#e8e2f0] bg-[#faf8fc] p-5 shadow-[0_20px_70px_rgba(62,31,120,0.07)] dark:border-[#312641] dark:bg-[#151020] dark:shadow-[0_24px_80px_rgba(0,0,0,0.26)] sm:rounded-[34px] sm:border sm:p-8 lg:p-10">
+            <motion.div variants={fadeUp} className="text-center">
+              <SectionBadge><Sparkles className="h-4 w-4" /> {t("how.badge")}</SectionBadge>
+              <h2 className="vizit-display mt-4 text-[28px] text-[#241736] dark:text-white sm:text-4xl">{t("how.title")}</h2>
+            </motion.div>
 
-            <div className="mt-6 grid gap-2.5 sm:mt-8 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
-              {benefitCards.map(({ title, text, Icon, tone }) => (
-                <motion.div key={title} variants={fadeUp} className="flex items-start gap-3 rounded-[18px] border border-slate-200 bg-white p-3.5 text-left shadow-[0_12px_38px_rgba(15,23,42,0.06)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.065] dark:shadow-[0_14px_42px_rgba(0,0,0,0.17)] sm:block sm:rounded-[22px] sm:p-5">
-                  <span className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-[14px] bg-gradient-to-br sm:h-[60px] sm:w-[60px] sm:rounded-[18px]", tone)}><Icon className="h-5 w-5 sm:h-7 sm:w-7" /></span>
-                  <span className="min-w-0">
-                    <h3 className="text-[15px] font-black leading-5 text-slate-950 dark:text-white sm:mt-4 sm:text-[16px]">{title}</h3>
-                    <p className="mt-1.5 text-[12px] font-medium leading-5 text-slate-600 dark:text-slate-300 sm:mt-2 sm:text-[13px] sm:leading-6">{text}</p>
-                  </span>
+            <div className="mt-7 grid gap-4 sm:mt-9 sm:grid-cols-3">
+              {bookingSteps.map(({ number, title, text, Icon }) => (
+                <motion.div key={number} variants={fadeUp} className="relative rounded-[22px] border border-[#e8e2f0] bg-white p-5 text-left shadow-[0_12px_38px_rgba(62,31,120,0.06)] dark:border-[#312641] dark:bg-white/[0.055] dark:shadow-[0_14px_42px_rgba(0,0,0,0.17)] sm:p-6">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="vizit-display grid h-10 w-10 place-items-center rounded-xl border-2 border-[#5b2fa8]/35 text-lg text-[#5b2fa8] dark:border-[#a980f3]/45 dark:text-[#c3a7ff]">{number}</span>
+                    <Icon className="h-5 w-5 text-[#1e9e92] dark:text-[#58d0c4]" />
+                  </div>
+                  <h3 className="vizit-display mt-5 text-[18px] text-[#241736] dark:text-white">{title}</h3>
+                  <p className="mt-2 text-[13px] leading-6 text-[#6b6178] dark:text-[#b7adc5]">{text}</p>
                 </motion.div>
               ))}
             </div>
 
-            <motion.div variants={fadeUp} className="mt-4 grid grid-cols-4 gap-1 rounded-[18px] border border-slate-200 bg-white p-2 dark:border-white/10 dark:bg-white/[0.055] sm:mt-6 sm:gap-3 sm:rounded-[22px] sm:p-4">
+            <motion.div variants={fadeUp} className="mt-5 grid grid-cols-2 gap-1 rounded-[18px] border border-[#e8e2f0] bg-white p-2 dark:border-[#312641] dark:bg-white/[0.055] sm:mt-7 sm:grid-cols-4 sm:gap-3 sm:rounded-[22px] sm:p-4">
               {[
                 { value: businessStat(stats.total), label: t("stats.businesses"), Icon: Building2 },
                 { value: businessStat(stats.services), label: t("stats.services"), Icon: Sparkles },
@@ -1042,8 +1052,8 @@ export default function Index() {
                 { value: categoryStat, label: t("stats.categories"), Icon: Star },
               ].map(({ value, label, Icon }) => (
                 <div key={label} className="flex min-w-0 flex-col items-center justify-center gap-1.5 rounded-[14px] px-1 py-3 text-center sm:flex-row sm:gap-4 sm:rounded-[18px] sm:px-3 sm:py-4 sm:text-left xl:justify-center">
-                  <Icon className="h-5 w-5 shrink-0 text-[#6aa5ff] sm:h-7 sm:w-7" />
-                  <span className="min-w-0"><span className="block bg-gradient-to-r from-[#7b65ff] to-[#35b7ff] bg-clip-text text-xl font-black leading-none text-transparent sm:text-[26px]">{value}</span><span className="mt-1.5 block text-[9px] font-semibold leading-3 text-slate-600 dark:text-slate-200 sm:mt-2 sm:text-[12px] sm:leading-4">{label}</span></span>
+                  <Icon className="h-5 w-5 shrink-0 text-[#1e9e92] dark:text-[#58d0c4] sm:h-7 sm:w-7" />
+                  <span className="min-w-0"><span className="vizit-display block text-xl font-bold leading-none text-[#5b2fa8] dark:text-[#b898f4] sm:text-[26px]">{value}</span><span className="mt-1.5 block text-[10px] font-medium leading-3 text-[#6b6178] dark:text-[#b7adc5] sm:mt-2 sm:text-[12px] sm:leading-4">{label}</span></span>
                 </div>
               ))}
             </motion.div>

@@ -169,27 +169,27 @@ function getStatusMeta(status: string, label: string | undefined, locale: Locale
     if (status === "confirmed") {
         return {
             label: label || text.statusConfirmed,
-            badgeClass: "bg-emerald-100 text-emerald-700 border-emerald-200",
+            badgeClass: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:border-emerald-400/25 dark:bg-emerald-500/15 dark:text-emerald-200",
         };
     }
 
     if (status === "cancelled") {
         return {
             label: label || text.statusCancelled,
-            badgeClass: "bg-rose-100 text-rose-700 border-rose-200",
+            badgeClass: "bg-rose-100 text-rose-700 border-rose-200 dark:border-rose-400/25 dark:bg-rose-500/15 dark:text-rose-200",
         };
     }
 
     if (status === "done" || status === "completed") {
         return {
             label: label || text.statusCompleted,
-            badgeClass: "bg-slate-100 text-slate-700 border-slate-200",
+            badgeClass: "bg-slate-100 text-slate-700 border-slate-200 dark:border-[#312641] dark:bg-white/[0.06] dark:text-slate-200",
         };
     }
 
     return {
         label: label || text.statusPending,
-        badgeClass: "bg-amber-100 text-amber-700 border-amber-200",
+        badgeClass: "bg-amber-100 text-amber-700 border-amber-200 dark:border-amber-400/25 dark:bg-amber-500/15 dark:text-amber-200",
     };
 }
 
@@ -203,7 +203,7 @@ const fadeUp = {
 };
 
 const inputClass =
-    "w-full rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-slate-900 shadow-sm outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100";
+    "w-full rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-slate-900 shadow-sm outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 dark:border-[#312641] dark:bg-[#100c18] dark:text-white dark:focus:border-[#a980f3] dark:focus:ring-[#a980f3]/15";
 
 function slotLabel(slot: Slot, showStaff = false) {
     const st = slot.starts_at.slice(11, 16);
@@ -216,6 +216,14 @@ function slotLabel(slot: Slot, showStaff = false) {
 
 function slotKey(slot: Slot) {
     return `${slot.starts_at}|${slot.staff_id ?? "na"}`;
+}
+
+function localizeSmartReason(reason: string | null | undefined, locale: Locale) {
+    const text = publicBookingCopy[locale];
+    const normalized = String(reason ?? "").trim();
+    if (normalized === "Մոտ է զբաղված հատվածին") return text.smartNearBusy;
+    if (normalized === "Սովորական ազատ ժամ") return text.smartStandard;
+    return locale === "hy" && normalized ? normalized : text.smartFallback;
 }
 
 function formatApiError(error: unknown, fallback: string) {
@@ -240,8 +248,8 @@ function SmartSuggestions({
     if (!slots.length) return null;
 
     return (
-        <div className="rounded-3xl border border-emerald-200 bg-gradient-to-r from-emerald-50 via-white to-violet-50 p-4">
-            <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-emerald-800">
+        <div className="rounded-3xl border border-emerald-200 bg-gradient-to-r from-emerald-50 via-white to-violet-50 p-4 dark:border-emerald-400/25 dark:from-emerald-950/45 dark:via-[#151020] dark:to-violet-950/45">
+            <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-emerald-800 dark:text-emerald-200">
                 <Sparkles className="h-4 w-4" />
                 {text.smartTitle}
             </div>
@@ -259,8 +267,8 @@ function SmartSuggestions({
                             className={mergeClass(
                                 "rounded-2xl border px-3 py-3 text-left transition-all",
                                 active
-                                    ? "border-emerald-400 bg-emerald-100 shadow-sm"
-                                    : "border-white/70 bg-white/90 hover:border-emerald-300 hover:bg-white"
+                                    ? "border-emerald-400 bg-emerald-100 shadow-sm dark:border-emerald-400/45 dark:bg-emerald-500/15"
+                                    : "border-white/70 bg-white/90 hover:border-emerald-300 hover:bg-white dark:border-[#312641] dark:hover:border-emerald-400/35 dark:hover:bg-white/[0.08]"
                             )}
                         >
                             <div className="flex items-center justify-between gap-2">
@@ -269,7 +277,7 @@ function SmartSuggestions({
                                     #{slot.recommendation_rank ?? "★"}
                                 </span>
                             </div>
-                            <div className="mt-1 text-xs text-slate-500">{slot.smart_reason || text.smartFallback}</div>
+                            <div className="mt-1 text-xs text-slate-500">{localizeSmartReason(slot.smart_reason, locale)}</div>
                         </button>
                     );
                 })}
@@ -334,10 +342,10 @@ function LineBookingCard({
     }, [slots, line.time, line.id, onChange]);
 
     return (
-        <div className="rounded-[26px] border border-orange-200 bg-gradient-to-br from-orange-50 via-white to-rose-50 p-4 sm:p-5 shadow-sm">
+        <div className="rounded-[26px] border border-orange-200 bg-gradient-to-br from-orange-50 via-white to-rose-50 p-4 shadow-sm dark:border-orange-400/25 dark:from-orange-950/35 dark:via-[#151020] dark:to-rose-950/35 sm:p-5">
             <div className="flex items-center justify-between gap-3 mb-4">
                 <div>
-                    <div className="text-sm text-orange-600 font-medium">
+                    <div className="text-sm font-medium text-orange-600 dark:text-orange-300">
                         {text.serviceNumber} #{index + 1}
                     </div>
                     <div className="text-lg font-semibold text-slate-900">
@@ -1169,7 +1177,7 @@ export default function PublicBooking() {
 
     if (businessQ.isLoading || servicesQ.isLoading || staffQ.isLoading) {
         return (
-            <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#fff7ed,_#eff6ff_50%,_#fdf2f8)]">
+            <div className="vizit-booking-page min-h-screen bg-[radial-gradient(circle_at_top,_#faf8fc,_#f4effa_50%,_#ffffff)] transition-colors dark:bg-[radial-gradient(circle_at_top,_#211632,_#151020_52%,_#090712)] dark:text-white">
                 <PublicBusinessHeader secondaryHref="/" secondaryLabel="Vizit" />
                 <div className="flex items-center justify-center px-4 py-10">
                 <div className="rounded-3xl bg-white/80 backdrop-blur-xl border border-white/60 shadow-2xl px-8 py-10 text-center max-w-md w-full">
@@ -1189,7 +1197,7 @@ export default function PublicBooking() {
 
     if (!business) {
         return (
-            <div className="min-h-screen bg-slate-50">
+            <div className="vizit-booking-page min-h-screen bg-[#faf8fc] transition-colors dark:bg-[#090712] dark:text-white">
                 <Seo title={`${text.notFound} | Vizit`} description={text.checkLink} robots="noindex,nofollow" />
                 <PublicBusinessHeader secondaryHref="/" secondaryLabel="Vizit" />
                 <div className="flex items-center justify-center px-4 py-10">
@@ -1211,7 +1219,7 @@ export default function PublicBooking() {
     const isBeauty = business.business_type === "beauty";
 
     return (
-        <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_#fdf2f8,_#eff6ff_40%,_#fff7ed_70%,_#ffffff)]">
+        <div className="vizit-booking-page min-h-screen bg-[radial-gradient(circle_at_top_left,_#f3edf9,_#faf8fc_44%,_#eaf8f6_76%,_#ffffff)] transition-colors dark:bg-[radial-gradient(circle_at_top_left,_#25173a,_#151020_44%,_#0d2423_78%,_#090712)] dark:text-white">
             <Seo
                 title={`${text.bookNow} — ${business.name} | Vizit`}
                 description={business.short_description || (isBeauty ? text.beautyIntro : text.clinicIntro)}
@@ -1637,7 +1645,7 @@ export default function PublicBooking() {
                                         </div>
                                     )}
 
-                                    <div className="rounded-3xl bg-gradient-to-r from-violet-50 to-fuchsia-50 border border-violet-200 p-5">
+                                    <div className="rounded-3xl border border-violet-200 bg-gradient-to-r from-violet-50 to-fuchsia-50 p-5 dark:border-violet-400/25 dark:from-violet-950/40 dark:to-fuchsia-950/35">
                                         <div className="flex flex-wrap items-center justify-between gap-3">
                                             <div>
                                                 <div className="text-sm text-slate-500">
@@ -1800,7 +1808,7 @@ export default function PublicBooking() {
                                 ) : null}
                             </section>
 
-                            <div className="rounded-[28px] border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-5 sm:p-6">
+                            <div className="rounded-[28px] border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-5 dark:border-[#312641] dark:from-[#21162f] dark:to-[#151020] sm:p-6">
                                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                     <div>
                                         <div className="text-sm text-slate-500">{text.ready}</div>
@@ -2004,17 +2012,17 @@ function OtpVerifyPanel({
     const seconds = String(visibleRemainingSeconds % 60).padStart(2, "0");
 
     return (
-        <div className="rounded-[28px] border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-fuchsia-50 p-5 sm:p-6 shadow-sm">
+        <div className="rounded-[28px] border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-fuchsia-50 p-5 shadow-sm dark:border-violet-400/25 dark:from-violet-950/40 dark:via-[#151020] dark:to-fuchsia-950/35 sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <div className="text-sm font-medium text-violet-700">{text.otpStep}</div>
+                    <div className="text-sm font-medium text-violet-700 dark:text-violet-300">{text.otpStep}</div>
                     <div className="mt-1 text-2xl font-bold text-slate-900">{text.otpTitle}</div>
                     <div className="mt-2 text-sm text-slate-500">
                         {text.otpBookingCode}: <span className="font-semibold text-slate-900">{bookingCode}</span>
                     </div>
                 </div>
                 <div className="rounded-2xl bg-white border border-violet-100 px-4 py-3 text-sm text-slate-600">
-                    <div className="font-semibold text-slate-900">SMS / WhatsApp / Email</div>
+                    <div className="font-semibold text-slate-900">{text.contactChannels}</div>
                     <div className="mt-1">{text.otpValid}: {expiresAt ? `${minutes}:${seconds}` : "--:--"}</div>
                 </div>
             </div>
@@ -2082,10 +2090,10 @@ function ManageBookingCard({
     }
 
     return (
-        <div className="rounded-[28px] border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-sky-50 p-5 sm:p-6 shadow-sm">
+        <div className="rounded-[28px] border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-sky-50 p-5 shadow-sm dark:border-emerald-400/25 dark:from-emerald-950/40 dark:via-[#151020] dark:to-sky-950/35 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-200">
                         <ShieldCheck className="h-4 w-4" />
                         {text.secureActive}
                     </div>
@@ -2239,8 +2247,8 @@ function ServicePreviewCard({
     const text = publicBookingCopy[locale];
     const tones =
         tone === "sky"
-            ? "from-sky-50 to-cyan-50 border-sky-200 text-sky-700"
-            : "from-amber-50 to-orange-50 border-amber-200 text-amber-700";
+            ? "from-sky-50 to-cyan-50 border-sky-200 text-sky-700 dark:from-sky-950/45 dark:to-cyan-950/35 dark:border-sky-400/25 dark:text-sky-300"
+            : "from-amber-50 to-orange-50 border-amber-200 text-amber-700 dark:from-amber-950/45 dark:to-orange-950/35 dark:border-amber-400/25 dark:text-amber-300";
 
     return (
         <div

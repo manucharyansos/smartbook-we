@@ -5,7 +5,7 @@
 /* ===== Base (global) ===== */
 :root {
   color-scheme: light;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+  font-family: "Rubik", "Noto Sans Armenian", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
   "Apple Color Emoji", "Segoe UI Emoji";
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -23,6 +23,15 @@
   --bb-primary-soft: rgba(124, 58, 237, 0.1);
   --bb-shadow: 0 14px 40px rgba(15, 23, 42, 0.07);
   --bb-shadow-soft: 0 10px 24px rgba(15, 23, 42, 0.05);
+  --vizit-ink: #241736;
+  --vizit-plum: #5b2fa8;
+  --vizit-plum-deep: #3e1f78;
+  --vizit-teal: #1e9e92;
+  --vizit-gold: #e8a93c;
+  --vizit-public-bg: #faf8fc;
+  --vizit-public-surface: #ffffff;
+  --vizit-public-muted: #6b6178;
+  --vizit-public-line: #e8e2f0;
 }
 
 html.dark {
@@ -37,6 +46,15 @@ html.dark {
   --bb-text-muted: #cbd5e1;
   --bb-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
   --bb-shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.18);
+  --vizit-ink: #f7f2ff;
+  --vizit-plum: #a980f3;
+  --vizit-plum-deep: #c3a7ff;
+  --vizit-teal: #58d0c4;
+  --vizit-gold: #f2bd5d;
+  --vizit-public-bg: #090712;
+  --vizit-public-surface: #151020;
+  --vizit-public-muted: #b7adc5;
+  --vizit-public-line: #312641;
 }
 
 html,
@@ -49,6 +67,74 @@ body {
   margin: 0;
   background: var(--bb-bg);
   color: var(--bb-text);
+}
+
+/* ===== Vizit public experience ===== */
+.vizit-public-page,
+.vizit-public-chrome {
+  font-family: "Rubik", "Noto Sans Armenian", ui-sans-serif, system-ui, sans-serif;
+}
+
+.vizit-display {
+  font-family: "Noto Serif Armenian", Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+html.dark :is(.vizit-booking-page, .vizit-public-detail-page) :is(
+  [class~="bg-white"],
+  [class~="bg-white/80"],
+  [class~="bg-white/85"],
+  [class~="bg-white/88"],
+  [class~="bg-white/90"]
+) {
+  background-color: rgba(21, 16, 32, 0.94) !important;
+}
+
+html.dark :is(.vizit-booking-page, .vizit-public-detail-page) :is(
+  [class~="bg-slate-50"],
+  [class~="bg-slate-50/70"],
+  [class~="bg-slate-50/80"],
+  [class~="bg-slate-100"]
+) {
+  background-color: rgba(38, 29, 51, 0.9) !important;
+}
+
+html.dark :is(.vizit-booking-page, .vizit-public-detail-page) :is(
+  [class~="text-slate-900"],
+  [class~="text-slate-950"]
+) {
+  color: #f7f2ff !important;
+}
+
+html.dark :is(.vizit-booking-page, .vizit-public-detail-page) :is(
+  [class~="text-slate-600"],
+  [class~="text-slate-700"]
+) {
+  color: #d0c6dc !important;
+}
+
+html.dark :is(.vizit-booking-page, .vizit-public-detail-page) [class~="text-slate-500"] {
+  color: #b7adc5 !important;
+}
+
+html.dark :is(.vizit-booking-page, .vizit-public-detail-page) [class~="text-slate-400"] {
+  color: #9488a3 !important;
+}
+
+html.dark :is(.vizit-booking-page, .vizit-public-detail-page) :is(
+  [class~="border-slate-100"],
+  [class~="border-slate-200"],
+  [class~="border-white/60"],
+  [class~="border-white/70"]
+) {
+  border-color: #312641 !important;
+}
+
+html.dark :is(.vizit-booking-page, .vizit-public-detail-page) :where(input, select, textarea) {
+  border-color: #312641 !important;
+  background-color: #100c18 !important;
+  color: #f7f2ff !important;
 }
 
 /* ===== Business workspace design system ===== */

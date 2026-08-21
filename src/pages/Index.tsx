@@ -3,25 +3,40 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { motion, type Variants } from "framer-motion";
 import {
+  Accessibility,
+  Activity,
   ArrowRight,
   BadgeCheck,
+  BookOpen,
   Building2,
   CalendarDays,
+  Camera,
   Car,
+  CirclePlus,
+  Droplets,
   Dumbbell,
+  Flower2,
+  Grid3X3,
+  Hand,
   HeartPulse,
+  Hospital,
   LocateFixed,
   MapPin,
+  MessagesSquare,
   MoreHorizontal,
   Navigation,
   Scissors,
   Search,
   ShieldCheck,
+  SmilePlus,
   Sparkles,
   Star,
+  Stethoscope,
+  TestTube2,
   TrendingUp,
   Users,
   WandSparkles,
+  Wrench,
   type LucideIcon,
 } from "lucide-react";
 
@@ -101,6 +116,50 @@ const categoryIconRules: Array<{ keywords: string[]; Icon: LucideIcon; tone: str
   { keywords: ["car", "auto", "wash", "ավտ", "լվաց", "маш", "авто"], Icon: Car, tone: "from-blue-100 to-cyan-50 text-blue-500" },
 ];
 
+const categoryIconPresentations: Record<string, { Icon: LucideIcon; tone: string }> = {
+  sparkles: { Icon: Sparkles, tone: "from-violet-100 to-indigo-50 text-violet-500" },
+  scissors: { Icon: Scissors, tone: "from-purple-100 to-fuchsia-50 text-purple-500" },
+  hand: { Icon: Hand, tone: "from-pink-100 to-rose-50 text-pink-500" },
+  spa: { Icon: Flower2, tone: "from-fuchsia-100 to-pink-50 text-fuchsia-500" },
+  dumbbell: { Icon: Dumbbell, tone: "from-emerald-100 to-green-50 text-emerald-600" },
+  car: { Icon: Droplets, tone: "from-sky-100 to-cyan-50 text-sky-600" },
+  wrench: { Icon: Wrench, tone: "from-amber-100 to-orange-50 text-amber-600" },
+  messages: { Icon: MessagesSquare, tone: "from-indigo-100 to-blue-50 text-indigo-500" },
+  "book-open": { Icon: BookOpen, tone: "from-blue-100 to-indigo-50 text-blue-600" },
+  camera: { Icon: Camera, tone: "from-fuchsia-100 to-violet-50 text-fuchsia-600" },
+  grid: { Icon: Grid3X3, tone: "from-slate-200 to-slate-50 text-slate-600" },
+  hospital: { Icon: Hospital, tone: "from-cyan-100 to-sky-50 text-cyan-600" },
+  tooth: { Icon: SmilePlus, tone: "from-sky-100 to-blue-50 text-sky-600" },
+  stethoscope: { Icon: Stethoscope, tone: "from-blue-100 to-cyan-50 text-blue-600" },
+  activity: { Icon: Activity, tone: "from-teal-100 to-cyan-50 text-teal-600" },
+  "test-tube": { Icon: TestTube2, tone: "from-emerald-100 to-teal-50 text-emerald-600" },
+  "heart-pulse": { Icon: HeartPulse, tone: "from-rose-100 to-pink-50 text-rose-500" },
+  accessibility: { Icon: Accessibility, tone: "from-violet-100 to-purple-50 text-violet-600" },
+  "plus-circle": { Icon: CirclePlus, tone: "from-cyan-100 to-blue-50 text-cyan-600" },
+};
+
+const categoryIconAliases: Record<string, keyof typeof categoryIconPresentations> = {
+  "beauty-salon": "sparkles",
+  "barber-shop": "scissors",
+  "nail-studio": "hand",
+  "massage-spa": "spa",
+  "fitness-trainer": "dumbbell",
+  "car-wash": "car",
+  "auto-service": "wrench",
+  consulting: "messages",
+  courses: "book-open",
+  "photo-studio": "camera",
+  "other-services": "grid",
+  clinic: "hospital",
+  "dental-clinic": "tooth",
+  "private-doctor": "stethoscope",
+  "diagnostic-center": "activity",
+  laboratory: "test-tube",
+  physiotherapy: "heart-pulse",
+  rehabilitation: "accessibility",
+  "other-healthcare": "plus-circle",
+};
+
 function normalizeText(value: unknown) {
   return String(value ?? "")
     .toLowerCase()
@@ -124,6 +183,10 @@ function getCategoryName(category: PublicBusinessCategory | null | undefined, lo
 
 function getCategoryPresentation(category: PublicBusinessCategory): { Icon: LucideIcon; tone: string } {
   const value = `${category.slug ?? ""} ${category.icon ?? ""} ${category.name ?? ""} ${category.name_hy ?? ""} ${category.name_ru ?? ""} ${category.name_en ?? ""}`.toLowerCase();
+  const iconKey = String(category.icon ?? "").toLowerCase().trim().replace(/_/g, "-");
+  const slugKey = String(category.slug ?? "").toLowerCase().trim();
+  const exactMatch = categoryIconPresentations[iconKey] ?? categoryIconPresentations[categoryIconAliases[slugKey] ?? slugKey];
+  if (exactMatch) return exactMatch;
   const match = categoryIconRules.find((rule) => rule.keywords.some((keyword) => value.includes(keyword)));
   if (match) return { Icon: match.Icon, tone: match.tone };
   return normalizeVertical(category.vertical ?? category.slug) === "healthcare"
@@ -698,31 +761,31 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
       whileInView="visible"
       viewport={{ once: true, amount: 0.16 }}
       transition={{ delay: index * 0.025 }}
-      className="group overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl transition duration-300 hover:-translate-y-1 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)] dark:hover:bg-white/[0.10]"
+      className="group flex w-[86vw] max-w-[350px] shrink-0 snap-start flex-col overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.09)] backdrop-blur-2xl transition duration-300 hover:-translate-y-1 hover:border-violet-200 dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_20px_60px_rgba(0,0,0,0.24)] dark:hover:bg-white/[0.10] sm:rounded-[28px] lg:w-auto lg:max-w-none"
     >
-      <div className="vizit-preserve-dark relative h-48 overflow-hidden bg-slate-900">
+      <div className="vizit-preserve-dark relative h-[154px] overflow-hidden bg-slate-900 sm:h-44">
         {item.cover_url ? <img src={item.cover_url} alt={item.name} className="h-full w-full object-cover opacity-82 transition duration-700 group-hover:scale-105" /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(168,85,247,0.36),transparent_35%),radial-gradient(circle_at_80%_20%,rgba(34,211,238,0.18),transparent_32%),linear-gradient(135deg,#111827,#312e81,#0f172a)]" />}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/24 to-transparent" />
-        <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-slate-950/45 px-3 py-1.5 text-xs font-bold text-white backdrop-blur-xl"><Icon className="h-3.5 w-3.5" /> {categoryName}</span>
-        <div className="absolute bottom-4 left-4 flex min-w-0 items-center gap-3 pr-4">
-          <div className="grid h-[52px] w-[52px] place-items-center overflow-hidden rounded-2xl border border-white/20 bg-white/12 text-white shadow-2xl backdrop-blur-xl">
-            {item.logo_url ? <img src={item.logo_url} alt={item.name} className="h-full w-full object-cover" /> : <Building2 className="h-6 w-6" />}
+        <span className="absolute left-3 top-3 inline-flex max-w-[calc(100%_-_24px)] items-center gap-2 rounded-full border border-white/15 bg-slate-950/50 px-3 py-1.5 text-[11px] font-bold text-white backdrop-blur-xl sm:left-4 sm:top-4 sm:text-xs"><Icon className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">{categoryName}</span></span>
+        <div className="absolute bottom-3 left-3 flex min-w-0 items-center gap-3 pr-3 sm:bottom-4 sm:left-4 sm:pr-4">
+          <div className="grid h-11 w-11 place-items-center overflow-hidden rounded-[14px] border border-white/20 bg-white/12 text-white shadow-2xl backdrop-blur-xl sm:h-12 sm:w-12 sm:rounded-2xl">
+            {item.logo_url ? <img src={item.logo_url} alt={item.name} className="h-full w-full object-cover" /> : <Building2 className="h-5 w-5 sm:h-6 sm:w-6" />}
           </div>
           <div className="min-w-0">
-            <h3 className="truncate text-lg font-black tracking-tight text-white">{item.name}</h3>
-            <p className="mt-1 truncate text-xs font-semibold text-white/65">{primaryLocation?.address || item.address || t("business.card.noAddress")}</p>
+            <h3 className="truncate text-[16px] font-black tracking-tight text-white sm:text-lg">{item.name}</h3>
+            <p className="mt-0.5 truncate text-[11px] font-semibold text-white/70 sm:mt-1 sm:text-xs">{primaryLocation?.address || item.address || t("business.card.noAddress")}</p>
           </div>
         </div>
       </div>
-      <div className="p-5 sm:p-6">
-        <p className="line-clamp-2 min-h-[48px] text-sm leading-6 text-slate-600 dark:text-slate-300">{item.short_description || t("business.card.defaultDescription")}</p>
-        <div className="mt-5 grid grid-cols-2 gap-3 text-xs text-slate-600 dark:text-slate-300">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-white/10 dark:bg-white/[0.06]"><span className="block text-lg font-black text-slate-950 dark:text-white">{item.services_count ?? 0}</span> {t("business.card.services")}</div>
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-white/10 dark:bg-white/[0.06]"><span className="block text-lg font-black text-slate-950 dark:text-white">{item.staff_count ?? 0}</span> {t("business.card.staff")}</div>
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
+        <p className="line-clamp-2 min-h-[40px] text-[13px] leading-5 text-slate-600 dark:text-slate-300 sm:min-h-[44px] sm:text-sm sm:leading-[22px]">{item.short_description || t("business.card.defaultDescription")}</p>
+        <div className="mt-4 grid grid-cols-2 gap-2 text-[11px] text-slate-600 dark:text-slate-300 sm:text-xs">
+          <div className="flex items-center gap-2 rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-2.5 dark:border-white/10 dark:bg-white/[0.06]"><Sparkles className="h-4 w-4 shrink-0 text-violet-500" /><span className="min-w-0"><span className="font-black text-slate-950 dark:text-white">{item.services_count ?? 0}</span> <span className="truncate">{t("business.card.services")}</span></span></div>
+          <div className="flex items-center gap-2 rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-2.5 dark:border-white/10 dark:bg-white/[0.06]"><Users className="h-4 w-4 shrink-0 text-cyan-500" /><span className="min-w-0"><span className="font-black text-slate-950 dark:text-white">{item.staff_count ?? 0}</span> <span className="truncate">{t("business.card.staff")}</span></span></div>
         </div>
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          <Link to={bookingUrl} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-black text-slate-950 transition hover:bg-slate-100">{t("business.card.book")} <ArrowRight className="h-4 w-4" /></Link>
-          <Link to={`/businesses/${item.slug}`} className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-100 dark:border-white/10 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/[0.10]">{t("business.card.view")}</Link>
+        <div className="mt-auto grid grid-cols-2 gap-2 pt-4">
+          <Link to={bookingUrl} className="inline-flex min-w-0 items-center justify-center gap-1.5 rounded-[14px] bg-gradient-to-r from-violet-600 to-sky-500 px-3 py-3 text-[12px] font-black text-white shadow-[0_12px_28px_rgba(124,58,237,0.22)] transition hover:brightness-105 sm:text-sm">{t("business.card.book")} <ArrowRight className="h-4 w-4 shrink-0" /></Link>
+          <Link to={`/businesses/${item.slug}`} className="inline-flex min-w-0 items-center justify-center rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-3 text-[12px] font-bold text-slate-800 transition hover:bg-slate-100 dark:border-white/10 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/[0.10] sm:text-sm">{t("business.card.view")}</Link>
         </div>
       </div>
     </motion.article>
@@ -909,7 +972,6 @@ export default function Index() {
               ) : null}
 
               <motion.div variants={fadeUp} className="mt-5 flex flex-wrap items-center justify-center gap-2 text-[12px] text-slate-600 dark:text-slate-200 xl:justify-start">
-                <span className="mr-1 font-semibold">{t("popular")}</span>
                 {popularChips.length ? popularChips.map((category) => {
                   const label = getCategoryName(category, locale) ?? t("category.fallback");
                   return <button key={category.slug ?? label} type="button" onClick={() => selectCategory(category)} className="rounded-full border border-slate-200 bg-white px-4 py-2 font-semibold text-slate-700 transition hover:border-violet-300 hover:bg-violet-50 dark:border-white/15 dark:bg-white/[0.08] dark:text-slate-100 dark:hover:border-cyan-200/40 dark:hover:bg-white/[0.14] dark:hover:text-white">{label}</button>;
@@ -955,31 +1017,33 @@ export default function Index() {
           </motion.div>
         </section>
 
-        <section id="how" className="scroll-mt-24 bg-white px-5 py-14 text-slate-950 transition-colors dark:bg-[#050816] dark:text-white sm:px-8 lg:py-18">
-          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="mx-auto max-w-[1320px] rounded-[28px] border border-slate-200 bg-slate-50 p-6 shadow-[0_30px_100px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-[#07101f] dark:shadow-[0_30px_100px_rgba(0,0,0,0.30)] sm:rounded-[34px] sm:p-8 lg:p-10">
-            <motion.h2 variants={fadeUp} className="text-center text-3xl font-black tracking-[-0.04em] text-slate-950 dark:text-white sm:text-4xl">{t("how.title")}</motion.h2>
+        <section id="how" className="scroll-mt-24 bg-white px-0 py-10 text-slate-950 transition-colors dark:bg-[#050816] dark:text-white sm:px-8 sm:py-14 lg:py-18">
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="mx-auto max-w-[1320px] rounded-none border-y border-slate-200 bg-slate-50 p-5 shadow-[0_20px_70px_rgba(15,23,42,0.07)] dark:border-white/10 dark:bg-[#07101f] dark:shadow-[0_24px_80px_rgba(0,0,0,0.26)] sm:rounded-[34px] sm:border sm:p-8 lg:p-10">
+            <motion.h2 variants={fadeUp} className="text-center text-[27px] font-black tracking-[-0.04em] text-slate-950 dark:text-white sm:text-4xl">{t("how.title")}</motion.h2>
             <motion.div variants={fadeUp} className="mx-auto mt-3 h-1 w-16 rounded-full bg-gradient-to-r from-violet-500 to-cyan-400" />
 
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="mt-6 grid gap-2.5 sm:mt-8 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
               {benefitCards.map(({ title, text, Icon, tone }) => (
-                <motion.div key={title} variants={fadeUp} className="rounded-[22px] border border-slate-200 bg-white p-5 text-center shadow-[0_18px_60px_rgba(15,23,42,0.07)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.065] dark:shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:text-left">
-                  <span className={cn("mx-auto grid h-[60px] w-[60px] place-items-center rounded-[18px] bg-gradient-to-br sm:mx-0", tone)}><Icon className="h-7 w-7" /></span>
-                  <h3 className="mt-4 text-[16px] font-black text-slate-950 dark:text-white">{title}</h3>
-                  <p className="mt-2 text-[13px] font-medium leading-6 text-slate-600 dark:text-slate-300">{text}</p>
+                <motion.div key={title} variants={fadeUp} className="flex items-start gap-3 rounded-[18px] border border-slate-200 bg-white p-3.5 text-left shadow-[0_12px_38px_rgba(15,23,42,0.06)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.065] dark:shadow-[0_14px_42px_rgba(0,0,0,0.17)] sm:block sm:rounded-[22px] sm:p-5">
+                  <span className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-[14px] bg-gradient-to-br sm:h-[60px] sm:w-[60px] sm:rounded-[18px]", tone)}><Icon className="h-5 w-5 sm:h-7 sm:w-7" /></span>
+                  <span className="min-w-0">
+                    <h3 className="text-[15px] font-black leading-5 text-slate-950 dark:text-white sm:mt-4 sm:text-[16px]">{title}</h3>
+                    <p className="mt-1.5 text-[12px] font-medium leading-5 text-slate-600 dark:text-slate-300 sm:mt-2 sm:text-[13px] sm:leading-6">{text}</p>
+                  </span>
                 </motion.div>
               ))}
             </div>
 
-            <motion.div variants={fadeUp} className="mt-6 grid grid-cols-2 gap-2 rounded-[22px] border border-slate-200 bg-white p-3 dark:border-white/10 dark:bg-white/[0.055] sm:gap-3 sm:p-4 xl:grid-cols-4">
+            <motion.div variants={fadeUp} className="mt-4 grid grid-cols-4 gap-1 rounded-[18px] border border-slate-200 bg-white p-2 dark:border-white/10 dark:bg-white/[0.055] sm:mt-6 sm:gap-3 sm:rounded-[22px] sm:p-4">
               {[
                 { value: businessStat(stats.total), label: t("stats.businesses"), Icon: Building2 },
                 { value: businessStat(stats.services), label: t("stats.services"), Icon: Sparkles },
                 { value: businessStat(stats.staff), label: t("stats.staff"), Icon: Users },
                 { value: categoryStat, label: t("stats.categories"), Icon: Star },
               ].map(({ value, label, Icon }) => (
-                <div key={label} className="flex min-w-0 flex-col items-center justify-center gap-2 rounded-[18px] px-2 py-4 text-center sm:flex-row sm:gap-4 sm:px-3 sm:text-left xl:justify-center">
-                  <Icon className="h-7 w-7 shrink-0 text-[#6aa5ff]" />
-                  <span className="min-w-0"><span className="block bg-gradient-to-r from-[#7b65ff] to-[#35b7ff] bg-clip-text text-[26px] font-black leading-none text-transparent">{value}</span><span className="mt-2 block text-[12px] font-semibold leading-4 text-slate-600 dark:text-slate-200">{label}</span></span>
+                <div key={label} className="flex min-w-0 flex-col items-center justify-center gap-1.5 rounded-[14px] px-1 py-3 text-center sm:flex-row sm:gap-4 sm:rounded-[18px] sm:px-3 sm:py-4 sm:text-left xl:justify-center">
+                  <Icon className="h-5 w-5 shrink-0 text-[#6aa5ff] sm:h-7 sm:w-7" />
+                  <span className="min-w-0"><span className="block bg-gradient-to-r from-[#7b65ff] to-[#35b7ff] bg-clip-text text-xl font-black leading-none text-transparent sm:text-[26px]">{value}</span><span className="mt-1.5 block text-[9px] font-semibold leading-3 text-slate-600 dark:text-slate-200 sm:mt-2 sm:text-[12px] sm:leading-4">{label}</span></span>
                 </div>
               ))}
             </motion.div>
@@ -1023,14 +1087,29 @@ export default function Index() {
                   </div>
                 )}
 
-                {pins.length ? <div className="mt-6 max-h-[280px] space-y-2 overflow-y-auto pr-1">
-                  {pins.slice(0, 8).map((pin) => (
-                    <button key={`list-${pin.businessId}-${pin.locationId}`} type="button" onClick={() => setSelectedPinKey(`${pin.businessId}-${pin.locationId}`)} className="flex w-full items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-left transition hover:bg-slate-100 dark:border-white/10 dark:bg-white/[0.045] dark:hover:bg-white/[0.09]">
-                      <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-slate-950"><MapPin className="h-4 w-4" /></span>
-                      <span className="min-w-0"><span className="block truncate text-sm font-black text-slate-950 dark:text-white">{pin.name}</span><span className="mt-1 block truncate text-xs text-slate-500 dark:text-slate-300">{pin.address}</span></span>
-                    </button>
-                  ))}
-                </div> : null}
+                {pins.length ? (
+                  <div className="-mx-5 mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:block lg:max-h-[280px] lg:space-y-2 lg:overflow-y-auto lg:px-0 lg:pb-0 lg:pr-1">
+                    {pins.map((pin) => {
+                      const active = selectedPin?.businessId === pin.businessId && selectedPin?.locationId === pin.locationId;
+                      return (
+                        <button
+                          key={`list-${pin.businessId}-${pin.locationId}`}
+                          type="button"
+                          onClick={() => setSelectedPinKey(`${pin.businessId}-${pin.locationId}`)}
+                          className={cn(
+                            "flex w-[78vw] max-w-[292px] shrink-0 snap-start items-start gap-3 rounded-2xl border p-3 text-left transition lg:w-full lg:max-w-none",
+                            active
+                              ? "border-violet-300 bg-violet-50 shadow-sm dark:border-violet-400/40 dark:bg-violet-500/15"
+                              : "border-slate-200 bg-slate-50 hover:bg-slate-100 dark:border-white/10 dark:bg-white/[0.045] dark:hover:bg-white/[0.09]",
+                          )}
+                        >
+                          <span className={cn("mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl", active ? "bg-gradient-to-br from-violet-600 to-sky-500 text-white" : "bg-white text-slate-950")}><MapPin className="h-4 w-4" /></span>
+                          <span className="min-w-0"><span className="block truncate text-sm font-black text-slate-950 dark:text-white">{pin.name}</span><span className="mt-1 block truncate text-xs text-slate-500 dark:text-slate-300">{pin.address}</span></span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
@@ -1081,7 +1160,7 @@ export default function Index() {
             ) : null}
 
             {businessesQ.isLoading ? (
-              <div className="grid gap-6 lg:grid-cols-2 2xl:grid-cols-3">{Array.from({ length: 6 }).map((_, idx) => <div key={idx} className="h-[420px] animate-pulse rounded-[26px] border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/[0.06]" />)}</div>
+              <div className="-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:grid lg:grid-cols-2 lg:overflow-visible lg:px-0 lg:pb-0 2xl:grid-cols-3">{Array.from({ length: 6 }).map((_, idx) => <div key={idx} className="h-[340px] w-[86vw] max-w-[350px] shrink-0 snap-start animate-pulse rounded-[24px] border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/[0.06] lg:w-auto lg:max-w-none" />)}</div>
             ) : businessesQ.isError ? (
               <div className="rounded-[24px] border border-rose-300/20 bg-rose-500/10 p-6 text-rose-100">{t("status.errorBusinesses")}</div>
             ) : !filteredBusinesses.length ? (
@@ -1090,7 +1169,7 @@ export default function Index() {
                 <h3 className="mt-5 text-2xl font-black text-slate-950 dark:text-white">{t("businesses.empty.title")}</h3>
               </div>
             ) : (
-              <div className="grid gap-6 lg:grid-cols-2 2xl:grid-cols-3">{filteredBusinesses.map((item, index) => <BusinessCard key={item.id} item={item} index={index} />)}</div>
+              <div className="-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:grid lg:grid-cols-2 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0 2xl:grid-cols-3">{filteredBusinesses.map((item, index) => <BusinessCard key={item.id} item={item} index={index} />)}</div>
             )}
           </div>
         </section>

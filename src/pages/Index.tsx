@@ -505,7 +505,7 @@ function InteractiveBusinessMap({
   return (
     <div
       className={cn(
-        "vizit-preserve-dark relative min-h-[390px] touch-none overflow-hidden rounded-[28px] border border-white/10 bg-slate-900 shadow-[0_30px_100px_rgba(0,0,0,0.32)] sm:min-h-[520px] sm:rounded-[34px]",
+        "vizit-preserve-dark relative min-h-[390px] w-full min-w-0 touch-none overflow-hidden rounded-[28px] border border-white/10 bg-slate-900 shadow-[0_30px_100px_rgba(0,0,0,0.32)] sm:min-h-[520px] sm:rounded-[34px]",
         isDragging ? "cursor-grabbing" : "cursor-grab",
       )}
       onPointerDown={onPointerDown}
@@ -528,7 +528,7 @@ function InteractiveBusinessMap({
       ))}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_18%,rgba(124,58,237,0.16),transparent_28%),linear-gradient(180deg,rgba(5,11,22,0.04),rgba(5,11,22,0.30))]" />
 
-      <div className="absolute left-3 top-3 z-30 flex max-w-[calc(100%-96px)] items-center gap-2 rounded-2xl border border-white/14 bg-slate-950/76 px-3 py-2 text-[11px] font-bold text-white shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl sm:left-5 sm:top-5 sm:px-4 sm:py-3 sm:text-xs">
+      <div className="absolute left-3 top-3 z-30 flex max-w-[calc(100%_-_96px)] items-center gap-2 rounded-2xl border border-white/14 bg-slate-950/76 px-3 py-2 text-[11px] font-bold text-white shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl sm:left-5 sm:top-5 sm:px-4 sm:py-3 sm:text-xs">
         <MapPin className="h-3.5 w-3.5 shrink-0 text-cyan-200" />
         <span className="truncate">{t("map.instructions")}</span>
       </div>
@@ -761,7 +761,7 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
       whileInView="visible"
       viewport={{ once: true, amount: 0.16 }}
       transition={{ delay: index * 0.025 }}
-      className="group flex w-[86vw] max-w-[350px] shrink-0 snap-start flex-col overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.09)] backdrop-blur-2xl transition duration-300 hover:-translate-y-1 hover:border-violet-200 dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_20px_60px_rgba(0,0,0,0.24)] dark:hover:bg-white/[0.10] sm:rounded-[28px] lg:w-auto lg:max-w-none"
+      className="group flex w-[calc(100vw_-_64px)] max-w-[350px] shrink-0 snap-center flex-col overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.09)] backdrop-blur-2xl transition duration-300 hover:-translate-y-1 hover:border-violet-200 dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_20px_60px_rgba(0,0,0,0.24)] dark:hover:bg-white/[0.10] sm:rounded-[28px] lg:w-auto lg:max-w-none"
     >
       <div className="vizit-preserve-dark relative h-[154px] overflow-hidden bg-slate-900 sm:h-44">
         {item.cover_url ? <img src={item.cover_url} alt={item.name} className="h-full w-full object-cover opacity-82 transition duration-700 group-hover:scale-105" /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(168,85,247,0.36),transparent_35%),radial-gradient(circle_at_80%_20%,rgba(34,211,238,0.18),transparent_32%),linear-gradient(135deg,#111827,#312e81,#0f172a)]" />}
@@ -1050,14 +1050,14 @@ export default function Index() {
           </motion.div>
         </section>
 
-        <section id="map" className="scroll-mt-24 bg-slate-50 px-5 py-16 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8 lg:py-20">
-          <div className="mx-auto max-w-[1320px]">
+        <section id="map" className="scroll-mt-24 bg-slate-50 px-5 pb-8 pt-12 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8 sm:py-16 lg:py-20">
+          <div className="mx-auto min-w-0 max-w-[1320px]">
             <div className="mb-8">
               <SectionBadge><MapPin className="h-4 w-4" /> {t("map.badge")}</SectionBadge>
-              <h2 className="mt-5 max-w-3xl text-3xl font-black tracking-[-0.04em] text-slate-950 dark:text-white sm:text-5xl">{t("map.title")}</h2>
+              <h2 className="mt-5 max-w-3xl break-words text-[28px] font-black leading-[1.12] tracking-[-0.04em] text-slate-950 dark:text-white sm:text-5xl sm:leading-none">{t("map.title")}</h2>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
+            <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
               <InteractiveBusinessMap
                 key={`${userLocation?.lat ?? "none"}:${userLocation?.lng ?? "none"}|${pins.map((pin) => `${pin.locationId}:${pin.lat.toFixed(5)},${pin.lng.toFixed(5)}`).join("|")}`}
                 pins={pins}
@@ -1067,16 +1067,16 @@ export default function Index() {
                 userLocation={userLocation}
               />
 
-              <div className="rounded-[30px] border border-slate-200 bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
+              <div className="min-w-0 max-w-full overflow-hidden rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)] sm:rounded-[30px] sm:p-5">
                 {selectedPin ? (
-                  <div>
-                    <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs font-bold text-cyan-700 dark:border-white/12 dark:bg-white/[0.08] dark:text-cyan-100"><MapPin className="h-3.5 w-3.5" /> {t("map.selectedAddress")}</div>
-                    <h3 className="mt-4 text-2xl font-black text-slate-950 dark:text-white">{selectedPin.name}</h3>
-                    <p className="mt-2 text-sm font-semibold text-slate-600 dark:text-slate-300">{selectedPin.categoryName || (selectedPin.vertical === "healthcare" ? t("businesses.healthcare") : t("businesses.services"))}</p>
-                    <p className="mt-4 text-sm leading-7 text-slate-500 dark:text-slate-300">{selectedPin.locationName ? `${selectedPin.locationName} · ` : ""}{selectedPin.address || t("business.card.noAddress")}</p>
-                    <div className="mt-5 grid gap-3">
-                      <Link to={selectedPin.bookingUrl} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-slate-100">{t("map.bookAddress")} <ArrowRight className="h-4 w-4" /></Link>
-                      <Link to={`/businesses/${selectedPin.slug}`} className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 px-5 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-100 dark:border-white/12 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/[0.10]">{t("business.card.view")}</Link>
+                  <div className="min-w-0">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1.5 text-xs font-bold text-cyan-700 dark:border-white/12 dark:bg-white/[0.08] dark:text-cyan-100"><MapPin className="h-3.5 w-3.5" /> {t("map.selectedAddress")}</div>
+                    <h3 className="mt-3 line-clamp-2 break-words text-xl font-black leading-7 text-slate-950 dark:text-white sm:mt-4 sm:text-2xl">{selectedPin.name}</h3>
+                    <p className="mt-1.5 text-sm font-semibold text-slate-600 dark:text-slate-300">{selectedPin.categoryName || (selectedPin.vertical === "healthcare" ? t("businesses.healthcare") : t("businesses.services"))}</p>
+                    <p className="mt-3 line-clamp-2 break-words text-sm leading-6 text-slate-500 dark:text-slate-300 sm:mt-4 sm:leading-7">{selectedPin.locationName ? `${selectedPin.locationName} · ` : ""}{selectedPin.address || t("business.card.noAddress")}</p>
+                    <div className="mt-4 grid min-w-0 gap-2 sm:mt-5 sm:gap-3">
+                      <Link to={selectedPin.bookingUrl} className="inline-flex min-w-0 items-center justify-center gap-2 rounded-2xl bg-white px-4 py-2.5 text-sm font-black text-slate-950 transition hover:bg-slate-100 sm:px-5 sm:py-3">{t("map.bookAddress")} <ArrowRight className="h-4 w-4 shrink-0" /></Link>
+                      <Link to={`/businesses/${selectedPin.slug}`} className="inline-flex min-w-0 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-bold text-slate-800 transition hover:bg-slate-100 dark:border-white/12 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/[0.10] sm:px-5 sm:py-3">{t("business.card.view")}</Link>
                     </div>
                   </div>
                 ) : (
@@ -1088,7 +1088,7 @@ export default function Index() {
                 )}
 
                 {pins.length ? (
-                  <div className="-mx-5 mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:block lg:max-h-[280px] lg:space-y-2 lg:overflow-y-auto lg:px-0 lg:pb-0 lg:pr-1">
+                  <div className="-mx-4 mt-4 flex min-w-0 max-w-[calc(100%_+_32px)] snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-5 sm:mt-6 sm:max-w-[calc(100%_+_40px)] sm:scroll-px-5 sm:px-5 lg:mx-0 lg:block lg:max-h-[280px] lg:max-w-full lg:space-y-2 lg:overflow-y-auto lg:px-0 lg:pb-0 lg:pr-1">
                     {pins.map((pin) => {
                       const active = selectedPin?.businessId === pin.businessId && selectedPin?.locationId === pin.locationId;
                       return (
@@ -1097,7 +1097,7 @@ export default function Index() {
                           type="button"
                           onClick={() => setSelectedPinKey(`${pin.businessId}-${pin.locationId}`)}
                           className={cn(
-                            "flex w-[78vw] max-w-[292px] shrink-0 snap-start items-start gap-3 rounded-2xl border p-3 text-left transition lg:w-full lg:max-w-none",
+                            "flex w-[calc(100vw_-_80px)] max-w-[292px] shrink-0 snap-start items-start gap-3 rounded-2xl border p-3 text-left transition lg:w-full lg:max-w-none",
                             active
                               ? "border-violet-300 bg-violet-50 shadow-sm dark:border-violet-400/40 dark:bg-violet-500/15"
                               : "border-slate-200 bg-slate-50 hover:bg-slate-100 dark:border-white/10 dark:bg-white/[0.045] dark:hover:bg-white/[0.09]",
@@ -1115,15 +1115,15 @@ export default function Index() {
           </div>
         </section>
 
-        <section id="businesses" className="scroll-mt-24 bg-white px-5 py-16 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8 lg:py-20">
-          <div className="mx-auto max-w-[1320px]">
-            <div className="mb-8 grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
-              <div>
+        <section id="businesses" className="scroll-mt-24 bg-white px-5 py-12 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8 sm:py-16 lg:py-20">
+          <div className="mx-auto min-w-0 max-w-[1320px]">
+            <div className="mb-8 grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+              <div className="min-w-0">
                 <SectionBadge><Star className="h-4 w-4" /> {t("businesses.badge")}</SectionBadge>
-                <h2 className="mt-5 max-w-3xl text-3xl font-black tracking-[-0.04em] text-slate-950 dark:text-white sm:text-5xl">{t("businesses.title")}</h2>
+                <h2 className="mt-5 max-w-3xl break-words text-[28px] font-black leading-[1.12] tracking-[-0.04em] text-slate-950 dark:text-white sm:text-5xl sm:leading-none">{t("businesses.title")}</h2>
               </div>
-              <div className="rounded-[18px] border border-slate-200 bg-slate-50 p-1 backdrop-blur-xl dark:border-white/12 dark:bg-white/[0.07]">
-                <div className="flex gap-1 overflow-x-auto">
+              <div className="min-w-0 max-w-full overflow-hidden rounded-[18px] border border-slate-200 bg-slate-50 p-1 backdrop-blur-xl dark:border-white/12 dark:bg-white/[0.07]">
+                <div className="flex max-w-full gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   {[
                     { key: "all", label: t("businesses.all") },
                     { key: "services", label: t("businesses.services") },
@@ -1136,7 +1136,7 @@ export default function Index() {
             </div>
 
             {categories.length ? (
-              <div className="mb-8 flex gap-2 overflow-x-auto pb-2">
+              <div className="mb-8 flex min-w-0 max-w-full gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {categories.map((category) => {
                   const label = getCategoryName(category, locale) ?? t("category.fallback");
                   const active = selectedCategorySlug === category.slug;
@@ -1160,7 +1160,7 @@ export default function Index() {
             ) : null}
 
             {businessesQ.isLoading ? (
-              <div className="-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:grid lg:grid-cols-2 lg:overflow-visible lg:px-0 lg:pb-0 2xl:grid-cols-3">{Array.from({ length: 6 }).map((_, idx) => <div key={idx} className="h-[340px] w-[86vw] max-w-[350px] shrink-0 snap-start animate-pulse rounded-[24px] border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/[0.06] lg:w-auto lg:max-w-none" />)}</div>
+              <div className="flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto px-3 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-[calc((100%_-_350px)/2)] lg:grid lg:grid-cols-2 lg:overflow-visible lg:px-0 lg:pb-0 2xl:grid-cols-3">{Array.from({ length: 6 }).map((_, idx) => <div key={idx} className="h-[340px] w-[calc(100vw_-_64px)] max-w-[350px] shrink-0 snap-center animate-pulse rounded-[24px] border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/[0.06] lg:w-auto lg:max-w-none" />)}</div>
             ) : businessesQ.isError ? (
               <div className="rounded-[24px] border border-rose-300/20 bg-rose-500/10 p-6 text-rose-100">{t("status.errorBusinesses")}</div>
             ) : !filteredBusinesses.length ? (
@@ -1169,7 +1169,7 @@ export default function Index() {
                 <h3 className="mt-5 text-2xl font-black text-slate-950 dark:text-white">{t("businesses.empty.title")}</h3>
               </div>
             ) : (
-              <div className="-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:grid lg:grid-cols-2 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0 2xl:grid-cols-3">{filteredBusinesses.map((item, index) => <BusinessCard key={item.id} item={item} index={index} />)}</div>
+              <div className="flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto px-3 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-[calc((100%_-_350px)/2)] lg:grid lg:grid-cols-2 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0 2xl:grid-cols-3">{filteredBusinesses.map((item, index) => <BusinessCard key={item.id} item={item} index={index} />)}</div>
             )}
           </div>
         </section>

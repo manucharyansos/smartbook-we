@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { motion, type Variants } from "framer-motion";
@@ -41,6 +41,7 @@ import {
 import Footer from "../components/Footer";
 import LandingNavbar from "../components/LandingNavbar";
 import Seo from "../components/Seo";
+import YandexMap, { type VizitMapMarker } from "../components/maps/YandexMap";
 import { useLanguage } from "../contexts/LanguageContext";
 import { cn } from "../lib/cn";
 import {
@@ -333,29 +334,6 @@ function buildPinsFromBusinesses(businesses: PublicDirectoryBusiness[], locale: 
   });
 }
 
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value));
-}
-
-function lonToTileX(lng: number, zoom: number) {
-  return ((lng + 180) / 360) * 2 ** zoom;
-}
-
-function latToTileY(lat: number, zoom: number) {
-  const safeLat = clamp(lat, -85.05112878, 85.05112878);
-  const rad = (safeLat * Math.PI) / 180;
-  return ((1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2) * 2 ** zoom;
-}
-
-function tileXToLon(x: number, zoom: number) {
-  return (x / 2 ** zoom) * 360 - 180;
-}
-
-function tileYToLat(y: number, zoom: number) {
-  const n = Math.PI - (2 * Math.PI * y) / 2 ** zoom;
-  return (180 / Math.PI) * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n)));
-}
-
 function chooseMapZoom(points: Array<{ lat: number; lng: number }>) {
   if (points.length <= 1) return 14;
   const latSpan = Math.max(...points.map((p) => p.lat)) - Math.min(...points.map((p) => p.lat));
@@ -393,8 +371,6 @@ function matchesPinSearch(pin: MapPinItem, search: string) {
   return needle.split(" ").every((part) => haystack.includes(part));
 }
 
-type MapTile = { key: string; x: number; y: number; z: number; left: number; top: number; url: string };
-
 function defaultMapCenter(points: Array<{ lat: number; lng: number }>, userLocation: { lat: number; lng: number } | null) {
   const allPoints = [...points, ...(userLocation ? [userLocation] : [])];
   if (!allPoints.length) return { lat: 40.1772, lng: 44.5035 };
@@ -402,38 +378,6 @@ function defaultMapCenter(points: Array<{ lat: number; lng: number }>, userLocat
     lat: allPoints.reduce((sum, p) => sum + p.lat, 0) / allPoints.length,
     lng: allPoints.reduce((sum, p) => sum + p.lng, 0) / allPoints.length,
   };
-}
-
-function buildMapModel(center: { lat: number; lng: number }, zoom: number) {
-  const centerX = lonToTileX(center.lng, zoom);
-  const centerY = latToTileY(center.lat, zoom);
-  const tiles: MapTile[] = [];
-
-  for (let dx = -3; dx <= 3; dx += 1) {
-    for (let dy = -3; dy <= 3; dy += 1) {
-      const x = Math.floor(centerX) + dx;
-      const y = Math.floor(centerY) + dy;
-      const maxTile = 2 ** zoom;
-      if (y < 0 || y >= maxTile) continue;
-      const wrappedX = ((x % maxTile) + maxTile) % maxTile;
-      tiles.push({
-        key: `${zoom}-${wrappedX}-${y}`,
-        x: wrappedX,
-        y,
-        z: zoom,
-        left: (x - centerX) * 256,
-        top: (y - centerY) * 256,
-        url: `https://tile.openstreetmap.org/${zoom}/${wrappedX}/${y}.png`,
-      });
-    }
-  }
-
-  const toPixel = (lat: number, lng: number) => ({
-    left: (lonToTileX(lng, zoom) - centerX) * 256,
-    top: (latToTileY(lat, zoom) - centerY) * 256,
-  });
-
-  return { center, zoom, centerX, centerY, tiles, toPixel };
 }
 
 function InteractiveBusinessMap({
@@ -452,9 +396,31 @@ function InteractiveBusinessMap({
   const { t } = useLanguage();
   const [center, setCenter] = useState(() => defaultMapCenter(pins, userLocation));
   const [zoom, setZoom] = useState(() => chooseMapZoom(pins));
-  const [isDragging, setIsDragging] = useState(false);
-  const dragRef = useRef<{ startX: number; startY: number; centerX: number; centerY: number; zoom: number } | null>(null);
-  const model = useMemo(() => buildMapModel(center, zoom), [center, zoom]);
+  const pinByKey = useMemo(() => new Map(pins.map((pin) => [`${pin.businessId}-${pin.locationId}`, pin])), [pins]);
+  const markers = useMemo<VizitMapMarker[]>(() => {
+    const businessMarkers = pins.map((pin) => {
+      const key = `${pin.businessId}-${pin.locationId}`;
+      const active = selectedPinKey === key || (!selectedPinKey && selectedPin?.businessId === pin.businessId && selectedPin?.locationId === pin.locationId);
+      return {
+        id: key,
+        latitude: pin.lat,
+        longitude: pin.lng,
+        label: pin.name,
+        active,
+        variant: active ? "active" as const : pin.vertical === "healthcare" ? "healthcare" as const : "service" as const,
+      };
+    });
+
+    return userLocation
+      ? [...businessMarkers, {
+          id: "user-location",
+          latitude: userLocation.lat,
+          longitude: userLocation.lng,
+          label: t("search.currentLocation"),
+          variant: "user" as const,
+        }]
+      : businessMarkers;
+  }, [pins, selectedPin, selectedPinKey, t, userLocation]);
 
   function fitMap() {
     const nextPoints = pins.map((pin) => ({ lat: pin.lat, lng: pin.lng }));
@@ -463,147 +429,49 @@ function InteractiveBusinessMap({
   }
 
   function zoomMap(delta: number) {
-    setZoom((current) => clamp(current + delta, 7, 17));
-  }
-
-  function onPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
-    if ((event.target as HTMLElement).closest("button,a")) return;
-    event.currentTarget.setPointerCapture(event.pointerId);
-    setIsDragging(true);
-    dragRef.current = {
-      startX: event.clientX,
-      startY: event.clientY,
-      centerX: lonToTileX(center.lng, zoom),
-      centerY: latToTileY(center.lat, zoom),
-      zoom,
-    };
-  }
-
-  function onPointerMove(event: ReactPointerEvent<HTMLDivElement>) {
-    if (!dragRef.current) return;
-    const dx = event.clientX - dragRef.current.startX;
-    const dy = event.clientY - dragRef.current.startY;
-    const nextCenterX = dragRef.current.centerX - dx / 256;
-    const nextCenterY = dragRef.current.centerY - dy / 256;
-    setCenter({
-      lat: clamp(tileYToLat(nextCenterY, dragRef.current.zoom), -85, 85),
-      lng: tileXToLon(nextCenterX, dragRef.current.zoom),
-    });
-  }
-
-  function endDrag(event: ReactPointerEvent<HTMLDivElement>) {
-    if (dragRef.current) {
-      try { event.currentTarget.releasePointerCapture(event.pointerId); } catch { /* pointer may already be released */ }
-    }
-    dragRef.current = null;
-    setIsDragging(false);
+    setZoom((current) => Math.min(19, Math.max(7, current + delta)));
   }
 
   return (
-    <div
-      className={cn(
-        "vizit-preserve-dark relative min-h-[390px] w-full min-w-0 touch-none overflow-hidden rounded-[28px] border border-white/10 bg-slate-900 shadow-[0_30px_100px_rgba(0,0,0,0.32)] sm:min-h-[520px] sm:rounded-[34px]",
-        isDragging ? "cursor-grabbing" : "cursor-grab",
-      )}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={endDrag}
-      onPointerCancel={endDrag}
+    <YandexMap
+      center={{ latitude: center.lat, longitude: center.lng }}
+      zoom={zoom}
+      markers={markers}
+      onLocationChange={(nextCenter, nextZoom) => {
+        setCenter({ lat: nextCenter.latitude, lng: nextCenter.longitude });
+        setZoom(nextZoom);
+      }}
+      onMarkerClick={(key) => {
+        const pin = pinByKey.get(key);
+        if (!pin) return;
+        setSelectedPinKey(key);
+        setCenter({ lat: pin.lat, lng: pin.lng });
+        setZoom((current) => Math.max(current, 14));
+      }}
+      ariaLabel={t("map.title")}
+      className="min-h-[390px] w-full min-w-0 rounded-[28px] border border-[#e8e2f0] shadow-[0_30px_100px_rgba(62,31,120,0.18)] dark:border-white/10 dark:shadow-[0_30px_100px_rgba(0,0,0,0.32)] sm:min-h-[520px] sm:rounded-[34px]"
     >
-      <div className="absolute inset-0 bg-[#0a1020]" />
-      {model.tiles.map((tile) => (
-        <img
-          key={tile.key}
-          src={tile.url}
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          draggable={false}
-          className="pointer-events-none absolute h-64 w-64 select-none"
-          style={{ left: `calc(50% + ${tile.left}px)`, top: `calc(50% + ${tile.top}px)` }}
-        />
-      ))}
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_18%,rgba(124,58,237,0.16),transparent_28%),linear-gradient(180deg,rgba(5,11,22,0.04),rgba(5,11,22,0.30))]" />
-
-      <div className="absolute left-3 top-3 z-30 flex max-w-[calc(100%_-_96px)] items-center gap-2 rounded-2xl border border-white/14 bg-slate-950/76 px-3 py-2 text-[11px] font-bold text-white shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl sm:left-5 sm:top-5 sm:px-4 sm:py-3 sm:text-xs">
-        <MapPin className="h-3.5 w-3.5 shrink-0 text-cyan-200" />
+      <div className="pointer-events-none absolute left-3 top-3 z-30 flex max-w-[calc(100%_-_96px)] items-center gap-2 rounded-2xl border border-white/70 bg-white/88 px-3 py-2 text-[11px] font-bold text-[#3e1f78] shadow-[0_18px_60px_rgba(62,31,120,0.16)] backdrop-blur-2xl dark:border-white/14 dark:bg-slate-950/78 dark:text-white sm:left-5 sm:top-5 sm:px-4 sm:py-3 sm:text-xs">
+        <MapPin className="h-3.5 w-3.5 shrink-0 text-[#1e9e92] dark:text-cyan-200" />
         <span className="truncate">{t("map.instructions")}</span>
       </div>
 
-      <div onPointerDown={(event) => event.stopPropagation()} className="absolute right-3 top-3 z-30 grid overflow-hidden rounded-2xl border border-white/14 bg-slate-950/78 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl sm:right-5 sm:top-5">
-        <button type="button" onClick={() => zoomMap(1)} className="grid h-10 w-10 place-items-center border-b border-white/10 text-lg font-black text-white transition hover:bg-white/10" aria-label={t("map.zoomIn")}>+</button>
-        <button type="button" onClick={() => zoomMap(-1)} className="grid h-10 w-10 place-items-center border-b border-white/10 text-lg font-black text-white transition hover:bg-white/10" aria-label={t("map.zoomOut")}>−</button>
-        <button type="button" onClick={fitMap} className="grid h-10 w-10 place-items-center text-white transition hover:bg-white/10" aria-label={t("map.center")}><LocateFixed className="h-4 w-4" /></button>
+      <div className="absolute right-3 top-3 z-30 grid overflow-hidden rounded-2xl border border-white/70 bg-white/92 text-[#3e1f78] shadow-[0_18px_60px_rgba(62,31,120,0.16)] backdrop-blur-2xl dark:border-white/14 dark:bg-slate-950/80 dark:text-white sm:right-5 sm:top-5">
+        <button type="button" onClick={() => zoomMap(1)} className="grid h-10 w-10 place-items-center border-b border-[#e8e2f0] text-lg font-black transition hover:bg-[#f1edf7] dark:border-white/10 dark:hover:bg-white/10" aria-label={t("map.zoomIn")}>+</button>
+        <button type="button" onClick={() => zoomMap(-1)} className="grid h-10 w-10 place-items-center border-b border-[#e8e2f0] text-lg font-black transition hover:bg-[#f1edf7] dark:border-white/10 dark:hover:bg-white/10" aria-label={t("map.zoomOut")}>−</button>
+        <button type="button" onClick={fitMap} className="grid h-10 w-10 place-items-center transition hover:bg-[#f1edf7] dark:hover:bg-white/10" aria-label={t("map.center")}><LocateFixed className="h-4 w-4" /></button>
       </div>
 
-      {userLocation ? (() => {
-        const point = model.toPixel(userLocation.lat, userLocation.lng);
-        return (
-          <div
-            className="absolute z-30 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white bg-cyan-400 shadow-[0_0_0_12px_rgba(34,211,238,0.18)]"
-            style={{ left: `calc(50% + ${point.left}px)`, top: `calc(50% + ${point.top}px)` }}
-            title={t("search.location")}
-          />
-        );
-      })() : null}
-
-      {pins.length ? pins.map((pin) => {
-        const point = model.toPixel(pin.lat, pin.lng);
-        const key = `${pin.businessId}-${pin.locationId}`;
-        const active = selectedPinKey === key || (!selectedPinKey && selectedPin?.businessId === pin.businessId && selectedPin?.locationId === pin.locationId);
-        return (
-          <button
-            key={key}
-            type="button"
-            onPointerDown={(event) => event.stopPropagation()}
-            onClick={(event) => {
-              event.stopPropagation();
-              setSelectedPinKey(key);
-              setCenter({ lat: pin.lat, lng: pin.lng });
-              setZoom((current) => Math.max(current, 14));
-            }}
-            className={cn(
-              "group absolute z-20 -translate-x-1/2 -translate-y-full rounded-full text-white transition hover:z-30 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-cyan-300/35",
-              active ? "z-30 scale-110" : "",
-            )}
-            style={{ left: `calc(50% + ${point.left}px)`, top: `calc(50% + ${point.top}px)` }}
-            aria-label={pin.name}
-          >
-            <span className={cn(
-              "grid h-11 w-11 place-items-center rounded-full border border-white/30 shadow-[0_18px_50px_rgba(0,0,0,0.40)] sm:h-12 sm:w-12",
-              active
-                ? "bg-gradient-to-br from-fuchsia-500 to-cyan-400"
-                : pin.vertical === "healthcare"
-                  ? "bg-gradient-to-br from-cyan-500 to-blue-600"
-                  : "bg-gradient-to-br from-violet-500 to-fuchsia-500",
-            )}>
-              <MapPin className="h-5 w-5 sm:h-6 sm:w-6" />
-            </span>
-            <span className="pointer-events-none absolute left-1/2 top-full mt-2 hidden -translate-x-1/2 whitespace-nowrap rounded-xl bg-slate-950/90 px-3 py-1.5 text-[11px] font-black shadow-xl backdrop-blur-xl group-hover:block sm:block">
-              {pin.name}
-            </span>
-          </button>
-        );
-      }) : (
-        <div className="absolute inset-0 z-10 grid place-items-center p-6 text-center">
-          <div className="max-w-md rounded-[28px] border border-white/12 bg-slate-950/78 p-7 backdrop-blur-2xl">
-            <MapPin className="mx-auto h-10 w-10 text-cyan-200" />
-            <h3 className="mt-4 text-2xl font-black text-white">{t("map.emptyTitle")}</h3>
-            <p className="mt-3 text-sm leading-7 text-slate-300">{t("map.emptyText")}</p>
+      {!pins.length ? (
+        <div className="pointer-events-none absolute inset-0 z-20 grid place-items-center p-6 text-center">
+          <div className="max-w-md rounded-[28px] border border-white/70 bg-white/88 p-7 shadow-xl backdrop-blur-2xl dark:border-white/12 dark:bg-slate-950/78">
+            <MapPin className="mx-auto h-10 w-10 text-[#1e9e92] dark:text-cyan-200" />
+            <h3 className="mt-4 text-2xl font-black text-[#241736] dark:text-white">{t("map.emptyTitle")}</h3>
+            <p className="mt-3 text-sm leading-7 text-[#6b6178] dark:text-slate-300">{t("map.emptyText")}</p>
           </div>
         </div>
-      )}
-
-      <a
-        href="https://www.openstreetmap.org/copyright"
-        target="_blank"
-        rel="noopener noreferrer"
-        onPointerDown={(event) => event.stopPropagation()}
-        className="absolute bottom-3 right-3 z-20 rounded-full bg-white/90 px-3 py-1.5 text-[10px] font-bold text-slate-700 shadow-sm"
-      >
-        © OpenStreetMap contributors
-      </a>
-    </div>
+      ) : null}
+    </YandexMap>
   );
 }
 

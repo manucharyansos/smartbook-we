@@ -28,6 +28,15 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build
+
+      - name: Upload production build
+        uses: actions/upload-artifact@v4
+        with:
+          name: vizit-device-showcase-build
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
       - run: |
           php -l public/index.php
           php -l public/sitemap.php

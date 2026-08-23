@@ -1,210 +1,342 @@
-/* Vizit.am premium public-home theme
-   Scoped to .vizit-public-page so the app/admin UI keeps its existing look. */
-
+/* Vizit.am — public landing redesign. Scoped so admin/app UI is untouched. */
 :root {
-  --vizit-cream: #fbf6ef;
-  --vizit-cream-2: #fffaf5;
-  --vizit-cream-3: #f5ede5;
-  --vizit-plum: #2b0d35;
-  --vizit-plum-2: #4a164a;
-  --vizit-plum-3: #6d2a63;
-  --vizit-gold: #d29a45;
-  --vizit-gold-soft: #f4dfba;
-  --vizit-ink: #26152d;
-  --vizit-muted: #746878;
-  --vizit-line: rgba(210, 154, 69, 0.28);
-  --vizit-card: rgba(255, 252, 248, 0.92);
-  --vizit-shadow: 0 24px 70px rgba(75, 36, 52, 0.10);
+  --vz-cream:#fbf5ed;
+  --vz-cream-2:#fffaf4;
+  --vz-cream-3:#f3e7dc;
+  --vz-plum:#2b0d35;
+  --vz-plum-2:#4b164b;
+  --vz-plum-3:#6d2a63;
+  --vz-gold:#d39a43;
+  --vz-gold-2:#edc982;
+  --vz-ink:#2c1931;
+  --vz-muted:#756777;
+  --vz-border:rgba(122,76,74,.14);
+  --vz-gold-border:rgba(211,154,67,.28);
+  --vz-card:#fffdf9;
+  --vz-shadow:0 22px 70px rgba(75,36,52,.10);
+  --vz-shadow-lg:0 38px 110px rgba(75,36,52,.14);
 }
 
 .vizit-public-page {
-  background: var(--vizit-cream) !important;
-  color: var(--vizit-ink) !important;
-  font-family: "Noto Sans Armenian", "Noto Sans", Inter, ui-sans-serif, system-ui, sans-serif;
+  background:var(--vz-cream)!important;
+  color:var(--vz-ink)!important;
+  font-family:"Rubik","Noto Sans Armenian",ui-sans-serif,system-ui,sans-serif!important;
+}
+.vizit-public-page .vizit-display,
+.vizit-public-page h1,
+.vizit-public-page h2 {
+  font-family:"Noto Serif Armenian",Georgia,serif!important;
+  font-weight:700!important;
+}
+.vizit-public-page main>section{position:relative;isolation:isolate}
+
+/* ---------- NAV ---------- */
+body:has(.vizit-public-page) header>div{max-width:1440px!important;padding-top:14px!important}
+body:has(.vizit-public-page) header>div>div{
+  border:1px solid var(--vz-gold-border)!important;
+  background:rgba(255,250,244,.88)!important;
+  box-shadow:0 14px 46px rgba(64,29,48,.08)!important;
+  backdrop-filter:blur(22px) saturate(140%)!important;
+}
+body:has(.vizit-public-page) header nav a{color:#67576a!important;font-weight:600!important}
+body:has(.vizit-public-page) header nav a:hover{background:#f7eadc!important;color:var(--vz-plum)!important}
+body:has(.vizit-public-page) header nav a[aria-current="page"]{background:#f3e2cd!important;color:var(--vz-plum)!important}
+body:has(.vizit-public-page) header a[href="/register"]{
+  background:linear-gradient(135deg,var(--vz-plum),var(--vz-plum-3))!important;
+  color:#fff!important;
+  border-color:transparent!important;
+  box-shadow:0 12px 28px rgba(75,22,75,.22)!important;
 }
 
-.vizit-public-page main > section { position: relative; }
-
-body:has(.vizit-public-page) header > div { max-width: 1420px !important; }
-body:has(.vizit-public-page) header > div > div {
-  border-color: rgba(210, 154, 69, 0.28) !important;
-  background: rgba(255, 250, 245, 0.88) !important;
-  box-shadow: 0 16px 50px rgba(63, 27, 47, 0.08) !important;
-  backdrop-filter: blur(22px) saturate(135%);
-}
-body:has(.vizit-public-page) header nav a { color: #5e5062 !important; font-weight: 650 !important; }
-body:has(.vizit-public-page) header nav a:hover { background: rgba(210, 154, 69, 0.10) !important; color: var(--vizit-plum) !important; }
-body:has(.vizit-public-page) header nav a[aria-current="page"] { background: rgba(210, 154, 69, 0.14) !important; color: var(--vizit-plum) !important; }
-body:has(.vizit-public-page) header a[href="/register"] {
-  background: linear-gradient(135deg, var(--vizit-plum), var(--vizit-plum-3)) !important;
-  color: #fff !important;
-  box-shadow: 0 12px 28px rgba(74, 22, 74, 0.22) !important;
-}
-
-/* Hero */
-.vizit-public-page main > section:first-child {
+/* ---------- HERO ---------- */
+.vizit-public-page main>section:first-child{
+  min-height:720px;
+  padding-top:126px!important;
+  padding-bottom:54px!important;
   background:
-    radial-gradient(circle at 88% 2%, rgba(230, 181, 164, 0.38), transparent 30%),
-    radial-gradient(circle at 5% 75%, rgba(245, 222, 196, 0.55), transparent 25%),
-    linear-gradient(180deg, #fffaf6 0%, #fbf6ef 62%, #f7eee7 100%) !important;
-  padding-top: 132px !important;
-  padding-bottom: 58px !important;
+    radial-gradient(circle at 92% 12%,rgba(230,188,168,.45),transparent 28%),
+    radial-gradient(circle at 10% 86%,rgba(245,222,194,.62),transparent 26%),
+    linear-gradient(180deg,#fffaf5 0%,#fbf5ed 67%,#f7eee6 100%)!important;
 }
-.vizit-public-page main > section:first-child::before,
-.vizit-public-page main > section:first-child::after {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-  border: 1px solid var(--vizit-line);
-  border-radius: 50%;
+.vizit-public-page main>section:first-child>div.absolute{opacity:0!important}
+.vizit-public-page main>section:first-child::before{
+  content:"";position:absolute;z-index:-1;right:-190px;top:-240px;width:600px;height:600px;border:1px solid rgba(211,154,67,.34);border-radius:50%;pointer-events:none
 }
-.vizit-public-page main > section:first-child::before { width: 520px; height: 520px; right: -170px; top: -270px; }
-.vizit-public-page main > section:first-child::after { width: 420px; height: 420px; left: -250px; bottom: -170px; }
-.vizit-public-page main > section:first-child > div.absolute { opacity: 0 !important; }
-.vizit-public-page main > section:first-child h1 {
-  color: var(--vizit-plum) !important;
-  letter-spacing: -0.055em !important;
-  text-wrap: balance;
+.vizit-public-page main>section:first-child::after{
+  content:"";position:absolute;z-index:-1;left:-250px;bottom:-240px;width:510px;height:510px;border:1px solid rgba(109,42,99,.12);border-radius:50%;pointer-events:none
 }
-.vizit-public-page main > section:first-child h1 span {
-  background: none !important;
-  -webkit-text-fill-color: var(--vizit-plum) !important;
-  color: var(--vizit-plum) !important;
+.vizit-public-page main>section:first-child>div.relative{max-width:1380px!important}
+.vizit-public-page main>section:first-child>div.relative>div:first-child{max-width:650px!important}
+.vizit-public-page main>section:first-child h1{
+  max-width:650px;
+  margin-top:24px!important;
+  color:var(--vz-plum)!important;
+  font-size:clamp(44px,5.15vw,78px)!important;
+  line-height:.99!important;
+  letter-spacing:-.045em!important;
+  text-wrap:balance;
 }
-.vizit-public-page main > section:first-child p { color: #65586a !important; }
-.vizit-public-page main > section:first-child [class*="border-violet"] { border-color: rgba(210, 154, 69, 0.35) !important; }
-.vizit-public-page main > section:first-child [class*="bg-white"] { background-color: rgba(255, 252, 248, 0.92) !important; }
-.vizit-public-page main > section:first-child form,
-.vizit-public-page main > section:first-child [role="search"] { box-shadow: var(--vizit-shadow) !important; }
-.vizit-public-page main > section:first-child button[class*="violet"],
-.vizit-public-page main > section:first-child a[class*="violet"] {
-  background: linear-gradient(135deg, var(--vizit-plum), var(--vizit-plum-3)) !important;
-  border-color: transparent !important;
-  color: #fff !important;
+.vizit-public-page main>section:first-child h1 span{
+  color:var(--vz-plum)!important;
+  -webkit-text-fill-color:var(--vz-plum)!important;
+  background:none!important;
+}
+.vizit-public-page main>section:first-child p{color:#706073!important}
+.vizit-public-page main>section:first-child svg{color:var(--vz-gold)!important}
+.vizit-public-page main>section:first-child>div.relative>div:first-child>div:first-child{
+  border-color:rgba(211,154,67,.35)!important;
+  background:rgba(255,251,246,.78)!important;
+  color:#956629!important;
+  box-shadow:none!important;
 }
 
-/* Category ribbon */
-.vizit-public-page #categories { background: var(--vizit-cream) !important; }
-.vizit-public-page #categories > div {
-  border-color: rgba(210, 154, 69, 0.24) !important;
-  background: rgba(255, 252, 248, 0.94) !important;
-  box-shadow: var(--vizit-shadow) !important;
+/* Search bar: a single polished reservation/search control */
+.vizit-public-page main>section:first-child form{
+  margin-top:30px!important;
+  padding:7px!important;
+  border:1px solid rgba(211,154,67,.25)!important;
+  border-radius:24px!important;
+  background:rgba(255,253,249,.96)!important;
+  box-shadow:0 22px 62px rgba(74,37,50,.11)!important;
+}
+.vizit-public-page main>section:first-child form>div{gap:4px!important}
+.vizit-public-page main>section:first-child form label,
+.vizit-public-page main>section:first-child form button:not([type="submit"]){border-radius:17px!important}
+.vizit-public-page main>section:first-child form button[type="submit"]{
+  min-width:118px!important;
+  border-radius:17px!important;
+  background:linear-gradient(135deg,var(--vz-plum),var(--vz-plum-3))!important;
+  color:#fff!important;
+  box-shadow:0 12px 28px rgba(74,22,74,.20)!important;
+}
+.vizit-public-page main>section:first-child form button[type="submit"] svg{color:#fff!important}
+.vizit-public-page main>section:first-child form input{color:var(--vz-ink)!important}
+.vizit-public-page main>section:first-child form input::placeholder{color:#ad9ca7!important}
+
+/* Popular chips + proof */
+.vizit-public-page main>section:first-child button.rounded-full{
+  border-color:rgba(211,154,67,.22)!important;background:#fffaf5!important;color:#5f4c61!important
+}
+.vizit-public-page main>section:first-child button.rounded-full:hover{border-color:rgba(211,154,67,.5)!important;background:#f8eadb!important;color:var(--vz-plum)!important}
+
+/* Replace the old ticket illustration visually with the desktop+mobile mockup from the references. */
+.vizit-public-page main>section:first-child>div.relative>div:last-child{
+  min-height:590px!important;
+  max-width:720px!important;
+  width:100%!important;
+  padding:0!important;
+  background:url('/vizit-device-showcase.svg') center/contain no-repeat!important;
+  filter:drop-shadow(0 22px 38px rgba(73,33,48,.05));
+}
+.vizit-public-page main>section:first-child>div.relative>div:last-child>*{display:none!important}
+
+/* ---------- CATEGORIES ---------- */
+.vizit-public-page #categories{
+  padding-top:0!important;
+  padding-bottom:58px!important;
+  background:linear-gradient(180deg,#f7eee6 0%,var(--vz-cream) 100%)!important;
+}
+.vizit-public-page #categories>div{
+  max-width:1320px!important;
+  border:1px solid var(--vz-gold-border)!important;
+  border-radius:34px!important;
+  background:rgba(255,253,249,.94)!important;
+  box-shadow:var(--vz-shadow)!important;
 }
 .vizit-public-page #categories h2,
-.vizit-public-page #businesses h2,
+.vizit-public-page #how h2,
 .vizit-public-page #map h2,
-.vizit-public-page #how h2 { color: var(--vizit-plum) !important; }
-.vizit-public-page #categories button { border-color: rgba(210, 154, 69, 0.18) !important; background: #fffaf6 !important; }
-.vizit-public-page #categories button:hover { border-color: rgba(210, 154, 69, 0.48) !important; box-shadow: 0 18px 36px rgba(73, 38, 50, 0.08) !important; }
-.vizit-public-page #categories button > span:first-child { background-image: linear-gradient(145deg, #f8e7d5, #efe8fb) !important; color: var(--vizit-plum) !important; }
+.vizit-public-page #businesses h2,
+.vizit-public-page #plans h2{color:var(--vz-plum)!important;letter-spacing:-.035em!important}
+.vizit-public-page #categories>div>div:first-child button{color:var(--vz-plum)!important}
+.vizit-public-page #categories>div>div:last-child{gap:12px!important}
+.vizit-public-page #categories button{
+  border-color:rgba(122,76,74,.11)!important;
+  background:#fffaf5!important;
+  box-shadow:0 10px 28px rgba(74,37,50,.055)!important;
+}
+.vizit-public-page #categories button:hover{
+  transform:translateY(-4px)!important;
+  border-color:rgba(211,154,67,.46)!important;
+  box-shadow:0 18px 38px rgba(74,37,50,.09)!important;
+}
+.vizit-public-page #categories button>span:first-child{
+  background:linear-gradient(145deg,#f7e8d7,#efe2ea)!important;
+  color:var(--vz-plum)!important;
+  border:1px solid rgba(211,154,67,.12)
+}
+.vizit-public-page #categories button>span:last-child{color:#473449!important;font-weight:700!important}
 
-/* How it works */
-.vizit-public-page #how { background: linear-gradient(180deg, var(--vizit-cream), #fffaf6) !important; }
-.vizit-public-page #how > div {
-  border-color: rgba(210, 154, 69, 0.24) !important;
-  background: rgba(255, 252, 248, 0.88) !important;
-  box-shadow: var(--vizit-shadow) !important;
+/* ---------- HOW IT WORKS ---------- */
+.vizit-public-page #how{
+  padding-top:68px!important;padding-bottom:78px!important;background:#fffaf5!important
 }
-.vizit-public-page #how [class*="from-violet-500"] { background: linear-gradient(90deg, var(--vizit-gold), #efc982) !important; }
-
-/* Map */
-.vizit-public-page #map { background: #f7efe8 !important; }
-.vizit-public-page #map > div > div.grid > div:last-child {
-  border-color: rgba(210, 154, 69, 0.24) !important;
-  background: rgba(255, 252, 248, 0.96) !important;
-  box-shadow: var(--vizit-shadow) !important;
-}
-.vizit-public-page #map .vizit-yandex-map-shell,
-.vizit-public-page #map [class*="vizit-yandex"] {
-  border-color: rgba(210, 154, 69, 0.28) !important;
-  box-shadow: 0 26px 72px rgba(67, 31, 47, 0.12) !important;
-}
-.vizit-public-page #map a[href^="/book/"] {
-  background: linear-gradient(135deg, var(--vizit-plum), var(--vizit-plum-3)) !important;
-  color: #fff !important;
-}
-
-/* Businesses */
-.vizit-public-page #businesses { background: #fffaf6 !important; }
-.vizit-public-page #businesses article {
-  border-color: rgba(210, 154, 69, 0.22) !important;
-  background: rgba(255, 252, 248, 0.98) !important;
-  box-shadow: 0 18px 55px rgba(68, 33, 46, 0.09) !important;
-}
-.vizit-public-page #businesses article:hover { border-color: rgba(210, 154, 69, 0.52) !important; box-shadow: 0 26px 65px rgba(68, 33, 46, 0.13) !important; }
-.vizit-public-page #businesses article a[href^="/book/"] {
-  background: linear-gradient(135deg, var(--vizit-plum), var(--vizit-plum-3)) !important;
-  box-shadow: 0 12px 28px rgba(74, 22, 74, 0.18) !important;
-}
-.vizit-public-page #businesses button[class*="bg-violet-600"] { background: var(--vizit-plum) !important; border-color: var(--vizit-plum) !important; }
-
-.vizit-public-page .rounded-full[class*="cyan"] {
-  border-color: rgba(210, 154, 69, 0.30) !important;
-  background: #fff5e8 !important;
-  color: #9b651e !important;
-}
-
-.vizit-public-page #plans { background: #f7efe8 !important; }
-.vizit-public-page #plans > div > div.grid > div,
-.vizit-public-page main > section:last-of-type > div { border-color: rgba(210, 154, 69, 0.24) !important; }
-
-/* Dark mode */
-html.dark .vizit-public-page {
-  --vizit-card: rgba(47, 20, 47, 0.82);
-  background: #160f19 !important;
-  color: #fff8f1 !important;
-}
-html.dark body:has(.vizit-public-page) header > div > div {
-  border-color: rgba(232, 185, 103, 0.20) !important;
-  background: rgba(31, 16, 31, 0.90) !important;
-}
-html.dark .vizit-public-page main > section:first-child {
+.vizit-public-page #how>div{
+  max-width:1240px!important;
+  border:1px solid var(--vz-gold-border)!important;
+  border-radius:38px!important;
   background:
-    radial-gradient(circle at 85% 0%, rgba(108, 42, 83, 0.42), transparent 32%),
-    radial-gradient(circle at 5% 75%, rgba(210, 154, 69, 0.12), transparent 27%),
-    linear-gradient(180deg, #1d1220 0%, #160f19 65%, #130c15 100%) !important;
+    radial-gradient(circle at 94% 0%,rgba(244,221,191,.58),transparent 28%),
+    rgba(255,253,249,.96)!important;
+  box-shadow:var(--vz-shadow)!important;
 }
-html.dark .vizit-public-page main > section:first-child h1,
-html.dark .vizit-public-page main > section:first-child h1 span,
+.vizit-public-page #how>div>div:nth-of-type(2)>div{
+  border-color:rgba(211,154,67,.18)!important;
+  background:#fffaf6!important;
+  box-shadow:0 14px 35px rgba(70,34,49,.06)!important;
+}
+.vizit-public-page #how>div>div:nth-of-type(2)>div span:first-child{
+  border-color:rgba(211,154,67,.55)!important;color:var(--vz-plum)!important;background:#fff7ec!important
+}
+.vizit-public-page #how svg{color:var(--vz-gold)!important}
+.vizit-public-page #how p{color:var(--vz-muted)!important}
+
+/* ---------- MAP ---------- */
+.vizit-public-page #map{
+  padding-top:80px!important;padding-bottom:86px!important;background:#f4e9df!important
+}
+.vizit-public-page #map>div{max-width:1320px!important}
+.vizit-public-page #map .grid{gap:22px!important}
+.vizit-public-page #map .vizit-yandex-map-shell,
+.vizit-public-page #map [class*="vizit-yandex"]{
+  border-color:rgba(211,154,67,.26)!important;
+  border-radius:34px!important;
+  box-shadow:0 30px 80px rgba(70,34,49,.12)!important;
+}
+.vizit-public-page #map>div>div.grid>div:last-child{
+  border:1px solid var(--vz-gold-border)!important;
+  border-radius:32px!important;
+  background:#fffdf9!important;
+  box-shadow:var(--vz-shadow)!important;
+}
+.vizit-public-page #map>div>div.grid>div:last-child h3{color:var(--vz-plum)!important}
+.vizit-public-page #map>div>div.grid>div:last-child p{color:var(--vz-muted)!important}
+.vizit-public-page #map a[href^="/book/"]{
+  background:linear-gradient(135deg,var(--vz-plum),var(--vz-plum-3))!important;color:#fff!important;box-shadow:0 12px 28px rgba(74,22,74,.18)!important
+}
+.vizit-public-page #map button{border-color:rgba(211,154,67,.18)!important}
+
+/* ---------- BUSINESSES ---------- */
+.vizit-public-page #businesses{padding-top:82px!important;padding-bottom:88px!important;background:#fffaf5!important}
+.vizit-public-page #businesses>div{max-width:1320px!important}
+.vizit-public-page #businesses article{
+  border:1px solid rgba(211,154,67,.20)!important;
+  border-radius:30px!important;
+  background:#fffdf9!important;
+  box-shadow:0 18px 52px rgba(72,35,49,.085)!important;
+}
+.vizit-public-page #businesses article:hover{
+  transform:translateY(-5px)!important;border-color:rgba(211,154,67,.48)!important;box-shadow:0 28px 68px rgba(72,35,49,.13)!important
+}
+.vizit-public-page #businesses article>div:first-child{background:linear-gradient(145deg,#2b0d35,#6d2a63)!important}
+.vizit-public-page #businesses article>div:last-child p{color:var(--vz-muted)!important}
+.vizit-public-page #businesses article>div:last-child>div:nth-of-type(1)>div{background:#fbf4ed!important;border-color:rgba(211,154,67,.15)!important}
+.vizit-public-page #businesses article a[href^="/book/"]{
+  background:linear-gradient(135deg,var(--vz-plum),var(--vz-plum-3))!important;color:#fff!important;box-shadow:0 12px 28px rgba(74,22,74,.18)!important
+}
+.vizit-public-page #businesses article a[href^="/businesses/"]{border-color:rgba(211,154,67,.24)!important;background:#fbf4ed!important;color:#4b384d!important}
+.vizit-public-page #businesses button[class*="bg-violet-600"]{background:var(--vz-plum)!important;border-color:var(--vz-plum)!important}
+
+/* ---------- BADGES / PLANS / CTA / FOOTER ---------- */
+.vizit-public-page .rounded-full[class*="cyan"]{
+  border-color:rgba(211,154,67,.30)!important;background:#fff2df!important;color:#98641f!important
+}
+.vizit-public-page #plans{background:#f4e9df!important;padding-top:78px!important;padding-bottom:86px!important}
+.vizit-public-page #plans>div>div.grid>div{
+  border-color:rgba(211,154,67,.22)!important;background:#fffdf9!important;box-shadow:var(--vz-shadow)!important
+}
+.vizit-public-page #plans>div>div.grid>div h3{color:var(--vz-plum)!important}
+.vizit-public-page #plans>div>div.grid>div p{color:var(--vz-muted)!important}
+.vizit-public-page main>section:last-of-type>div{
+  border-color:rgba(211,154,67,.28)!important;
+  background:radial-gradient(circle at 90% 0%,rgba(230,190,161,.35),transparent 34%),#fffaf5!important;
+  box-shadow:var(--vz-shadow-lg)!important
+}
+.vizit-public-page main>section:last-of-type h2{color:var(--vz-plum)!important}
+.vizit-public-page main>section:last-of-type p{color:var(--vz-muted)!important}
+.vizit-public-page main>section:last-of-type a[href="/register"]{background:linear-gradient(135deg,var(--vz-plum),var(--vz-plum-3))!important;color:#fff!important}
+
+/* ---------- DARK ---------- */
+html.dark .vizit-public-page{background:#150e17!important;color:#fff8f2!important}
+html.dark body:has(.vizit-public-page) header>div>div{border-color:rgba(231,188,107,.18)!important;background:rgba(30,16,30,.90)!important}
+html.dark body:has(.vizit-public-page) header nav a{color:#d8cbd7!important}
+html.dark body:has(.vizit-public-page) header nav a[aria-current="page"]{background:rgba(211,154,67,.16)!important;color:#fff7ee!important}
+html.dark .vizit-public-page main>section:first-child{
+  background:radial-gradient(circle at 90% 8%,rgba(109,42,99,.42),transparent 30%),radial-gradient(circle at 8% 85%,rgba(211,154,67,.10),transparent 27%),linear-gradient(180deg,#1d1220,#150e17 72%,#120b14)!important
+}
+html.dark .vizit-public-page main>section:first-child h1,
+html.dark .vizit-public-page main>section:first-child h1 span,
 html.dark .vizit-public-page #categories h2,
-html.dark .vizit-public-page #businesses h2,
+html.dark .vizit-public-page #how h2,
 html.dark .vizit-public-page #map h2,
-html.dark .vizit-public-page #how h2 {
-  color: #fff7ef !important;
-  -webkit-text-fill-color: #fff7ef !important;
-}
+html.dark .vizit-public-page #businesses h2,
+html.dark .vizit-public-page #plans h2{color:#fff7ef!important;-webkit-text-fill-color:#fff7ef!important}
+html.dark .vizit-public-page main>section:first-child>div.relative>div:last-child{filter:brightness(.93) saturate(.92) drop-shadow(0 24px 40px rgba(0,0,0,.25))}
 html.dark .vizit-public-page #categories,
 html.dark .vizit-public-page #how,
 html.dark .vizit-public-page #map,
 html.dark .vizit-public-page #businesses,
-html.dark .vizit-public-page #plans { background: #160f19 !important; }
-html.dark .vizit-public-page #categories > div,
-html.dark .vizit-public-page #how > div,
-html.dark .vizit-public-page #map > div > div.grid > div:last-child,
-html.dark .vizit-public-page #businesses article {
-  border-color: rgba(232, 185, 103, 0.16) !important;
-  background: rgba(46, 24, 45, 0.78) !important;
+html.dark .vizit-public-page #plans{background:#150e17!important}
+html.dark .vizit-public-page #categories>div,
+html.dark .vizit-public-page #how>div,
+html.dark .vizit-public-page #map>div>div.grid>div:last-child,
+html.dark .vizit-public-page #businesses article,
+html.dark .vizit-public-page #plans>div>div.grid>div{
+  border-color:rgba(231,188,107,.15)!important;background:rgba(47,24,46,.82)!important
+}
+html.dark .vizit-public-page #categories button,
+html.dark .vizit-public-page #businesses article>div:last-child>div:nth-of-type(1)>div{background:rgba(255,255,255,.055)!important;border-color:rgba(255,255,255,.08)!important}
+html.dark .vizit-public-page #categories button>span:last-child,
+html.dark .vizit-public-page #map h3{color:#fff8f2!important}
+html.dark .vizit-public-page #categories button>span:first-child{background:linear-gradient(145deg,rgba(211,154,67,.18),rgba(109,42,99,.34))!important;color:#f4d99f!important}
+
+/* ---------- DESKTOP ---------- */
+@media(min-width:1024px){
+  .vizit-public-page main>section:first-child>div.relative{grid-template-columns:minmax(0,.86fr) minmax(560px,1.14fr)!important;gap:34px!important;align-items:center!important}
+  .vizit-public-page main>section:first-child>div.relative>div:first-child{padding-top:38px!important;padding-bottom:64px!important;text-align:left!important}
+  .vizit-public-page main>section:first-child>div.relative>div:first-child>*{margin-left:0!important;margin-right:0!important}
 }
 
-@media (min-width: 1280px) {
-  .vizit-public-page main > section:first-child > div.relative {
-    grid-template-columns: minmax(0, 0.92fr) minmax(560px, 1.08fr) !important;
-    gap: 52px !important;
+/* ---------- MOBILE ---------- */
+@media(max-width:767px){
+  body:has(.vizit-public-page) header>div{padding-left:10px!important;padding-right:10px!important;padding-top:10px!important}
+  .vizit-public-page main>section:first-child{min-height:auto;padding:98px 16px 26px!important}
+  .vizit-public-page main>section:first-child::before{width:320px;height:320px;right:-180px;top:-120px}
+  .vizit-public-page main>section:first-child::after{display:none}
+  .vizit-public-page main>section:first-child>div.relative{gap:2px!important}
+  .vizit-public-page main>section:first-child>div.relative>div:first-child{padding-top:16px!important;padding-bottom:0!important}
+  .vizit-public-page main>section:first-child h1{font-size:clamp(38px,11.5vw,52px)!important;line-height:1.03!important;letter-spacing:-.035em!important}
+  .vizit-public-page main>section:first-child p{font-size:14px!important;line-height:24px!important}
+  .vizit-public-page main>section:first-child form{margin-top:22px!important;border-radius:22px!important;padding:6px!important}
+  .vizit-public-page main>section:first-child form>div{display:grid!important;grid-template-columns:1fr!important}
+  .vizit-public-page main>section:first-child form label,
+  .vizit-public-page main>section:first-child form button:not([type="submit"]){min-height:52px!important;background:#fffaf5!important}
+  .vizit-public-page main>section:first-child form button[type="submit"]{height:52px!important;width:100%!important}
+  .vizit-public-page main>section:first-child>div.relative>div:last-child{
+    min-height:345px!important;
+    margin-top:0!important;
+    background-size:118%!important;
+    background-position:center top!important;
   }
-  .vizit-public-page main > section:first-child > div.relative > div:first-child { padding-bottom: 104px !important; }
+  .vizit-public-page #categories{padding-left:0!important;padding-right:0!important;padding-bottom:44px!important}
+  .vizit-public-page #categories>div{border-left:0!important;border-right:0!important;border-radius:0!important;padding:22px 16px!important;box-shadow:0 15px 42px rgba(70,34,49,.06)!important}
+  .vizit-public-page #categories>div>div:last-child{padding-left:16px!important;padding-right:16px!important;margin-left:-16px!important;margin-right:-16px!important;scroll-padding-inline:34px!important}
+  .vizit-public-page #categories button{width:48vw!important;max-width:178px!important;min-height:126px!important;scroll-snap-align:center!important}
+  .vizit-public-page #how{padding:38px 0 48px!important}
+  .vizit-public-page #how>div{border-left:0!important;border-right:0!important;border-radius:0!important;padding:26px 18px!important}
+  .vizit-public-page #map{padding:50px 16px 58px!important}
+  .vizit-public-page #map .grid{gap:14px!important}
+  .vizit-public-page #map .vizit-yandex-map-shell,
+  .vizit-public-page #map [class*="vizit-yandex"]{border-radius:26px!important}
+  .vizit-public-page #map>div>div.grid>div:last-child{border-radius:26px!important;padding:16px!important}
+  .vizit-public-page #businesses{padding:56px 0 64px!important}
+  .vizit-public-page #businesses>div>div:first-child,
+  .vizit-public-page #businesses>div>div:nth-child(2){padding-left:18px!important;padding-right:18px!important}
+  .vizit-public-page #businesses article{width:calc(100vw - 64px)!important;max-width:340px!important;border-radius:26px!important;scroll-snap-align:center!important}
+  .vizit-public-page #plans{padding:56px 16px 62px!important}
 }
 
-@media (max-width: 767px) {
-  .vizit-public-page main > section:first-child {
-    padding-top: 98px !important;
-    padding-left: 16px !important;
-    padding-right: 16px !important;
-  }
-  body:has(.vizit-public-page) header > div { padding-left: 10px !important; padding-right: 10px !important; }
-  .vizit-public-page #categories > div,
-  .vizit-public-page #map > div > div.grid > div:last-child,
-  .vizit-public-page #businesses article { border-radius: 24px !important; }
-  .vizit-public-page #categories { padding-left: 0 !important; padding-right: 0 !important; }
-  .vizit-public-page #categories > div { border-left: 0 !important; border-right: 0 !important; border-radius: 0 !important; }
-  .vizit-public-page #businesses article { scroll-snap-align: center; }
+@media(max-width:390px){
+  .vizit-public-page main>section:first-child>div.relative>div:last-child{min-height:315px!important;background-size:124%!important}
+  .vizit-public-page #categories button{width:52vw!important}
 }

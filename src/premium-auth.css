@@ -1,0 +1,88 @@
+/* Authentication / recovery / registration pages in the same Vizit visual language. */
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"]{
+  background:
+    radial-gradient(circle at 8% 2%,rgba(244,220,190,.54),transparent 28%),
+    radial-gradient(circle at 91% 9%,rgba(222,181,167,.43),transparent 29%),
+    linear-gradient(180deg,#fffaf5 0%,#fbf5ed 58%,#f5e9df 100%)!important;
+  color:#2c1931!important;
+  font-family:"Rubik","Noto Sans Armenian",ui-sans-serif,system-ui,sans-serif!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"]>div.absolute{opacity:.36!important}
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] h1,
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] h2{
+  font-family:"Noto Serif Armenian",Georgia,serif!important;
+  color:#2b0d35!important;
+  letter-spacing:-.035em!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] a[class*="absolute"],
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"]>div[class*="absolute right"]{
+  border-color:rgba(211,154,67,.27)!important;
+  background:rgba(255,253,249,.92)!important;
+  color:#5a465c!important;
+  box-shadow:0 10px 32px rgba(71,34,49,.07)!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] [class*="from-violet-600"],
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] [class*="to-fuchsia-600"]{
+  background:linear-gradient(145deg,#2b0d35,#6d2a63)!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] [class*="text-violet"]{color:#6d2a63!important}
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] [class*="bg-violet-50"]{background:#f8eee4!important}
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] [class*="border-violet"]{border-color:rgba(211,154,67,.28)!important}
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] [class*="rounded-[28px]"][class*="bg-white"],
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] [class*="rounded-[34px]"][class*="bg-white"],
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] [class*="rounded-[26px]"][class*="bg-white"]{
+  border-color:rgba(211,154,67,.24)!important;
+  background:rgba(255,253,249,.95)!important;
+  box-shadow:0 28px 85px rgba(72,35,49,.11)!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] [class*="bg-[linear-gradient(135deg,#fff7ed"]{
+  background:linear-gradient(145deg,#fff7ec,#fbf0e7 56%,#fffaf5)!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] input,
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] select,
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] textarea{
+  border-color:rgba(211,154,67,.25)!important;
+  background:#fffdf9!important;
+  color:#321c37!important;
+  border-radius:16px!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] input:focus,
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] select:focus,
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] textarea:focus{
+  border-color:rgba(211,154,67,.62)!important;
+  box-shadow:0 0 0 4px rgba(211,154,67,.11)!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] button[class*="bg-violet"],
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] button[class*="from-violet"],
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] a[class*="bg-violet"]{
+  background:linear-gradient(135deg,#2b0d35,#6d2a63)!important;
+  color:#fff!important;
+  border-color:transparent!important;
+  box-shadow:0 12px 28px rgba(74,22,74,.18)!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] p,
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] [class*="text-slate-500"],
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] [class*="text-slate-600"]{color:#756777!important}
+
+html.dark #root>div[class*="bg-[linear-gradient(180deg,#fffaf5"]{
+  background:radial-gradient(circle at 90% 0%,rgba(109,42,99,.34),transparent 30%),linear-gradient(180deg,#1d1220,#150e17 60%,#120b14)!important;
+  color:#fff8f2!important;
+}
+html.dark #root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] h1,
+html.dark #root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] h2{color:#fff7ef!important}
+html.dark #root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] [class*="bg-white"]{
+  background-color:rgba(47,24,46,.88)!important;
+  border-color:rgba(231,188,107,.15)!important;
+}
+html.dark #root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] input,
+html.dark #root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] select,
+html.dark #root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] textarea{
+  background:#1d121f!important;
+  border-color:rgba(231,188,107,.17)!important;
+  color:#fff8f2!important;
+}
+
+@media(max-width:767px){
+  #root>div[class*="bg-[linear-gradient(180deg,#fffaf5"]>div[class*="grid"]{padding-left:14px!important;padding-right:14px!important}
+  #root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] [class*="rounded-[28px]"]{border-radius:24px!important}
+}

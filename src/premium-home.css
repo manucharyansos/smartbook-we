@@ -1,0 +1,210 @@
+/* Vizit.am premium public-home theme
+   Scoped to .vizit-public-page so the app/admin UI keeps its existing look. */
+
+:root {
+  --vizit-cream: #fbf6ef;
+  --vizit-cream-2: #fffaf5;
+  --vizit-cream-3: #f5ede5;
+  --vizit-plum: #2b0d35;
+  --vizit-plum-2: #4a164a;
+  --vizit-plum-3: #6d2a63;
+  --vizit-gold: #d29a45;
+  --vizit-gold-soft: #f4dfba;
+  --vizit-ink: #26152d;
+  --vizit-muted: #746878;
+  --vizit-line: rgba(210, 154, 69, 0.28);
+  --vizit-card: rgba(255, 252, 248, 0.92);
+  --vizit-shadow: 0 24px 70px rgba(75, 36, 52, 0.10);
+}
+
+.vizit-public-page {
+  background: var(--vizit-cream) !important;
+  color: var(--vizit-ink) !important;
+  font-family: "Noto Sans Armenian", "Noto Sans", Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.vizit-public-page main > section { position: relative; }
+
+body:has(.vizit-public-page) header > div { max-width: 1420px !important; }
+body:has(.vizit-public-page) header > div > div {
+  border-color: rgba(210, 154, 69, 0.28) !important;
+  background: rgba(255, 250, 245, 0.88) !important;
+  box-shadow: 0 16px 50px rgba(63, 27, 47, 0.08) !important;
+  backdrop-filter: blur(22px) saturate(135%);
+}
+body:has(.vizit-public-page) header nav a { color: #5e5062 !important; font-weight: 650 !important; }
+body:has(.vizit-public-page) header nav a:hover { background: rgba(210, 154, 69, 0.10) !important; color: var(--vizit-plum) !important; }
+body:has(.vizit-public-page) header nav a[aria-current="page"] { background: rgba(210, 154, 69, 0.14) !important; color: var(--vizit-plum) !important; }
+body:has(.vizit-public-page) header a[href="/register"] {
+  background: linear-gradient(135deg, var(--vizit-plum), var(--vizit-plum-3)) !important;
+  color: #fff !important;
+  box-shadow: 0 12px 28px rgba(74, 22, 74, 0.22) !important;
+}
+
+/* Hero */
+.vizit-public-page main > section:first-child {
+  background:
+    radial-gradient(circle at 88% 2%, rgba(230, 181, 164, 0.38), transparent 30%),
+    radial-gradient(circle at 5% 75%, rgba(245, 222, 196, 0.55), transparent 25%),
+    linear-gradient(180deg, #fffaf6 0%, #fbf6ef 62%, #f7eee7 100%) !important;
+  padding-top: 132px !important;
+  padding-bottom: 58px !important;
+}
+.vizit-public-page main > section:first-child::before,
+.vizit-public-page main > section:first-child::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border: 1px solid var(--vizit-line);
+  border-radius: 50%;
+}
+.vizit-public-page main > section:first-child::before { width: 520px; height: 520px; right: -170px; top: -270px; }
+.vizit-public-page main > section:first-child::after { width: 420px; height: 420px; left: -250px; bottom: -170px; }
+.vizit-public-page main > section:first-child > div.absolute { opacity: 0 !important; }
+.vizit-public-page main > section:first-child h1 {
+  color: var(--vizit-plum) !important;
+  letter-spacing: -0.055em !important;
+  text-wrap: balance;
+}
+.vizit-public-page main > section:first-child h1 span {
+  background: none !important;
+  -webkit-text-fill-color: var(--vizit-plum) !important;
+  color: var(--vizit-plum) !important;
+}
+.vizit-public-page main > section:first-child p { color: #65586a !important; }
+.vizit-public-page main > section:first-child [class*="border-violet"] { border-color: rgba(210, 154, 69, 0.35) !important; }
+.vizit-public-page main > section:first-child [class*="bg-white"] { background-color: rgba(255, 252, 248, 0.92) !important; }
+.vizit-public-page main > section:first-child form,
+.vizit-public-page main > section:first-child [role="search"] { box-shadow: var(--vizit-shadow) !important; }
+.vizit-public-page main > section:first-child button[class*="violet"],
+.vizit-public-page main > section:first-child a[class*="violet"] {
+  background: linear-gradient(135deg, var(--vizit-plum), var(--vizit-plum-3)) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+
+/* Category ribbon */
+.vizit-public-page #categories { background: var(--vizit-cream) !important; }
+.vizit-public-page #categories > div {
+  border-color: rgba(210, 154, 69, 0.24) !important;
+  background: rgba(255, 252, 248, 0.94) !important;
+  box-shadow: var(--vizit-shadow) !important;
+}
+.vizit-public-page #categories h2,
+.vizit-public-page #businesses h2,
+.vizit-public-page #map h2,
+.vizit-public-page #how h2 { color: var(--vizit-plum) !important; }
+.vizit-public-page #categories button { border-color: rgba(210, 154, 69, 0.18) !important; background: #fffaf6 !important; }
+.vizit-public-page #categories button:hover { border-color: rgba(210, 154, 69, 0.48) !important; box-shadow: 0 18px 36px rgba(73, 38, 50, 0.08) !important; }
+.vizit-public-page #categories button > span:first-child { background-image: linear-gradient(145deg, #f8e7d5, #efe8fb) !important; color: var(--vizit-plum) !important; }
+
+/* How it works */
+.vizit-public-page #how { background: linear-gradient(180deg, var(--vizit-cream), #fffaf6) !important; }
+.vizit-public-page #how > div {
+  border-color: rgba(210, 154, 69, 0.24) !important;
+  background: rgba(255, 252, 248, 0.88) !important;
+  box-shadow: var(--vizit-shadow) !important;
+}
+.vizit-public-page #how [class*="from-violet-500"] { background: linear-gradient(90deg, var(--vizit-gold), #efc982) !important; }
+
+/* Map */
+.vizit-public-page #map { background: #f7efe8 !important; }
+.vizit-public-page #map > div > div.grid > div:last-child {
+  border-color: rgba(210, 154, 69, 0.24) !important;
+  background: rgba(255, 252, 248, 0.96) !important;
+  box-shadow: var(--vizit-shadow) !important;
+}
+.vizit-public-page #map .vizit-yandex-map-shell,
+.vizit-public-page #map [class*="vizit-yandex"] {
+  border-color: rgba(210, 154, 69, 0.28) !important;
+  box-shadow: 0 26px 72px rgba(67, 31, 47, 0.12) !important;
+}
+.vizit-public-page #map a[href^="/book/"] {
+  background: linear-gradient(135deg, var(--vizit-plum), var(--vizit-plum-3)) !important;
+  color: #fff !important;
+}
+
+/* Businesses */
+.vizit-public-page #businesses { background: #fffaf6 !important; }
+.vizit-public-page #businesses article {
+  border-color: rgba(210, 154, 69, 0.22) !important;
+  background: rgba(255, 252, 248, 0.98) !important;
+  box-shadow: 0 18px 55px rgba(68, 33, 46, 0.09) !important;
+}
+.vizit-public-page #businesses article:hover { border-color: rgba(210, 154, 69, 0.52) !important; box-shadow: 0 26px 65px rgba(68, 33, 46, 0.13) !important; }
+.vizit-public-page #businesses article a[href^="/book/"] {
+  background: linear-gradient(135deg, var(--vizit-plum), var(--vizit-plum-3)) !important;
+  box-shadow: 0 12px 28px rgba(74, 22, 74, 0.18) !important;
+}
+.vizit-public-page #businesses button[class*="bg-violet-600"] { background: var(--vizit-plum) !important; border-color: var(--vizit-plum) !important; }
+
+.vizit-public-page .rounded-full[class*="cyan"] {
+  border-color: rgba(210, 154, 69, 0.30) !important;
+  background: #fff5e8 !important;
+  color: #9b651e !important;
+}
+
+.vizit-public-page #plans { background: #f7efe8 !important; }
+.vizit-public-page #plans > div > div.grid > div,
+.vizit-public-page main > section:last-of-type > div { border-color: rgba(210, 154, 69, 0.24) !important; }
+
+/* Dark mode */
+html.dark .vizit-public-page {
+  --vizit-card: rgba(47, 20, 47, 0.82);
+  background: #160f19 !important;
+  color: #fff8f1 !important;
+}
+html.dark body:has(.vizit-public-page) header > div > div {
+  border-color: rgba(232, 185, 103, 0.20) !important;
+  background: rgba(31, 16, 31, 0.90) !important;
+}
+html.dark .vizit-public-page main > section:first-child {
+  background:
+    radial-gradient(circle at 85% 0%, rgba(108, 42, 83, 0.42), transparent 32%),
+    radial-gradient(circle at 5% 75%, rgba(210, 154, 69, 0.12), transparent 27%),
+    linear-gradient(180deg, #1d1220 0%, #160f19 65%, #130c15 100%) !important;
+}
+html.dark .vizit-public-page main > section:first-child h1,
+html.dark .vizit-public-page main > section:first-child h1 span,
+html.dark .vizit-public-page #categories h2,
+html.dark .vizit-public-page #businesses h2,
+html.dark .vizit-public-page #map h2,
+html.dark .vizit-public-page #how h2 {
+  color: #fff7ef !important;
+  -webkit-text-fill-color: #fff7ef !important;
+}
+html.dark .vizit-public-page #categories,
+html.dark .vizit-public-page #how,
+html.dark .vizit-public-page #map,
+html.dark .vizit-public-page #businesses,
+html.dark .vizit-public-page #plans { background: #160f19 !important; }
+html.dark .vizit-public-page #categories > div,
+html.dark .vizit-public-page #how > div,
+html.dark .vizit-public-page #map > div > div.grid > div:last-child,
+html.dark .vizit-public-page #businesses article {
+  border-color: rgba(232, 185, 103, 0.16) !important;
+  background: rgba(46, 24, 45, 0.78) !important;
+}
+
+@media (min-width: 1280px) {
+  .vizit-public-page main > section:first-child > div.relative {
+    grid-template-columns: minmax(0, 0.92fr) minmax(560px, 1.08fr) !important;
+    gap: 52px !important;
+  }
+  .vizit-public-page main > section:first-child > div.relative > div:first-child { padding-bottom: 104px !important; }
+}
+
+@media (max-width: 767px) {
+  .vizit-public-page main > section:first-child {
+    padding-top: 98px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  body:has(.vizit-public-page) header > div { padding-left: 10px !important; padding-right: 10px !important; }
+  .vizit-public-page #categories > div,
+  .vizit-public-page #map > div > div.grid > div:last-child,
+  .vizit-public-page #businesses article { border-radius: 24px !important; }
+  .vizit-public-page #categories { padding-left: 0 !important; padding-right: 0 !important; }
+  .vizit-public-page #categories > div { border-left: 0 !important; border-right: 0 !important; border-radius: 0 !important; }
+  .vizit-public-page #businesses article { scroll-snap-align: center; }
+}

@@ -22,7 +22,6 @@ import {
   Sparkles,
   Star,
   UserRound,
-  Wrench,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -332,7 +331,7 @@ export default function Index() {
   const businessesQ = useQuery({ queryKey: ["public-home-businesses"], queryFn: () => fetchPublicBusinesses({ type: "all", per_page: 24 }), staleTime: 60_000 });
   const mapPinsQ = useQuery({ queryKey: ["public-home-map-pins"], queryFn: () => fetchPublicMapPins({ type: "all" }), staleTime: 60_000 });
 
-  const businesses = businessesQ.data ?? [];
+  const businesses = useMemo(() => businessesQ.data ?? [], [businessesQ.data]);
   const categories = useMemo(() => mergeCategories(categoriesQ.data ?? [], businesses), [categoriesQ.data, businesses]);
   const pins = mapPinsQ.data ?? [];
   const visibleCategories = categories.slice(0, 10);

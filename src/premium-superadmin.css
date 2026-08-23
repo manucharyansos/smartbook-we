@@ -1,0 +1,83 @@
+/* Super-admin continuation of the Vizit brand system. */
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"]{
+  background:
+    radial-gradient(circle at 93% 0%,rgba(232,194,174,.24),transparent 28rem),
+    radial-gradient(circle at 4% 58%,rgba(244,220,190,.22),transparent 24rem),
+    linear-gradient(180deg,#fffaf5 0%,#f7efe7 58%,#f4e9df 100%)!important;
+  color:#2c1931!important;
+  font-family:"Rubik","Noto Sans Armenian",ui-sans-serif,system-ui,sans-serif!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"]>aside{
+  border-color:rgba(211,154,67,.16)!important;
+  background:
+    radial-gradient(circle at 70% 0%,rgba(211,154,67,.14),transparent 28%),
+    linear-gradient(180deg,#2b0d35 0%,#3b123e 50%,#1f0c28 100%)!important;
+  box-shadow:18px 0 55px rgba(43,13,53,.14)!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"]>aside [class*="from-violet-600"]{
+  background:linear-gradient(145deg,#d39a43,#edc982)!important;
+  color:#2b0d35!important;
+  box-shadow:0 10px 28px rgba(211,154,67,.22)!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"]>aside a[aria-current="page"]{
+  background:rgba(237,201,130,.18)!important;
+  box-shadow:inset 3px 0 0 #d39a43!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"]>div>header{
+  border-color:rgba(211,154,67,.20)!important;
+  background:rgba(255,250,244,.91)!important;
+  box-shadow:0 10px 34px rgba(70,34,49,.06)!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"]>div>header h1,
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"]>div>header [class*="text-2xl"]{
+  color:#2b0d35!important;
+  font-family:"Noto Serif Armenian",Georgia,serif!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"]>div>header button{
+  border-color:rgba(211,154,67,.22)!important;
+  background:#fffaf5!important;
+  color:#564258!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"]>div>header [class*="from-violet-600"]{
+  background:linear-gradient(145deg,#2b0d35,#6d2a63)!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"] main :is([class~="bg-white"],[class*="bg-white/"],[class~="bg-slate-50"]){
+  background-color:rgba(255,253,249,.97)!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"] main :is([class~="border-slate-100"],[class~="border-slate-200"],[class*="border-white/"]){border-color:rgba(211,154,67,.20)!important}
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"] main :is([class~="text-slate-950"],[class~="text-slate-900"]){color:#321c37!important}
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"] main :is([class~="text-slate-500"],[class~="text-slate-600"],[class~="text-slate-700"]){color:#756777!important}
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"] main :is(button,a)[class*="bg-violet"],
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"] main :is(button,a)[class*="from-violet"]{
+  background:linear-gradient(135deg,#2b0d35,#6d2a63)!important;
+  color:#fff!important;
+  border-color:transparent!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"] main :is(input,select,textarea){
+  border-color:rgba(211,154,67,.22)!important;
+  background:#fffdf9!important;
+  color:#321c37!important;
+}
+#root>div[class*="bg-[linear-gradient(180deg,#f8fafc"] main :is(input,select,textarea):focus{
+  border-color:rgba(211,154,67,.58)!important;
+  box-shadow:0 0 0 4px rgba(211,154,67,.10)!important;
+}
+
+html.dark #root>div[class*="bg-[linear-gradient(180deg,#f8fafc"]{
+  background:radial-gradient(circle at 92% 0%,rgba(109,42,99,.26),transparent 30rem),#120b14!important;
+  color:#fff8f2!important;
+}
+html.dark #root>div[class*="bg-[linear-gradient(180deg,#f8fafc"]>div>header{
+  border-color:rgba(231,188,107,.14)!important;
+  background:rgba(29,18,32,.92)!important;
+}
+html.dark #root>div[class*="bg-[linear-gradient(180deg,#f8fafc"] main :is([class~="bg-white"],[class*="bg-white/"],[class~="bg-slate-50"]){
+  background-color:rgba(47,24,46,.85)!important;
+  border-color:rgba(231,188,107,.13)!important;
+}
+html.dark #root>div[class*="bg-[linear-gradient(180deg,#f8fafc"] main :is([class~="text-slate-950"],[class~="text-slate-900"]){color:#fff8f2!important}
+html.dark #root>div[class*="bg-[linear-gradient(180deg,#f8fafc"] main :is([class~="text-slate-500"],[class~="text-slate-600"],[class~="text-slate-700"]){color:#cbbdca!important}
+
+@media(max-width:1023px){
+  #root>div[class*="bg-[linear-gradient(180deg,#f8fafc"]>div{margin-left:0!important}
+}

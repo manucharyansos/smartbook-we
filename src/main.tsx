@@ -27,6 +27,7 @@ import "./premium-home.css";
 import "./premium-public.css";
 import "./premium-marketing.css";
 import "./premium-auth.css";
+import "./premium-workspace.css";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AppErrorBoundary } from "./components/AppErrorBoundary";

@@ -38,4 +38,5 @@ jobs:
           name: vizit-premium-yandex-dist
           path: dist
           if-no-files-found: error
+          include-hidden-files: true
           retention-days: 7

@@ -1,0 +1,197 @@
+/* Final visual polish shared across Vizit public, booking and workspace experiences. */
+
+/* ---------- Brand map pins ---------- */
+.vizit-yandex-marker--service,
+.vizit-yandex-marker--active {
+  background: linear-gradient(145deg, #2b0d35, #6d2a63) !important;
+}
+
+.vizit-yandex-marker--healthcare {
+  background: linear-gradient(145deg, #c78a31, #e4b263) !important;
+  color: #2b0d35 !important;
+}
+
+.vizit-yandex-marker {
+  filter: drop-shadow(0 14px 20px rgba(75, 36, 52, 0.26)) !important;
+}
+
+.vizit-yandex-marker:hover,
+.vizit-yandex-marker:focus-visible,
+.vizit-yandex-marker.is-active {
+  filter: drop-shadow(0 18px 24px rgba(75, 36, 52, 0.34)) !important;
+}
+
+.vizit-yandex-marker:focus-visible {
+  box-shadow: 0 0 0 5px rgba(211, 154, 67, 0.28) !important;
+}
+
+.vizit-yandex-marker__icon {
+  border-color: rgba(255,255,255,.46) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.34) !important;
+}
+
+.vizit-yandex-marker__label {
+  background: rgba(43, 13, 53, .94) !important;
+  box-shadow: 0 12px 26px rgba(43, 13, 53, .24) !important;
+}
+
+.vizit-yandex-user-marker {
+  background: #d39a43 !important;
+  box-shadow: 0 0 0 12px rgba(211,154,67,.20), 0 8px 18px rgba(43,13,53,.24) !important;
+}
+
+/* ---------- Homepage map chrome ---------- */
+.vizit-public-page #map .absolute.left-3.top-3,
+.vizit-public-page #map .absolute.right-3.top-3 {
+  border-color: rgba(211,154,67,.25) !important;
+  background: rgba(255,250,244,.92) !important;
+  color: #4a2a4f !important;
+  box-shadow: 0 16px 46px rgba(75,36,52,.10) !important;
+}
+
+.vizit-public-page #map .absolute.left-3.top-3 svg,
+.vizit-public-page #map .absolute.right-3.top-3 svg {
+  color: #d39a43 !important;
+}
+
+/* ---------- Homepage footer ---------- */
+.vizit-public-page > footer {
+  border-color: rgba(211,154,67,.18) !important;
+  background: #fffaf5 !important;
+}
+
+.vizit-public-page > footer > div > div:first-child {
+  border-color: rgba(226,189,125,.22) !important;
+  background:
+    radial-gradient(circle at 86% 8%, rgba(211,154,67,.18), transparent 27%),
+    radial-gradient(circle at 10% 100%, rgba(109,42,99,.26), transparent 31%),
+    linear-gradient(135deg,#2b0d35 0%,#3a1242 52%,#591f55 100%) !important;
+  box-shadow: 0 30px 90px rgba(43,13,53,.20) !important;
+}
+
+.vizit-public-page > footer > div > div:first-child h2 {
+  color: #fff9f2 !important;
+  font-family: "Noto Serif Armenian", Georgia, serif !important;
+}
+
+.vizit-public-page > footer > div > div:first-child a[href="/register"] {
+  background: #fff8ef !important;
+  color: #2b0d35 !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,.14) !important;
+}
+
+.vizit-public-page > footer > div > div:first-child a[href="/pricing"] {
+  border-color: rgba(255,255,255,.18) !important;
+  background: rgba(255,255,255,.08) !important;
+}
+
+.vizit-public-page > footer > div > div:nth-child(2) > div:first-child > a > div:first-child {
+  background: linear-gradient(145deg,#2b0d35,#6d2a63) !important;
+  box-shadow: 0 10px 26px rgba(75,22,75,.22) !important;
+}
+
+.vizit-public-page > footer > div > div:nth-child(2) > div:first-child > div:last-child > div {
+  border-color: rgba(211,154,67,.20) !important;
+  background: #fff4e7 !important;
+}
+
+.vizit-public-page > footer svg {
+  color: #d39a43;
+}
+
+/* ---------- Business public page ---------- */
+.vizit-public-detail-page main > section:first-child > div > div {
+  border-color: rgba(211,154,67,.24) !important;
+  background:
+    radial-gradient(circle at 92% 4%,rgba(231,193,169,.30),transparent 29%),
+    radial-gradient(circle at 7% 100%,rgba(244,220,190,.36),transparent 29%),
+    rgba(255,253,249,.92) !important;
+  box-shadow: 0 28px 90px rgba(75,36,52,.10) !important;
+}
+
+.vizit-public-detail-page main > section:first-child a[href^="/book/"] {
+  background: linear-gradient(135deg,#2b0d35,#6d2a63) !important;
+  color: #fff !important;
+  box-shadow: 0 12px 30px rgba(74,22,74,.20) !important;
+}
+
+.vizit-public-detail-page main > section:first-child [class*="text-violet"],
+.vizit-public-detail-page main > section:first-child [class*="text-pink"],
+.vizit-public-detail-page main > section:first-child [class*="text-sky"] {
+  color: #b47728 !important;
+}
+
+/* ---------- Booking page ---------- */
+.vizit-booking-page > div > div > div:first-child > div:first-child {
+  background:
+    radial-gradient(circle at 88% 4%,rgba(255,255,255,.16),transparent 26%),
+    linear-gradient(145deg,#2b0d35,#4b164b 54%,#7a315f) !important;
+}
+
+.vizit-booking-page form button[type="submit"],
+.vizit-booking-page a[href^="/businesses/"] + button,
+.vizit-booking-page button[class*="from-violet"] {
+  background: linear-gradient(135deg,#2b0d35,#6d2a63) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+  box-shadow: 0 12px 28px rgba(74,22,74,.18) !important;
+}
+
+.vizit-booking-page [class*="bg-emerald-50"] {
+  background: linear-gradient(135deg,#fff8ec,#fffdf9 52%,#f7eee5) !important;
+  border-color: rgba(211,154,67,.24) !important;
+}
+
+/* ---------- Dark mode ---------- */
+html.dark .vizit-public-page > footer {
+  border-color: rgba(231,188,107,.12) !important;
+  background: #120b14 !important;
+}
+
+html.dark .vizit-public-page > footer > div > div:nth-child(2) > div:first-child > div:last-child > div {
+  border-color: rgba(231,188,107,.13) !important;
+  background: rgba(255,255,255,.05) !important;
+}
+
+html.dark .vizit-public-page #map .absolute.left-3.top-3,
+html.dark .vizit-public-page #map .absolute.right-3.top-3 {
+  border-color: rgba(231,188,107,.14) !important;
+  background: rgba(30,16,30,.88) !important;
+  color: #fff7ef !important;
+}
+
+html.dark .vizit-public-detail-page main > section:first-child > div > div {
+  border-color: rgba(231,188,107,.14) !important;
+  background:
+    radial-gradient(circle at 92% 0%,rgba(109,42,99,.28),transparent 31%),
+    rgba(47,24,46,.82) !important;
+}
+
+/* ---------- Mobile refinements ---------- */
+@media (max-width: 767px) {
+  .vizit-public-page > footer > div {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+
+  .vizit-public-page > footer > div > div:first-child {
+    border-radius: 28px !important;
+  }
+
+  .vizit-public-page #map .absolute.left-3.top-3 {
+    max-width: calc(100% - 82px) !important;
+    border-radius: 16px !important;
+  }
+
+  .vizit-public-page #map .absolute.right-3.top-3 {
+    border-radius: 16px !important;
+  }
+
+  .vizit-public-detail-page main {
+    padding-bottom: 46px !important;
+  }
+
+  .vizit-booking-page > div > div > div:first-child > div:first-child {
+    border-radius: 26px !important;
+  }
+}

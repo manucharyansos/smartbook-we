@@ -1,0 +1,393 @@
+/* Reference-image alignment pass: softer cream/peach/plum palette and true mobile composition. */
+:root{
+  --ref-cream:#f8f1eb;
+  --ref-cream-soft:#fcf7f2;
+  --ref-surface:#fffdfa;
+  --ref-plum:#4a173f;
+  --ref-plum-soft:#6c2d5f;
+  --ref-gold:#d5a56b;
+  --ref-peach:#f1d8cd;
+  --ref-ink:#37263b;
+  --ref-muted:#7d6e78;
+  --ref-line:#eadbd0;
+  --ref-shadow:0 18px 52px rgba(76,39,56,.09);
+}
+
+/* ---------- GLOBAL PUBLIC COLOR CORRECTION ---------- */
+.vizit-public-page{
+  background:var(--ref-cream)!important;
+  color:var(--ref-ink)!important;
+}
+body:has(.vizit-public-page) header>div>div{
+  border-color:rgba(213,165,107,.28)!important;
+  background:rgba(252,247,242,.94)!important;
+  box-shadow:0 12px 34px rgba(76,39,56,.075)!important;
+}
+body:has(.vizit-public-page) header nav a{color:#766674!important}
+body:has(.vizit-public-page) header nav a[aria-current="page"]{
+  background:#f1e2d7!important;
+  color:var(--ref-plum)!important;
+}
+body:has(.vizit-public-page) header a[href="/register"]{
+  background:var(--ref-plum)!important;
+  box-shadow:0 10px 24px rgba(74,23,63,.18)!important;
+}
+.vizit-public-page main>section:first-child{
+  background:
+    radial-gradient(circle at 94% 8%,rgba(241,216,205,.72),transparent 31%),
+    radial-gradient(circle at 7% 86%,rgba(241,225,201,.60),transparent 28%),
+    linear-gradient(180deg,#fcf7f2 0%,#f8f1eb 72%,#f5ece5 100%)!important;
+}
+.vizit-public-page main>section:first-child h1,
+.vizit-public-page main>section:first-child h1 span,
+.vizit-public-page #categories h2,
+.vizit-public-page #how h2,
+.vizit-public-page #map h2,
+.vizit-public-page #businesses h2,
+.vizit-public-page #plans h2{
+  color:var(--ref-plum)!important;
+  -webkit-text-fill-color:var(--ref-plum)!important;
+}
+.vizit-public-page main>section:first-child p,
+.vizit-public-page #how p,
+.vizit-public-page #map p,
+.vizit-public-page #businesses p,
+.vizit-public-page #plans p{color:var(--ref-muted)!important}
+.vizit-public-page main>section:first-child svg{color:var(--ref-gold)!important}
+.vizit-public-page main>section:first-child form{
+  border-color:rgba(213,165,107,.30)!important;
+  background:rgba(255,253,250,.96)!important;
+  box-shadow:0 18px 46px rgba(76,39,56,.09)!important;
+}
+.vizit-public-page main>section:first-child form button[type="submit"]{
+  background:var(--ref-plum)!important;
+  box-shadow:0 10px 24px rgba(74,23,63,.18)!important;
+}
+
+/* ---------- CATEGORIES ---------- */
+.vizit-public-page #categories{
+  background:linear-gradient(180deg,#f5ece5 0%,var(--ref-cream) 100%)!important;
+}
+.vizit-public-page #categories>div{
+  border-color:var(--ref-line)!important;
+  background:rgba(255,253,250,.95)!important;
+  box-shadow:var(--ref-shadow)!important;
+}
+.vizit-public-page #categories button{
+  border-color:var(--ref-line)!important;
+  background:var(--ref-surface)!important;
+  box-shadow:none!important;
+}
+.vizit-public-page #categories button:hover{
+  border-color:rgba(213,165,107,.55)!important;
+  box-shadow:0 12px 28px rgba(76,39,56,.08)!important;
+}
+.vizit-public-page #categories button>span:first-child{
+  background:#f3e4db!important;
+  color:var(--ref-plum)!important;
+  border-color:rgba(213,165,107,.18)!important;
+}
+
+/* ---------- HOW / MAP / PLANS ---------- */
+.vizit-public-page #how{background:#fcf7f2!important}
+.vizit-public-page #how>div{
+  border-color:var(--ref-line)!important;
+  background:linear-gradient(145deg,#fffdfa 0%,#fbf4ee 100%)!important;
+  box-shadow:var(--ref-shadow)!important;
+}
+.vizit-public-page #how>div>div:nth-of-type(2)>div{
+  background:#fffdfa!important;
+  border-color:var(--ref-line)!important;
+  box-shadow:none!important;
+}
+.vizit-public-page #how svg{color:var(--ref-gold)!important}
+.vizit-public-page #map,
+.vizit-public-page #plans{background:#f3e9e1!important}
+.vizit-public-page #map .vizit-yandex-map-shell,
+.vizit-public-page #map [class*="vizit-yandex"]{
+  border-color:rgba(213,165,107,.30)!important;
+  box-shadow:0 22px 58px rgba(76,39,56,.11)!important;
+}
+.vizit-public-page #map>div>div.grid>div:last-child,
+.vizit-public-page #plans>div>div.grid>div{
+  border-color:var(--ref-line)!important;
+  background:var(--ref-surface)!important;
+  box-shadow:var(--ref-shadow)!important;
+}
+
+/* ---------- BUSINESS CARDS: actual visual restyle ---------- */
+.vizit-public-page #businesses{background:#fcf7f2!important}
+.vizit-public-page #businesses article{
+  border:1px solid var(--ref-line)!important;
+  border-radius:28px!important;
+  background:var(--ref-surface)!important;
+  box-shadow:0 16px 44px rgba(76,39,56,.085)!important;
+  padding:10px!important;
+  overflow:hidden!important;
+}
+.vizit-public-page #businesses article:hover{
+  transform:translateY(-4px)!important;
+  border-color:rgba(213,165,107,.55)!important;
+  box-shadow:0 22px 56px rgba(76,39,56,.12)!important;
+}
+.vizit-public-page #businesses article>div:first-child{
+  height:194px!important;
+  border-radius:21px!important;
+  overflow:hidden!important;
+  background:linear-gradient(145deg,#ead8cf,#f4e7df)!important;
+}
+.vizit-public-page #businesses article>div:first-child img{
+  opacity:1!important;
+  filter:saturate(.88) contrast(.96)!important;
+}
+.vizit-public-page #businesses article>div:first-child>div.absolute.inset-0:last-of-type{
+  background:linear-gradient(to top,rgba(54,28,46,.76),rgba(54,28,46,.07) 56%,transparent)!important;
+}
+.vizit-public-page #businesses article>div:first-child>span{
+  left:14px!important;
+  top:14px!important;
+  border-color:rgba(255,255,255,.72)!important;
+  background:rgba(255,250,245,.93)!important;
+  color:var(--ref-plum)!important;
+  box-shadow:0 8px 24px rgba(50,27,42,.10)!important;
+}
+.vizit-public-page #businesses article>div:first-child>span svg{color:var(--ref-gold)!important}
+.vizit-public-page #businesses article>div:first-child>div:last-child{
+  left:16px!important;
+  bottom:16px!important;
+  right:16px!important;
+}
+.vizit-public-page #businesses article>div:first-child>div:last-child>div:first-child{
+  width:48px!important;
+  height:48px!important;
+  border:2px solid rgba(255,255,255,.86)!important;
+  background:#fffaf5!important;
+  box-shadow:0 8px 22px rgba(39,19,33,.20)!important;
+}
+.vizit-public-page #businesses article>div:last-child{
+  padding:17px 7px 5px!important;
+}
+.vizit-public-page #businesses article>div:last-child>p{
+  color:var(--ref-muted)!important;
+  min-height:40px!important;
+}
+.vizit-public-page #businesses article>div:last-child>div:nth-of-type(1)>div{
+  border-color:var(--ref-line)!important;
+  background:#f8f1eb!important;
+  border-radius:14px!important;
+}
+.vizit-public-page #businesses article>div:last-child>div:nth-of-type(1) svg{color:var(--ref-gold)!important}
+.vizit-public-page #businesses article a[href^="/book/"]{
+  background:var(--ref-plum)!important;
+  border-radius:15px!important;
+  box-shadow:none!important;
+}
+.vizit-public-page #businesses article a[href^="/businesses/"]{
+  border-color:var(--ref-line)!important;
+  background:#f8f1eb!important;
+  color:var(--ref-plum)!important;
+  border-radius:15px!important;
+}
+
+/* ---------- FOOTER ---------- */
+.vizit-public-page>footer{background:#f8f1eb!important}
+.vizit-public-page>footer>div>div:first-child{
+  background:linear-gradient(135deg,#4a173f,#5d2351)!important;
+  box-shadow:0 24px 60px rgba(74,23,63,.16)!important;
+}
+
+/* ---------- MOBILE REBUILD ---------- */
+@media(max-width:767px){
+  body:has(.vizit-public-page) header>div{padding:9px 10px 0!important}
+  body:has(.vizit-public-page) header>div>div{border-radius:20px!important}
+
+  .vizit-public-page main>section:first-child{
+    padding:88px 14px 20px!important;
+    text-align:center!important;
+    overflow:hidden!important;
+  }
+  .vizit-public-page main>section:first-child>div.relative{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:0!important;
+    max-width:520px!important;
+  }
+  .vizit-public-page main>section:first-child>div.relative>div:first-child{
+    max-width:none!important;
+    width:100%!important;
+    padding:18px 2px 0!important;
+    text-align:center!important;
+  }
+  .vizit-public-page main>section:first-child>div.relative>div:first-child>*{
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+  .vizit-public-page main>section:first-child h1{
+    max-width:360px!important;
+    margin-top:16px!important;
+    font-size:clamp(39px,11vw,50px)!important;
+    line-height:1.02!important;
+    letter-spacing:-.04em!important;
+    text-align:center!important;
+  }
+  .vizit-public-page main>section:first-child p{
+    max-width:340px!important;
+    margin-top:14px!important;
+    font-size:14px!important;
+    line-height:22px!important;
+    text-align:center!important;
+  }
+  .vizit-public-page main>section:first-child form{
+    width:100%!important;
+    max-width:390px!important;
+    margin-top:20px!important;
+    padding:6px!important;
+    border-radius:20px!important;
+  }
+  .vizit-public-page main>section:first-child form>div{
+    display:grid!important;
+    grid-template-columns:1fr 52px!important;
+    gap:5px!important;
+  }
+  .vizit-public-page main>section:first-child form label{
+    grid-column:1 / -1!important;
+    min-height:52px!important;
+    border:0!important;
+    background:#fffdfa!important;
+  }
+  .vizit-public-page main>section:first-child form button:not([type="submit"]){
+    grid-column:1!important;
+    min-height:48px!important;
+    background:#f8f1eb!important;
+    border-radius:15px!important;
+  }
+  .vizit-public-page main>section:first-child form button[type="submit"]{
+    grid-column:2!important;
+    width:52px!important;
+    min-width:52px!important;
+    height:48px!important;
+    padding:0!important;
+    border-radius:15px!important;
+    font-size:0!important;
+  }
+  .vizit-public-page main>section:first-child form button[type="submit"] svg{width:18px!important;height:18px!important}
+
+  /* phone-first visual like the supplied mobile reference */
+  .vizit-public-page main>section:first-child>div.relative>div:last-child{
+    display:block!important;
+    min-height:520px!important;
+    width:calc(100% + 8px)!important;
+    max-width:430px!important;
+    margin:2px auto -18px!important;
+    background:url('/vizit-mobile-reference.svg') center top/contain no-repeat!important;
+    filter:drop-shadow(0 18px 30px rgba(74,23,63,.08))!important;
+  }
+
+  /* category strip exactly as a centered mobile carousel */
+  .vizit-public-page #categories{
+    padding:0 0 38px!important;
+    background:var(--ref-cream)!important;
+  }
+  .vizit-public-page #categories>div{
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    padding:14px 0 4px!important;
+  }
+  .vizit-public-page #categories>div>div:first-child{padding:0 18px!important;text-align:center!important}
+  .vizit-public-page #categories>div>div:last-child{
+    margin:16px 0 0!important;
+    padding:0 18px 8px!important;
+    gap:12px!important;
+    scroll-padding-inline:24px!important;
+  }
+  .vizit-public-page #categories button{
+    width:132px!important;
+    min-width:132px!important;
+    max-width:132px!important;
+    min-height:118px!important;
+    border-radius:24px!important;
+    scroll-snap-align:center!important;
+  }
+
+  .vizit-public-page #how{
+    padding:34px 14px 42px!important;
+    background:#fcf7f2!important;
+  }
+  .vizit-public-page #how>div{
+    border:1px solid var(--ref-line)!important;
+    border-radius:28px!important;
+    padding:24px 16px!important;
+  }
+  .vizit-public-page #how>div>div:nth-of-type(2){display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
+  .vizit-public-page #how>div>div:nth-of-type(2)>div{border-radius:20px!important;padding:18px!important}
+
+  .vizit-public-page #map{
+    padding:42px 14px 48px!important;
+    background:#f3e9e1!important;
+  }
+  .vizit-public-page #map>div>div.grid{display:flex!important;flex-direction:column!important;gap:12px!important}
+  .vizit-public-page #map .vizit-yandex-map-shell,
+  .vizit-public-page #map [class*="vizit-yandex"]{
+    min-height:410px!important;
+    border-radius:28px!important;
+  }
+  .vizit-public-page #map>div>div.grid>div:last-child{
+    border-radius:24px!important;
+    padding:15px!important;
+  }
+
+  .vizit-public-page #businesses{
+    padding:48px 0 54px!important;
+    background:#fcf7f2!important;
+  }
+  .vizit-public-page #businesses>div>div:first-child,
+  .vizit-public-page #businesses>div>div:nth-child(2){padding-left:18px!important;padding-right:18px!important}
+  .vizit-public-page #businesses>div>div:last-child{
+    padding-left:28px!important;
+    padding-right:28px!important;
+    gap:14px!important;
+    scroll-padding-inline:28px!important;
+  }
+  .vizit-public-page #businesses article{
+    width:calc(100vw - 72px)!important;
+    min-width:calc(100vw - 72px)!important;
+    max-width:338px!important;
+    border-radius:26px!important;
+    padding:9px!important;
+    scroll-snap-align:center!important;
+  }
+  .vizit-public-page #businesses article>div:first-child{height:182px!important;border-radius:20px!important}
+  .vizit-public-page #businesses article>div:last-child{padding:15px 6px 5px!important}
+
+  .vizit-public-page #plans{padding:48px 14px 54px!important}
+  .vizit-public-page #plans>div>div.grid{display:flex!important;overflow-x:auto!important;gap:12px!important;scroll-snap-type:x mandatory!important;padding-bottom:8px!important}
+  .vizit-public-page #plans>div>div.grid>div{min-width:82vw!important;scroll-snap-align:center!important;border-radius:26px!important}
+
+  .vizit-public-page>footer>div{padding:34px 14px 26px!important}
+  .vizit-public-page>footer>div>div:first-child{border-radius:26px!important}
+}
+
+/* ---------- DARK: keep the same warmth instead of blue/black ---------- */
+html.dark .vizit-public-page{background:#1c121b!important;color:#fff8f2!important}
+html.dark body:has(.vizit-public-page) header>div>div{background:rgba(37,21,35,.93)!important;border-color:rgba(213,165,107,.15)!important}
+html.dark .vizit-public-page main>section:first-child{
+  background:radial-gradient(circle at 90% 6%,rgba(108,45,95,.34),transparent 31%),linear-gradient(180deg,#261723,#1c121b 72%,#170f17)!important;
+}
+html.dark .vizit-public-page #categories,
+html.dark .vizit-public-page #how,
+html.dark .vizit-public-page #businesses{background:#1c121b!important}
+html.dark .vizit-public-page #map,
+html.dark .vizit-public-page #plans{background:#241720!important}
+html.dark .vizit-public-page #businesses article,
+html.dark .vizit-public-page #categories button,
+html.dark .vizit-public-page #how>div,
+html.dark .vizit-public-page #how>div>div:nth-of-type(2)>div,
+html.dark .vizit-public-page #map>div>div.grid>div:last-child,
+html.dark .vizit-public-page #plans>div>div.grid>div{
+  background:#2a1a27!important;
+  border-color:rgba(213,165,107,.13)!important;
+}
+html.dark .vizit-public-page #businesses article>div:last-child>div:nth-of-type(1)>div,
+html.dark .vizit-public-page #businesses article a[href^="/businesses/"]{background:#33212f!important;border-color:rgba(213,165,107,.12)!important;color:#fff8f2!important}

@@ -1,0 +1,148 @@
+/* Final reference-alignment pass: map pins, business profile, booking flow and mobile polish. */
+
+/* ---------- PUBLIC MAP MARKERS ---------- */
+.vizit-public-page .vizit-yandex-marker{
+  width:46px!important;
+  height:46px!important;
+  border:3px solid #fff8ef!important;
+  box-shadow:0 12px 26px rgba(62,25,48,.22)!important;
+  filter:none!important;
+}
+.vizit-public-page .vizit-yandex-marker--service{
+  background:linear-gradient(145deg,#2b0d35,#6d2a63)!important;
+}
+.vizit-public-page .vizit-yandex-marker--healthcare{
+  background:linear-gradient(145deg,#d39a43,#edc982)!important;
+  color:#3b2510!important;
+}
+.vizit-public-page .vizit-yandex-marker--active{
+  background:linear-gradient(145deg,#6d2a63,#d39a43)!important;
+}
+.vizit-public-page .vizit-yandex-marker:hover,
+.vizit-public-page .vizit-yandex-marker:focus-visible,
+.vizit-public-page .vizit-yandex-marker.is-active{
+  transform:translate(-50%,-100%) scale(1.1)!important;
+  box-shadow:0 16px 34px rgba(62,25,48,.30)!important;
+}
+.vizit-public-page .vizit-yandex-marker__icon{border:0!important;box-shadow:none!important}
+.vizit-public-page .vizit-yandex-marker__label{
+  top:calc(100% + 9px)!important;
+  border:1px solid rgba(211,154,67,.26)!important;
+  border-radius:13px!important;
+  background:rgba(43,13,53,.94)!important;
+  color:#fff8ef!important;
+  box-shadow:0 12px 28px rgba(43,13,53,.18)!important;
+}
+.vizit-public-page .vizit-yandex-user-marker{
+  border-color:#fff8ef!important;
+  background:#d39a43!important;
+  box-shadow:0 0 0 10px rgba(211,154,67,.17),0 8px 18px rgba(43,13,53,.20)!important;
+}
+
+/* ---------- BUSINESS PUBLIC PROFILE ---------- */
+.vizit-public-detail-page main>section:first-child>div>div{
+  border-color:rgba(211,154,67,.25)!important;
+  background:rgba(255,253,249,.94)!important;
+  box-shadow:0 28px 90px rgba(72,35,49,.11)!important;
+}
+.vizit-public-detail-page main>section:first-child>div>div>div.absolute{
+  background:
+    radial-gradient(circle at 88% 0%,rgba(232,194,174,.40),transparent 31%),
+    radial-gradient(circle at 8% 92%,rgba(244,220,190,.48),transparent 27%),
+    linear-gradient(135deg,#fffaf5 0%,#fbf5ed 58%,#fffdf9 100%)!important;
+}
+.vizit-public-detail-page main>section:first-child h1{
+  font-family:"Noto Serif Armenian",Georgia,serif!important;
+  color:#2b0d35!important;
+  font-weight:700!important;
+  letter-spacing:-.035em!important;
+}
+.vizit-public-detail-page main>section:first-child [class*="rounded-full"]{
+  border-color:rgba(211,154,67,.24)!important;
+  background:#fff7ec!important;
+  color:#8e6025!important;
+}
+.vizit-public-detail-page main>section:first-child [class*="h-16"][class*="w-16"]{
+  border-color:rgba(211,154,67,.28)!important;
+  background:#fffaf5!important;
+}
+.vizit-public-detail-page main>section:first-child a[href^="/book/"]{
+  background:linear-gradient(135deg,#2b0d35,#6d2a63)!important;
+  color:#fff!important;
+  border-color:transparent!important;
+  box-shadow:0 12px 30px rgba(74,22,74,.20)!important;
+}
+.vizit-public-detail-page main>section:first-child [class*="text-violet-500"],
+.vizit-public-detail-page main>section:first-child [class*="text-orange-500"]{color:#c88e37!important}
+.vizit-public-detail-page main>section:first-child [class*="from-violet-600"][class*="to-fuchsia-600"]{
+  background:linear-gradient(135deg,#2b0d35,#6d2a63)!important;
+  box-shadow:0 12px 30px rgba(74,22,74,.20)!important;
+}
+
+/* ---------- PUBLIC BOOKING ---------- */
+.vizit-booking-page>div[class*="max-w-7xl"]{max-width:1280px!important}
+.vizit-booking-page [class*="from-fuchsia-600"][class*="via-violet-600"]{
+  background:
+    radial-gradient(circle at 90% 4%,rgba(237,201,130,.23),transparent 32%),
+    linear-gradient(145deg,#2b0d35 0%,#4b164b 58%,#6d2a63 100%)!important;
+  box-shadow:0 28px 75px rgba(72,35,49,.20)!important;
+}
+.vizit-booking-page [class*="from-fuchsia-600"][class*="via-violet-600"] [class*="bg-white/15"]{
+  border:1px solid rgba(237,201,130,.25)!important;
+  background:rgba(237,201,130,.10)!important;
+  color:#f4d99f!important;
+}
+.vizit-booking-page [class*="from-emerald-50"][class*="to-violet-50"]{
+  border-color:rgba(211,154,67,.22)!important;
+  background:linear-gradient(135deg,#fff8ed,#fffdf9 52%,#f7eee6)!important;
+}
+.vizit-booking-page button[class*="bg-violet-600"],
+.vizit-booking-page button[class*="from-violet-600"],
+.vizit-booking-page a[class*="from-violet-600"]{
+  background:linear-gradient(135deg,#2b0d35,#6d2a63)!important;
+  color:#fff!important;
+  border-color:transparent!important;
+  box-shadow:0 12px 28px rgba(74,22,74,.18)!important;
+}
+.vizit-booking-page [class*="text-violet-600"],
+.vizit-booking-page [class*="text-fuchsia-500"]{color:#6d2a63!important}
+.vizit-booking-page [class*="bg-violet-50"]{background:#f8eee4!important}
+.vizit-booking-page [class*="border-violet"]{border-color:rgba(211,154,67,.28)!important}
+
+/* ---------- DARK REFINEMENTS ---------- */
+html.dark .vizit-public-detail-page main>section:first-child>div>div{
+  border-color:rgba(237,201,130,.15)!important;
+  background:rgba(47,24,46,.86)!important;
+}
+html.dark .vizit-public-detail-page main>section:first-child>div>div>div.absolute{
+  background:radial-gradient(circle at 88% 0%,rgba(109,42,99,.38),transparent 31%),linear-gradient(135deg,#241426,#1b101d 62%,#160e18)!important;
+}
+html.dark .vizit-public-detail-page main>section:first-child h1{color:#fff7ef!important}
+html.dark .vizit-public-detail-page main>section:first-child [class*="rounded-full"]{
+  border-color:rgba(237,201,130,.16)!important;
+  background:rgba(237,201,130,.08)!important;
+  color:#f4d99f!important;
+}
+html.dark .vizit-booking-page [class*="from-emerald-50"][class*="to-violet-50"]{
+  background:linear-gradient(135deg,rgba(72,38,55,.72),rgba(47,24,46,.90))!important;
+  border-color:rgba(237,201,130,.14)!important;
+}
+
+/* ---------- MOBILE: match the tall reference compositions ---------- */
+@media(max-width:767px){
+  .vizit-public-page .vizit-yandex-marker{width:42px!important;height:42px!important;border-width:2px!important}
+  .vizit-public-detail-page main{padding-top:18px!important}
+  .vizit-public-detail-page main>section:first-child{padding-left:12px!important;padding-right:12px!important}
+  .vizit-public-detail-page main>section:first-child>div>div{border-radius:28px!important}
+  .vizit-public-detail-page main>section:first-child>div>div>div.relative{padding:22px 18px!important;gap:20px!important}
+  .vizit-public-detail-page main>section:first-child h1{font-size:30px!important;line-height:1.08!important}
+  .vizit-public-detail-page main>section:first-child [class*="mt-8"][class*="flex-wrap"]{gap:8px!important}
+  .vizit-public-detail-page main>section:first-child [class*="mt-8"][class*="flex-wrap"] a{min-height:46px!important;border-radius:15px!important}
+
+  .vizit-booking-page>div[class*="max-w-7xl"]{padding-left:12px!important;padding-right:12px!important}
+  .vizit-booking-page [class*="rounded-[28px]"]{border-radius:24px!important}
+  .vizit-booking-page [class*="from-fuchsia-600"][class*="via-violet-600"]{padding:22px!important}
+  .vizit-booking-page input,
+  .vizit-booking-page select,
+  .vizit-booking-page textarea{min-height:48px!important}
+}

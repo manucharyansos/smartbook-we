@@ -12,6 +12,9 @@ import { useAuth } from "../store/auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchFeatures, hasFeature } from "../lib/featuresApi";
 import ThemeToggle from "../components/ThemeToggle";
+import LanguageToggle from "../components/LanguageToggle";
+import VizitLogo from "../components/VizitLogo";
+import { useLanguage } from "../contexts/LanguageContext";
 
 type NavItem = {
   to: string; label: string;
@@ -33,11 +36,28 @@ const baseNavItems: NavItem[] = [
 
 const mobileBottomPaths = ["/app/dashboard", "/app/calendar", "/app/services", "/app/clients"];
 
+const workspaceCopy = {
+  hy: {
+    nav: { "/app/dashboard": "Վահանակ", "/app/calendar": "Օրացույց", "/app/services": "Ծառայություններ", "/app/staff": "Աշխատակիցներ", "/app/clients": "Հաճախորդներ", "/app/tasks": "Ամրագրումների վահանակ", "/app/analytics": "Վերլուծություն", "/app/billing": "Պլան", "/app/settings": "Կարգավորումներ" },
+    giftCards: "Նվերի քարտեր", loyalty: "Լոյալություն", more: "Ավելին", logout: "Ելք", navigation: "Նավիգացիա", menu: "Մենյու", openMenu: "Բացել մենյուն", closeMenu: "Փակել մենյուն", loading: "Բեռնվում է…", workspace: "Աշխատանքային միջավայր", owner: "Սեփականատեր", manager: "Կառավարիչ", staff: "Աշխատակից", superAdmin: "Սուպեր ադմին", healthcare: "Առողջապահություն", services: "Ծառայություններ", trial: "Փորձ", daysLeft: "օր մնաց",
+  },
+  ru: {
+    nav: { "/app/dashboard": "Панель", "/app/calendar": "Календарь", "/app/services": "Услуги", "/app/staff": "Сотрудники", "/app/clients": "Клиенты", "/app/tasks": "Панель записей", "/app/analytics": "Аналитика", "/app/billing": "Тариф", "/app/settings": "Настройки" },
+    giftCards: "Подарочные карты", loyalty: "Лояльность", more: "Ещё", logout: "Выйти", navigation: "Навигация", menu: "Меню", openMenu: "Открыть меню", closeMenu: "Закрыть меню", loading: "Загрузка…", workspace: "Рабочее пространство", owner: "Владелец", manager: "Менеджер", staff: "Сотрудник", superAdmin: "Суперадмин", healthcare: "Здравоохранение", services: "Услуги", trial: "Пробный период", daysLeft: "дн. осталось",
+  },
+  en: {
+    nav: { "/app/dashboard": "Dashboard", "/app/calendar": "Calendar", "/app/services": "Services", "/app/staff": "Staff", "/app/clients": "Clients", "/app/tasks": "Booking board", "/app/analytics": "Analytics", "/app/billing": "Plan", "/app/settings": "Settings" },
+    giftCards: "Gift cards", loyalty: "Loyalty", more: "More", logout: "Log out", navigation: "Navigation", menu: "Menu", openMenu: "Open menu", closeMenu: "Close menu", loading: "Loading…", workspace: "Workspace", owner: "Owner", manager: "Manager", staff: "Staff", superAdmin: "Super admin", healthcare: "Healthcare", services: "Services", trial: "Trial", daysLeft: "days left",
+  },
+} as const;
+
 export function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
   const { user, clear } = useAuth();
+  const { locale } = useLanguage();
+  const text = workspaceCopy[locale];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -50,7 +70,7 @@ export function AppLayout() {
   const features = featuresQ.data;
 
   const navItems = useMemo(() => {
-    let items = [...baseNavItems];
+    let items: NavItem[] = baseNavItems.map((item) => ({ ...item, label: text.nav[item.to as keyof typeof text.nav] ?? item.label }));
     items = items.filter((i) => !i.feature || hasFeature(features, i.feature));
     if (user?.role === "staff") {
       const allowed = new Set(["/app/dashboard", "/app/calendar", "/app/tasks"]);
@@ -60,10 +80,10 @@ export function AppLayout() {
       const idx = items.findIndex((x) => x.to === "/app/settings");
       if (idx >= 0) items.splice(idx, 0, item); else items.push(item);
     };
-    if (hasFeature(features, "gift_cards")) insertBeforeSettings({ to: "/app/gift-cards", label: "Նվերի քարտեր", icon: Gift, color: "from-violet-600 to-fuchsia-600", feature: "gift_cards" });
-    if (hasFeature(features, "loyalty")) insertBeforeSettings({ to: "/app/loyalty", label: "Լոյալություն", icon: Star, color: "from-orange-500 to-amber-500", feature: "loyalty" });
+    if (hasFeature(features, "gift_cards")) insertBeforeSettings({ to: "/app/gift-cards", label: text.giftCards, icon: Gift, color: "from-violet-600 to-fuchsia-600", feature: "gift_cards" });
+    if (hasFeature(features, "loyalty")) insertBeforeSettings({ to: "/app/loyalty", label: text.loyalty, icon: Star, color: "from-orange-500 to-amber-500", feature: "loyalty" });
     return items;
-  }, [features, user?.role]);
+  }, [features, text, user?.role]);
 
   const bottomNavItems = useMemo(() => navItems.filter((i) => mobileBottomPaths.includes(i.to)), [navItems]);
 
@@ -79,7 +99,6 @@ export function AppLayout() {
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: "auto" });
   }, [location.pathname]);
 
   useEffect(() => {
@@ -112,20 +131,19 @@ export function AppLayout() {
 
   const getRoleDisplay = () => {
     switch (user?.role) {
-      case "owner": return "Սրահի սեփականատեր";
-      case "manager": return "Կառավարիչ";
-      case "staff": return "Աշխատակից";
-      case "super_admin": return "Սուպեր ադմին";
+      case "owner": return text.owner;
+      case "manager": return text.manager;
+      case "staff": return text.staff;
+      case "super_admin": return text.superAdmin;
       default: return user?.role ?? "";
     }
   };
 
   const businessTypeUi = useMemo(() => {
-    const t = String(user?.business_type ?? "");
-    if (t === "dental") return { label: "Կլինիկա", icon: Award };
-    if (t === "beauty") return { label: "Սրահ", icon: Sparkles };
-    return null;
-  }, [user?.business_type]);
+    const value = String(user?.vertical ?? user?.business_type ?? "").toLowerCase();
+    const healthcare = ["healthcare", "dental", "clinic", "medical", "doctor", "health"].includes(value);
+    return healthcare ? { label: text.healthcare, icon: Award } : { label: text.services, icon: Sparkles };
+  }, [text.healthcare, text.services, user?.business_type, user?.vertical]);
   const BusinessTypeIcon = businessTypeUi?.icon ?? Sparkles;
 
   return (
@@ -158,15 +176,12 @@ export function AppLayout() {
               </motion.button>
               {/* Logo */}
               <motion.div whileHover={{ scale: 1.01 }}
-                className="flex cursor-pointer items-center gap-2 sm:gap-3"
+                className="vizit-workspace-brand flex cursor-pointer items-center gap-2 sm:gap-3"
                 onClick={() => navigate("/app/dashboard")}
               >
-                <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-indigo-600 via-violet-600 to-cyan-500 text-white shadow-[0_10px_25px_rgba(79,70,229,0.25)] sm:h-11 sm:w-11 sm:rounded-2xl">
-                  <CalendarDays size={18} />
-                </div>
+                <VizitLogo markClassName="!h-9 !w-9 sm:!h-10 sm:!w-10" textClassName="!text-[17px] sm:!text-[20px]" />
                 <div className="hidden min-[360px]:block">
-                  <div className="text-base font-semibold tracking-tight text-slate-950 sm:text-lg">Vizit</div>
-                  <div className="hidden text-xs text-slate-500 sm:block">{user?.business_name || "Workspace"}</div>
+                  <div className="hidden max-w-[150px] truncate text-[11px] text-slate-500 sm:block">{user?.business_name || text.workspace}</div>
                 </div>
               </motion.div>
             </div>
@@ -197,11 +212,15 @@ export function AppLayout() {
                 compact
                 className="border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
               />
+              <LanguageToggle
+                compact
+                className="vizit-workspace-language rounded-full border border-slate-200 bg-white text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+              />
               <motion.button whileTap={{ scale: 0.96 }}
-                className="inline-flex h-10 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 sm:px-4"
+                className="hidden h-10 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 sm:inline-flex sm:px-4"
                 onClick={handleLogout}
               >
-                <LogOut size={16} /><span className="hidden sm:inline">Ելք</span>
+                <LogOut size={16} /><span className="hidden sm:inline">{text.logout}</span>
               </motion.button>
             </div>
           </div>
@@ -217,7 +236,7 @@ export function AppLayout() {
             <motion.div initial={{ opacity: 0, x: -18 }} animate={{ opacity: 1, x: 0 }} className="sticky top-28 space-y-4">
               <div className={cn("rounded-[24px] border border-slate-200/80 bg-white/95 p-3 shadow-[0_14px_38px_rgba(15,23,42,0.07)] backdrop-blur", isDesktopCollapsed && "px-2")}>
                 <div className={cn("mb-3 px-2 text-xs font-semibold tracking-[0.18em] text-slate-400", isDesktopCollapsed && "text-center text-[10px]")}>
-                  {isDesktopCollapsed ? "ՄԵՆ" : "ՆԱՎԻԳԱՑԻԱ"}
+                  {isDesktopCollapsed ? text.menu.slice(0, 3).toUpperCase() : text.navigation.toUpperCase()}
                 </div>
                 <nav className="space-y-1.5">
                   {navItems.map((item) => (
@@ -284,12 +303,13 @@ export function AppLayout() {
                         <CalendarDays size={15} />
                       </div>
                       <div>
-                        <div className="text-sm font-semibold text-slate-950">Vizit</div>
+                        <div className="text-sm font-semibold text-slate-950">Vizit.am</div>
                         <div className="max-w-[140px] truncate text-[10px] text-slate-400">{user?.business_name}</div>
                       </div>
                     </div>
                     <button onClick={() => setIsMobileMenuOpen(false)}
                       className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 transition hover:bg-slate-50"
+                      aria-label={text.closeMenu}
                     >
                       <X size={16} className="text-slate-600" />
                     </button>
@@ -301,7 +321,7 @@ export function AppLayout() {
                         <span className="text-xs text-slate-500">{getRoleDisplay()}</span>
                         <span className="rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-medium text-violet-700">
                           {features.subscription.status === "trialing" && typeof features.subscription.days_left === "number"
-                            ? `${Math.round(features.subscription.days_left)} օր մնաց`
+                            ? `${Math.round(features.subscription.days_left)} ${text.daysLeft}`
                             : features.subscription.status}
                         </span>
                       </div>
@@ -324,10 +344,14 @@ export function AppLayout() {
                   </nav>
                   {/* Logout */}
                   <div className="border-t border-slate-200 p-3">
+                    <div className="mb-3 grid gap-2">
+                      <LanguageToggle />
+                      <ThemeToggle className="min-h-12 border-slate-200 bg-white text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100" />
+                    </div>
                     <button onClick={handleLogout}
                       className="flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
                     >
-                      <LogOut size={16} />Ելք
+                      <LogOut size={16} />{text.logout}
                     </button>
                   </div>
                 </motion.div>
@@ -342,7 +366,7 @@ export function AppLayout() {
             className="vizit-admin-content min-w-0"
           >
             {featuresQ.isLoading ? (
-              <div className="grid min-h-[50vh] place-items-center text-sm text-slate-500">Բեռնում է...</div>
+              <div className="grid min-h-[50vh] place-items-center text-sm text-slate-500">{text.loading}</div>
             ) : (
               <motion.div
                 key={location.pathname}
@@ -383,7 +407,7 @@ export function AppLayout() {
             <div className="grid h-8 w-8 place-items-center rounded-xl">
               <Menu size={20} />
             </div>
-            <span>Ավելին</span>
+            <span>{text.more}</span>
           </button>
         </div>
       </nav>

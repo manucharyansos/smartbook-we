@@ -4,6 +4,7 @@ import { resolveMediaUrl } from "./mediaUrl";
 export type Service = {
     id: number;
     name: string;
+    description?: string | null;
     duration_minutes: number;
     price: number | null;
     currency?: string | null;
@@ -25,6 +26,7 @@ export async function fetchServices(params?: { location_id?: number }): Promise<
 
 export async function createService(payload: {
     name: string;
+    description?: string | null;
     duration_minutes: number;
     price?: number | null;
     currency?: string | null;
@@ -39,6 +41,7 @@ export async function createService(payload: {
 
 export async function updateService(id: number, payload: Partial<{
     name: string;
+    description: string | null;
     duration_minutes: number;
     price: number | null;
     currency: string | null;

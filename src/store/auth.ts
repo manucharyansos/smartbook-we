@@ -10,6 +10,7 @@ export type User = {
     business_id: number | null;
     business_slug?: string | null;
     business_type?: string | null;
+    vertical?: string | null;
     billing_status?: string;
     is_billable?: boolean;
     needs_onboarding?: boolean;

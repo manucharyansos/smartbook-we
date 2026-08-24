@@ -1146,6 +1146,10 @@ html.dark .vizit-business-cta {
     display: none !important;
   }
 
+  .vizit-mobile-header-actions {
+    display: none !important;
+  }
+
   .vizit-hero-grid {
     grid-template-columns: minmax(0, 0.92fr) minmax(520px, 1.08fr) !important;
     align-items: center;
@@ -1214,6 +1218,21 @@ html.dark .vizit-business-cta {
     width: 40px;
     height: 40px;
     border-radius: 15px;
+  }
+
+  .vizit-mobile-header-language .vizit-language-button {
+    min-width: 62px;
+    height: 40px;
+    padding: 0 9px;
+    gap: 6px;
+    border: 1px solid color-mix(in srgb, var(--vizit-ref-gold) 34%, transparent);
+    background: var(--vizit-ref-surface);
+    color: var(--vizit-ref-plum-deep);
+  }
+
+  html.dark .vizit-mobile-header-language .vizit-language-button {
+    background: rgba(255,255,255,.06);
+    color: #fff8f2;
   }
 
   #top.vizit-hero-section {
@@ -1599,6 +1618,11 @@ html.dark .vizit-business-cta {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+}
+
+@media (max-width: 390px) {
+  .vizit-mobile-header-language .vizit-language-code { display: none; }
+  .vizit-mobile-header-language .vizit-language-button { min-width: 45px; }
 }
 
 @media (max-width: 370px) {

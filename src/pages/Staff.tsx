@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import {
   Plus,
   Users,
@@ -21,6 +22,8 @@ import {
   Pencil,
   Star,
   Info,
+  Clock3,
+  X,
 } from "lucide-react";
 
 import { page, card, cardTransition } from "../lib/motion";
@@ -42,6 +45,7 @@ import {
 import { uploadMedia } from "../lib/mediaApi";
 import { fetchBusinessSettings } from "../lib/businessSettingsApi";
 import { getErrorMessage } from "../lib/http";
+import { fetchStaffSchedule, updateStaffSchedule, type ScheduleDay } from "../lib/scheduleApi";
 
 type StaffRoleForm = "staff" | "manager";
 
@@ -70,6 +74,23 @@ const emptyForm: FormState = {
   is_bookable: true,
   location_id: "",
 };
+
+const dayNames = ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ", "Շաբաթ", "Կիրակի"];
+
+function completeSchedule(days: ScheduleDay[]): ScheduleDay[] {
+  const byWeekday = new Map(days.map((day) => [day.weekday, day]));
+  return Array.from({ length: 7 }, (_, index) => {
+    const weekday = index + 1;
+    return byWeekday.get(weekday) ?? {
+      weekday,
+      is_closed: weekday === 7,
+      start: weekday === 7 ? null : "09:00",
+      end: weekday === 7 ? null : "18:00",
+      break_start: null,
+      break_end: null,
+    };
+  });
+}
 
 function roleLabel(role: string) {
   if (role === "owner") return "Owner";
@@ -153,6 +174,11 @@ export default function Staff() {
   const [formError, setFormError] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [selectedLocationId, setSelectedLocationId] = useState<number | "">("");
+  const [schedulePerson, setSchedulePerson] = useState<StaffUser | null>(null);
+  const [scheduleDays, setScheduleDays] = useState<ScheduleDay[]>([]);
+  const [scheduleLoading, setScheduleLoading] = useState(false);
+  const [scheduleSaving, setScheduleSaving] = useState(false);
+  const [scheduleError, setScheduleError] = useState<string | null>(null);
 
   const settingsQ = useQuery({
     queryKey: ["business-settings"],
@@ -208,6 +234,7 @@ export default function Staff() {
   const staff = useMemo(() => staffQ.data ?? [], [staffQ.data]);
   const locations = useMemo(() => settingsQ.data?.locations ?? [], [settingsQ.data?.locations]);
   const usage = settingsQ.data?.usage;
+  const staffSlotFull = usage?.staff_limit != null && usage.active_staff >= usage.staff_limit;
   const locationNameById = useMemo(() => new Map(locations.map((location) => [location.id, location.name || (location.is_primary ? "Գլխավոր հասցե" : location.address)])), [locations]);
 
   const hasMultipleLocations = locations.length > 1;
@@ -265,6 +292,68 @@ export default function Staff() {
     setPanelOpen(true);
   }
 
+  async function openSchedule(person: StaffUser) {
+    setSchedulePerson(person);
+    setScheduleDays([]);
+    setScheduleError(null);
+    setScheduleLoading(true);
+    try {
+      const response = await fetchStaffSchedule(person.id);
+      setScheduleDays(completeSchedule(response.days));
+    } catch (error: unknown) {
+      setScheduleDays(completeSchedule([]));
+      setScheduleError(getErrorMessage(error, "Չհաջողվեց բեռնել աշխատաժամերը։"));
+    } finally {
+      setScheduleLoading(false);
+    }
+  }
+
+  function closeSchedule() {
+    if (scheduleSaving) return;
+    setSchedulePerson(null);
+    setScheduleDays([]);
+    setScheduleError(null);
+  }
+
+  function updateScheduleDay(weekday: number, payload: Partial<ScheduleDay>) {
+    setScheduleDays((current) => current.map((day) => day.weekday === weekday ? { ...day, ...payload } : day));
+  }
+
+  async function saveSchedule() {
+    if (!schedulePerson) return;
+    setScheduleError(null);
+
+    const invalidDay = scheduleDays.find((day) => !day.is_closed && (!day.start || !day.end || day.start >= day.end));
+    if (invalidDay) {
+      setScheduleError(`${dayNames[invalidDay.weekday - 1]} օրվա սկիզբը պետք է փոքր լինի ավարտից։`);
+      return;
+    }
+
+    const invalidBreak = scheduleDays.find((day) => {
+      if (day.is_closed) return false;
+      const hasBreakStart = Boolean(day.break_start);
+      const hasBreakEnd = Boolean(day.break_end);
+      if (hasBreakStart !== hasBreakEnd) return true;
+      if (!hasBreakStart || !hasBreakEnd || !day.start || !day.end) return false;
+      return day.break_start! >= day.break_end! || day.break_start! < day.start || day.break_end! > day.end;
+    });
+    if (invalidBreak) {
+      setScheduleError(`${dayNames[invalidBreak.weekday - 1]} օրվա ընդմիջումը պետք է ամբողջությամբ լինի աշխատանքային ժամերի ներսում։`);
+      return;
+    }
+
+    setScheduleSaving(true);
+    try {
+      await updateStaffSchedule(schedulePerson.id, { days: scheduleDays });
+      setSchedulePerson(null);
+      setScheduleDays([]);
+    } catch (error: unknown) {
+      setScheduleError(getErrorMessage(error, "Չհաջողվեց պահպանել աշխատաժամերը։"));
+    } finally {
+      setScheduleSaving(false);
+    }
+  }
+
   function applyRolePreset(nextRole: StaffRoleForm) {
     const preset = rolePreset(nextRole);
     setForm((prev) => {
@@ -293,8 +382,16 @@ export default function Staff() {
         setFormError("Նշիր email-ը։");
         return;
       }
-      if (!form.password.trim()) {
-        setFormError("Նշիր գաղտնաբառը։");
+      if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) {
+        setFormError("Նշիր վավեր email հասցե։");
+        return;
+      }
+      if (form.password.length < 8) {
+        setFormError("Գաղտնաբառը պետք է պարունակի առնվազն 8 նիշ։");
+        return;
+      }
+      if (form.role === "staff" && staffSlotFull) {
+        setFormError("Մասնագետների սահմանաչափը լրացել է։ Կարող ես ավելացնել մենեջեր կամ փոխել պլանը։");
         return;
       }
     }
@@ -366,6 +463,7 @@ export default function Staff() {
             <span>Ծառայություններ՝ <strong className="text-slate-950">{usage.services_count}</strong> / <strong className="text-slate-950">{usage.services_limit ?? '∞'}</strong></span>
             <span>Հասցեներ՝ <strong className="text-slate-950">{usage.locations_count}</strong> / <strong className="text-slate-950">{usage.locations_limit}</strong></span>
           </div>
+          {staffSlotFull ? <div className="mt-3 text-sm text-amber-700">Մասնագետների սահմանաչափը լրացել է։ Մենեջերների հաշիվները չեն սպառում staff տեղը։ <Link to="/app/billing" className="font-semibold underline underline-offset-4">Տեսնել պլանները</Link></div> : null}
         </Card>
       ) : null}
 
@@ -427,7 +525,13 @@ export default function Staff() {
         </Card>
       </motion.div>
 
-      {staffQ.isLoading ? (
+      {staffQ.isError ? (
+        <Card className="rounded-[28px] border border-rose-200 bg-rose-50 p-6 text-rose-800">
+          <div className="font-semibold">Չհաջողվեց բեռնել աշխատակիցներին</div>
+          <p className="mt-1 text-sm leading-6">{getErrorMessage(staffQ.error, "Ստուգիր պլանի կարգավիճակը կամ կրկին փորձիր։")}</p>
+          <div className="mt-4 flex flex-wrap gap-2"><Button variant="secondary" onClick={() => staffQ.refetch()}>Կրկին փորձել</Button><Link to="/app/billing" className="inline-flex items-center rounded-2xl border border-rose-200 bg-white px-4 py-2 text-sm font-semibold">Պլանի կարգավիճակ</Link></div>
+        </Card>
+      ) : staffQ.isLoading ? (
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="h-[280px] animate-pulse rounded-[28px] border border-slate-200 bg-white/80" />
@@ -482,10 +586,18 @@ export default function Staff() {
                       </div>
                     </div>
 
-                    <Button variant="secondary" size="sm" className="gap-2 rounded-2xl" onClick={() => openEdit(person)}>
-                      <Pencil className="h-4 w-4" />
-                      Խմբագրել
-                    </Button>
+                    <div className="flex shrink-0 flex-col gap-2">
+                      <Button variant="secondary" size="sm" className="gap-2 rounded-2xl" onClick={() => openSchedule(person)}>
+                        <Clock3 className="h-4 w-4" />
+                        Ժամեր
+                      </Button>
+                      {person.role !== "owner" ? (
+                        <Button variant="secondary" size="sm" className="gap-2 rounded-2xl" onClick={() => openEdit(person)}>
+                          <Pencil className="h-4 w-4" />
+                          Խմբագրել
+                        </Button>
+                      ) : null}
+                    </div>
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-2">
@@ -557,7 +669,7 @@ export default function Staff() {
                       />
                     </label>
 
-                    {person.is_active ? (
+                    {person.role === "owner" ? null : person.is_active ? (
                       <Button
                         variant="secondary"
                         onClick={() => {
@@ -781,9 +893,13 @@ export default function Staff() {
                   <div className="mt-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{formError}</div>
                 ) : null}
 
+                {mode === "create" && form.role === "staff" && staffSlotFull ? (
+                  <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">Staff տեղը լրացել է։ Ընտրիր «Մենեջեր» կամ <Link to="/app/billing" className="font-semibold underline underline-offset-4">փոխիր պլանը</Link>։</div>
+                ) : null}
+
                 <div className="mt-6 flex flex-col-reverse gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:justify-end">
                   <Button variant="secondary" onClick={closePanel} className="rounded-2xl">Փակել</Button>
-                  <Button onClick={submit} disabled={isSubmitting} className="rounded-2xl">
+                  <Button onClick={submit} disabled={isSubmitting || (mode === "create" && form.role === "staff" && staffSlotFull)} className="rounded-2xl">
                     {isSubmitting ? <Spinner size={16} /> : mode === "create" ? "Ստեղծել" : "Պահպանել"}
                   </Button>
                 </div>
@@ -791,6 +907,82 @@ export default function Staff() {
             </div>
           </div>
         )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {schedulePerson ? (
+          <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/45 p-0 backdrop-blur-sm sm:p-4" onClick={closeSchedule}>
+            <div className="flex min-h-full items-end justify-center sm:items-center">
+              <motion.div
+                initial={{ opacity: 0, y: 38, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 28, scale: 0.98 }}
+                onClick={(event) => event.stopPropagation()}
+                className="w-full max-w-4xl rounded-t-[30px] border border-white/30 bg-white/95 p-5 shadow-[0_28px_90px_rgba(31,15,36,0.24)] sm:rounded-[32px] sm:p-7"
+              >
+                <div className="flex items-start justify-between gap-4 border-b border-slate-200 pb-5">
+                  <div>
+                    <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800"><Clock3 className="h-3.5 w-3.5" /> Անհատական գրաֆիկ</div>
+                    <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">{schedulePerson.name}</h2>
+                    <p className="mt-1 text-sm leading-6 text-slate-500">Սահմանեք ընդունելության օրերը, ժամերը և ընդմիջումները։ Այս գրաֆիկով կհաշվվեն հասանելի ամրագրման ժամերը։</p>
+                  </div>
+                  <button type="button" onClick={closeSchedule} disabled={scheduleSaving} className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50" aria-label="Փակել"><X className="h-4 w-4" /></button>
+                </div>
+
+                {scheduleError ? <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{scheduleError}</div> : null}
+
+                {scheduleLoading ? (
+                  <div className="grid min-h-[280px] place-items-center text-sm text-slate-500"><span className="inline-flex items-center gap-2"><Spinner size={16} /> Բեռնում ենք գրաֆիկը…</span></div>
+                ) : (
+                  <div className="mt-5 grid gap-3">
+                    {scheduleDays.map((day) => (
+                      <div key={day.weekday} className="grid gap-3 rounded-[22px] border border-slate-200 bg-slate-50/70 p-4 lg:grid-cols-[150px_104px_repeat(4,minmax(105px,1fr))] lg:items-end">
+                        <div>
+                          <div className="text-sm font-semibold text-slate-900">{dayNames[day.weekday - 1]}</div>
+                          <div className="mt-1 text-xs text-slate-500">{day.is_closed ? "Հանգստյան օր" : "Աշխատանքային օր"}</div>
+                        </div>
+                        <label className="inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-slate-600">
+                          <input
+                            type="checkbox"
+                            checked={day.is_closed}
+                            onChange={(event) => updateScheduleDay(day.weekday, { is_closed: event.target.checked, start: event.target.checked ? null : (day.start || "09:00"), end: event.target.checked ? null : (day.end || "18:00") })}
+                            className="h-4 w-4 rounded border-slate-300 text-violet-700 focus:ring-violet-500"
+                          />
+                          Փակ է
+                        </label>
+                        {([
+                          { key: "start", label: "Սկիզբ", value: day.start },
+                          { key: "end", label: "Ավարտ", value: day.end },
+                          { key: "break_start", label: "Ընդմիջում՝ սկիզբ", value: day.break_start },
+                          { key: "break_end", label: "Ընդմիջում՝ ավարտ", value: day.break_end },
+                        ] as const).map((field) => (
+                          <label key={field.key} className="grid gap-1.5 text-[11px] font-semibold text-slate-500">
+                            {field.label}
+                            <input
+                              type="time"
+                              value={field.value ?? ""}
+                              disabled={day.is_closed}
+                              onChange={(event) => updateScheduleDay(day.weekday, { [field.key]: event.target.value || null } as Partial<ScheduleDay>)}
+                              className="min-h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none disabled:cursor-not-allowed disabled:opacity-45"
+                            />
+                          </label>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="mt-6 flex flex-col-reverse gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:justify-end">
+                  <Button variant="secondary" onClick={closeSchedule} disabled={scheduleSaving} className="rounded-2xl">Փակել</Button>
+                  <Button onClick={saveSchedule} disabled={scheduleLoading || scheduleSaving || scheduleDays.length !== 7} className="gap-2 rounded-2xl">
+                    {scheduleSaving ? <Spinner size={16} /> : <Clock3 className="h-4 w-4" />}
+                    Պահպանել աշխատաժամերը
+                  </Button>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        ) : null}
       </AnimatePresence>
     </motion.div>
   );

@@ -720,7 +720,7 @@ function BusinessCardVisual({
         <Icon className="h-3.5 w-3.5 shrink-0" />
         <span className="truncate">{categoryName}</span>
       </span>
-      <div className="absolute bottom-3 left-3 flex min-w-0 items-center gap-3 pr-3 sm:bottom-4 sm:left-4 sm:pr-4">
+      <div className="vizit-business-overlay-identity absolute bottom-3 left-3 flex min-w-0 items-center gap-3 pr-3 sm:bottom-4 sm:left-4 sm:pr-4">
         <div className="vizit-business-logo-tile grid h-11 w-11 place-items-center overflow-hidden rounded-[14px] border border-white/20 bg-white/12 text-white shadow-2xl backdrop-blur-xl sm:h-12 sm:w-12 sm:rounded-2xl">
           {logoUrl ? (
             <img
@@ -765,7 +765,7 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
       whileInView="visible"
       viewport={{ once: true, amount: 0.16 }}
       transition={{ delay: Math.min(index, 8) * 0.025 }}
-      className="group flex w-[calc(100vw_-_64px)] max-w-[350px] shrink-0 snap-center flex-col overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.09)] backdrop-blur-2xl transition duration-300 hover:-translate-y-1 hover:border-violet-200 dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_20px_60px_rgba(0,0,0,0.24)] dark:hover:bg-white/[0.10] sm:rounded-[28px] lg:w-auto lg:max-w-none"
+      className="vizit-business-directory-card group flex w-[calc(100vw_-_64px)] max-w-[350px] shrink-0 snap-center flex-col overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.09)] backdrop-blur-2xl transition duration-300 hover:-translate-y-1 hover:border-violet-200 dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_20px_60px_rgba(0,0,0,0.24)] dark:hover:bg-white/[0.10] sm:rounded-[28px] lg:w-auto lg:max-w-none"
     >
       <BusinessCardVisual
         key={`${item.id}:${item.cover_url ?? ""}:${item.logo_url ?? ""}`}
@@ -774,13 +774,28 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
         categoryName={categoryName}
         locationLabel={locationLabel}
       />
-      <div className="flex flex-1 flex-col p-4 sm:p-5">
-        <p className="line-clamp-2 min-h-[40px] text-[13px] leading-5 text-slate-600 dark:text-slate-300 sm:min-h-[44px] sm:text-sm sm:leading-[22px]">{item.short_description || t("business.card.defaultDescription")}</p>
-        <div className="mt-4 grid grid-cols-2 gap-2 text-[11px] text-slate-600 dark:text-slate-300 sm:text-xs">
+      <div className="vizit-business-card-body flex flex-1 flex-col p-4 sm:p-5">
+        <header className="vizit-business-mobile-identity">
+          <div className="flex min-w-0 items-start justify-between gap-2">
+            <div className="min-w-0">
+              <Link to={`/businesses/${item.slug}`} className="block truncate text-[15px] font-black tracking-[-0.02em] text-[#321735] dark:text-[#fff8f2]">{item.name}</Link>
+              <p className="mt-1 truncate text-[11px] font-semibold text-[#8a7182] dark:text-[#d7c8d4]">{categoryName}</p>
+            </div>
+            <Link to={bookingUrl} className="vizit-business-mobile-book grid h-8 w-8 shrink-0 place-items-center rounded-full border border-[#d39a43]/30 bg-[#fff8ef] text-[#a66f28] dark:border-[#e8c77f]/20 dark:bg-white/[0.07] dark:text-[#f0cf8d]" aria-label={`${t("business.card.book")} — ${item.name}`}>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="mt-auto grid gap-1.5 pt-3 text-[10px] font-semibold text-[#786675] dark:text-[#cdbfca]">
+            <span className="inline-flex min-w-0 items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 shrink-0 text-[#d39a43]" /><b className="text-[#442044] dark:text-white">{item.services_count ?? 0}</b> {t("business.card.services")}</span>
+            <span className="inline-flex min-w-0 items-center gap-1.5"><MapPin className="h-3.5 w-3.5 shrink-0 text-[#6d2a63] dark:text-[#e6bd76]" /><span className="truncate">{locationLabel}</span></span>
+          </div>
+        </header>
+        <p className="vizit-business-description line-clamp-2 min-h-[40px] text-[13px] leading-5 text-slate-600 dark:text-slate-300 sm:min-h-[44px] sm:text-sm sm:leading-[22px]">{item.short_description || t("business.card.defaultDescription")}</p>
+        <div className="vizit-business-stats mt-4 grid grid-cols-2 gap-2 text-[11px] text-slate-600 dark:text-slate-300 sm:text-xs">
           <div className="flex items-center gap-2 rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-2.5 dark:border-white/10 dark:bg-white/[0.06]"><Sparkles className="h-4 w-4 shrink-0 text-violet-500" /><span className="min-w-0"><span className="font-black text-slate-950 dark:text-white">{item.services_count ?? 0}</span> <span className="truncate">{t("business.card.services")}</span></span></div>
           <div className="flex items-center gap-2 rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-2.5 dark:border-white/10 dark:bg-white/[0.06]"><Users className="h-4 w-4 shrink-0 text-cyan-500" /><span className="min-w-0"><span className="font-black text-slate-950 dark:text-white">{item.staff_count ?? 0}</span> <span className="truncate">{t("business.card.staff")}</span></span></div>
         </div>
-        <div className="mt-auto grid grid-cols-2 gap-2 pt-4">
+        <div className="vizit-business-actions mt-auto grid grid-cols-2 gap-2 pt-4">
           <Link to={bookingUrl} className="inline-flex min-w-0 items-center justify-center gap-1.5 rounded-[14px] bg-gradient-to-r from-violet-600 to-sky-500 px-3 py-3 text-[12px] font-black text-white shadow-[0_12px_28px_rgba(124,58,237,0.22)] transition hover:brightness-105 sm:text-sm">{t("business.card.book")} <ArrowRight className="h-4 w-4 shrink-0" /></Link>
           <Link to={`/businesses/${item.slug}`} className="inline-flex min-w-0 items-center justify-center rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-3 text-[12px] font-bold text-slate-800 transition hover:bg-slate-100 dark:border-white/10 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/[0.10] sm:text-sm">{t("business.card.view")}</Link>
         </div>

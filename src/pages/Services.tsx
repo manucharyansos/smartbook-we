@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 import {
     Plus,
     Scissors,
@@ -39,6 +40,7 @@ type ToastState = {
 
 type ServiceForm = {
     name: string;
+    description: string;
     duration_minutes: number;
     price: number | "";
     currency: string;
@@ -49,6 +51,7 @@ type ServiceForm = {
 
 const initialForm: ServiceForm = {
     name: "",
+    description: "",
     duration_minutes: 30,
     price: "",
     currency: "AMD",
@@ -203,6 +206,7 @@ export default function ServicesPage() {
         setEditing(service);
         setForm({
             name: service.name,
+            description: service.description ?? "",
             duration_minutes: service.duration_minutes,
             price: service.price ?? "",
             currency: service.currency ?? "AMD",
@@ -222,6 +226,7 @@ export default function ServicesPage() {
 
         const payload = {
             name: form.name,
+            description: form.description.trim() || null,
             duration_minutes: Number(form.duration_minutes),
             price: form.price === "" ? null : Number(form.price),
             currency: form.currency,
@@ -274,7 +279,7 @@ export default function ServicesPage() {
                                     ))}
                                 </select>
                             ) : null}
-                            <Button onClick={openCreate} className="gap-2" disabled={serviceLimitReached}>
+                            <Button onClick={openCreate} className="gap-2" disabled={serviceLimitReached} title={serviceLimitReached ? "Պլանի ծառայությունների սահմանաչափը լրացել է" : undefined}>
                                 <Plus size={16} />
                                 Ավելացնել ծառայություն
                             </Button>
@@ -312,12 +317,18 @@ export default function ServicesPage() {
                                 <span>Հասցեներ՝ <strong className="text-slate-950">{serviceUsage.locations_count}</strong> / <strong className="text-slate-950">{serviceUsage.locations_limit}</strong></span>
                                 <span>Մասնագետներ՝ <strong className="text-slate-950">{serviceUsage.active_staff}</strong> / <strong className="text-slate-950">{serviceUsage.staff_limit ?? '∞'}</strong></span>
                             </div>
-                            {serviceLimitReached ? <div className="mt-2 text-rose-600">Ծառայությունների limit-ը սպառված է․ upgrade արա կամ ջնջիր ավելորդ ծառայությունը։</div> : null}
+                            {serviceLimitReached ? <div className="mt-2 flex flex-wrap items-center gap-2 text-rose-600">Ծառայությունների սահմանաչափը լրացել է։ <Link to="/app/billing" className="font-semibold underline underline-offset-4">Տեսնել պլանները</Link></div> : null}
                         </div>
                     ) : null}
 
                     <div className="mt-6">
-                        {servicesQ.isLoading ? (
+                        {servicesQ.isError ? (
+                            <div className="rounded-[24px] border border-rose-200 bg-rose-50 p-5 text-rose-800">
+                                <div className="font-semibold">Չհաջողվեց բեռնել ծառայությունները</div>
+                                <p className="mt-1 text-sm leading-6">{getErrorMessage(servicesQ.error, "Ստուգիր պլանի կարգավիճակը կամ կրկին փորձիր։")}</p>
+                                <div className="mt-3 flex flex-wrap gap-2"><Button variant="secondary" onClick={() => servicesQ.refetch()}>Կրկին փորձել</Button><Link to="/app/billing" className="inline-flex items-center rounded-2xl border border-rose-200 bg-white px-4 py-2 text-sm font-semibold">Պլանի կարգավիճակ</Link></div>
+                            </div>
+                        ) : servicesQ.isLoading ? (
                             <div className="flex items-center justify-center py-14 text-slate-500">
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 Բեռնում ենք ծառայությունները…
@@ -346,6 +357,7 @@ export default function ServicesPage() {
                                             </div>
                                             <div className="min-w-0 flex-1">
                                                 <div className="text-xl font-semibold text-slate-950">{service.name}</div>
+                                                {service.description ? <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-500">{service.description}</p> : null}
                                                 <div className="mt-2 flex flex-wrap items-center gap-2">
                                                 <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">
                                                     {service.is_active ? (
@@ -462,6 +474,17 @@ export default function ServicesPage() {
                                                 />
                                             </div>
 
+                                            <div>
+                                                <label className="mb-2 block text-sm font-medium text-slate-800">Նկարագրություն</label>
+                                                <textarea
+                                                    value={form.description}
+                                                    onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
+                                                    rows={3}
+                                                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+                                                    placeholder="Օր․ խորհրդատվություն, զննում և անհատական բուժման պլան…"
+                                                />
+                                            </div>
+
                                             <div className="grid gap-4 sm:grid-cols-2">
                                                 <div>
                                                     <label className="mb-2 block text-sm font-medium text-slate-800">Հասցե / մասնաճյուղ</label>
@@ -548,6 +571,7 @@ export default function ServicesPage() {
                                                 </div>
                                                 <div className="space-y-2 p-4">
                                                     <div className="text-lg font-semibold text-slate-950">{form.name || 'Նոր ծառայություն'}</div>
+                                                    {form.description ? <p className="line-clamp-3 text-xs leading-5 text-slate-500">{form.description}</p> : null}
                                                     <div className="flex items-center justify-between text-sm text-slate-500">
                                                         <span>{form.duration_minutes || 0} րոպե</span>
                                                         <span>{form.price === '' ? 'Գինը նշված չէ' : `${form.price} ${form.currency}`}</span>

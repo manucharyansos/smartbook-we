@@ -1,4 +1,5 @@
 /* Vizit.am business directory cards — reference-aligned premium shape. */
+.vizit-public-page #businesses .vizit-business-mobile-identity{display:none}
 .vizit-public-page #businesses article{
   position:relative!important;
   overflow:visible!important;
@@ -290,4 +291,61 @@ html.dark .vizit-public-page #businesses article a[href^="/businesses/"]{
   border-color:rgba(237,201,130,.15)!important;
   background:rgba(255,255,255,.06)!important;
   color:#fff8f2!important;
+}
+
+/* The supplied mobile reference uses compact horizontal business rows. */
+@media(max-width:767px){
+  .vizit-public-page #businesses article.vizit-business-directory-card{
+    display:grid!important;
+    grid-template-columns:116px minmax(0,1fr)!important;
+    width:min(360px,calc(100vw - 40px))!important;
+    min-width:min(360px,calc(100vw - 40px))!important;
+    max-width:360px!important;
+    min-height:140px!important;
+    padding:6px!important;
+    overflow:hidden!important;
+    border-radius:24px!important;
+    box-shadow:0 14px 38px rgba(72,35,49,.10)!important;
+  }
+  .vizit-public-page #businesses article.vizit-business-directory-card::before{display:none!important}
+  .vizit-public-page #businesses article.vizit-business-directory-card:hover{transform:none!important}
+  .vizit-public-page #businesses article.vizit-business-directory-card>.vizit-business-card-media{
+    width:116px!important;
+    height:128px!important;
+    min-height:128px!important;
+    align-self:center!important;
+    border-radius:19px!important;
+  }
+  .vizit-public-page #businesses article.vizit-business-directory-card>.vizit-business-card-media>span.absolute,
+  .vizit-public-page #businesses article.vizit-business-directory-card .vizit-business-overlay-identity{
+    display:none!important;
+  }
+  .vizit-public-page #businesses article.vizit-business-directory-card>.vizit-business-card-body{
+    min-width:0!important;
+    min-height:128px!important;
+    padding:12px 11px 10px 13px!important;
+  }
+  .vizit-public-page #businesses article.vizit-business-directory-card .vizit-business-mobile-identity{
+    display:flex!important;
+    min-width:0;
+    min-height:106px;
+    flex:1;
+    flex-direction:column;
+  }
+  .vizit-public-page #businesses article.vizit-business-directory-card .vizit-business-description,
+  .vizit-public-page #businesses article.vizit-business-directory-card .vizit-business-stats,
+  .vizit-public-page #businesses article.vizit-business-directory-card .vizit-business-actions{
+    display:none!important;
+  }
+  .vizit-public-page #businesses article.vizit-business-directory-card .vizit-business-fallback-symbol{
+    flex-direction:column;
+    gap:5px;
+  }
+  .vizit-public-page #businesses article.vizit-business-directory-card .vizit-business-fallback-symbol svg{width:27px;height:27px}
+  .vizit-public-page #businesses article.vizit-business-directory-card .vizit-business-fallback-symbol strong{font-size:21px}
+  .vizit-public-page #businesses .vizit-business-slider>div.animate-pulse{
+    height:140px!important;
+    min-height:140px!important;
+    border-radius:24px!important;
+  }
 }

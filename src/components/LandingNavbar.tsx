@@ -76,16 +76,19 @@ export default function LandingNavbar() {
                 </Link>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setMobileOpen((current) => !current)}
-                className="vizit-menu-button md:hidden"
-                aria-label={t("nav.openMenu")}
-                aria-expanded={mobileOpen}
-                aria-controls="landing-mobile-menu"
-              >
-                {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </button>
+              <div className="vizit-mobile-header-actions flex items-center gap-1.5">
+                <LanguageToggle className="vizit-mobile-header-language" compact />
+                <button
+                  type="button"
+                  onClick={() => setMobileOpen((current) => !current)}
+                  className="vizit-menu-button"
+                  aria-label={t("nav.openMenu")}
+                  aria-expanded={mobileOpen}
+                  aria-controls="landing-mobile-menu"
+                >
+                  {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                </button>
+              </div>
             </div>
           </motion.div>
         </div>

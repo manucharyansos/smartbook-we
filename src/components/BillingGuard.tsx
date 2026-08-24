@@ -6,7 +6,6 @@ import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { fetchFeatures } from "../lib/featuresApi";
 import { useAuth } from "../store/auth";
 import { Button } from "./ui/Button";
-import { FullScreenLoader } from "./ui/FullScreenLoader";
 
 export function BillingGuard() {
   const { user, clear } = useAuth();
@@ -19,12 +18,10 @@ export function BillingGuard() {
     retry: 1,
   });
 
-  if (featuresQ.isLoading) {
-    return <FullScreenLoader title="Ստուգում ենք բաժանորդագրությունը…" subtitle="Մի պահ սպասիր" />;
-  }
-
-  // A temporary API/network failure must not falsely lock an active workspace.
-  if (featuresQ.isError || featuresQ.data?.is_billable !== false) {
+  // The feature endpoint can be noticeably slower than the rest of the workspace.
+  // Keep an authenticated workspace usable while the request is pending and only
+  // show the billing state after the API has explicitly confirmed it.
+  if (featuresQ.isLoading || featuresQ.isError || featuresQ.data?.is_billable !== false) {
     return <Outlet />;
   }
 

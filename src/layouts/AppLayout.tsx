@@ -89,7 +89,7 @@ export function AppLayout() {
 
   useEffect(() => {
     const h = () => setIsScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", h);
+    window.addEventListener("scroll", h, { passive: true });
     return () => window.removeEventListener("scroll", h);
   }, []);
 
@@ -364,19 +364,16 @@ export function AppLayout() {
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="vizit-admin-content min-w-0"
+            aria-busy={featuresQ.isFetching}
           >
-            {featuresQ.isLoading ? (
-              <div className="grid min-h-[50vh] place-items-center text-sm text-slate-500">{text.loading}</div>
-            ) : (
-              <motion.div
-                key={location.pathname}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.18, ease: "easeOut" }}
-              >
-                <Outlet />
-              </motion.div>
-            )}
+            <motion.div
+              key={location.pathname}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+            >
+              <Outlet />
+            </motion.div>
           </motion.main>
         </div>
       </div>

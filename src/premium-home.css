@@ -119,17 +119,6 @@ body:has(.vizit-public-page) header a[href="/register"]{
 }
 .vizit-public-page main>section:first-child button.rounded-full:hover{border-color:rgba(211,154,67,.5)!important;background:#f8eadb!important;color:var(--vz-plum)!important}
 
-/* Replace the old ticket illustration visually with the desktop+mobile mockup from the references. */
-.vizit-public-page main>section:first-child>div.relative>div:last-child{
-  min-height:590px!important;
-  max-width:720px!important;
-  width:100%!important;
-  padding:0!important;
-  background:url('/vizit-device-showcase.svg') center/contain no-repeat!important;
-  filter:drop-shadow(0 22px 38px rgba(73,33,48,.05));
-}
-.vizit-public-page main>section:first-child>div.relative>div:last-child>*{display:none!important}
-
 /* ---------- CATEGORIES ---------- */
 .vizit-public-page #categories{
   padding-top:0!important;
@@ -197,8 +186,7 @@ body:has(.vizit-public-page) header a[href="/register"]{
 }
 .vizit-public-page #map>div{max-width:1320px!important}
 .vizit-public-page #map .grid{gap:22px!important}
-.vizit-public-page #map .vizit-yandex-map-shell,
-.vizit-public-page #map [class*="vizit-yandex"]{
+.vizit-public-page #map .vizit-yandex-map-shell{
   border-color:rgba(211,154,67,.26)!important;
   border-radius:34px!important;
   box-shadow:0 30px 80px rgba(70,34,49,.12)!important;
@@ -271,7 +259,6 @@ html.dark .vizit-public-page #how h2,
 html.dark .vizit-public-page #map h2,
 html.dark .vizit-public-page #businesses h2,
 html.dark .vizit-public-page #plans h2{color:#fff7ef!important;-webkit-text-fill-color:#fff7ef!important}
-html.dark .vizit-public-page main>section:first-child>div.relative>div:last-child{filter:brightness(.93) saturate(.92) drop-shadow(0 24px 40px rgba(0,0,0,.25))}
 html.dark .vizit-public-page #categories,
 html.dark .vizit-public-page #how,
 html.dark .vizit-public-page #map,
@@ -312,12 +299,6 @@ html.dark .vizit-public-page #categories button>span:first-child{background:line
   .vizit-public-page main>section:first-child form label,
   .vizit-public-page main>section:first-child form button:not([type="submit"]){min-height:52px!important;background:#fffaf5!important}
   .vizit-public-page main>section:first-child form button[type="submit"]{height:52px!important;width:100%!important}
-  .vizit-public-page main>section:first-child>div.relative>div:last-child{
-    min-height:345px!important;
-    margin-top:0!important;
-    background-size:118%!important;
-    background-position:center top!important;
-  }
   .vizit-public-page #categories{padding-left:0!important;padding-right:0!important;padding-bottom:44px!important}
   .vizit-public-page #categories>div{border-left:0!important;border-right:0!important;border-radius:0!important;padding:22px 16px!important;box-shadow:0 15px 42px rgba(70,34,49,.06)!important}
   .vizit-public-page #categories>div>div:last-child{padding-left:16px!important;padding-right:16px!important;margin-left:-16px!important;margin-right:-16px!important;scroll-padding-inline:34px!important}
@@ -326,8 +307,7 @@ html.dark .vizit-public-page #categories button>span:first-child{background:line
   .vizit-public-page #how>div{border-left:0!important;border-right:0!important;border-radius:0!important;padding:26px 18px!important}
   .vizit-public-page #map{padding:50px 16px 58px!important}
   .vizit-public-page #map .grid{gap:14px!important}
-  .vizit-public-page #map .vizit-yandex-map-shell,
-  .vizit-public-page #map [class*="vizit-yandex"]{border-radius:26px!important}
+  .vizit-public-page #map .vizit-yandex-map-shell{border-radius:26px!important}
   .vizit-public-page #map>div>div.grid>div:last-child{border-radius:26px!important;padding:16px!important}
   .vizit-public-page #businesses{padding:56px 0 64px!important}
   .vizit-public-page #businesses>div>div:first-child,
@@ -337,6 +317,5 @@ html.dark .vizit-public-page #categories button>span:first-child{background:line
 }
 
 @media(max-width:390px){
-  .vizit-public-page main>section:first-child>div.relative>div:last-child{min-height:315px!important;background-size:124%!important}
   .vizit-public-page #categories button{width:52vw!important}
 }

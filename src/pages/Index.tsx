@@ -7,21 +7,27 @@ import {
   Activity,
   ArrowRight,
   BadgeCheck,
+  Bell,
   BookOpen,
   Building2,
   CalendarDays,
   Camera,
   Car,
+  ChevronRight,
   CirclePlus,
+  Clock3,
   Droplets,
   Dumbbell,
   Flower2,
   Grid3X3,
   Hand,
+  Heart,
   HeartPulse,
+  Home,
   Hospital,
   LocateFixed,
   MapPin,
+  Menu,
   MessagesSquare,
   MoreHorizontal,
   Scissors,
@@ -32,6 +38,7 @@ import {
   Star,
   Stethoscope,
   TestTube2,
+  UserRound,
   Users,
   WandSparkles,
   Wrench,
@@ -41,6 +48,7 @@ import {
 import Footer from "../components/Footer";
 import LandingNavbar from "../components/LandingNavbar";
 import Seo from "../components/Seo";
+import VizitLogo from "../components/VizitLogo";
 import YandexMap, { type VizitMapMarker } from "../components/maps/YandexMap";
 import { useLanguage } from "../contexts/LanguageContext";
 import { cn } from "../lib/cn";
@@ -511,10 +519,10 @@ function SearchPanel({
         event.preventDefault();
         onSubmit();
       }}
-      className="mt-7 w-full max-w-[680px] rounded-[20px] border border-[#e8e2f0] bg-white p-2.5 shadow-[0_20px_55px_rgba(62,31,120,0.14)] dark:border-[#312641] dark:bg-[#151020] dark:shadow-[0_24px_70px_rgba(0,0,0,0.34)] sm:p-3"
+      className="vizit-search-panel mt-7 w-full max-w-[680px] rounded-[20px] border border-[#e8e2f0] bg-white p-2.5 shadow-[0_20px_55px_rgba(62,31,120,0.14)] dark:border-[#312641] dark:bg-[#151020] dark:shadow-[0_24px_70px_rgba(0,0,0,0.34)] sm:p-3"
     >
       <div className="grid items-stretch gap-2 md:grid-cols-[1fr_170px_118px]">
-        <label className="relative flex min-h-[62px] items-center rounded-[16px] px-3 text-left transition focus-within:bg-[#faf8fc] dark:focus-within:bg-white/[0.05] sm:px-4 md:border-r md:border-[#e8e2f0] dark:md:border-[#312641]">
+        <label className="vizit-search-field relative flex min-h-[62px] items-center rounded-[16px] px-3 text-left transition focus-within:bg-[#faf8fc] dark:focus-within:bg-white/[0.05] sm:px-4 md:border-r md:border-[#e8e2f0] dark:md:border-[#312641]">
           <Search className="mr-3 h-[21px] w-[21px] shrink-0 text-[#8f829e] dark:text-[#9488a3]" />
           <span className="min-w-0 flex-1">
             <span className="block text-[13px] font-semibold text-[#6b6178] dark:text-[#b7adc5] sm:text-[14px]">{t("search.label")}</span>
@@ -535,7 +543,7 @@ function SearchPanel({
           type="button"
           onClick={onUseLocation}
           disabled={locationStatus === "loading"}
-          className="flex min-h-[58px] items-center rounded-[16px] px-3 text-left transition hover:bg-[#faf8fc] disabled:cursor-wait disabled:opacity-70 dark:hover:bg-white/[0.05] sm:px-4"
+          className="vizit-location-button flex min-h-[58px] items-center rounded-[16px] px-3 text-left transition hover:bg-[#faf8fc] disabled:cursor-wait disabled:opacity-70 dark:hover:bg-white/[0.05] sm:px-4"
           aria-label={t("search.useLocation")}
           title={t("search.useLocation")}
         >
@@ -547,7 +555,7 @@ function SearchPanel({
           <LocateFixed className="ml-2 h-4 w-4 shrink-0 text-[#1e9e92] dark:text-[#58d0c4]" />
         </button>
 
-        <button type="submit" className="inline-flex h-[54px] items-center justify-center gap-2 rounded-[16px] bg-[#5b2fa8] px-5 text-[14px] font-semibold text-white shadow-[0_14px_30px_rgba(91,47,168,0.24)] transition hover:bg-[#3e1f78] dark:bg-[#a980f3] dark:text-[#160d22] dark:hover:bg-[#bd9cf8] md:h-auto">
+        <button type="submit" className="vizit-search-submit inline-flex h-[54px] items-center justify-center gap-2 rounded-[16px] bg-[#5b2fa8] px-5 text-[14px] font-semibold text-white shadow-[0_14px_30px_rgba(91,47,168,0.24)] transition hover:bg-[#3e1f78] dark:bg-[#a980f3] dark:text-[#160d22] dark:hover:bg-[#bd9cf8] md:h-auto">
           <Search className="h-4 w-4" /> {t("search.button")}
         </button>
       </div>
@@ -558,49 +566,77 @@ function SearchPanel({
 
 function HeroTicket() {
   const { t } = useLanguage();
+  const previewCategories = [
+    { label: t("businesses.services"), Icon: Sparkles, tone: "peach" },
+    { label: t("businesses.healthcare"), Icon: HeartPulse, tone: "lilac" },
+    { label: t("category.fallback"), Icon: Home, tone: "sage" },
+    { label: t("categories.all"), Icon: Grid3X3, tone: "gold" },
+  ];
+  const previewBusinesses = [
+    { name: "Nairi Clinic", label: t("businesses.healthcare"), Icon: Hospital, rating: "4.9" },
+    { name: "Luna Beauty", label: t("businesses.services"), Icon: Sparkles, rating: "4.8" },
+    { name: "Auto Premium", label: t("businesses.services"), Icon: Car, rating: "4.7" },
+  ];
+
   return (
-    <motion.div variants={fadeUp} className="relative mx-auto flex min-h-[390px] w-full max-w-[540px] items-center justify-center px-3 pb-12 pt-8 sm:min-h-[470px] sm:px-8 xl:min-h-[560px] xl:justify-end">
-      <div className="absolute left-[8%] top-[14%] h-40 w-40 rounded-full bg-[#1e9e92]/20 blur-3xl dark:bg-[#58d0c4]/15 sm:h-56 sm:w-56" />
-      <div className="absolute bottom-[12%] right-[4%] h-44 w-44 rounded-full bg-[#5b2fa8]/20 blur-3xl dark:bg-[#a980f3]/20 sm:h-64 sm:w-64" />
-
-      <div aria-hidden="true" className="absolute left-[19%] top-[27%] h-[245px] w-[70%] max-w-[330px] rotate-[7deg] rounded-[24px] bg-gradient-to-br from-[#1e9e92] to-[#126c64] opacity-55 shadow-[0_28px_60px_rgba(30,158,146,0.25)] sm:h-[300px] xl:left-[22%]" />
-
-      <div role="img" aria-label={`${t("ticket.queue")} A07. ${t("ticket.confirmed")}: ${t("ticket.visitValue")}, ${t("ticket.dateValue")}, 14:30`} className="relative z-10 w-full max-w-[360px] -rotate-[2deg] rounded-[24px] bg-gradient-to-br from-[#3e1f78] via-[#53299a] to-[#6d38bd] p-6 text-white shadow-[0_34px_75px_rgba(62,31,120,0.34)] sm:p-8 dark:shadow-[0_38px_90px_rgba(0,0,0,0.48)]">
-        <div aria-hidden="true">
-          <div className="flex items-start justify-between gap-5">
-            <div>
-              <div className="text-[11px] font-semibold uppercase tracking-[0.13em] text-white/65">{t("ticket.queue")}</div>
-              <div className="vizit-display mt-2 text-5xl font-bold leading-none sm:text-6xl">A07</div>
-            </div>
-            <CalendarDays className="h-7 w-7 text-[#79ded4]" />
-          </div>
-
-          <div className="relative my-6 border-t border-dashed border-white/30 before:absolute before:-left-9 before:-top-[11px] before:h-5 before:w-5 before:rounded-full before:bg-[#faf8fc] after:absolute after:-right-9 after:-top-[11px] after:h-5 after:w-5 after:rounded-full after:bg-[#faf8fc] dark:before:bg-[#090712] dark:after:bg-[#090712] sm:my-7 sm:before:-left-11 sm:after:-right-11" />
-
-          <div>
-            <div className="text-[11px] uppercase tracking-[0.12em] text-white/60">{t("ticket.visit")}</div>
-            <div className="mt-1.5 text-sm font-semibold sm:text-base">{t("ticket.visitValue")}</div>
-          </div>
-          <div className="mt-5 grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <div className="text-white/60">{t("ticket.date")}</div>
-              <div className="mt-1 font-semibold">{t("ticket.dateValue")}</div>
-            </div>
-            <div>
-              <div className="text-white/60">{t("ticket.time")}</div>
-              <div className="mt-1 font-semibold">14:30</div>
-            </div>
-          </div>
-        </div>
-
-        <div aria-hidden="true" className="absolute -bottom-6 right-4 grid h-[74px] w-[74px] rotate-[5deg] place-items-center rounded-full border-4 border-[#faf8fc] bg-[#e8a93c] px-2 text-center text-[11px] font-bold leading-4 text-[#3e2a08] shadow-[0_14px_30px_rgba(232,169,60,0.38)] dark:border-[#090712] sm:-right-5 sm:h-20 sm:w-20">
-          {t("ticket.confirmed")}
-        </div>
+    <motion.div variants={fadeUp} className="vizit-hero-showcase" aria-label={t("seo.imageAlt")}>
+      <div className="vizit-floating-card vizit-floating-card-time" aria-hidden="true">
+        <Clock3 />
+        <span><small>{t("ticket.dateValue")}</small><strong>14:30</strong></span>
+      </div>
+      <div className="vizit-floating-card vizit-floating-card-place" aria-hidden="true">
+        <MapPin />
+        <span><small>{t("map.selectedAddress")}</small><strong>{t("search.city")}</strong></span>
       </div>
 
-      <div aria-hidden="true" className="absolute bottom-[12%] left-[12%] z-20 hidden rotate-[-5deg] rounded-2xl border border-[#e8e2f0] bg-white/90 px-4 py-3 text-[#3e1f78] shadow-xl backdrop-blur sm:block dark:border-[#312641] dark:bg-[#151020]/90 dark:text-[#c3a7ff]">
-        <div className="text-[10px] font-semibold uppercase tracking-[0.12em] opacity-65">{t("ticket.next")}</div>
-        <div className="vizit-display mt-1 text-xl font-bold">B14</div>
+      <div className="vizit-phone-frame">
+        <span className="vizit-phone-speaker" aria-hidden="true" />
+        <div className="vizit-phone-screen">
+          <div className="vizit-phone-header">
+            <Menu aria-hidden="true" />
+            <VizitLogo />
+            <span className="vizit-phone-bell"><Bell aria-hidden="true" /><i /></span>
+          </div>
+
+          <div className="vizit-phone-search"><Search aria-hidden="true" /><span>{t("search.label")}</span></div>
+          <div className="vizit-phone-location"><MapPin aria-hidden="true" /><span>{t("search.city")}</span><ChevronRight aria-hidden="true" /></div>
+
+          <div className="vizit-phone-categories">
+            {previewCategories.map(({ label, Icon, tone }) => (
+              <div key={label} className="vizit-phone-category">
+                <span className={`vizit-phone-category-icon is-${tone}`}><Icon aria-hidden="true" /></span>
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="vizit-phone-section-head">
+            <strong>{t("businesses.badge")}</strong>
+            <span>{t("categories.all")} <ArrowRight aria-hidden="true" /></span>
+          </div>
+
+          <div className="vizit-phone-businesses">
+            {previewBusinesses.map(({ name, label, Icon, rating }, index) => (
+              <div key={name} className="vizit-phone-business">
+                <span className={`vizit-phone-business-cover is-${index + 1}`}><Icon aria-hidden="true" /></span>
+                <span className="vizit-phone-business-copy">
+                  <strong>{name}</strong>
+                  <small>{label}</small>
+                  <span><Star aria-hidden="true" /> {rating}</span>
+                </span>
+                <span className="vizit-phone-business-place">{t("search.city")}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="vizit-phone-dock" aria-hidden="true">
+            <span className="is-active"><Home /><small>{t("nav.home")}</small></span>
+            <span><CalendarDays /><small>{t("nav.services")}</small></span>
+            <span><Heart /><small>{t("nav.businesses")}</small></span>
+            <span><MapPin /><small>{t("nav.map")}</small></span>
+            <span><UserRound /><small>{t("nav.login")}</small></span>
+          </div>
+        </div>
       </div>
     </motion.div>
   );
@@ -668,7 +704,7 @@ function HomePlansSection() {
   });
 
   return (
-    <section id="plans" className="scroll-mt-24 bg-slate-50 px-5 py-16 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8 lg:py-20">
+    <section id="plans" className="vizit-plans-section scroll-mt-24 bg-slate-50 px-5 py-16 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8 lg:py-20">
       <div className="mx-auto max-w-[1320px]">
         <div className="mb-9 grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
           <div>
@@ -678,11 +714,11 @@ function HomePlansSection() {
           <Link to="/pricing" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-100 dark:border-white/12 dark:bg-white/[0.07] dark:text-white dark:hover:bg-white/[0.12]">{t("cta.pricing")} <ArrowRight className="h-4 w-4" /></Link>
         </div>
         {plansQ.isLoading ? (
-          <div className="grid gap-5 md:grid-cols-3">{Array.from({ length: 3 }).map((_, idx) => <div key={idx} className="h-[230px] animate-pulse rounded-[26px] border border-slate-200 bg-white dark:border-white/10 dark:bg-white/[0.06]" />)}</div>
+          <div className="vizit-plans-grid grid gap-5 md:grid-cols-3">{Array.from({ length: 3 }).map((_, idx) => <div key={idx} className="h-[230px] animate-pulse rounded-[26px] border border-slate-200 bg-white dark:border-white/10 dark:bg-white/[0.06]" />)}</div>
         ) : plansQ.isError ? (
           <div className="rounded-[24px] border border-rose-300/20 bg-rose-500/10 p-6 text-rose-100">{t("status.errorPlans")}</div>
         ) : (
-          <div className="grid gap-5 md:grid-cols-3">
+          <div className="vizit-plans-grid grid gap-5 md:grid-cols-3">
             {(plansQ.data ?? []).slice(0, 3).map((plan) => (
               <div key={plan.id} className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
                 <div className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-slate-950">{t("plans.businessPlan")}</div>
@@ -695,6 +731,31 @@ function HomePlansSection() {
         )}
       </div>
     </section>
+  );
+}
+
+function MobileDock() {
+  const { t } = useLanguage();
+  const items = [
+    { href: "#top", label: t("nav.home"), Icon: Home },
+    { href: "#categories", label: t("nav.services"), Icon: Grid3X3 },
+    { href: "#businesses", label: t("nav.businesses"), Icon: Heart },
+    { href: "#map", label: t("nav.map"), Icon: MapPin },
+  ];
+
+  return (
+    <nav className="vizit-mobile-dock" aria-label={t("footer.navigation")}>
+      {items.map(({ href, label, Icon }, index) => (
+        <a key={href} href={href} className={index === 0 ? "is-active" : undefined}>
+          <Icon aria-hidden="true" />
+          <span>{label}</span>
+        </a>
+      ))}
+      <Link to="/login">
+        <UserRound aria-hidden="true" />
+        <span>{t("nav.login")}</span>
+      </Link>
+    </nav>
   );
 }
 
@@ -811,13 +872,13 @@ export default function Index() {
       <LandingNavbar />
 
       <main>
-        <section className="relative overflow-hidden bg-[#faf8fc] px-5 pb-10 pt-[108px] transition-colors dark:bg-[#090712] sm:px-8 sm:pt-[126px] lg:pb-12">
+        <section id="top" className="vizit-hero-section relative overflow-hidden bg-[#faf8fc] px-5 pb-10 pt-[108px] transition-colors dark:bg-[#090712] sm:px-8 sm:pt-[126px] lg:pb-12">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_10%,rgba(91,47,168,0.11),transparent_29%),radial-gradient(circle_at_84%_18%,rgba(30,158,146,0.10),transparent_28%),linear-gradient(180deg,#faf8fc_0%,#ffffff_64%,#faf8fc_100%)] dark:bg-[radial-gradient(circle_at_16%_10%,rgba(169,128,243,0.19),transparent_28%),radial-gradient(circle_at_84%_18%,rgba(88,208,196,0.11),transparent_28%),linear-gradient(180deg,#090712_0%,#151020_62%,#090712_100%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(91,47,168,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(91,47,168,0.035)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(circle_at_top,black,transparent_76%)] dark:opacity-50" />
 
-          <motion.div variants={stagger} initial="hidden" animate="visible" className="relative mx-auto grid max-w-[1160px] gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-center xl:gap-12">
-            <div className="max-w-[650px] py-7 text-center lg:py-14 lg:text-left">
-              <motion.div variants={fadeUp} className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#1e9e92]/25 bg-[#1e9e92]/[0.08] px-4 py-2 text-[12px] font-semibold text-[#167d74] shadow-sm backdrop-blur-2xl dark:border-[#58d0c4]/25 dark:bg-[#58d0c4]/10 dark:text-[#8be3da] dark:shadow-[0_16px_50px_rgba(0,0,0,0.22)] lg:mx-0">
+          <motion.div variants={stagger} initial="hidden" animate="visible" className="vizit-hero-grid relative mx-auto grid max-w-[1160px] gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-center xl:gap-12">
+            <div className="vizit-hero-copy max-w-[650px] py-7 text-center lg:py-14 lg:text-left">
+              <motion.div variants={fadeUp} className="vizit-hero-badge mx-auto inline-flex items-center gap-2 rounded-full border border-[#1e9e92]/25 bg-[#1e9e92]/[0.08] px-4 py-2 text-[12px] font-semibold text-[#167d74] shadow-sm backdrop-blur-2xl dark:border-[#58d0c4]/25 dark:bg-[#58d0c4]/10 dark:text-[#8be3da] dark:shadow-[0_16px_50px_rgba(0,0,0,0.22)] lg:mx-0">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#1e9e92] dark:bg-[#58d0c4]" /> {t("hero.badge")}
               </motion.div>
 
@@ -835,14 +896,14 @@ export default function Index() {
                 </motion.div>
               ) : null}
 
-              <motion.div variants={fadeUp} className="mt-5 flex flex-wrap items-center justify-center gap-2 text-[12px] text-[#6b6178] dark:text-[#b7adc5] lg:justify-start">
+              <motion.div variants={fadeUp} className="vizit-hero-chips mt-5 flex flex-wrap items-center justify-center gap-2 text-[12px] text-[#6b6178] dark:text-[#b7adc5] lg:justify-start">
                 {popularChips.length ? popularChips.map((category) => {
                   const label = getCategoryName(category, locale) ?? t("category.fallback");
                   return <button key={category.slug ?? label} type="button" onClick={() => selectCategory(category)} className="rounded-full border border-[#e8e2f0] bg-white px-4 py-2 font-medium text-[#6b6178] transition hover:border-[#5b2fa8]/40 hover:bg-[#f1edf7] hover:text-[#3e1f78] dark:border-[#312641] dark:bg-white/[0.06] dark:text-[#c9bfd5] dark:hover:border-[#a980f3]/40 dark:hover:bg-white/10 dark:hover:text-white">{label}</button>;
                 }) : null}
               </motion.div>
 
-              <motion.div variants={fadeUp} className="mt-6 grid gap-2 text-left text-xs text-[#6b6178] dark:text-[#b7adc5] sm:grid-cols-3">
+              <motion.div variants={fadeUp} className="vizit-hero-proof mt-6 grid gap-2 text-left text-xs text-[#6b6178] dark:text-[#b7adc5] sm:grid-cols-3">
                 {[
                   { label: t("hero.proof.availability"), Icon: CalendarDays },
                   { label: t("hero.proof.noCalls"), Icon: ShieldCheck },
@@ -860,7 +921,7 @@ export default function Index() {
           </motion.div>
         </section>
 
-        <section id="categories" className="relative scroll-mt-24 bg-[#faf8fc] px-5 pb-8 transition-colors dark:bg-[#090712] sm:px-8">
+        <section id="categories" className="vizit-categories-section relative scroll-mt-24 bg-[#faf8fc] px-5 pb-8 transition-colors dark:bg-[#090712] sm:px-8">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.18 }} className="mx-auto max-w-[1320px] rounded-[26px] border border-[#e8e2f0] bg-white p-5 text-[#241736] shadow-[0_30px_100px_rgba(62,31,120,0.10)] dark:border-[#312641] dark:bg-[#151020] dark:text-white dark:shadow-[0_30px_100px_rgba(0,0,0,0.30)] sm:rounded-[30px] sm:p-7">
             <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <h2 className="vizit-display text-2xl sm:text-3xl">{t("categories.title")}</h2>
@@ -868,9 +929,9 @@ export default function Index() {
             </div>
 
             {(businessesQ.isLoading || categoriesQ.isLoading) ? (
-              <div className="-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4 xl:grid-cols-7">{Array.from({ length: 7 }).map((_, index) => <div key={index} className="min-h-[138px] w-[76vw] max-w-[280px] shrink-0 snap-start animate-pulse rounded-[20px] border border-slate-100 bg-slate-100 sm:w-auto sm:max-w-none" />)}</div>
+              <div className="vizit-category-slider -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4 xl:grid-cols-7">{Array.from({ length: 7 }).map((_, index) => <div key={index} className="min-h-[138px] w-[76vw] max-w-[280px] shrink-0 snap-start animate-pulse rounded-[20px] border border-slate-100 bg-slate-100 sm:w-auto sm:max-w-none" />)}</div>
             ) : categories.length ? (
-              <div className="-mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4 xl:grid-cols-7">
+              <div className="vizit-category-slider -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4 xl:grid-cols-7">
                 {categories.map((category) => {
                   const { Icon, tone } = getCategoryPresentation(category);
                   const label = getCategoryName(category, locale) ?? t("category.fallback");
@@ -892,7 +953,7 @@ export default function Index() {
           </motion.div>
         </section>
 
-        <section id="how" className="scroll-mt-24 bg-white px-0 py-10 text-[#241736] transition-colors dark:bg-[#090712] dark:text-white sm:px-8 sm:py-14 lg:py-18">
+        <section id="how" className="vizit-how-section scroll-mt-24 bg-white px-0 py-10 text-[#241736] transition-colors dark:bg-[#090712] dark:text-white sm:px-8 sm:py-14 lg:py-18">
           <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="mx-auto max-w-[1160px] rounded-none border-y border-[#e8e2f0] bg-[#faf8fc] p-5 shadow-[0_20px_70px_rgba(62,31,120,0.07)] dark:border-[#312641] dark:bg-[#151020] dark:shadow-[0_24px_80px_rgba(0,0,0,0.26)] sm:rounded-[34px] sm:border sm:p-8 lg:p-10">
             <motion.div variants={fadeUp} className="text-center">
               <SectionBadge><Sparkles className="h-4 w-4" /> {t("how.badge")}</SectionBadge>
@@ -928,14 +989,14 @@ export default function Index() {
           </motion.div>
         </section>
 
-        <section id="map" className="scroll-mt-24 bg-slate-50 px-5 pb-8 pt-12 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8 sm:py-16 lg:py-20">
+        <section id="map" className="vizit-map-section scroll-mt-24 bg-slate-50 px-5 pb-8 pt-12 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8 sm:py-16 lg:py-20">
           <div className="mx-auto min-w-0 max-w-[1320px]">
             <div className="mb-8">
               <SectionBadge><MapPin className="h-4 w-4" /> {t("map.badge")}</SectionBadge>
               <h2 className="mt-5 max-w-3xl break-words text-[28px] font-black leading-[1.12] tracking-[-0.04em] text-slate-950 dark:text-white sm:text-5xl sm:leading-none">{t("map.title")}</h2>
             </div>
 
-            <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
+            <div className="vizit-map-layout grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
               <InteractiveBusinessMap
                 key={`${userLocation?.lat ?? "none"}:${userLocation?.lng ?? "none"}|${pins.map((pin) => `${pin.locationId}:${pin.lat.toFixed(5)},${pin.lng.toFixed(5)}`).join("|")}`}
                 pins={pins}
@@ -945,7 +1006,7 @@ export default function Index() {
                 userLocation={userLocation}
               />
 
-              <div className="min-w-0 max-w-full overflow-hidden rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)] sm:rounded-[30px] sm:p-5">
+              <div className="vizit-map-panel min-w-0 max-w-full overflow-hidden rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)] sm:rounded-[30px] sm:p-5">
                 {selectedPin ? (
                   <div className="min-w-0">
                     <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1.5 text-xs font-bold text-cyan-700 dark:border-white/12 dark:bg-white/[0.08] dark:text-cyan-100"><MapPin className="h-3.5 w-3.5" /> {t("map.selectedAddress")}</div>
@@ -966,7 +1027,7 @@ export default function Index() {
                 )}
 
                 {pins.length ? (
-                  <div className="-mx-4 mt-4 flex min-w-0 max-w-[calc(100%_+_32px)] snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-5 sm:mt-6 sm:max-w-[calc(100%_+_40px)] sm:scroll-px-5 sm:px-5 lg:mx-0 lg:block lg:max-h-[280px] lg:max-w-full lg:space-y-2 lg:overflow-y-auto lg:px-0 lg:pb-0 lg:pr-1">
+                  <div className="vizit-map-slider -mx-4 mt-4 flex min-w-0 max-w-[calc(100%_+_32px)] snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-5 sm:mt-6 sm:max-w-[calc(100%_+_40px)] sm:scroll-px-5 sm:px-5 lg:mx-0 lg:block lg:max-h-[280px] lg:max-w-full lg:space-y-2 lg:overflow-y-auto lg:px-0 lg:pb-0 lg:pr-1">
                     {pins.map((pin) => {
                       const active = selectedPin?.businessId === pin.businessId && selectedPin?.locationId === pin.locationId;
                       return (
@@ -993,7 +1054,7 @@ export default function Index() {
           </div>
         </section>
 
-        <section id="businesses" className="scroll-mt-24 bg-white px-5 py-12 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8 sm:py-16 lg:py-20">
+        <section id="businesses" className="vizit-businesses-section scroll-mt-24 bg-white px-5 py-12 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8 sm:py-16 lg:py-20">
           <div className="mx-auto min-w-0 max-w-[1320px]">
             <div className="mb-8 grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
               <div className="min-w-0">
@@ -1038,7 +1099,7 @@ export default function Index() {
             ) : null}
 
             {businessesQ.isLoading ? (
-              <div className="flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto px-3 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-[calc((100%_-_350px)/2)] lg:grid lg:grid-cols-2 lg:overflow-visible lg:px-0 lg:pb-0 2xl:grid-cols-3">{Array.from({ length: 6 }).map((_, idx) => <div key={idx} className="h-[340px] w-[calc(100vw_-_64px)] max-w-[350px] shrink-0 snap-center animate-pulse rounded-[24px] border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/[0.06] lg:w-auto lg:max-w-none" />)}</div>
+              <div className="vizit-business-slider flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto px-3 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-[calc((100%_-_350px)/2)] lg:grid lg:grid-cols-2 lg:overflow-visible lg:px-0 lg:pb-0 2xl:grid-cols-3">{Array.from({ length: 6 }).map((_, idx) => <div key={idx} className="h-[340px] w-[calc(100vw_-_64px)] max-w-[350px] shrink-0 snap-center animate-pulse rounded-[24px] border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/[0.06] lg:w-auto lg:max-w-none" />)}</div>
             ) : businessesQ.isError ? (
               <div className="rounded-[24px] border border-rose-300/20 bg-rose-500/10 p-6 text-rose-100">{t("status.errorBusinesses")}</div>
             ) : !filteredBusinesses.length ? (
@@ -1047,14 +1108,14 @@ export default function Index() {
                 <h3 className="mt-5 text-2xl font-black text-slate-950 dark:text-white">{t("businesses.empty.title")}</h3>
               </div>
             ) : (
-              <div className="flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto px-3 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-[calc((100%_-_350px)/2)] lg:grid lg:grid-cols-2 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0 2xl:grid-cols-3">{filteredBusinesses.map((item, index) => <BusinessCard key={item.id} item={item} index={index} />)}</div>
+              <div className="vizit-business-slider flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto px-3 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-[calc((100%_-_350px)/2)] lg:grid lg:grid-cols-2 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0 2xl:grid-cols-3">{filteredBusinesses.map((item, index) => <BusinessCard key={item.id} item={item} index={index} />)}</div>
             )}
           </div>
         </section>
 
         <HomePlansSection />
 
-        <section className="bg-white px-5 pb-20 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8">
+        <section className="vizit-business-cta bg-white px-5 pb-20 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="mx-auto max-w-[1320px] overflow-hidden rounded-[34px] border border-violet-200 bg-[radial-gradient(circle_at_20%_0%,rgba(34,211,238,0.12),transparent_30%),radial-gradient(circle_at_86%_8%,rgba(236,72,153,0.12),transparent_32%),rgba(248,250,252,0.96)] p-8 shadow-[0_34px_120px_rgba(15,23,42,0.10)] backdrop-blur-2xl dark:border-white/12 dark:bg-[radial-gradient(circle_at_20%_0%,rgba(34,211,238,0.18),transparent_30%),radial-gradient(circle_at_86%_8%,rgba(236,72,153,0.20),transparent_32%),rgba(255,255,255,0.07)] dark:shadow-[0_34px_120px_rgba(0,0,0,0.28)] sm:p-10 lg:p-12">
             <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
               <div>
@@ -1071,6 +1132,7 @@ export default function Index() {
         </section>
       </main>
 
+      <MobileDock />
       <Footer />
     </div>
   );

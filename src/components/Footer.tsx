@@ -2,12 +2,12 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  Heart,
   Mail,
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
+import VizitLogo from "./VizitLogo";
 
 export default function Footer() {
   const { t } = useLanguage();
@@ -28,7 +28,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative overflow-hidden border-t border-[#d39a43]/20 bg-[#fbf5ed] transition-colors dark:border-[#edc982]/15 dark:bg-[#120b14]">
+    <footer className="vizit-footer relative overflow-hidden border-t border-[#d39a43]/20 bg-[#fbf5ed] transition-colors dark:border-[#edc982]/15 dark:bg-[#120b14]">
       <div className="pointer-events-none absolute -left-48 top-28 h-96 w-96 rounded-full border border-[#d39a43]/15" />
       <div className="pointer-events-none absolute -right-44 -top-40 h-[430px] w-[430px] rounded-full border border-[#6d2a63]/10 dark:border-[#edc982]/10" />
 
@@ -38,7 +38,7 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.18 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-[34px] border border-[#d39a43]/25 bg-[radial-gradient(circle_at_88%_0%,rgba(237,201,130,0.28),transparent_34%),linear-gradient(135deg,#2b0d35_0%,#4b164b_58%,#6d2a63_100%)] text-white shadow-[0_30px_90px_rgba(75,36,52,0.20)]"
+          className="vizit-footer-cta relative overflow-hidden rounded-[34px] border border-[#d39a43]/25 bg-[radial-gradient(circle_at_88%_0%,rgba(237,201,130,0.28),transparent_34%),linear-gradient(135deg,#2b0d35_0%,#4b164b_58%,#6d2a63_100%)] text-white shadow-[0_30px_90px_rgba(75,36,52,0.20)]"
         >
           <div className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full border border-white/10" />
           <div className="pointer-events-none absolute -bottom-40 left-[30%] h-80 w-80 rounded-full border border-[#edc982]/18" />
@@ -80,13 +80,9 @@ export default function Footer() {
 
         <div className="mt-12 grid gap-8 md:grid-cols-2 xl:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]">
           <div>
-            <Link to="/" className="flex items-center gap-3">
-              <div className="grid h-12 w-12 place-items-center rounded-[18px] border border-[#d39a43]/35 bg-[#fff7ec] text-[#c88e37] shadow-[0_10px_26px_rgba(210,154,69,0.18)] dark:bg-white/10">
-                <Heart className="h-[22px] w-[22px]" strokeWidth={2.4} />
-              </div>
-
+            <Link to="/" className="vizit-footer-brand flex items-center gap-3">
+              <VizitLogo />
               <div>
-                <div className="text-xl font-black tracking-[-0.035em] text-[#2b0d35] dark:text-white">Vizit.am</div>
                 <div className="text-xs text-[#8b7a86] dark:text-white/55">{t("footer.platformTagline")}</div>
               </div>
             </Link>

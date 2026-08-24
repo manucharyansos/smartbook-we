@@ -224,7 +224,7 @@ export default function YandexMap({
   }, [markers, readyVersion, status]);
 
   return (
-    <div className={cn("relative isolate overflow-hidden bg-slate-100 dark:bg-slate-900", className)} aria-label={ariaLabel}>
+    <div className={cn("vizit-yandex-map-shell relative isolate overflow-hidden bg-slate-100 dark:bg-slate-900", className)} aria-label={ariaLabel}>
       <div ref={containerRef} className="absolute inset-0 z-0" />
 
       {status === "loading" ? (

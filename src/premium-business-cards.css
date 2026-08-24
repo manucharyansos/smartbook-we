@@ -1,0 +1,206 @@
+/* Vizit.am business directory cards — reference-aligned premium shape. */
+.vizit-public-page #businesses article{
+  position:relative!important;
+  overflow:visible!important;
+  padding:10px!important;
+  border:1px solid rgba(211,154,67,.26)!important;
+  border-radius:34px!important;
+  background:linear-gradient(180deg,#fffdf9 0%,#fff9f2 100%)!important;
+  box-shadow:0 22px 58px rgba(72,35,49,.10)!important;
+  isolation:isolate;
+}
+.vizit-public-page #businesses article::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  right:-16px;
+  top:-16px;
+  width:88px;
+  height:88px;
+  border:1px solid rgba(211,154,67,.22);
+  border-radius:50%;
+  pointer-events:none;
+}
+.vizit-public-page #businesses article:hover{
+  transform:translateY(-7px)!important;
+  border-color:rgba(211,154,67,.52)!important;
+  box-shadow:0 32px 76px rgba(72,35,49,.15)!important;
+}
+
+/* Cover becomes an inset editorial image, rather than the old full-bleed card header. */
+.vizit-public-page #businesses article>div:first-child{
+  position:relative!important;
+  height:190px!important;
+  margin:0!important;
+  overflow:hidden!important;
+  border:1px solid rgba(255,255,255,.72)!important;
+  border-radius:26px!important;
+  background:linear-gradient(145deg,#2b0d35,#6d2a63)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.05),0 12px 28px rgba(43,13,53,.15)!important;
+}
+.vizit-public-page #businesses article>div:first-child>img{
+  opacity:.88!important;
+  filter:saturate(.9) contrast(.96) brightness(.88)!important;
+}
+.vizit-public-page #businesses article>div:first-child>div.absolute.inset-0{
+  background:linear-gradient(180deg,rgba(43,13,53,.04) 0%,rgba(43,13,53,.08) 38%,rgba(31,10,38,.86) 100%)!important;
+}
+
+/* Category: cream/gold pill like the supplied brand references. */
+.vizit-public-page #businesses article>div:first-child>span{
+  left:14px!important;
+  top:14px!important;
+  max-width:calc(100% - 28px)!important;
+  padding:7px 12px!important;
+  border:1px solid rgba(237,201,130,.44)!important;
+  border-radius:999px!important;
+  background:rgba(255,249,241,.93)!important;
+  color:#4b164b!important;
+  box-shadow:0 8px 24px rgba(43,13,53,.12)!important;
+  backdrop-filter:blur(16px)!important;
+}
+.vizit-public-page #businesses article>div:first-child>span svg{color:#c88e37!important}
+
+/* Business identity sits cleanly over the lower image edge. */
+.vizit-public-page #businesses article>div:first-child>div:last-child{
+  left:15px!important;
+  right:15px!important;
+  bottom:14px!important;
+  align-items:center!important;
+  gap:11px!important;
+  padding-right:0!important;
+}
+.vizit-public-page #businesses article>div:first-child>div:last-child>div:first-child{
+  width:52px!important;
+  height:52px!important;
+  border:2px solid rgba(255,248,239,.88)!important;
+  border-radius:18px!important;
+  background:#fffaf4!important;
+  color:#6d2a63!important;
+  box-shadow:0 12px 28px rgba(20,6,25,.24)!important;
+}
+.vizit-public-page #businesses article>div:first-child h3{
+  font-family:"Noto Serif Armenian",Georgia,serif!important;
+  font-size:20px!important;
+  line-height:1.08!important;
+  font-weight:700!important;
+  letter-spacing:-.025em!important;
+  color:#fffaf4!important;
+  text-shadow:0 2px 14px rgba(20,6,25,.30)!important;
+}
+.vizit-public-page #businesses article>div:first-child p{
+  margin-top:5px!important;
+  font-size:12px!important;
+  font-weight:600!important;
+  color:rgba(255,250,244,.78)!important;
+}
+
+/* Body: tighter, lighter, and more product-like. */
+.vizit-public-page #businesses article>div:last-child{
+  padding:17px 8px 7px!important;
+  background:transparent!important;
+}
+.vizit-public-page #businesses article>div:last-child>p{
+  min-height:42px!important;
+  margin:0 4px!important;
+  color:#746578!important;
+  font-size:13px!important;
+  line-height:21px!important;
+}
+
+/* Stats become two soft inset tiles with gold/plum icons. */
+.vizit-public-page #businesses article>div:last-child>div:nth-of-type(1){
+  margin-top:15px!important;
+  gap:8px!important;
+}
+.vizit-public-page #businesses article>div:last-child>div:nth-of-type(1)>div{
+  min-height:48px!important;
+  padding:10px 12px!important;
+  border:1px solid rgba(211,154,67,.17)!important;
+  border-radius:17px!important;
+  background:#fbf1e8!important;
+  color:#67566a!important;
+}
+.vizit-public-page #businesses article>div:last-child>div:nth-of-type(1)>div:first-child svg{color:#6d2a63!important}
+.vizit-public-page #businesses article>div:last-child>div:nth-of-type(1)>div:last-child svg{color:#c88e37!important}
+.vizit-public-page #businesses article>div:last-child>div:nth-of-type(1)>div span span:first-child{color:#2b0d35!important}
+
+/* Actions: one strong booking CTA, one calm secondary action. */
+.vizit-public-page #businesses article>div:last-child>div:last-child{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.28fr) minmax(0,.72fr)!important;
+  gap:8px!important;
+  padding-top:13px!important;
+}
+.vizit-public-page #businesses article a[href^="/book/"]{
+  min-height:48px!important;
+  border-radius:17px!important;
+  background:linear-gradient(135deg,#2b0d35,#6d2a63)!important;
+  color:#fff!important;
+  font-weight:800!important;
+  box-shadow:0 13px 28px rgba(74,22,74,.20)!important;
+}
+.vizit-public-page #businesses article a[href^="/businesses/"]{
+  min-height:48px!important;
+  border:1px solid rgba(211,154,67,.24)!important;
+  border-radius:17px!important;
+  background:#fff8ef!important;
+  color:#4c394f!important;
+  font-weight:700!important;
+}
+
+/* Desktop uses airier cards, but keeps the same reference proportions. */
+@media(min-width:1024px){
+  .vizit-public-page #businesses article{padding:11px!important;border-radius:36px!important}
+  .vizit-public-page #businesses article>div:first-child{height:205px!important;border-radius:27px!important}
+  .vizit-public-page #businesses article>div:last-child{padding:19px 9px 8px!important}
+}
+
+/* Mobile carousel: centered cards with visible breathing room on both sides. */
+@media(max-width:767px){
+  .vizit-public-page #businesses>div>div:last-child,
+  .vizit-public-page #businesses>div>div[class*="snap-x"]{
+    gap:14px!important;
+    padding-left:24px!important;
+    padding-right:24px!important;
+    scroll-padding-inline:24px!important;
+  }
+  .vizit-public-page #businesses article{
+    width:calc(100vw - 48px)!important;
+    max-width:360px!important;
+    padding:9px!important;
+    border-radius:31px!important;
+    scroll-snap-align:center!important;
+  }
+  .vizit-public-page #businesses article>div:first-child{
+    height:172px!important;
+    border-radius:23px!important;
+  }
+  .vizit-public-page #businesses article>div:first-child>div:last-child>div:first-child{
+    width:48px!important;
+    height:48px!important;
+    border-radius:16px!important;
+  }
+  .vizit-public-page #businesses article>div:first-child h3{font-size:18px!important}
+  .vizit-public-page #businesses article>div:last-child{padding:15px 6px 6px!important}
+  .vizit-public-page #businesses article>div:last-child>div:last-child{grid-template-columns:1fr!important}
+  .vizit-public-page #businesses article a[href^="/businesses/"]{min-height:44px!important}
+}
+
+html.dark .vizit-public-page #businesses article{
+  border-color:rgba(237,201,130,.16)!important;
+  background:linear-gradient(180deg,rgba(54,28,52,.96),rgba(40,20,40,.96))!important;
+  box-shadow:0 24px 64px rgba(0,0,0,.28)!important;
+}
+html.dark .vizit-public-page #businesses article>div:last-child>p{color:#d3c5d1!important}
+html.dark .vizit-public-page #businesses article>div:last-child>div:nth-of-type(1)>div{
+  border-color:rgba(237,201,130,.12)!important;
+  background:rgba(255,255,255,.055)!important;
+  color:#d9ccd7!important;
+}
+html.dark .vizit-public-page #businesses article>div:last-child>div:nth-of-type(1)>div span span:first-child{color:#fff8f2!important}
+html.dark .vizit-public-page #businesses article a[href^="/businesses/"]{
+  border-color:rgba(237,201,130,.15)!important;
+  background:rgba(255,255,255,.06)!important;
+  color:#fff8f2!important;
+}

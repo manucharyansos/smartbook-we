@@ -30,6 +30,7 @@ import "./premium-auth.css";
 import "./premium-workspace.css";
 import "./premium-superadmin.css";
 import "./premium-refinements.css";
+import "./premium-polish.css";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AppErrorBoundary } from "./components/AppErrorBoundary";

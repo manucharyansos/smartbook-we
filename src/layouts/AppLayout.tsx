@@ -39,15 +39,18 @@ const mobileBottomPaths = ["/app/dashboard", "/app/calendar", "/app/services", "
 const workspaceCopy = {
   hy: {
     nav: { "/app/dashboard": "Վահանակ", "/app/calendar": "Օրացույց", "/app/services": "Ծառայություններ", "/app/staff": "Աշխատակիցներ", "/app/clients": "Հաճախորդներ", "/app/tasks": "Ամրագրումների վահանակ", "/app/analytics": "Վերլուծություն", "/app/billing": "Պլան", "/app/settings": "Կարգավորումներ" },
-    giftCards: "Նվերի քարտեր", loyalty: "Լոյալություն", more: "Ավելին", logout: "Ելք", navigation: "Նավիգացիա", menu: "Մենյու", openMenu: "Բացել մենյուն", closeMenu: "Փակել մենյուն", loading: "Բեռնվում է…", workspace: "Աշխատանքային միջավայր", owner: "Սեփականատեր", manager: "Կառավարիչ", staff: "Աշխատակից", superAdmin: "Սուպեր ադմին", healthcare: "Առողջապահություն", services: "Ծառայություններ", trial: "Փորձ", daysLeft: "օր մնաց",
+    medicalNav: { "/app/services": "Բժշկական ծառայություններ", "/app/staff": "Բժիշկներ և թիմ", "/app/clients": "Պացիենտներ", "/app/tasks": "Այցերի վահանակ" },
+    giftCards: "Նվերի քարտեր", loyalty: "Լոյալություն", more: "Ավելին", logout: "Ելք", navigation: "Նավիգացիա", menu: "Մենյու", openMenu: "Բացել մենյուն", closeMenu: "Փակել մենյուն", loading: "Բեռնվում է…", workspace: "Աշխատանքային միջավայր", owner: "Սեփականատեր", manager: "Կառավարիչ", staff: "Աշխատակից", superAdmin: "Սուպեր ադմին", healthcare: "Առողջապահություն", services: "Ծառայություններ", trial: "Փորձաշրջան", daysLeft: "օր մնաց", expand: "Բացել կողային վահանակը", collapse: "Փոքրացնել կողային վահանակը", hintTitle: "Արագ սկիզբ", hintText: "Ավելացրեք ծառայությունները, բժիշկներին և նրանց աշխատաժամերը, ապա ընդունեք առաջին այցը։",
   },
   ru: {
     nav: { "/app/dashboard": "Панель", "/app/calendar": "Календарь", "/app/services": "Услуги", "/app/staff": "Сотрудники", "/app/clients": "Клиенты", "/app/tasks": "Панель записей", "/app/analytics": "Аналитика", "/app/billing": "Тариф", "/app/settings": "Настройки" },
-    giftCards: "Подарочные карты", loyalty: "Лояльность", more: "Ещё", logout: "Выйти", navigation: "Навигация", menu: "Меню", openMenu: "Открыть меню", closeMenu: "Закрыть меню", loading: "Загрузка…", workspace: "Рабочее пространство", owner: "Владелец", manager: "Менеджер", staff: "Сотрудник", superAdmin: "Суперадмин", healthcare: "Здравоохранение", services: "Услуги", trial: "Пробный период", daysLeft: "дн. осталось",
+    medicalNav: { "/app/services": "Медицинские услуги", "/app/staff": "Врачи и команда", "/app/clients": "Пациенты", "/app/tasks": "Панель визитов" },
+    giftCards: "Подарочные карты", loyalty: "Лояльность", more: "Ещё", logout: "Выйти", navigation: "Навигация", menu: "Меню", openMenu: "Открыть меню", closeMenu: "Закрыть меню", loading: "Загрузка…", workspace: "Рабочее пространство", owner: "Владелец", manager: "Менеджер", staff: "Сотрудник", superAdmin: "Суперадмин", healthcare: "Здравоохранение", services: "Услуги", trial: "Пробный период", daysLeft: "дн. осталось", expand: "Развернуть боковую панель", collapse: "Свернуть боковую панель", hintTitle: "Быстрый старт", hintText: "Добавьте услуги, врачей и их расписание, затем примите первый визит.",
   },
   en: {
     nav: { "/app/dashboard": "Dashboard", "/app/calendar": "Calendar", "/app/services": "Services", "/app/staff": "Staff", "/app/clients": "Clients", "/app/tasks": "Booking board", "/app/analytics": "Analytics", "/app/billing": "Plan", "/app/settings": "Settings" },
-    giftCards: "Gift cards", loyalty: "Loyalty", more: "More", logout: "Log out", navigation: "Navigation", menu: "Menu", openMenu: "Open menu", closeMenu: "Close menu", loading: "Loading…", workspace: "Workspace", owner: "Owner", manager: "Manager", staff: "Staff", superAdmin: "Super admin", healthcare: "Healthcare", services: "Services", trial: "Trial", daysLeft: "days left",
+    medicalNav: { "/app/services": "Medical services", "/app/staff": "Doctors & team", "/app/clients": "Patients", "/app/tasks": "Visit board" },
+    giftCards: "Gift cards", loyalty: "Loyalty", more: "More", logout: "Log out", navigation: "Navigation", menu: "Menu", openMenu: "Open menu", closeMenu: "Close menu", loading: "Loading…", workspace: "Workspace", owner: "Owner", manager: "Manager", staff: "Staff", superAdmin: "Super admin", healthcare: "Healthcare", services: "Services", trial: "Trial", daysLeft: "days left", expand: "Expand sidebar", collapse: "Collapse sidebar", hintTitle: "Quick start", hintText: "Add services, doctors and their schedules, then accept the first visit.",
   },
 } as const;
 
@@ -68,9 +71,16 @@ export function AppLayout() {
 
   const featuresQ = useQuery({ queryKey: ["features"], queryFn: fetchFeatures, staleTime: 60_000, retry: 1 });
   const features = featuresQ.data;
+  const businessValue = String(user?.vertical ?? user?.business_type ?? "").toLowerCase();
+  const isHealthcare = ["healthcare", "dental", "clinic", "medical", "doctor", "health"].includes(businessValue);
 
   const navItems = useMemo(() => {
-    let items: NavItem[] = baseNavItems.map((item) => ({ ...item, label: text.nav[item.to as keyof typeof text.nav] ?? item.label }));
+    let items: NavItem[] = baseNavItems.map((item) => {
+      const healthcareLabel = isHealthcare
+        ? (text.medicalNav as Partial<Record<string, string>>)[item.to]
+        : undefined;
+      return { ...item, label: healthcareLabel ?? text.nav[item.to as keyof typeof text.nav] ?? item.label };
+    });
     items = items.filter((i) => !i.feature || hasFeature(features, i.feature));
     if (user?.role === "staff") {
       const allowed = new Set(["/app/dashboard", "/app/calendar", "/app/tasks"]);
@@ -83,7 +93,7 @@ export function AppLayout() {
     if (hasFeature(features, "gift_cards")) insertBeforeSettings({ to: "/app/gift-cards", label: text.giftCards, icon: Gift, color: "from-violet-600 to-fuchsia-600", feature: "gift_cards" });
     if (hasFeature(features, "loyalty")) insertBeforeSettings({ to: "/app/loyalty", label: text.loyalty, icon: Star, color: "from-orange-500 to-amber-500", feature: "loyalty" });
     return items;
-  }, [features, text, user?.role]);
+  }, [features, isHealthcare, text, user?.role]);
 
   const bottomNavItems = useMemo(() => navItems.filter((i) => mobileBottomPaths.includes(i.to)), [navItems]);
 
@@ -139,11 +149,10 @@ export function AppLayout() {
     }
   };
 
-  const businessTypeUi = useMemo(() => {
-    const value = String(user?.vertical ?? user?.business_type ?? "").toLowerCase();
-    const healthcare = ["healthcare", "dental", "clinic", "medical", "doctor", "health"].includes(value);
-    return healthcare ? { label: text.healthcare, icon: Award } : { label: text.services, icon: Sparkles };
-  }, [text.healthcare, text.services, user?.business_type, user?.vertical]);
+  const businessTypeUi = useMemo(
+    () => isHealthcare ? { label: text.healthcare, icon: Award } : { label: text.services, icon: Sparkles },
+    [isHealthcare, text.healthcare, text.services]
+  );
   const BusinessTypeIcon = businessTypeUi?.icon ?? Sparkles;
 
   return (
@@ -163,14 +172,14 @@ export function AppLayout() {
               {/* Desktop sidebar collapse */}
               <button type="button" onClick={() => setIsDesktopCollapsed((v) => !v)}
                 className="hidden items-center justify-center rounded-2xl border border-slate-200 bg-white p-2.5 text-slate-600 transition hover:bg-slate-50 xl:inline-flex"
-                aria-label={isDesktopCollapsed ? "Բացել" : "Փոքրացնել"}
+                aria-label={isDesktopCollapsed ? text.expand : text.collapse}
               >
                 {isDesktopCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
               </button>
               {/* Mobile hamburger */}
               <motion.button whileTap={{ scale: 0.95 }}
                 className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white xl:hidden"
-                onClick={() => setIsMobileMenuOpen(true)} aria-label="Բացել մենյուն"
+                onClick={() => setIsMobileMenuOpen(true)} aria-label={text.openMenu}
               >
                 <Menu size={20} className="text-slate-700" />
               </motion.button>
@@ -202,7 +211,7 @@ export function AppLayout() {
                   <div className="mt-1 flex justify-end">
                     <div className="rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[11px] font-medium text-violet-700">
                       {features.subscription.status === "trialing" && typeof features.subscription.days_left === "number"
-                        ? `Փորձ · ${Math.round(features.subscription.days_left)} օր`
+                        ? `${text.trial} · ${Math.round(features.subscription.days_left)} ${text.daysLeft}`
                         : features.plan_code ? `${features.plan_code}` : features.subscription.status}
                     </div>
                   </div>
@@ -273,8 +282,8 @@ export function AppLayout() {
                       <Sparkles size={16} className="text-violet-700" />
                     </div>
                     <div>
-                      <div className="mb-1 text-xs font-semibold text-slate-900">Հուշում</div>
-                      <div className="text-xs leading-relaxed text-slate-500">Սկսեք օրացույցից, հետո խորացրեք վերլուծությունն ու վճարումները։</div>
+                      <div className="mb-1 text-xs font-semibold text-slate-900">{text.hintTitle}</div>
+                      <div className="text-xs leading-relaxed text-slate-500">{text.hintText}</div>
                     </div>
                   </div>
                 </div>

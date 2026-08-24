@@ -42,6 +42,86 @@
   opacity:.88!important;
   filter:saturate(.9) contrast(.96) brightness(.88)!important;
 }
+.vizit-public-page #businesses .vizit-business-cover-fallback{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  isolation:isolate;
+  background:linear-gradient(145deg,#865e58,#dfb7a8);
+}
+.vizit-public-page #businesses .vizit-business-cover-fallback::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background:
+    linear-gradient(120deg,rgba(255,250,243,.24),transparent 38%),
+    repeating-linear-gradient(135deg,rgba(255,255,255,.055) 0 1px,transparent 1px 16px);
+}
+.vizit-public-page #businesses .vizit-business-cover-fallback.is-0{background:linear-gradient(145deg,#885c58,#ddb1a5)}
+.vizit-public-page #businesses .vizit-business-cover-fallback.is-1{background:linear-gradient(145deg,#98703c,#e7c48f)}
+.vizit-public-page #businesses .vizit-business-cover-fallback.is-2{background:linear-gradient(145deg,#46675e,#a9c4b4)}
+.vizit-public-page #businesses .vizit-business-cover-fallback.is-3{background:linear-gradient(145deg,#624759,#c7a7b8)}
+.vizit-public-page #businesses .vizit-business-cover-fallback.is-4{background:linear-gradient(145deg,#76523f,#d4a17f)}
+.vizit-public-page #businesses .vizit-business-cover-fallback.is-5{background:linear-gradient(145deg,#455d65,#a8c2bf)}
+.vizit-public-page #businesses .vizit-business-cover-orb{
+  position:absolute;
+  border:1px solid rgba(255,248,238,.38);
+  border-radius:50%;
+  background:rgba(255,246,232,.09);
+  box-shadow:0 18px 60px rgba(38,17,31,.16);
+}
+.vizit-public-page #businesses .vizit-business-cover-orb.is-top{
+  top:-44px;
+  right:-18px;
+  width:142px;
+  height:142px;
+}
+.vizit-public-page #businesses .vizit-business-cover-orb.is-bottom{
+  bottom:-82px;
+  left:-36px;
+  width:188px;
+  height:188px;
+}
+.vizit-public-page #businesses .vizit-business-logo-backdrop{
+  position:absolute;
+  inset:-14%;
+  width:128%;
+  height:128%;
+  object-fit:cover;
+  opacity:.34;
+  filter:blur(24px) saturate(.78) contrast(.94);
+  transform:scale(1.04);
+}
+.vizit-public-page #businesses .vizit-business-fallback-symbol{
+  position:absolute;
+  top:50%;
+  left:50%;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  color:rgba(255,250,244,.9);
+  transform:translate(-50%,-54%);
+  text-shadow:0 4px 22px rgba(39,15,33,.24);
+}
+.vizit-public-page #businesses .vizit-business-fallback-symbol svg{
+  width:42px;
+  height:42px;
+  stroke-width:1.55;
+}
+.vizit-public-page #businesses .vizit-business-fallback-symbol strong{
+  font-family:"Noto Serif Armenian",Georgia,serif;
+  font-size:34px;
+  line-height:1;
+  letter-spacing:-.04em;
+}
+.vizit-public-page #businesses .vizit-business-monogram{
+  font-family:"Noto Serif Armenian",Georgia,serif;
+  font-size:16px;
+  font-weight:800;
+  letter-spacing:-.035em;
+  color:#6d2a63;
+}
 .vizit-public-page #businesses article>div:first-child>div.absolute.inset-0{
   background:linear-gradient(180deg,rgba(43,13,53,.04) 0%,rgba(43,13,53,.08) 38%,rgba(31,10,38,.86) 100%)!important;
 }
@@ -156,6 +236,11 @@
   .vizit-public-page #businesses article>div:last-child{padding:19px 9px 8px!important}
 }
 
+@media(min-width:1536px){
+  .vizit-public-page #businesses article>div:first-child{height:186px!important}
+  .vizit-public-page #businesses article>div:first-child h3{font-size:18px!important}
+}
+
 /* Mobile carousel: centered cards with visible breathing room on both sides. */
 @media(max-width:767px){
   .vizit-public-page #businesses>div>div:last-child,
@@ -182,6 +267,8 @@
     border-radius:16px!important;
   }
   .vizit-public-page #businesses article>div:first-child h3{font-size:18px!important}
+  .vizit-public-page #businesses .vizit-business-fallback-symbol svg{width:34px;height:34px}
+  .vizit-public-page #businesses .vizit-business-fallback-symbol strong{font-size:29px}
   .vizit-public-page #businesses article>div:last-child{padding:15px 6px 6px!important}
   .vizit-public-page #businesses article>div:last-child>div:last-child{grid-template-columns:1fr!important}
   .vizit-public-page #businesses article a[href^="/businesses/"]{min-height:44px!important}

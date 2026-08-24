@@ -187,6 +187,28 @@ function getCategoryName(category: PublicBusinessCategory | null | undefined, lo
   return category.name_hy ?? category.name ?? category.name_ru ?? category.name_en ?? null;
 }
 
+function stableBusinessHash(value: string) {
+  let hash = 2166136261;
+  for (const character of value) {
+    hash ^= character.codePointAt(0) ?? 0;
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function getBusinessInitials(name: string) {
+  const initials = name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => Array.from(part)[0] ?? "")
+    .join("")
+    .toLocaleUpperCase();
+
+  return initials || "V";
+}
+
 function getCategoryPresentation(category: PublicBusinessCategory): { Icon: LucideIcon; tone: string } {
   const value = `${category.slug ?? ""} ${category.icon ?? ""} ${category.name ?? ""} ${category.name_hy ?? ""} ${category.name_ru ?? ""} ${category.name_en ?? ""}`.toLowerCase();
   const iconKey = String(category.icon ?? "").toLowerCase().trim().replace(/_/g, "-");
@@ -642,6 +664,86 @@ function HeroTicket() {
   );
 }
 
+function BusinessCardVisual({
+  item,
+  Icon,
+  categoryName,
+  locationLabel,
+}: {
+  item: PublicDirectoryBusiness;
+  Icon: LucideIcon;
+  categoryName: string;
+  locationLabel: string;
+}) {
+  const [coverFailed, setCoverFailed] = useState(false);
+  const [logoFailed, setLogoFailed] = useState(false);
+  const coverUrl = coverFailed ? null : item.cover_url;
+  const logoUrl = logoFailed ? null : item.logo_url;
+  const initials = getBusinessInitials(item.name);
+  const visualVariant = stableBusinessHash(`${item.slug}:${item.name}`) % 6;
+
+  return (
+    <div className="vizit-business-card-media vizit-preserve-dark relative h-[154px] overflow-hidden bg-slate-900 sm:h-44">
+      {coverUrl ? (
+        <img
+          src={coverUrl}
+          alt={item.name}
+          loading="lazy"
+          decoding="async"
+          onError={() => setCoverFailed(true)}
+          className="vizit-business-cover-image h-full w-full object-cover opacity-82 transition duration-700 group-hover:scale-105"
+        />
+      ) : (
+        <div className={cn("vizit-business-cover-fallback", `is-${visualVariant}`, logoUrl && "has-logo")} aria-hidden="true">
+          <span className="vizit-business-cover-orb is-top" />
+          <span className="vizit-business-cover-orb is-bottom" />
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              onError={() => setLogoFailed(true)}
+              className="vizit-business-logo-backdrop"
+            />
+          ) : (
+            <span className="vizit-business-fallback-symbol">
+              <Icon />
+              <strong>{initials}</strong>
+            </span>
+          )}
+        </div>
+      )}
+
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/24 to-transparent" />
+      <span className="absolute left-3 top-3 inline-flex max-w-[calc(100%_-_24px)] items-center gap-2 rounded-full border border-white/15 bg-slate-950/50 px-3 py-1.5 text-[11px] font-bold text-white backdrop-blur-xl sm:left-4 sm:top-4 sm:text-xs">
+        <Icon className="h-3.5 w-3.5 shrink-0" />
+        <span className="truncate">{categoryName}</span>
+      </span>
+      <div className="absolute bottom-3 left-3 flex min-w-0 items-center gap-3 pr-3 sm:bottom-4 sm:left-4 sm:pr-4">
+        <div className="vizit-business-logo-tile grid h-11 w-11 place-items-center overflow-hidden rounded-[14px] border border-white/20 bg-white/12 text-white shadow-2xl backdrop-blur-xl sm:h-12 sm:w-12 sm:rounded-2xl">
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={item.name}
+              loading="lazy"
+              decoding="async"
+              onError={() => setLogoFailed(true)}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <span className="vizit-business-monogram" aria-hidden="true">{initials}</span>
+          )}
+        </div>
+        <div className="min-w-0">
+          <h3 className="truncate text-[16px] font-black tracking-tight text-white sm:text-lg">{item.name}</h3>
+          <p className="mt-0.5 truncate text-[11px] font-semibold text-white/70 sm:mt-1 sm:text-xs">{locationLabel}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: number }) {
   const { locale, t } = useLanguage();
   const vertical = normalizeVertical(item.category?.vertical ?? item.vertical ?? item.business_type);
@@ -654,6 +756,7 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
   // primary branch that may not offer the advertised services.
   const onlyLocation = item.locations?.length === 1 ? item.locations[0] : null;
   const bookingUrl = `/book/${item.slug}${onlyLocation?.id ? `?location_id=${onlyLocation.id}` : ""}`;
+  const locationLabel = primaryLocation?.address || item.address || t("business.card.noAddress");
 
   return (
     <motion.article
@@ -661,23 +764,16 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.16 }}
-      transition={{ delay: index * 0.025 }}
+      transition={{ delay: Math.min(index, 8) * 0.025 }}
       className="group flex w-[calc(100vw_-_64px)] max-w-[350px] shrink-0 snap-center flex-col overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.09)] backdrop-blur-2xl transition duration-300 hover:-translate-y-1 hover:border-violet-200 dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_20px_60px_rgba(0,0,0,0.24)] dark:hover:bg-white/[0.10] sm:rounded-[28px] lg:w-auto lg:max-w-none"
     >
-      <div className="vizit-preserve-dark relative h-[154px] overflow-hidden bg-slate-900 sm:h-44">
-        {item.cover_url ? <img src={item.cover_url} alt={item.name} className="h-full w-full object-cover opacity-82 transition duration-700 group-hover:scale-105" /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(168,85,247,0.36),transparent_35%),radial-gradient(circle_at_80%_20%,rgba(34,211,238,0.18),transparent_32%),linear-gradient(135deg,#111827,#312e81,#0f172a)]" />}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/24 to-transparent" />
-        <span className="absolute left-3 top-3 inline-flex max-w-[calc(100%_-_24px)] items-center gap-2 rounded-full border border-white/15 bg-slate-950/50 px-3 py-1.5 text-[11px] font-bold text-white backdrop-blur-xl sm:left-4 sm:top-4 sm:text-xs"><Icon className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">{categoryName}</span></span>
-        <div className="absolute bottom-3 left-3 flex min-w-0 items-center gap-3 pr-3 sm:bottom-4 sm:left-4 sm:pr-4">
-          <div className="grid h-11 w-11 place-items-center overflow-hidden rounded-[14px] border border-white/20 bg-white/12 text-white shadow-2xl backdrop-blur-xl sm:h-12 sm:w-12 sm:rounded-2xl">
-            {item.logo_url ? <img src={item.logo_url} alt={item.name} className="h-full w-full object-cover" /> : <Building2 className="h-5 w-5 sm:h-6 sm:w-6" />}
-          </div>
-          <div className="min-w-0">
-            <h3 className="truncate text-[16px] font-black tracking-tight text-white sm:text-lg">{item.name}</h3>
-            <p className="mt-0.5 truncate text-[11px] font-semibold text-white/70 sm:mt-1 sm:text-xs">{primaryLocation?.address || item.address || t("business.card.noAddress")}</p>
-          </div>
-        </div>
-      </div>
+      <BusinessCardVisual
+        key={`${item.id}:${item.cover_url ?? ""}:${item.logo_url ?? ""}`}
+        item={item}
+        Icon={Icon}
+        categoryName={categoryName}
+        locationLabel={locationLabel}
+      />
       <div className="flex flex-1 flex-col p-4 sm:p-5">
         <p className="line-clamp-2 min-h-[40px] text-[13px] leading-5 text-slate-600 dark:text-slate-300 sm:min-h-[44px] sm:text-sm sm:leading-[22px]">{item.short_description || t("business.card.defaultDescription")}</p>
         <div className="mt-4 grid grid-cols-2 gap-2 text-[11px] text-slate-600 dark:text-slate-300 sm:text-xs">
@@ -1075,7 +1171,7 @@ export default function Index() {
             </div>
 
             {categories.length ? (
-              <div className="mb-8 flex min-w-0 max-w-full gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="mb-8 flex min-w-0 max-w-full gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:flex-wrap lg:overflow-visible">
                 {categories.map((category) => {
                   const label = getCategoryName(category, locale) ?? t("category.fallback");
                   const active = selectedCategorySlug === category.slug;
@@ -1099,7 +1195,7 @@ export default function Index() {
             ) : null}
 
             {businessesQ.isLoading ? (
-              <div className="vizit-business-slider flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto px-3 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-[calc((100%_-_350px)/2)] lg:grid lg:grid-cols-2 lg:overflow-visible lg:px-0 lg:pb-0 2xl:grid-cols-3">{Array.from({ length: 6 }).map((_, idx) => <div key={idx} className="h-[340px] w-[calc(100vw_-_64px)] max-w-[350px] shrink-0 snap-center animate-pulse rounded-[24px] border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/[0.06] lg:w-auto lg:max-w-none" />)}</div>
+              <div className="vizit-business-slider flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto px-3 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-[calc((100%_-_350px)/2)] lg:grid lg:grid-cols-2 lg:overflow-visible lg:px-0 lg:pb-0 xl:grid-cols-3 2xl:grid-cols-4">{Array.from({ length: 8 }).map((_, idx) => <div key={idx} className="h-[340px] w-[calc(100vw_-_64px)] max-w-[350px] shrink-0 snap-center animate-pulse rounded-[24px] border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/[0.06] lg:w-auto lg:max-w-none" />)}</div>
             ) : businessesQ.isError ? (
               <div className="rounded-[24px] border border-rose-300/20 bg-rose-500/10 p-6 text-rose-100">{t("status.errorBusinesses")}</div>
             ) : !filteredBusinesses.length ? (
@@ -1108,7 +1204,7 @@ export default function Index() {
                 <h3 className="mt-5 text-2xl font-black text-slate-950 dark:text-white">{t("businesses.empty.title")}</h3>
               </div>
             ) : (
-              <div className="vizit-business-slider flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto px-3 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-[calc((100%_-_350px)/2)] lg:grid lg:grid-cols-2 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0 2xl:grid-cols-3">{filteredBusinesses.map((item, index) => <BusinessCard key={item.id} item={item} index={index} />)}</div>
+              <div className="vizit-business-slider flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto px-3 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-[calc((100%_-_350px)/2)] lg:grid lg:grid-cols-2 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0 xl:grid-cols-3 2xl:grid-cols-4">{filteredBusinesses.map((item, index) => <BusinessCard key={item.id} item={item} index={index} />)}</div>
             )}
           </div>
         </section>

@@ -32,6 +32,7 @@ import {
 } from "../lib/calendarApi";
 import { cn } from "../lib/cn";
 import { getErrorMessage } from "../lib/http";
+import { useLanguage, type Locale } from "../contexts/LanguageContext";
 
 type Column = {
   key: BookingStatus;
@@ -47,13 +48,21 @@ type FiltersState = {
   staff_id: string;
 };
 
-const columns: Column[] = [
-  { key: "pending", title: "Սպասող", subtitle: "Հաստատման փուլ", headerTone: "border-amber-200 bg-amber-50", badgeTone: "bg-amber-100 text-amber-700" },
-  { key: "confirmed", title: "Հաստատված", subtitle: "Առաջիկա այցեր", headerTone: "border-sky-200 bg-sky-50", badgeTone: "bg-sky-100 text-sky-700" },
-  { key: "done", title: "Ավարտված", subtitle: "Փակված այցեր", headerTone: "border-emerald-200 bg-emerald-50", badgeTone: "bg-emerald-100 text-emerald-700" },
-  { key: "no_show", title: "Չի եկել", subtitle: "Բաց թողած այցեր", headerTone: "border-rose-200 bg-rose-50", badgeTone: "bg-rose-100 text-rose-700" },
-  { key: "cancelled", title: "Չեղարկված", subtitle: "Արխիվ", headerTone: "border-slate-200 bg-slate-100", badgeTone: "bg-slate-200 text-slate-700" },
-];
+const tasksCopy = {
+  hy: { badge: "Այցերի կառավարում", title: "Այցերի վահանակ", intro: "Սպասող, հաստատված, ավարտված և չեղարկված այցերը՝ մեկ հստակ աշխատանքային տեսքում։", pending: "Սպասող", pendingSub: "Սպասում է հաստատման", confirmed: "Հաստատված", confirmedSub: "Առաջիկա այցեր", done: "Ավարտված", doneSub: "Փակված այցեր", noShow: "Չկայացած", noShowSub: "Բաց թողած այցեր", cancelled: "Չեղարկված", archive: "Արխիվ", all: "Բոլորը", today: "Այսօր", openCalendar: "Բացել օրացույցը", search: "Փնտրել պացիենտ, ծառայություն կամ բժիշկ", allStatuses: "Բոլոր կարգավիճակները", allStaff: "Բոլոր մասնագետները", allDoctors: "Բոլոր բժիշկները", clear: "Մաքրել", updated: "Այցը թարմացվեց", updateFailed: "Չհաջողվեց թարմացնել այցը", loadFailed: "Չհաջողվեց բեռնել այցերը։ Կրկին փորձեք։", empty: "Այցեր դեռ չկան", emptyText: "Ընտրված ժամանակահատվածում այցեր չկան։", emptyColumn: "Այս փուլում այց չկա", confirm: "Հաստատել", finish: "Ավարտել", cancel: "Չեղարկել", markNoShow: "Նշել չկայացած", service: "Ծառայություն", specialist: "Մասնագետ", doctor: "Բժիշկ", noStaff: "Մասնագետ նշված չէ", noDoctor: "Բժիշկ նշված չէ" },
+  ru: { badge: "Управление визитами", title: "Панель визитов", intro: "Ожидающие, подтвержденные, завершенные и отмененные визиты в одном рабочем представлении.", pending: "Ожидает", pendingSub: "Ждет подтверждения", confirmed: "Подтвержден", confirmedSub: "Ближайшие визиты", done: "Завершен", doneSub: "Закрытые визиты", noShow: "Неявка", noShowSub: "Пропущенные визиты", cancelled: "Отменен", archive: "Архив", all: "Все", today: "Сегодня", openCalendar: "Открыть календарь", search: "Найти пациента, услугу или врача", allStatuses: "Все статусы", allStaff: "Все специалисты", allDoctors: "Все врачи", clear: "Очистить", updated: "Визит обновлен", updateFailed: "Не удалось обновить визит", loadFailed: "Не удалось загрузить визиты. Попробуйте снова.", empty: "Визитов пока нет", emptyText: "В выбранном периоде визитов нет.", emptyColumn: "На этом этапе визитов нет", confirm: "Подтвердить", finish: "Завершить", cancel: "Отменить", markNoShow: "Неявка", service: "Услуга", specialist: "Специалист", doctor: "Врач", noStaff: "Специалист не указан", noDoctor: "Врач не указан" },
+  en: { badge: "Visit management", title: "Visit board", intro: "Pending, confirmed, completed and cancelled visits in one clear workspace.", pending: "Pending", pendingSub: "Awaiting confirmation", confirmed: "Confirmed", confirmedSub: "Upcoming visits", done: "Completed", doneSub: "Closed visits", noShow: "No-show", noShowSub: "Missed visits", cancelled: "Cancelled", archive: "Archive", all: "All", today: "Today", openCalendar: "Open calendar", search: "Search patient, service or doctor", allStatuses: "All statuses", allStaff: "All specialists", allDoctors: "All doctors", clear: "Clear", updated: "Visit updated", updateFailed: "Could not update the visit", loadFailed: "Could not load visits. Please try again.", empty: "No visits yet", emptyText: "There are no visits in the selected period.", emptyColumn: "No visits at this stage", confirm: "Confirm", finish: "Complete", cancel: "Cancel", markNoShow: "Mark no-show", service: "Service", specialist: "Specialist", doctor: "Doctor", noStaff: "No specialist assigned", noDoctor: "No doctor assigned" },
+} satisfies Record<Locale, Record<string, string>>;
+
+function buildColumns(text: Record<string, string>): Column[] {
+  return [
+    { key: "pending", title: text.pending, subtitle: text.pendingSub, headerTone: "border-amber-200 bg-amber-50", badgeTone: "bg-amber-100 text-amber-700" },
+    { key: "confirmed", title: text.confirmed, subtitle: text.confirmedSub, headerTone: "border-sky-200 bg-sky-50", badgeTone: "bg-sky-100 text-sky-700" },
+    { key: "done", title: text.done, subtitle: text.doneSub, headerTone: "border-emerald-200 bg-emerald-50", badgeTone: "bg-emerald-100 text-emerald-700" },
+    { key: "no_show", title: text.noShow, subtitle: text.noShowSub, headerTone: "border-rose-200 bg-rose-50", badgeTone: "bg-rose-100 text-rose-700" },
+    { key: "cancelled", title: text.cancelled, subtitle: text.archive, headerTone: "border-slate-200 bg-slate-100", badgeTone: "bg-slate-200 text-slate-700" },
+  ];
+}
 
 const emptyFilters: FiltersState = {
   search: "",
@@ -78,9 +87,9 @@ function parseDateTime(value: string) {
   return new Date(value.replace(" ", "T"));
 }
 
-function formatShortDate(value: string) {
+function formatShortDate(value: string, locale: Locale) {
   try {
-    return parseDateTime(value).toLocaleDateString("hy-AM", {
+    return parseDateTime(value).toLocaleDateString(locale === "hy" ? "hy-AM" : locale === "ru" ? "ru-RU" : "en-US", {
       month: "2-digit",
       day: "2-digit",
     });
@@ -93,7 +102,7 @@ function formatTime(value: string) {
   return value.slice(11, 16);
 }
 
-function statusLabel(status: BookingStatus) {
+function statusLabel(status: BookingStatus, columns: Column[]) {
   return columns.find((col) => col.key === status)?.title ?? status;
 }
 
@@ -114,16 +123,16 @@ function statusUi(status: BookingStatus) {
   }
 }
 
-function bookingActionLabel(status: BookingStatus) {
+function bookingActionLabel(status: BookingStatus, text: Record<string, string>) {
   switch (status) {
     case "confirmed":
-      return "Հաստատել";
+      return text.confirm;
     case "done":
-      return "Ավարտել";
+      return text.finish;
     case "cancelled":
-      return "Չեղարկել";
+      return text.cancel;
     case "no_show":
-      return "Չի եկել";
+      return text.markNoShow;
     default:
       return status;
   }
@@ -140,14 +149,14 @@ function bookingTransitions(status: BookingStatus): BookingStatus[] {
   }
 }
 
-function bookingServicesTitle(booking: Booking, serviceById: Map<number, Service>) {
+function bookingServicesTitle(booking: Booking, serviceById: Map<number, Service>, serviceLabel: string) {
   const names = booking.items?.length
     ? booking.items
         .slice()
         .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
         .map((item) => item.service?.name ?? serviceById.get(item.service_id)?.name ?? "")
         .filter(Boolean)
-    : [serviceById.get(booking.service_id)?.name ?? `Ծառայություն #${booking.service_id}`];
+    : [serviceById.get(booking.service_id)?.name ?? `${serviceLabel} #${booking.service_id}`];
 
   return names.join(" + ");
 }
@@ -192,11 +201,19 @@ function BookingCard({
   serviceById,
   staffName,
   onMove,
+  text,
+  columns,
+  locale,
+  isHealthcare,
 }: {
   booking: Booking;
   serviceById: Map<number, Service>;
   staffName: string;
   onMove: (booking: Booking, status: BookingStatus) => void;
+  text: Record<string, string>;
+  columns: Column[];
+  locale: Locale;
+  isHealthcare: boolean;
 }) {
   const transitions = bookingTransitions(booking.status);
 
@@ -205,10 +222,10 @@ function BookingCard({
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <div className="truncate text-[14px] font-semibold text-slate-900">{booking.client_name}</div>
-          <div className="mt-1 line-clamp-2 text-[12px] leading-5 text-slate-500">{bookingServicesTitle(booking, serviceById)}</div>
+          <div className="mt-1 line-clamp-2 text-[12px] leading-5 text-slate-500">{bookingServicesTitle(booking, serviceById, text.service)}</div>
         </div>
         <span className={cn("shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold", statusUi(booking.status))}>
-          {statusLabel(booking.status)}
+          {statusLabel(booking.status, columns)}
         </span>
       </div>
 
@@ -226,7 +243,7 @@ function BookingCard({
 
       <div className="mt-3 flex items-end justify-between gap-3">
         <span className={cn("inline-flex items-center rounded-full px-2 py-1 text-[11px] font-semibold", timePillTone(booking))}>
-          {formatShortDate(booking.starts_at)}
+          {formatShortDate(booking.starts_at, locale)}
         </span>
 
         <div className="flex items-center gap-2">
@@ -236,20 +253,20 @@ function BookingCard({
               type="button"
               onClick={() => onMove(booking, nextStatus)}
               className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-1 text-[10px] font-semibold text-slate-700 transition hover:bg-slate-200"
-              title={bookingActionLabel(nextStatus)}
+              title={bookingActionLabel(nextStatus, text)}
             >
-              {bookingActionLabel(nextStatus)}
+              {bookingActionLabel(nextStatus, text)}
               <ArrowRight className="h-3 w-3" />
             </button>
           ))}
 
           <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#e9eaec] text-[10px] font-semibold text-slate-700">
-            {initials(staffName || "Մասնագետ")}
+            {initials(staffName || (isHealthcare ? text.doctor : text.specialist))}
           </div>
         </div>
       </div>
 
-      <div className="mt-2 text-[11px] text-slate-400">{staffName || "Առանց մասնագետի"}</div>
+      <div className="mt-2 text-[11px] text-slate-400">{staffName || (isHealthcare ? text.noDoctor : text.noStaff)}</div>
     </div>
   );
 }
@@ -257,6 +274,11 @@ function BookingCard({
 export default function Tasks() {
   const qc = useQueryClient();
   const { user } = useAuth();
+  const { locale } = useLanguage();
+  const text = tasksCopy[locale];
+  const vertical = String(user?.vertical ?? user?.business_type ?? "").toLowerCase();
+  const isHealthcare = ["healthcare", "dental", "clinic", "medical", "doctor", "health"].includes(vertical);
+  const columns = useMemo(() => buildColumns(text), [text]);
   const isStaff = user?.role === "staff";
 
   const [filters, setFilters] = useState<FiltersState>(emptyFilters);
@@ -297,9 +319,9 @@ export default function Tasks() {
     onSuccess: async (_, variables) => {
       await qc.invalidateQueries({ queryKey: ["booking-board"] });
       await qc.invalidateQueries({ queryKey: ["bookings"] });
-      showToast(`Ամրագրումը թարմացվեց՝ ${statusLabel(variables.status)}`);
+      showToast(`${text.updated}: ${statusLabel(variables.status, columns)}`);
     },
-    onError: (error) => showToast(getErrorMessage(error, "Չհաջողվեց թարմացնել ամրագրումը"), "error"),
+    onError: (error) => showToast(getErrorMessage(error, text.updateFailed), "error"),
   });
 
   const bookings = useMemo(() => {
@@ -314,13 +336,13 @@ export default function Tasks() {
         booking.client_phone,
         booking.notes ?? "",
         booking.staff_id ? staffById.get(booking.staff_id) ?? "" : "",
-        bookingServicesTitle(booking, serviceById),
+        bookingServicesTitle(booking, serviceById, text.service),
       ]
         .join(" ")
         .toLowerCase();
       return haystack.includes(query);
     });
-  }, [bookingsQ.data, filters, staffById, serviceById]);
+  }, [bookingsQ.data, filters, staffById, serviceById, text.service]);
 
   const grouped = useMemo(() => {
     const groups: Record<BookingStatus, Booking[]> = {
@@ -346,26 +368,26 @@ export default function Tasks() {
 
   return (
     <motion.div {...page} className="admin-page space-y-4">
-      <div className="flex flex-col gap-3 rounded-[16px] border border-slate-300 bg-white px-4 py-4 shadow-sm sm:px-5">
+      <div className="flex flex-col gap-4 overflow-hidden rounded-[28px] border border-[#d39a43]/22 bg-[radial-gradient(circle_at_90%_0%,rgba(232,194,174,.58),transparent_32%),linear-gradient(135deg,#fffdf9,#f8eee4)] px-4 py-5 shadow-[0_20px_55px_rgba(70,34,49,.08)] dark:border-[#e7bc6b]/15 dark:bg-[radial-gradient(circle_at_90%_0%,rgba(109,42,99,.34),transparent_34%),linear-gradient(135deg,#2f182e,#1d121f)] sm:px-6 sm:py-6">
         <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-600">
-              <CalendarDays className="h-3.5 w-3.5" /> Ամրագրումների վահանակ
+              <CalendarDays className="h-3.5 w-3.5" /> {text.badge}
             </div>
-            <h1 className="mt-3 text-xl font-semibold text-slate-950 sm:text-2xl">Ամրագրումների տախտակ</h1>
-            <p className="mt-1 text-sm text-slate-500">Սպասող, հաստատված, ավարտված և չեղարկված այցերը մեկ view-ի մեջ։</p>
+            <h1 className="mt-3 font-serif text-2xl font-semibold text-slate-950 sm:text-3xl">{text.title}</h1>
+            <p className="mt-1 text-sm leading-6 text-slate-500">{text.intro}</p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <SummaryChip icon={<Users2 className="h-4 w-4" />} label="Բոլորը" value={boardSummary.total} />
-            <SummaryChip icon={<Clock3 className="h-4 w-4" />} label="Սպասող" value={boardSummary.pending} />
-            <SummaryChip icon={<CheckCircle2 className="h-4 w-4" />} label="Հաստատված" value={boardSummary.confirmed} />
-            <SummaryChip icon={<CalendarDays className="h-4 w-4" />} label="Այսօր" value={boardSummary.today} />
+            <SummaryChip icon={<Users2 className="h-4 w-4" />} label={text.all} value={boardSummary.total} />
+            <SummaryChip icon={<Clock3 className="h-4 w-4" />} label={text.pending} value={boardSummary.pending} />
+            <SummaryChip icon={<CheckCircle2 className="h-4 w-4" />} label={text.confirmed} value={boardSummary.confirmed} />
+            <SummaryChip icon={<CalendarDays className="h-4 w-4" />} label={text.today} value={boardSummary.today} />
             <Link
               to="/app/calendar"
               className="inline-flex items-center gap-2 rounded-xl bg-[#24364b] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#1d2b3c]"
             >
-              <CalendarDays className="h-4 w-4" /> Բացել օրացույցը
+              <CalendarDays className="h-4 w-4" /> {text.openCalendar}
             </Link>
           </div>
         </div>
@@ -376,7 +398,7 @@ export default function Tasks() {
             <input
               value={filters.search}
               onChange={(e) => setFilters((p) => ({ ...p, search: e.target.value }))}
-              placeholder="Փնտրել հաճախորդ, ծառայություն կամ մասնագետ"
+              placeholder={text.search}
               className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-11 pr-4 text-sm"
             />
           </label>
@@ -385,7 +407,7 @@ export default function Tasks() {
             onChange={(e) => setFilters((p) => ({ ...p, status: e.target.value as FiltersState["status"] }))}
             className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm"
           >
-            <option value="">Բոլոր կարգավիճակները</option>
+            <option value="">{text.allStatuses}</option>
             {columns.map((col) => (
               <option key={col.key} value={col.key}>
                 {col.title}
@@ -398,7 +420,7 @@ export default function Tasks() {
             disabled={isStaff}
             className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm disabled:bg-slate-50"
           >
-            <option value="">Բոլոր մասնագետները</option>
+            <option value="">{isHealthcare ? text.allDoctors : text.allStaff}</option>
             {staff.map((member) => (
               <option key={member.id} value={member.id}>
                 {member.name}
@@ -406,7 +428,7 @@ export default function Tasks() {
             ))}
           </select>
           <Button variant="secondary" size="sm" onClick={() => setFilters(emptyFilters)}>
-            Մաքրել
+            {text.clear}
           </Button>
         </div>
       </div>
@@ -417,10 +439,10 @@ export default function Tasks() {
         </div>
       ) : bookingsQ.isError ? (
         <div className="rounded-[18px] border border-rose-200 bg-rose-50 px-4 py-6 text-sm text-rose-700">
-          Չհաջողվեց բեռնել ամրագրումները։ Փորձիր նորից։
+          {text.loadFailed}
         </div>
       ) : bookings.length === 0 ? (
-        <EmptyState icon={XCircle} title="Ամրագրումներ դեռ չկան" description="Այս տեսքի համար ընտրված ժամանակահատվածում ամրագրումներ չկան։" />
+        <EmptyState icon={XCircle} title={text.empty} description={text.emptyText} />
       ) : (
         <div className="overflow-x-auto pb-2">
           <div className="flex min-w-max gap-3">
@@ -447,11 +469,15 @@ export default function Tasks() {
                         serviceById={serviceById}
                         staffName={booking.staff_id ? staffById.get(booking.staff_id) ?? "" : ""}
                         onMove={(row, status) => actionMut.mutate({ id: row.id, status })}
+                        text={text}
+                        columns={columns}
+                        locale={locale}
+                        isHealthcare={isHealthcare}
                       />
                     ))
                   ) : (
                     <div className="rounded-[12px] border border-dashed border-slate-300 bg-white px-4 py-8 text-center text-sm text-slate-400">
-                      Այս սյունակում այց չկա
+                      {text.emptyColumn}
                     </div>
                   )}
                 </div>

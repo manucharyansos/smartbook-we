@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
     Plus,
     Scissors,
@@ -13,6 +13,7 @@ import {
     CheckCircle2,
     Search,
     ImagePlus,
+    Stethoscope,
 } from "lucide-react";
 
 import { page } from "../lib/motion";
@@ -31,6 +32,48 @@ import { cn } from "../lib/cn";
 import {Spinner} from "@/components/ui/Spinner.tsx";
 import { uploadMedia } from "../lib/mediaApi";
 import { fetchBusinessSettings } from "../lib/businessSettingsApi";
+import { useLanguage, type Locale } from "../contexts/LanguageContext";
+import { useAuth } from "../store/auth";
+
+const serviceCopy = {
+    hy: {
+        created: "Ծառայությունը ստեղծվեց", createFailed: "Չհաջողվեց ստեղծել ծառայությունը", updated: "Ծառայությունը թարմացվեց", updateFailed: "Չհաջողվեց թարմացնել ծառայությունը", deleted: "Ծառայությունը ջնջվեց", deleteFailed: "Չհաջողվեց ջնջել ծառայությունը",
+        primary: "Գլխավոր հասցե", locationRequired: "Մի քանի հասցե ունենալու դեպքում ծառայությունը կապեք կոնկրետ մասնաճյուղի։",
+        badge: "Ծառայությունների կառավարում", medicalBadge: "Բժշկական ծառայություններ", title: "Կառավարեք ծառայությունները պարզ ու պրոֆեսիոնալ միջավայրում", medicalTitle: "Բժշկական ծառայությունները՝ մեկ հստակ միջավայրում",
+        intro: "Ստեղծեք և խմբագրեք ծառայությունները՝ տևողությամբ, գնով ու ակտիվ կարգավիճակով։", medicalIntro: "Ավելացրեք խորհրդատվությունները, հետազոտությունները և բուժական ծառայությունները՝ տևողությամբ, գնով ու մասնաճյուղով։",
+        allLocations: "Բոլոր հասցեները", add: "Ավելացնել ծառայություն", planLimitTitle: "Պլանի ծառայությունների սահմանաչափը լրացել է", listTitle: "Ծառայությունների ցուցակ", listText: "Ակտիվ և ոչ ակտիվ ծառայությունները մեկ վայրում", search: "Փնտրել ծառայություն…",
+        services: "Ծառայություններ", locations: "Հասցեներ", specialists: "Մասնագետներ", limitReached: "Ծառայությունների սահմանաչափը լրացել է։", seePlans: "Տեսնել պլանները",
+        loadFailed: "Չհաջողվեց բեռնել ծառայությունները", loadHint: "Ստուգեք պլանի կարգավիճակը կամ կրկին փորձեք։", retry: "Կրկին փորձել", planStatus: "Պլանի կարգավիճակ", loading: "Բեռնում ենք ծառայությունները…",
+        emptyTitle: "Ծառայություններ չկան", emptyText: "Ավելացրեք առաջին ծառայությունը, որպեսզի սկսեք առցանց գրանցումները։", allBranches: "Բոլոր հասցեների համար", active: "Ակտիվ", inactive: "Ոչ ակտիվ", minutes: "րոպե", noPrice: "Գին նշված չէ", edit: "Խմբագրել", deleteConfirm: "Վստա՞հ եք, որ ուզում եք ջնջել ծառայությունը։",
+        editTitle: "Խմբագրել ծառայությունը", newTitle: "Նոր ծառայություն", formText: "Լրացրեք ծառայության անունը, տևողությունը և գինը։", name: "Անուն", namePlaceholder: "օր․ Սրտաբանի խորհրդատվություն", description: "Նկարագրություն", descriptionPlaceholder: "Օր․ խորհրդատվություն, զննում և անհատական բուժման պլան…", branch: "Հասցե / մասնաճյուղ", chooseBranch: "Ընտրեք հասցեն", branchHint: "Մի քանի մասնաճյուղ ունենալու դեպքում ընտրեք կոնկրետ հասցեն։", duration: "Տևողություն (րոպե)", price: "Գին", pricePlaceholder: "օր․ 15000", currency: "Արժույթ", status: "Կարգավիճակ", preview: "Նախադիտում", previewText: "Այսպես ծառայությունը կերևա ամրագրման էջում։", newService: "Նոր ծառայություն", activeService: "Ակտիվ ծառայություն", inactiveService: "Ոչ ակտիվ ծառայություն", image: "Նկար", changeImage: "Փոխել նկարը", uploadImage: "Բեռնել նկար", close: "Փակել", save: "Պահպանել փոփոխությունները", create: "Ստեղծել ծառայությունը",
+    },
+    ru: {
+        created: "Услуга создана", createFailed: "Не удалось создать услугу", updated: "Услуга обновлена", updateFailed: "Не удалось обновить услугу", deleted: "Услуга удалена", deleteFailed: "Не удалось удалить услугу",
+        primary: "Основной адрес", locationRequired: "При наличии нескольких адресов привяжите услугу к конкретному филиалу.",
+        badge: "Управление услугами", medicalBadge: "Медицинские услуги", title: "Управляйте услугами в простом профессиональном пространстве", medicalTitle: "Все медицинские услуги в одном понятном пространстве",
+        intro: "Создавайте и редактируйте услуги, длительность, цену и статус.", medicalIntro: "Добавляйте консультации, обследования и процедуры с длительностью, ценой и филиалом.",
+        allLocations: "Все адреса", add: "Добавить услугу", planLimitTitle: "Лимит услуг по тарифу исчерпан", listTitle: "Список услуг", listText: "Активные и неактивные услуги в одном месте", search: "Найти услугу…",
+        services: "Услуги", locations: "Адреса", specialists: "Специалисты", limitReached: "Лимит услуг исчерпан.", seePlans: "Посмотреть тарифы",
+        loadFailed: "Не удалось загрузить услуги", loadHint: "Проверьте тариф или попробуйте еще раз.", retry: "Повторить", planStatus: "Статус тарифа", loading: "Загружаем услуги…",
+        emptyTitle: "Услуг пока нет", emptyText: "Добавьте первую услугу, чтобы начать онлайн-запись.", allBranches: "Для всех адресов", active: "Активна", inactive: "Неактивна", minutes: "мин", noPrice: "Цена не указана", edit: "Изменить", deleteConfirm: "Удалить эту услугу?",
+        editTitle: "Редактировать услугу", newTitle: "Новая услуга", formText: "Укажите название, длительность и цену услуги.", name: "Название", namePlaceholder: "напр. Консультация кардиолога", description: "Описание", descriptionPlaceholder: "Напр. консультация, осмотр и индивидуальный план лечения…", branch: "Адрес / филиал", chooseBranch: "Выберите адрес", branchHint: "Для нескольких филиалов выберите конкретный адрес.", duration: "Длительность (мин)", price: "Цена", pricePlaceholder: "напр. 15000", currency: "Валюта", status: "Статус", preview: "Предпросмотр", previewText: "Так услуга будет выглядеть на странице записи.", newService: "Новая услуга", activeService: "Активная услуга", inactiveService: "Неактивная услуга", image: "Изображение", changeImage: "Заменить", uploadImage: "Загрузить", close: "Закрыть", save: "Сохранить изменения", create: "Создать услугу",
+    },
+    en: {
+        created: "Service created", createFailed: "Could not create the service", updated: "Service updated", updateFailed: "Could not update the service", deleted: "Service deleted", deleteFailed: "Could not delete the service",
+        primary: "Primary address", locationRequired: "When you have multiple locations, assign the service to a specific branch.",
+        badge: "Service management", medicalBadge: "Medical services", title: "Manage services in one clear professional workspace", medicalTitle: "All medical services in one clear workspace",
+        intro: "Create and edit services, duration, price and availability.", medicalIntro: "Add consultations, examinations and treatments with a duration, price and location.",
+        allLocations: "All locations", add: "Add service", planLimitTitle: "Your plan's service limit has been reached", listTitle: "Service list", listText: "Active and inactive services in one place", search: "Search services…",
+        services: "Services", locations: "Locations", specialists: "Specialists", limitReached: "The service limit has been reached.", seePlans: "View plans",
+        loadFailed: "Could not load services", loadHint: "Check the plan status or try again.", retry: "Try again", planStatus: "Plan status", loading: "Loading services…",
+        emptyTitle: "No services yet", emptyText: "Add the first service to start accepting online bookings.", allBranches: "Available at all locations", active: "Active", inactive: "Inactive", minutes: "min", noPrice: "Price not set", edit: "Edit", deleteConfirm: "Delete this service?",
+        editTitle: "Edit service", newTitle: "New service", formText: "Enter the service name, duration and price.", name: "Name", namePlaceholder: "e.g. Cardiology consultation", description: "Description", descriptionPlaceholder: "e.g. consultation, examination and a personalized care plan…", branch: "Address / location", chooseBranch: "Choose a location", branchHint: "Choose a specific address when there are multiple locations.", duration: "Duration (minutes)", price: "Price", pricePlaceholder: "e.g. 15000", currency: "Currency", status: "Status", preview: "Preview", previewText: "This is how the service appears on the booking page.", newService: "New service", activeService: "Active service", inactiveService: "Inactive service", image: "Image", changeImage: "Change image", uploadImage: "Upload image", close: "Close", save: "Save changes", create: "Create service",
+    },
+} as const;
+
+function numberLocale(locale: Locale) {
+    return locale === "hy" ? "hy-AM" : locale === "ru" ? "ru-RU" : "en-US";
+}
 
 type ToastState = {
     open: boolean;
@@ -89,6 +132,12 @@ function getErrorMessage(error: unknown, fallback: string) {
 
 export default function ServicesPage() {
     const queryClient = useQueryClient();
+    const { locale } = useLanguage();
+    const text = serviceCopy[locale];
+    const { user } = useAuth();
+    const [searchParams] = useSearchParams();
+    const vertical = String(user?.vertical ?? user?.business_type ?? "").toLowerCase();
+    const isHealthcare = ["healthcare", "dental", "clinic", "medical", "doctor", "health"].includes(vertical);
 
     const [toast, setToast] = useState<ToastState>({
         open: false,
@@ -97,7 +146,7 @@ export default function ServicesPage() {
     });
 
     const [search, setSearch] = useState("");
-    const [showForm, setShowForm] = useState(false);
+    const [showForm, setShowForm] = useState(() => searchParams.get("new") === "1");
     const [editing, setEditing] = useState<Service | null>(null);
     const [form, setForm] = useState<ServiceForm>(initialForm);
     const [selectedLocationId, setSelectedLocationId] = useState<number | "">("");
@@ -121,13 +170,13 @@ export default function ServicesPage() {
                 queryClient.invalidateQueries({ queryKey: ["services"] }),
                 queryClient.invalidateQueries({ queryKey: ["business-settings"] }),
             ]);
-            setToast({ open: true, text: "Ծառայությունը ստեղծվեց ✅", type: "success" });
+            setToast({ open: true, text: `${text.created} ✓`, type: "success" });
             setShowForm(false);
             setForm({ ...initialForm, location_id: preferredLocationId });
             setTimeout(() => setToast((p) => ({ ...p, open: false })), 2200);
         },
         onError: (error: unknown) => {
-            setToast({ open: true, text: getErrorMessage(error, "Չհաջողվեց ստեղծել"), type: "error" });
+            setToast({ open: true, text: getErrorMessage(error, text.createFailed), type: "error" });
             setTimeout(() => setToast((p) => ({ ...p, open: false })), 2400);
         },
     });
@@ -139,14 +188,14 @@ export default function ServicesPage() {
                 queryClient.invalidateQueries({ queryKey: ["services"] }),
                 queryClient.invalidateQueries({ queryKey: ["business-settings"] }),
             ]);
-            setToast({ open: true, text: "Ծառայությունը թարմացվեց ✅", type: "success" });
+            setToast({ open: true, text: `${text.updated} ✓`, type: "success" });
             setShowForm(false);
             setEditing(null);
             setForm({ ...initialForm, location_id: preferredLocationId });
             setTimeout(() => setToast((p) => ({ ...p, open: false })), 2200);
         },
         onError: (error: unknown) => {
-            setToast({ open: true, text: getErrorMessage(error, "Չհաջողվեց թարմացնել"), type: "error" });
+            setToast({ open: true, text: getErrorMessage(error, text.updateFailed), type: "error" });
             setTimeout(() => setToast((p) => ({ ...p, open: false })), 2400);
         },
     });
@@ -168,11 +217,11 @@ export default function ServicesPage() {
                 queryClient.invalidateQueries({ queryKey: ["services"] }),
                 queryClient.invalidateQueries({ queryKey: ["business-settings"] }),
             ]);
-            setToast({ open: true, text: "Ծառայությունը ջնջվեց ✅", type: "success" });
+            setToast({ open: true, text: `${text.deleted} ✓`, type: "success" });
             setTimeout(() => setToast((p) => ({ ...p, open: false })), 2200);
         },
         onError: (error: unknown) => {
-            setToast({ open: true, text: getErrorMessage(error, "Չհաջողվեց ջնջել"), type: "error" });
+            setToast({ open: true, text: getErrorMessage(error, text.deleteFailed), type: "error" });
             setTimeout(() => setToast((p) => ({ ...p, open: false })), 2400);
         },
     });
@@ -180,7 +229,7 @@ export default function ServicesPage() {
     const locations = useMemo(() => settingsQ.data?.locations ?? [], [settingsQ.data?.locations]);
     const serviceUsage = settingsQ.data?.usage;
     const serviceLimitReached = serviceUsage?.services_limit != null && serviceUsage.services_count >= serviceUsage.services_limit;
-    const locationNameById = useMemo(() => new Map(locations.map((location) => [location.id, location.name || (location.is_primary ? "Գլխավոր հասցե" : location.address)])), [locations]);
+    const locationNameById = useMemo(() => new Map(locations.map((location) => [location.id, location.name || (location.is_primary ? text.primary : location.address)])), [locations, text.primary]);
 
     const hasMultipleLocations = locations.length > 1;
     const preferredLocationId: number | "" = (() => {
@@ -219,7 +268,7 @@ export default function ServicesPage() {
 
     function submitForm() {
         if (hasMultipleLocations && form.location_id === "") {
-            setToast({ open: true, text: "Մի քանի հասցե ունենալու դեպքում ծառայությունը պետք է կապել կոնկրետ հասցեի։", type: "error" });
+            setToast({ open: true, text: text.locationRequired, type: "error" });
             setTimeout(() => setToast((p) => ({ ...p, open: false })), 2400);
             return;
         }
@@ -232,7 +281,7 @@ export default function ServicesPage() {
             currency: form.currency,
             image_url: form.image_url ?? null,
             is_active: form.is_active,
-            location_id: form.location_id === "" ? null : Number(form.location_id),
+            location_id: form.location_id === "" ? (preferredLocationId === "" ? null : Number(preferredLocationId)) : Number(form.location_id),
         };
 
         if (editing) {
@@ -249,20 +298,20 @@ export default function ServicesPage() {
             <Toast open={toast.open} text={toast.text} type={toast.type} />
 
             <motion.div {...page} className="admin-page space-y-4">
-                <SectionCard className="overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.14),transparent_35%),white] p-5 sm:p-8">
+                <SectionCard className="overflow-hidden border-[#d39a43]/25 bg-[radial-gradient(circle_at_top_right,rgba(232,194,174,0.58),transparent_35%),linear-gradient(135deg,#fffdf9,#f8eee4)] p-5 dark:bg-[radial-gradient(circle_at_top_right,rgba(109,42,99,0.34),transparent_35%),#2f182e] sm:p-8">
                     <div className="flex flex-col gap-6 2xl:flex-row 2xl:items-center 2xl:justify-between">
                         <div className="max-w-3xl">
-                            <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
-                                <Scissors className="h-4 w-4" />
-                                Ծառայությունների կառավարում
+                            <div className="inline-flex items-center gap-2 rounded-full border border-[#d39a43]/30 bg-white/65 px-3 py-1.5 text-xs font-semibold text-[#6d2a63] dark:bg-white/10 dark:text-[#efcb87]">
+                                {isHealthcare ? <Stethoscope className="h-4 w-4" /> : <Scissors className="h-4 w-4" />}
+                                {isHealthcare ? text.medicalBadge : text.badge}
                             </div>
 
                             <h1 className="mt-4 text-[1.75rem] font-semibold leading-[1.08] tracking-tight text-slate-950 sm:text-4xl xl:text-[44px]">
-                                Ծառայությունները կառավարիր պարզ ու պրեմիում միջավայրում
+                                {isHealthcare ? text.medicalTitle : text.title}
                             </h1>
 
                             <p className="mt-3 text-base leading-8 text-slate-600">
-                                Ստեղծիր, խմբագրիր և պահիր քո ծառայությունները՝ տևողությամբ, գնով և ակտիվ կարգավիճակով։
+                                {isHealthcare ? text.medicalIntro : text.intro}
                             </p>
                         </div>
 
@@ -273,15 +322,15 @@ export default function ServicesPage() {
                                     onChange={(e) => setSelectedLocationId(e.target.value ? Number(e.target.value) : "")}
                                     className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
                                 >
-                                    <option value="">Բոլոր հասցեները</option>
+                                    <option value="">{text.allLocations}</option>
                                     {locations.map((location) => (
-                                        <option key={location.id} value={location.id}>{location.name || (location.is_primary ? "Գլխավոր հասցե" : location.address)}</option>
+                                        <option key={location.id} value={location.id}>{location.name || (location.is_primary ? text.primary : location.address)}</option>
                                     ))}
                                 </select>
                             ) : null}
-                            <Button onClick={openCreate} className="gap-2" disabled={serviceLimitReached} title={serviceLimitReached ? "Պլանի ծառայությունների սահմանաչափը լրացել է" : undefined}>
+                            <Button onClick={openCreate} className="gap-2" disabled={serviceLimitReached} title={serviceLimitReached ? text.planLimitTitle : undefined}>
                                 <Plus size={16} />
-                                Ավելացնել ծառայություն
+                                {text.add}
                             </Button>
                         </div>
                     </div>
@@ -290,9 +339,9 @@ export default function ServicesPage() {
                 <SectionCard className="p-6">
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                         <div>
-                            <div className="text-lg font-semibold text-slate-950">Ծառայությունների ցուցակ</div>
+                            <div className="text-lg font-semibold text-slate-950">{text.listTitle}</div>
                             <div className="mt-1 text-sm text-slate-500">
-                                Ակտիվ, ոչ ակտիվ և խմբագրվող ծառայությունները մեկ վայրում
+                                {text.listText}
                             </div>
                         </div>
 
@@ -301,7 +350,7 @@ export default function ServicesPage() {
                             <input
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                placeholder="Փնտրել ծառայություն..."
+                                placeholder={text.search}
                                 className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
                             />
                         </div>
@@ -313,31 +362,31 @@ export default function ServicesPage() {
                                 <span className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 font-medium text-violet-700">
                                     {settingsQ.data?.plan?.name ?? 'Plan'}
                                 </span>
-                                <span>Ծառայություններ՝ <strong className="text-slate-950">{serviceUsage.services_count}</strong> / <strong className="text-slate-950">{serviceUsage.services_limit ?? '∞'}</strong></span>
-                                <span>Հասցեներ՝ <strong className="text-slate-950">{serviceUsage.locations_count}</strong> / <strong className="text-slate-950">{serviceUsage.locations_limit}</strong></span>
-                                <span>Մասնագետներ՝ <strong className="text-slate-950">{serviceUsage.active_staff}</strong> / <strong className="text-slate-950">{serviceUsage.staff_limit ?? '∞'}</strong></span>
+                                <span>{text.services}: <strong className="text-slate-950">{serviceUsage.services_count}</strong> / <strong className="text-slate-950">{serviceUsage.services_limit ?? '∞'}</strong></span>
+                                <span>{text.locations}: <strong className="text-slate-950">{serviceUsage.locations_count}</strong> / <strong className="text-slate-950">{serviceUsage.locations_limit}</strong></span>
+                                <span>{text.specialists}: <strong className="text-slate-950">{serviceUsage.active_staff}</strong> / <strong className="text-slate-950">{serviceUsage.staff_limit ?? '∞'}</strong></span>
                             </div>
-                            {serviceLimitReached ? <div className="mt-2 flex flex-wrap items-center gap-2 text-rose-600">Ծառայությունների սահմանաչափը լրացել է։ <Link to="/app/billing" className="font-semibold underline underline-offset-4">Տեսնել պլանները</Link></div> : null}
+                            {serviceLimitReached ? <div className="mt-2 flex flex-wrap items-center gap-2 text-rose-600">{text.limitReached} <Link to="/app/billing" className="font-semibold underline underline-offset-4">{text.seePlans}</Link></div> : null}
                         </div>
                     ) : null}
 
                     <div className="mt-6">
                         {servicesQ.isError ? (
                             <div className="rounded-[24px] border border-rose-200 bg-rose-50 p-5 text-rose-800">
-                                <div className="font-semibold">Չհաջողվեց բեռնել ծառայությունները</div>
-                                <p className="mt-1 text-sm leading-6">{getErrorMessage(servicesQ.error, "Ստուգիր պլանի կարգավիճակը կամ կրկին փորձիր։")}</p>
-                                <div className="mt-3 flex flex-wrap gap-2"><Button variant="secondary" onClick={() => servicesQ.refetch()}>Կրկին փորձել</Button><Link to="/app/billing" className="inline-flex items-center rounded-2xl border border-rose-200 bg-white px-4 py-2 text-sm font-semibold">Պլանի կարգավիճակ</Link></div>
+                                <div className="font-semibold">{text.loadFailed}</div>
+                                <p className="mt-1 text-sm leading-6">{getErrorMessage(servicesQ.error, text.loadHint)}</p>
+                                <div className="mt-3 flex flex-wrap gap-2"><Button variant="secondary" onClick={() => servicesQ.refetch()}>{text.retry}</Button><Link to="/app/billing" className="inline-flex items-center rounded-2xl border border-rose-200 bg-white px-4 py-2 text-sm font-semibold">{text.planStatus}</Link></div>
                             </div>
                         ) : servicesQ.isLoading ? (
                             <div className="flex items-center justify-center py-14 text-slate-500">
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Բեռնում ենք ծառայությունները…
+                                {text.loading}
                             </div>
                         ) : services.length === 0 ? (
                             <EmptyState
                                 icon={Scissors}
-                                title="Ծառայություններ չկան"
-                                description="Ստեղծիր առաջին ծառայությունը, որպեսզի սկսես ամրագրումները։"
+                                title={text.emptyTitle}
+                                description={text.emptyText}
                                 className="border-0 shadow-none"
                             />
                         ) : (
@@ -345,7 +394,7 @@ export default function ServicesPage() {
                                 {services.map((service) => (
                                     <div
                                         key={service.id}
-                                        className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-violet-300 hover:shadow-[0_18px_50px_rgba(124,58,237,0.08)]"
+                                        className="rounded-[26px] border border-[#d39a43]/20 bg-[#fffdf9] p-4 shadow-[0_14px_38px_rgba(70,34,49,.07)] transition hover:-translate-y-1 hover:border-[#d39a43]/45 dark:bg-[#2f182e]/90 sm:p-5"
                                     >
                                         <div className="flex items-start gap-4">
                                             <div className="relative h-16 w-16 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
@@ -363,14 +412,14 @@ export default function ServicesPage() {
                                                     {service.is_active ? (
                                                         <>
                                                             <CheckCircle2 size={13} className="text-emerald-600" />
-                                                            Active
+                                                            {text.active}
                                                         </>
                                                     ) : (
-                                                        <>Inactive</>
+                                                        <>{text.inactive}</>
                                                     )}
                                                 </div>
                                                 <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700">
-                                                    {service.location_id ? (locationNameById.get(service.location_id) ?? `#${service.location_id}`) : "Բոլոր հասցեների համար"}
+                                                    {service.location_id ? (locationNameById.get(service.location_id) ?? `#${service.location_id}`) : text.allBranches}
                                                 </div>
                                             </div>
                                             </div>
@@ -379,12 +428,12 @@ export default function ServicesPage() {
                                         <div className="mt-5 space-y-3">
                                             <div className="flex items-center gap-2 text-sm text-slate-600">
                                                 <Clock3 size={16} className="text-violet-600" />
-                                                {service.duration_minutes} րոպե
+                                                {service.duration_minutes} {text.minutes}
                                             </div>
 
                                             <div className="flex items-center gap-2 text-sm text-slate-600">
                                                 <Wallet size={16} className="text-violet-600" />
-                                                {service.price != null ? `${service.price.toLocaleString("hy-AM")} ${service.currency}` : "Գին նշված չէ"}
+                                                {service.price != null ? `${service.price.toLocaleString(numberLocale(locale))} ${service.currency}` : text.noPrice}
                                             </div>
                                         </div>
 
@@ -406,13 +455,13 @@ export default function ServicesPage() {
 
                                             <Button variant="secondary" className="flex-1 gap-2" onClick={() => openEdit(service)}>
                                                 <Pencil size={15} />
-                                                Խմբագրել
+                                                {text.edit}
                                             </Button>
 
                                             <button
                                                 type="button"
                                                 onClick={() => {
-                                                    const ok = window.confirm("Վստա՞հ եք, որ ուզում եք ջնջել ծառայությունը։");
+                                                    const ok = window.confirm(text.deleteConfirm);
                                                     if (ok) deleteMut.mutate(service.id);
                                                 }}
                                                 className="inline-flex items-center justify-center rounded-2xl border border-rose-200 bg-rose-50 px-4 text-rose-700 transition hover:bg-rose-100"
@@ -454,10 +503,10 @@ export default function ServicesPage() {
                                     <div className="flex items-center justify-between gap-3">
                                         <div>
                                             <div className="text-2xl font-semibold text-slate-950">
-                                                {editing ? "Խմբագրել ծառայությունը" : "Նոր ծառայություն"}
+                                                {editing ? text.editTitle : text.newTitle}
                                             </div>
                                             <div className="mt-1 text-sm text-slate-500">
-                                                Լրացրու ծառայության անունը, տևողությունը և գինը
+                                                {text.formText}
                                             </div>
                                         </div>
                                     </div>
@@ -465,43 +514,43 @@ export default function ServicesPage() {
                                     <div className="mt-4 grid gap-4 sm:gap-5 lg:grid-cols-[1.15fr_0.85fr]">
                                         <div className="space-y-4">
                                             <div>
-                                                <label className="mb-2 block text-sm font-medium text-slate-800">Անուն</label>
+                                                <label className="mb-2 block text-sm font-medium text-slate-800">{text.name}</label>
                                                 <input
                                                     value={form.name}
                                                     onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
                                                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
-                                                    placeholder="օր․ Մազերի կտրում"
+                                                    placeholder={text.namePlaceholder}
                                                 />
                                             </div>
 
                                             <div>
-                                                <label className="mb-2 block text-sm font-medium text-slate-800">Նկարագրություն</label>
+                                                <label className="mb-2 block text-sm font-medium text-slate-800">{text.description}</label>
                                                 <textarea
                                                     value={form.description}
                                                     onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
                                                     rows={3}
                                                     className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
-                                                    placeholder="Օր․ խորհրդատվություն, զննում և անհատական բուժման պլան…"
+                                                    placeholder={text.descriptionPlaceholder}
                                                 />
                                             </div>
 
                                             <div className="grid gap-4 sm:grid-cols-2">
                                                 <div>
-                                                    <label className="mb-2 block text-sm font-medium text-slate-800">Հասցե / մասնաճյուղ</label>
+                                                    <label className="mb-2 block text-sm font-medium text-slate-800">{text.branch}</label>
                                                     <select
                                                         value={form.location_id}
                                                         onChange={(e) => setForm((p) => ({ ...p, location_id: e.target.value ? Number(e.target.value) : "" }))}
                                                         className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
                                                     >
-                                                        {hasMultipleLocations ? <option value="" disabled>Ընտրիր հասցեն</option> : null}
+                                                        {hasMultipleLocations ? <option value="" disabled>{text.chooseBranch}</option> : null}
                                                         {locations.map((location) => (
-                                                            <option key={location.id} value={location.id}>{location.name || (location.is_primary ? "Գլխավոր հասցե" : location.address)}</option>
+                                                            <option key={location.id} value={location.id}>{location.name || (location.is_primary ? text.primary : location.address)}</option>
                                                         ))}
                                                     </select>
-                                                    {hasMultipleLocations ? <p className="mt-2 text-xs text-slate-500">Multi-location business-ի համար ծառայությունը պետք է կապվի կոնկրետ հասցեի հետ։</p> : null}
+                                                    {hasMultipleLocations ? <p className="mt-2 text-xs text-slate-500">{text.branchHint}</p> : null}
                                                 </div>
                                                 <div>
-                                                    <label className="mb-2 block text-sm font-medium text-slate-800">Տևողություն (րոպե)</label>
+                                                    <label className="mb-2 block text-sm font-medium text-slate-800">{text.duration}</label>
                                                     <input
                                                         type="number"
                                                         value={form.duration_minutes}
@@ -513,7 +562,7 @@ export default function ServicesPage() {
                                                 </div>
 
                                                 <div>
-                                                    <label className="mb-2 block text-sm font-medium text-slate-800">Գին</label>
+                                                    <label className="mb-2 block text-sm font-medium text-slate-800">{text.price}</label>
                                                     <input
                                                         type="number"
                                                         value={form.price}
@@ -524,14 +573,14 @@ export default function ServicesPage() {
                                                             }))
                                                         }
                                                         className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
-                                                        placeholder="օր․ 5000"
+                                                        placeholder={text.pricePlaceholder}
                                                     />
                                                 </div>
                                             </div>
 
                                             <div className="grid gap-4 sm:grid-cols-2">
                                                 <div>
-                                                    <label className="mb-2 block text-sm font-medium text-slate-800">Արժույթ</label>
+                                                    <label className="mb-2 block text-sm font-medium text-slate-800">{text.currency}</label>
                                                     <select
                                                         value={form.currency}
                                                         onChange={(e) => setForm((p) => ({ ...p, currency: e.target.value }))}
@@ -544,22 +593,22 @@ export default function ServicesPage() {
                                                 </div>
 
                                                 <div>
-                                                    <label className="mb-2 block text-sm font-medium text-slate-800">Կարգավիճակ</label>
+                                                    <label className="mb-2 block text-sm font-medium text-slate-800">{text.status}</label>
                                                     <select
                                                         value={form.is_active ? "1" : "0"}
                                                         onChange={(e) => setForm((p) => ({ ...p, is_active: e.target.value === "1" }))}
                                                         className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
                                                     >
-                                                        <option value="1">Ակտիվ</option>
-                                                        <option value="0">Ոչ ակտիվ</option>
+                                                        <option value="1">{text.active}</option>
+                                                        <option value="0">{text.inactive}</option>
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="rounded-[28px] border border-slate-200 bg-[linear-gradient(180deg,#faf5ff_0%,#ffffff_55%)] p-4">
-                                            <div className="text-sm font-semibold text-slate-900">Նախադիտում</div>
-                                            <div className="mt-1 text-xs text-slate-500">Ահա ինչպես ծառայությունը կերևա public booking-ում և քո admin քարտերում։</div>
+                                        <div className="rounded-[28px] border border-[#d39a43]/20 bg-[linear-gradient(180deg,#fff8ef_0%,#fffdf9_55%)] p-4 dark:bg-[linear-gradient(180deg,#3b2039,#2f182e)]">
+                                            <div className="text-sm font-semibold text-slate-900">{text.preview}</div>
+                                            <div className="mt-1 text-xs text-slate-500">{text.previewText}</div>
 
                                             <div className="mt-4 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm">
                                                 <div className="h-40 w-full overflow-hidden bg-slate-100">
@@ -570,28 +619,28 @@ export default function ServicesPage() {
                                                     )}
                                                 </div>
                                                 <div className="space-y-2 p-4">
-                                                    <div className="text-lg font-semibold text-slate-950">{form.name || 'Նոր ծառայություն'}</div>
+                                                    <div className="text-lg font-semibold text-slate-950">{form.name || text.newService}</div>
                                                     {form.description ? <p className="line-clamp-3 text-xs leading-5 text-slate-500">{form.description}</p> : null}
                                                     <div className="flex items-center justify-between text-sm text-slate-500">
-                                                        <span>{form.duration_minutes || 0} րոպե</span>
-                                                        <span>{form.price === '' ? 'Գինը նշված չէ' : `${form.price} ${form.currency}`}</span>
+                                                        <span>{form.duration_minutes || 0} {text.minutes}</span>
+                                                        <span>{form.price === '' ? text.noPrice : `${form.price} ${form.currency}`}</span>
                                                     </div>
                                                     <div className="flex flex-wrap gap-2">
                                                         <div className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
-                                                            {form.is_active ? 'Ակտիվ ծառայություն' : 'Ոչ ակտիվ ծառայություն'}
+                                                            {form.is_active ? text.activeService : text.inactiveService}
                                                         </div>
                                                         <div className="inline-flex rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">
-                                                            {form.location_id === "" ? 'Բոլոր հասցեների համար' : (locationNameById.get(Number(form.location_id)) ?? `#${form.location_id}`)}
+                                                            {form.location_id === "" ? text.allBranches : (locationNameById.get(Number(form.location_id)) ?? `#${form.location_id}`)}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div className="mt-4">
-                                                <label className="mb-2 block text-sm font-medium text-slate-800">Նկար</label>
+                                                <label className="mb-2 block text-sm font-medium text-slate-800">{text.image}</label>
                                                 <label className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-violet-200 hover:bg-violet-50">
                                                     {uploadImageMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
-                                                    {form.image_url ? 'Փոխել նկարը' : 'Բեռնել նկար'}
+                                                    {form.image_url ? text.changeImage : text.uploadImage}
                                                     <input
                                                         type="file"
                                                         accept="image/*"
@@ -619,7 +668,7 @@ export default function ServicesPage() {
                                                 }
                                             }}
                                         >
-                                            Փակել
+                                            {text.close}
                                         </Button>
 
                                         <Button
@@ -628,7 +677,7 @@ export default function ServicesPage() {
                                             className="gap-2"
                                         >
                                             {busy ? <Spinner size={16} /> : <SaveIcon />}
-                                            {editing ? "Պահպանել փոփոխությունները" : "Ստեղծել ծառայությունը"}
+                                            {editing ? text.save : text.create}
                                         </Button>
                                     </div>
                                 </SectionCard>

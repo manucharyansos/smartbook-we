@@ -93,7 +93,7 @@ function formatDateTime(value: string | null | undefined, locale: Locale) {
 function MetricCard({ title, value, subtitle, icon }: { title: string; value: string | number; subtitle: string; icon: React.ReactNode }) {
   return (
     <motion.div variants={card} initial="initial" animate="animate" transition={cardTransition} className="h-full">
-      <Card className="h-full rounded-[24px] border border-[#d39a43]/20 bg-[#fffdf9]/95 p-4 shadow-[0_14px_36px_rgba(70,34,49,0.07)] dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90 sm:p-5">
+      <Card className="vizit-dashboard-metric h-full rounded-[24px] border border-[#d39a43]/20 bg-[#fffdf9]/95 p-4 shadow-[0_14px_36px_rgba(70,34,49,0.07)] dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90 sm:p-5">
         <div className="flex min-h-[132px] flex-col">
           <div className="flex items-start justify-between gap-3">
             <span className="text-[13px] font-semibold leading-5 text-[#746777] dark:text-[#cbbdca]">{title}</span>
@@ -128,8 +128,8 @@ export default function Dashboard() {
   ];
 
   return (
-    <motion.div {...page} className="admin-page space-y-4">
-      <section className="relative overflow-hidden rounded-[28px] border border-[#d39a43]/25 bg-[radial-gradient(circle_at_88%_10%,rgba(232,194,174,0.62),transparent_28%),linear-gradient(135deg,#fffdf9_0%,#f8eee4_64%,#f0ddcf_100%)] p-5 shadow-[0_22px_65px_rgba(70,34,49,0.10)] dark:border-[#e7bc6b]/16 dark:bg-[radial-gradient(circle_at_88%_10%,rgba(109,42,99,0.38),transparent_30%),linear-gradient(135deg,#2f182e,#1d121f)] sm:p-8">
+    <motion.div {...page} className="admin-page vizit-dashboard space-y-4">
+      <section className="vizit-dashboard-hero relative overflow-hidden rounded-[28px] border border-[#d39a43]/25 bg-[radial-gradient(circle_at_88%_10%,rgba(232,194,174,0.62),transparent_28%),linear-gradient(135deg,#fffdf9_0%,#f8eee4_64%,#f0ddcf_100%)] p-5 shadow-[0_22px_65px_rgba(70,34,49,0.10)] dark:border-[#e7bc6b]/16 dark:bg-[radial-gradient(circle_at_88%_10%,rgba(109,42,99,0.38),transparent_30%),linear-gradient(135deg,#2f182e,#1d121f)] sm:p-8">
         <div className="absolute -bottom-20 -right-14 h-56 w-56 rounded-full border border-[#d39a43]/20" aria-hidden="true" />
         <div className="relative flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-3xl">
@@ -161,7 +161,7 @@ export default function Dashboard() {
           </div>
 
           <div className="grid gap-4 xl:grid-cols-[1.05fr_.95fr]">
-            <Card className="rounded-[28px] border border-[#d39a43]/20 bg-[#fffdf9]/95 p-5 shadow-[0_16px_45px_rgba(70,34,49,.07)] dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90 sm:p-6">
+            <Card className="vizit-dashboard-panel rounded-[28px] border border-[#d39a43]/20 bg-[#fffdf9]/95 p-5 shadow-[0_16px_45px_rgba(70,34,49,.07)] dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90 sm:p-6">
               <div className="flex items-start justify-between gap-3"><div><h2 className="font-serif text-xl font-semibold text-[#321c37] dark:text-[#fff8f2]">{text.setupTitle}</h2><p className="mt-1 text-sm leading-6 text-[#746777] dark:text-[#cbbdca]">{text.setupText}</p></div><BadgeCheck className="h-6 w-6 text-[#c58b35]" /></div>
               <div className="mt-5 grid gap-3">
                 {[
@@ -178,7 +178,7 @@ export default function Dashboard() {
               </div>
             </Card>
 
-            <Card className="rounded-[28px] border border-[#d39a43]/20 bg-[#fffdf9]/95 p-5 shadow-[0_16px_45px_rgba(70,34,49,.07)] dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90 sm:p-6">
+            <Card className="vizit-dashboard-panel rounded-[28px] border border-[#d39a43]/20 bg-[#fffdf9]/95 p-5 shadow-[0_16px_45px_rgba(70,34,49,.07)] dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90 sm:p-6">
               <h2 className="font-serif text-xl font-semibold text-[#321c37] dark:text-[#fff8f2]">{text.quickActions}</h2>
               <div className="mt-5 grid grid-cols-2 gap-3">
                 {quickActions.map((item) => <Link key={item.to} to={item.to} className="group rounded-[20px] border border-[#d39a43]/16 bg-[#fff8ef] p-4 transition hover:-translate-y-0.5 hover:border-[#d39a43]/40 dark:bg-white/5"><item.icon className="h-5 w-5 text-[#6d2a63] dark:text-[#efcb87]" /><span className="mt-4 block text-xs font-bold leading-5 text-[#442044] dark:text-white">{item.label}</span></Link>)}
@@ -187,7 +187,7 @@ export default function Dashboard() {
           </div>
 
           <div className="grid gap-4 xl:grid-cols-[1.1fr_.9fr]">
-            <Card className="rounded-[28px] border border-[#d39a43]/20 bg-[#fffdf9]/95 p-5 dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90 sm:p-6">
+            <Card className="vizit-dashboard-panel rounded-[28px] border border-[#d39a43]/20 bg-[#fffdf9]/95 p-5 dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90 sm:p-6">
               <h2 className="font-serif text-xl font-semibold text-[#321c37] dark:text-[#fff8f2]">{text.upcoming}</h2><p className="mt-1 text-sm text-[#746777] dark:text-[#cbbdca]">{text.upcomingText}</p>
               <div className="mt-5 grid gap-3">
                 {data.upcoming.rows.length === 0 ? <div className="rounded-[20px] border border-dashed border-[#d39a43]/25 bg-[#fff8ef] px-4 py-8 text-sm leading-6 text-[#746777] dark:bg-white/5 dark:text-[#cbbdca]">{text.emptyUpcoming}</div> : data.upcoming.rows.map((row) => (
@@ -199,7 +199,7 @@ export default function Dashboard() {
               </div>
             </Card>
 
-            <Card className="rounded-[28px] border border-[#d39a43]/20 bg-[#fffdf9]/95 p-5 dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90 sm:p-6">
+            <Card className="vizit-dashboard-panel rounded-[28px] border border-[#d39a43]/20 bg-[#fffdf9]/95 p-5 dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90 sm:p-6">
               <h2 className="font-serif text-xl font-semibold text-[#321c37] dark:text-[#fff8f2]">{text.highlights}</h2>
               <div className="mt-5 grid gap-3">
                 <div className="rounded-[20px] bg-[#fff8ef] p-4 dark:bg-white/5"><span className="text-xs text-[#786675] dark:text-[#cbbdca]">{isHealthcare ? text.topDoctor : text.topStaff}</span><div className="mt-2 flex items-center justify-between gap-3"><strong className="truncate text-sm text-[#442044] dark:text-white">{data.highlights_30d.top_staff?.name ?? text.noData}</strong><span className="font-bold text-[#6d2a63] dark:text-[#efcb87]">{data.highlights_30d.top_staff?.bookings ?? 0}</span></div></div>
@@ -209,7 +209,7 @@ export default function Dashboard() {
             </Card>
           </div>
 
-          <Card className="rounded-[28px] border border-[#d39a43]/20 bg-[#fffdf9]/95 p-5 dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90 sm:p-6">
+          <Card className="vizit-dashboard-panel rounded-[28px] border border-[#d39a43]/20 bg-[#fffdf9]/95 p-5 dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90 sm:p-6">
             <div className="flex items-center gap-3"><Activity className="h-5 w-5 text-[#c58b35]" /><h2 className="font-serif text-xl font-semibold text-[#321c37] dark:text-[#fff8f2]">{text.branchLoad}</h2></div>
             {data.highlights_30d.bookings_by_location.length === 0 ? <p className="mt-5 rounded-[20px] border border-dashed border-[#d39a43]/25 bg-[#fff8ef] px-4 py-7 text-sm text-[#746777] dark:bg-white/5 dark:text-[#cbbdca]">{text.noBranchData}</p> : <div className="mt-5 grid gap-3 md:grid-cols-2">{data.highlights_30d.bookings_by_location.map((row) => { const max = data.highlights_30d.bookings_by_location[0]?.bookings || 1; return <div key={row.location_id} className="rounded-[20px] bg-[#fff8ef] p-4 dark:bg-white/5"><div className="flex justify-between gap-3 text-sm"><strong className="text-[#442044] dark:text-white">{row.location_name}</strong><span className="font-bold text-[#6d2a63] dark:text-[#efcb87]">{row.bookings}</span></div><div className="mt-3 h-2 overflow-hidden rounded-full bg-[#eadbce] dark:bg-white/10"><div className="h-full rounded-full bg-gradient-to-r from-[#d39a43] to-[#6d2a63]" style={{ width: `${Math.max(8, Math.round((row.bookings / max) * 100))}%` }} /></div></div>; })}</div>}
           </Card>

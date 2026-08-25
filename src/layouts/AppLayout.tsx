@@ -178,7 +178,7 @@ export function AppLayout() {
               </button>
               {/* Mobile hamburger */}
               <motion.button whileTap={{ scale: 0.95 }}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white xl:hidden"
+                className="vizit-admin-mobile-menu-trigger inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white xl:hidden"
                 onClick={() => setIsMobileMenuOpen(true)} aria-label={text.openMenu}
               >
                 <Menu size={20} className="text-slate-700" />
@@ -197,8 +197,8 @@ export function AppLayout() {
 
             <div className="flex items-center gap-2 sm:gap-4">
               {businessTypeUi && (
-                <div className="hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 md:flex">
-                  <BusinessTypeIcon size={14} className="text-violet-600" />
+                <div className="vizit-workspace-badge hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 md:flex">
+                  <BusinessTypeIcon size={14} />
                   <span className="text-xs text-slate-600">{businessTypeUi.label}</span>
                 </div>
               )}
@@ -251,15 +251,15 @@ export function AppLayout() {
                   {navItems.map((item) => (
                     <NavLink key={item.to} to={item.to}
                       className={({ isActive }) => cn(
-                        "group relative flex items-center overflow-hidden rounded-2xl text-sm font-medium transition-all duration-300",
+                        "vizit-admin-nav-link group relative flex items-center overflow-hidden rounded-2xl text-sm font-medium transition-all duration-300",
                         isDesktopCollapsed ? "justify-center px-2 py-3.5" : "gap-3 px-3.5 py-3",
-                        isActive ? "text-white" : "text-slate-700 hover:text-slate-950"
+                        isActive ? "is-active text-white" : "text-slate-700 hover:text-slate-950"
                       )}
                       title={isDesktopCollapsed ? item.label : undefined}
                     >
                       {({ isActive }) => (
                         <>
-                          {isActive && <span className={cn("absolute inset-0 rounded-2xl bg-gradient-to-r shadow-sm", item.color)} />}
+                          {isActive && <span className={cn("vizit-admin-nav-active-bg absolute inset-0 rounded-2xl bg-gradient-to-r shadow-sm", item.color)} />}
                           <span className="relative z-10">
                             <item.icon size={18} className={cn("transition-colors", isActive ? "text-white" : "text-slate-500 group-hover:text-violet-600")} />
                           </span>
@@ -303,18 +303,13 @@ export function AppLayout() {
                   initial={{ x: -300, opacity: 0 }}
                   animate={{ x: 0, opacity: 1, transition: { type: "spring", damping: 28, stiffness: 220 } }}
                   exit={{ x: -300, opacity: 0, transition: { duration: 0.2 } }}
-                  className="fixed left-0 top-0 z-50 flex h-full w-[min(85vw,290px)] flex-col border-r border-slate-200 bg-white shadow-2xl xl:hidden"
+                  className="vizit-admin-drawer fixed left-0 top-0 z-50 flex h-full w-[min(88vw,320px)] flex-col border-r border-slate-200 bg-white shadow-2xl xl:hidden"
                 >
                   {/* Drawer header */}
-                  <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <div className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white">
-                        <CalendarDays size={15} />
-                      </div>
-                      <div>
-                        <div className="text-sm font-semibold text-slate-950">Vizit.am</div>
-                        <div className="max-w-[140px] truncate text-[10px] text-slate-400">{user?.business_name}</div>
-                      </div>
+                  <div className="vizit-admin-drawer-header flex items-center justify-between border-b border-slate-200 px-4 py-4">
+                    <div className="min-w-0">
+                      <VizitLogo markClassName="!h-8 !w-8" textClassName="!text-[17px]" />
+                      <div className="mt-1.5 max-w-[200px] truncate pl-1 text-[11px] font-medium text-slate-500">{user?.business_name || text.workspace}</div>
                     </div>
                     <button onClick={() => setIsMobileMenuOpen(false)}
                       className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 transition hover:bg-slate-50"
@@ -325,7 +320,7 @@ export function AppLayout() {
                   </div>
                   {/* Subscription badge */}
                   {features?.subscription?.status && (
-                    <div className="border-b border-slate-100 px-4 py-2">
+                    <div className="vizit-admin-drawer-meta border-b border-slate-100 px-4 py-3">
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-slate-500">{getRoleDisplay()}</span>
                         <span className="rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-medium text-violet-700">
@@ -337,22 +332,25 @@ export function AppLayout() {
                     </div>
                   )}
                   {/* Nav links */}
-                  <nav className="flex-1 space-y-0.5 overflow-y-auto p-3">
+                  <nav className="vizit-admin-drawer-nav flex-1 space-y-1 overflow-y-auto p-3">
+                    <div className="px-3 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">{text.navigation}</div>
                     {navItems.map((item) => (
                       <NavLink key={item.to} to={item.to}
                         onClick={() => setIsMobileMenuOpen(false)}
                         className={({ isActive }) => cn(
-                          "flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium transition-all",
-                          isActive ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white shadow-sm"
+                          "vizit-admin-drawer-link flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium transition-all",
+                          isActive ? "is-active text-white shadow-sm"
                             : "text-slate-700 hover:bg-slate-50 active:bg-slate-100"
                         )}
                       >
-                        <item.icon size={17} />{item.label}
+                        <span className="vizit-admin-drawer-icon grid h-8 w-8 shrink-0 place-items-center rounded-xl"><item.icon size={17} /></span>
+                        <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                        <ChevronRight className="h-4 w-4 shrink-0 opacity-40" />
                       </NavLink>
                     ))}
                   </nav>
                   {/* Logout */}
-                  <div className="border-t border-slate-200 p-3">
+                  <div className="vizit-admin-drawer-footer border-t border-slate-200 p-3">
                     <div className="mb-3 grid gap-2">
                       <LanguageToggle />
                       <ThemeToggle className="min-h-12 border-slate-200 bg-white text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100" />
@@ -388,27 +386,24 @@ export function AppLayout() {
       </div>
 
       {/* MOBILE BOTTOM NAV */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/80 bg-white/95 backdrop-blur-xl xl:hidden">
+      <nav className="vizit-admin-bottom-nav fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/80 bg-white/95 backdrop-blur-xl xl:hidden">
         <div className="mx-auto flex max-w-md items-center justify-around px-1 pb-[env(safe-area-inset-bottom,8px)] pt-1">
           {bottomNavItems.map((item) => (
             <NavLink key={item.to} to={item.to}
               className={({ isActive }) => cn(
-                "flex min-w-0 flex-1 flex-col items-center gap-0.5 py-1.5 text-[10px] font-medium transition-all",
-                isActive ? "text-violet-700" : "text-slate-400"
+                "vizit-admin-bottom-link flex min-w-0 flex-1 flex-col items-center gap-0.5 py-1.5 text-[10px] font-medium transition-all",
+                isActive ? "is-active" : "text-slate-400"
               )}
             >
-              {({ isActive }) => (
-                <>
-                  <div className={cn("grid h-8 w-8 place-items-center rounded-xl transition-all", isActive && "bg-violet-100")}>
-                    <item.icon size={20} className={isActive ? "text-violet-700" : "text-slate-400"} />
-                  </div>
-                  <span className="max-w-[68px] truncate">{item.label}</span>
-                </>
-              )}
+              <div className="vizit-admin-bottom-icon grid h-8 w-8 place-items-center rounded-xl transition-all">
+                <item.icon size={20} />
+              </div>
+              <span className="max-w-[68px] truncate">{item.label}</span>
             </NavLink>
           ))}
           <button onClick={() => setIsMobileMenuOpen(true)}
-            className="flex min-w-0 flex-1 flex-col items-center gap-0.5 py-1.5 text-[10px] font-medium text-slate-400 transition active:text-slate-700"
+            className="vizit-admin-bottom-more flex min-w-0 flex-1 flex-col items-center gap-0.5 py-1.5 text-[10px] font-medium text-slate-400 transition active:text-slate-700"
+            aria-label={text.openMenu}
           >
             <div className="grid h-8 w-8 place-items-center rounded-xl">
               <Menu size={20} />

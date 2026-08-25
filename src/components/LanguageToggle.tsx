@@ -60,7 +60,7 @@ export default function LanguageToggle({ className, compact = false }: { classNa
           <button type="button" onClick={() => setOpen((value) => !value)} aria-label={{ hy: "Փոխել լեզուն", ru: "Изменить язык", en: "Change language" }[locale]} aria-expanded={open} className="vizit-language-button inline-flex h-10 min-w-[74px] items-center justify-center gap-2 rounded-full px-3 text-sm font-bold sm:h-11">
             <FlagIcon locale={selected.value} />
             <span className="vizit-language-code text-xs font-extrabold tracking-[0.08em]" aria-hidden="true">{selected.short}</span>
-            <ChevronDown className={cn("h-3.5 w-3.5 transition", open && "rotate-180")} />
+            <ChevronDown className={cn("vizit-language-chevron h-3.5 w-3.5 transition", open && "rotate-180")} />
           </button>
           {open ? (
             <div className="absolute right-0 top-[calc(100%+8px)] z-[70] grid min-w-[154px] gap-1 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-white/10 dark:bg-slate-950">

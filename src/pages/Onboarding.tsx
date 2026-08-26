@@ -25,6 +25,9 @@ import {
 import { api } from "../lib/api";
 import { cn } from "../lib/cn";
 import { Spinner } from "../components/ui/Spinner";
+import LanguageToggle from "../components/LanguageToggle";
+import ThemeToggle from "../components/ThemeToggle";
+import VizitLogo from "../components/VizitLogo";
 import { useAuth } from "../store/auth";
 import { getErrorMessage, getHttpStatus, type HttpError } from "../lib/http";
 
@@ -100,13 +103,15 @@ export default function Onboarding() {
   const [saving, setSaving] = useState(false);
 
   const [serviceName, setServiceName] = useState("");
+  const [serviceDescription, setServiceDescription] = useState("");
   const [duration, setDuration] = useState<number>(30);
   const [price, setPrice] = useState<number | "">("");
 
   const [staffName, setStaffName] = useState("");
   const [staffEmail, setStaffEmail] = useState("");
-  const [staffPassword, setStaffPassword] = useState("password123");
+  const [staffPassword, setStaffPassword] = useState("");
   const [staffRole, setStaffRole] = useState<"staff" | "manager">("staff");
+  const [staffSkipped, setStaffSkipped] = useState(false);
 
   const [workStart, setWorkStart] = useState("09:00");
   const [workEnd, setWorkEnd] = useState("18:00");
@@ -116,9 +121,11 @@ export default function Onboarding() {
   const qc = useQueryClient();
   const { user, setUser } = useAuth();
   const businessName = user?.business_name ?? "Քո բիզնեսը";
+  const businessVertical = String(user?.vertical ?? user?.business_type ?? "").toLowerCase();
+  const isHealthcare = ["healthcare", "dental", "clinic", "medical", "doctor", "health"].includes(businessVertical);
 
   const bookingLink = useMemo(
-    () => `vizit.am/b/${user?.business_slug ?? "your-business"}`,
+    () => `vizit.am/book/${user?.business_slug ?? "your-business"}`,
     [user?.business_slug],
   );
 
@@ -135,6 +142,7 @@ export default function Onboarding() {
     try {
       await api.post("/services", {
         name,
+        description: serviceDescription.trim() || null,
         duration_minutes: duration,
         price: price === "" ? null : price,
         is_active: true,
@@ -167,9 +175,12 @@ export default function Onboarding() {
         email: em,
         password: staffPassword,
         role: staffRole,
+        show_in_public_team: staffRole === "staff",
+        is_bookable: staffRole === "staff",
       });
 
       await qc.invalidateQueries({ queryKey: ["staff"] });
+      setStaffSkipped(false);
       setCurrentStep(2);
     } catch (e: unknown) {
       if (getHttpStatus(e) === 409) {
@@ -215,6 +226,12 @@ export default function Onboarding() {
     setCurrentStep(3);
   }
 
+  function skipStaff() {
+    setError(null);
+    setStaffSkipped(true);
+    setCurrentStep(2);
+  }
+
   async function finish() {
     setError(null);
     setSaving(true);
@@ -241,11 +258,18 @@ export default function Onboarding() {
   const slotPresets = [10, 15, 20, 30];
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(139,92,246,0.12),_transparent_30%),linear-gradient(180deg,#f8fafc_0%,#eef2ff_100%)] px-3 py-4 sm:px-5 sm:py-6 lg:px-8">
+    <div className="vizit-onboarding-page min-h-screen bg-[radial-gradient(circle_at_top,_rgba(139,92,246,0.12),_transparent_30%),linear-gradient(180deg,#f8fafc_0%,#eef2ff_100%)] px-3 py-4 sm:px-5 sm:py-6 lg:px-8">
+      <div className="vizit-onboarding-topbar mx-auto mb-4 flex max-w-7xl items-center justify-between rounded-[22px] border border-white/70 bg-white/80 px-3 py-2.5 shadow-sm backdrop-blur-xl sm:px-5">
+        <VizitLogo markClassName="!h-9 !w-9" textClassName="!text-[19px]" />
+        <div className="flex items-center gap-2">
+          <LanguageToggle compact className="vizit-onboarding-language border border-slate-200 bg-white text-slate-700" />
+          <ThemeToggle compact className="border border-slate-200 bg-white text-slate-700" />
+        </div>
+      </div>
       <div className="mx-auto flex max-w-7xl flex-col gap-4 xl:flex-row xl:items-stretch">
         <aside className="xl:w-[300px] xl:sticky xl:top-6 xl:self-start">
-          <div className="overflow-hidden rounded-[32px] border border-white/70 bg-slate-950 text-white shadow-[0_30px_80px_rgba(15,23,42,0.22)]">
-            <div className="border-b border-white/10 bg-[linear-gradient(135deg,rgba(124,58,237,0.95),rgba(76,29,149,0.92))] p-6">
+          <div className="vizit-onboarding-rail overflow-hidden rounded-[32px] border border-white/70 bg-slate-950 text-white shadow-[0_30px_80px_rgba(15,23,42,0.22)]">
+            <div className="vizit-onboarding-rail-head border-b border-white/10 bg-[linear-gradient(135deg,rgba(124,58,237,0.95),rgba(76,29,149,0.92))] p-6">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur">
                 <Sparkles size={14} />
                 Vizit setup
@@ -320,7 +344,7 @@ export default function Onboarding() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35 }}
-            className="overflow-hidden rounded-[32px] border border-slate-200/80 bg-white/85 shadow-[0_30px_80px_rgba(148,163,184,0.18)] backdrop-blur"
+            className="vizit-onboarding-card overflow-hidden rounded-[32px] border border-slate-200/80 bg-white/85 shadow-[0_30px_80px_rgba(148,163,184,0.18)] backdrop-blur"
           >
             <div className="border-b border-slate-200 bg-white/80 px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -382,7 +406,7 @@ export default function Onboarding() {
                               value={serviceName}
                               onChange={(e) => setServiceName(e.target.value)}
                               className="pl-11"
-                              placeholder="Օր․ Մանիկյուր, Սանրվածք, Բրովիստ…"
+                              placeholder={isHealthcare ? "Օր․ Սրտաբանի խորհրդատվություն" : "Օր․ Մանիկյուր, Սանրվածք, Մերսում…"}
                             />
                           </FieldShell>
                         </div>
@@ -400,6 +424,18 @@ export default function Onboarding() {
                             />
                           </FieldShell>
                         </div>
+                      </div>
+
+                      <div>
+                        <SectionLabel>Կարճ նկարագրություն</SectionLabel>
+                        <textarea
+                          value={serviceDescription}
+                          onChange={(event) => setServiceDescription(event.target.value)}
+                          rows={3}
+                          maxLength={2000}
+                          className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-violet-300 focus:ring-4 focus:ring-violet-100/80"
+                          placeholder={isHealthcare ? "Օր․ նախնական զննում, խորհրդատվություն և բուժման պլան" : "Նկարագրեք՝ ինչ է ներառում ծառայությունը"}
+                        />
                       </div>
 
                       <div>
@@ -423,7 +459,9 @@ export default function Onboarding() {
                         </div>
                         <div className="mt-3 flex items-start gap-2 rounded-2xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-500">
                           <Clock3 size={16} className="mt-1 shrink-0 text-violet-500" />
-                          Տևողությունը հենց ծառայության ժամանակն է։ Օրինակ՝ սանրվածքը կարող է լինել 45 կամ 60 րոպե։
+                          {isHealthcare
+                            ? "Նշեք այցի իրական տևողությունը․ օրինակ՝ բժշկի խորհրդատվությունը կարող է լինել 30 կամ 45 րոպե։"
+                            : "Տևողությունը հենց ծառայության ժամանակն է։ Օրինակ՝ սանրվածքը կարող է լինել 45 կամ 60 րոպե։"}
                         </div>
                       </div>
                     </div>
@@ -591,7 +629,7 @@ export default function Onboarding() {
                       <div className="grid gap-4 2xl:grid-cols-3">
                         {[
                           { label: "Ծառայություն", value: serviceName || "—" },
-                          { label: "Աշխատակից", value: staffName || "—" },
+                          { label: "Աշխատակից", value: staffSkipped ? "Միայն սեփականատերը" : (staffName || "—") },
                           { label: "Ամրագրման քայլ", value: `${slotStep} րոպե` },
                         ].map((item) => (
                           <div key={item.label} className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
@@ -619,13 +657,13 @@ export default function Onboarding() {
                   </div>
 
                   <div className="ml-auto flex flex-wrap items-center gap-3">
-                    {currentStep === 2 ? (
+                    {currentStep === 1 || currentStep === 2 ? (
                       <button
                         type="button"
-                        onClick={skipHours}
+                        onClick={currentStep === 1 ? skipStaff : skipHours}
                         className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-600 transition hover:border-violet-200 hover:text-violet-700"
                       >
-                        Բաց թողնել
+                        {currentStep === 1 ? "Շարունակել առանց աշխատակցի" : "Բաց թողնել"}
                       </button>
                     ) : null}
 
@@ -700,7 +738,7 @@ export default function Onboarding() {
                     </div>
                     <div className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 px-4 py-3">
                       <span className="text-slate-500">Աշխատակից</span>
-                      <span className="font-medium text-slate-900">{staffName || "Չկա"}</span>
+                      <span className="font-medium text-slate-900">{staffSkipped ? "Միայն սեփականատերը" : (staffName || "Չկա")}</span>
                     </div>
                     <div className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 px-4 py-3">
                       <span className="text-slate-500">Ժամեր</span>

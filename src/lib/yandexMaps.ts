@@ -28,6 +28,7 @@ export type YandexMapsApi = {
 declare global {
   interface Window {
     ymaps3?: YandexMapsApi;
+    __VIZIT_YANDEX_MAPS_API_KEY__?: string;
   }
 }
 
@@ -43,8 +44,16 @@ function mapLocale(locale: Locale) {
   return locale === "ru" ? "ru_RU" : "en_US";
 }
 
+function configuredApiKey() {
+  // Production builds can receive the browser-safe Yandex key either at build
+  // time or from a tiny runtime config injected into index.html. Runtime config
+  // lets us publish a CI artifact without baking deployment credentials into
+  // the repository source.
+  return String(window.__VIZIT_YANDEX_MAPS_API_KEY__ ?? import.meta.env.VITE_YANDEX_MAPS_API_KEY ?? "").trim();
+}
+
 export function hasYandexMapsKey() {
-  return Boolean(import.meta.env.VITE_YANDEX_MAPS_API_KEY?.trim());
+  return Boolean(configuredApiKey());
 }
 
 export function loadYandexMaps(locale: Locale): Promise<YandexMapsApi> {
@@ -66,7 +75,7 @@ export function loadYandexMaps(locale: Locale): Promise<YandexMapsApi> {
     loadingMapLocale = null;
   }
 
-  const apiKey = import.meta.env.VITE_YANDEX_MAPS_API_KEY?.trim();
+  const apiKey = configuredApiKey();
   if (!apiKey) {
     return Promise.reject(new Error("VITE_YANDEX_MAPS_API_KEY is not configured"));
   }

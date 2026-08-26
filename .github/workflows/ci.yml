@@ -31,3 +31,12 @@ jobs:
       - run: |
           php -l public/index.php
           php -l public/sitemap.php
+
+      - name: Upload production build
+        uses: actions/upload-artifact@v4
+        with:
+          name: vizit-premium-yandex-dist
+          path: dist
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 7

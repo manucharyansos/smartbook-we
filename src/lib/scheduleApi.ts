@@ -59,3 +59,28 @@ export async function updateSchedule(payload: { days: ScheduleDay[] }) {
     const r = await api.put("/schedule", normalizedPayload);
     return r.data.data ?? r.data;
 }
+
+export async function fetchStaffSchedule(staffId: number): Promise<ScheduleResponse> {
+    const r = await api.get(`/staff/${staffId}/schedule`, { params: { _t: Date.now() } });
+    const raw = r.data.data ?? r.data;
+    return {
+        ...raw,
+        days: Array.isArray(raw?.days ?? raw)
+            ? ((raw?.days ?? raw) as unknown[]).map(normalizeDay)
+            : [],
+    };
+}
+
+export async function updateStaffSchedule(staffId: number, payload: { days: ScheduleDay[] }) {
+    const normalizedPayload = {
+        days: payload.days.map((day) => ({
+            ...day,
+            start: normalizeTime(day.start),
+            end: normalizeTime(day.end),
+            break_start: normalizeTime(day.break_start),
+            break_end: normalizeTime(day.break_end),
+        })),
+    };
+    const r = await api.put(`/staff/${staffId}/schedule`, normalizedPayload);
+    return r.data.data ?? r.data;
+}

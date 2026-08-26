@@ -4,6 +4,9 @@ export type PendingSocialBusinessProfile = {
   business_address: string;
   latitude: number;
   longitude: number;
+  business_category_id?: number;
+  business_category_slug?: string;
+  custom_category_name?: string;
   provider: "google" | "facebook";
   created_at: number;
 };

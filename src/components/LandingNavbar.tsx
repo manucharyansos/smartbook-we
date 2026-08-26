@@ -54,7 +54,7 @@ export default function LandingNavbar() {
             className={cn("vizit-header-shell", isScrolled && "is-scrolled")}
           >
             <div className="vizit-header-row">
-              <Link to="/" className="vizit-header-brand min-w-0" aria-label="Vizit.am">
+              <Link to="/" className="vizit-header-brand min-w-0" aria-label="Vizit">
                 <VizitLogo />
               </Link>
 

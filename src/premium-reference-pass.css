@@ -26,19 +26,19 @@
 }
 
 html.dark {
-  --vizit-ref-page: #1d151b;
-  --vizit-ref-page-alt: #251a21;
-  --vizit-ref-surface: #2b1e27;
-  --vizit-ref-surface-soft: #33232e;
+  --vizit-ref-page: #171517;
+  --vizit-ref-page-alt: #1d1a1d;
+  --vizit-ref-surface: #252225;
+  --vizit-ref-surface-soft: #2e292d;
   --vizit-ref-plum: #f7ede6;
   --vizit-ref-plum-deep: #fff8f2;
   --vizit-ref-plum-soft: #d3a96f;
   --vizit-ref-gold: #dfb778;
   --vizit-ref-gold-deep: #efc98a;
-  --vizit-ref-peach: #553b47;
-  --vizit-ref-sage: #31453d;
+  --vizit-ref-peach: #493b40;
+  --vizit-ref-sage: #2c3b36;
   --vizit-ref-ink: #fff8f2;
-  --vizit-ref-muted: #cbbdc7;
+  --vizit-ref-muted: #c9c0c5;
   --vizit-ref-line: rgba(228, 188, 130, 0.15);
   --vizit-ref-line-strong: rgba(228, 188, 130, 0.25);
   --vizit-ref-shadow: 0 22px 64px rgba(0, 0, 0, 0.24);
@@ -1659,6 +1659,73 @@ html.dark .vizit-business-cta {
 
   .vizit-phone-business-place {
     display: none;
+  }
+}
+
+/* Final dark-surface and mobile legibility corrections. These selectors are
+   intentionally semantic and stronger than the earlier visual-pass rules. */
+html.dark .vizit-public-page #categories.vizit-categories-section,
+html.dark .vizit-public-page #how.vizit-how-section,
+html.dark .vizit-public-page .vizit-business-cta{
+  background:#171517!important;
+}
+html.dark .vizit-public-page #categories > div,
+html.dark .vizit-public-page #how > div,
+html.dark .vizit-public-page .vizit-business-cta > div{
+  border-color:rgba(223,183,120,.18)!important;
+  background:
+    radial-gradient(circle at 94% 0%,rgba(139,76,125,.12),transparent 30%),
+    #252225!important;
+  box-shadow:0 24px 72px rgba(0,0,0,.28)!important;
+}
+html.dark .vizit-public-page #categories .vizit-category-slider > button,
+html.dark .vizit-public-page #how > div > div:nth-of-type(2) > div{
+  border-color:rgba(223,183,120,.16)!important;
+  background:#2b272b!important;
+  box-shadow:none!important;
+}
+html.dark .vizit-public-page #categories > div > div:first-child > button,
+html.dark .vizit-public-page #categories .vizit-category-slider > button > span:last-child,
+html.dark .vizit-public-page #how h3{
+  color:#fff8f2!important;
+  -webkit-text-fill-color:#fff8f2!important;
+}
+html.dark .vizit-public-page #categories > div > div:first-child > button{
+  color:#efc98a!important;
+  -webkit-text-fill-color:#efc98a!important;
+}
+html.dark .vizit-public-page #how p{color:#c9c0c5!important}
+html.dark .vizit-public-page #how > div > div:last-child{
+  border-color:rgba(223,183,120,.16)!important;
+  background:#2e292d!important;
+}
+html.dark .vizit-public-page .vizit-business-cta a[href="/pricing"]{
+  border-color:rgba(239,201,138,.25)!important;
+  background:#302b30!important;
+  color:#fff8f2!important;
+}
+
+@media (max-width: 767px) {
+  .vizit-public-page #categories .vizit-category-slider > button,
+  .vizit-public-page #categories .vizit-category-slider > div {
+    width:clamp(142px,42vw,158px)!important;
+    min-width:clamp(142px,42vw,158px)!important;
+    max-width:158px!important;
+    min-height:142px!important;
+    padding:13px 10px!important;
+  }
+
+  .vizit-public-page #categories .vizit-category-slider > button > span:last-child {
+    display:-webkit-box!important;
+    min-height:49px;
+    margin-top:10px!important;
+    overflow:hidden;
+    overflow-wrap:anywhere;
+    font-size:12.5px!important;
+    line-height:1.3!important;
+    white-space:normal;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:3;
   }
 }
 

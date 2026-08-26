@@ -11,7 +11,7 @@ import { useLanguage } from "../../contexts/LanguageContext";
 
 type Provider = "google" | "facebook";
 type Audience = "business" | "client";
-type BusinessType = "beauty" | "dental";
+type BusinessType = "services" | "healthcare";
 
 type SocialAuthButtonsProps = {
   mode?: "login" | "register";
@@ -22,6 +22,9 @@ type SocialAuthButtonsProps = {
   businessAddress?: string;
   businessLatitude?: number | null;
   businessLongitude?: number | null;
+  businessCategoryId?: number;
+  businessCategorySlug?: string;
+  customCategoryName?: string;
   planCode?: string;
   className?: string;
 };
@@ -131,6 +134,9 @@ export default function SocialAuthButtons({
   businessAddress = "",
   businessLatitude = null,
   businessLongitude = null,
+  businessCategoryId,
+  businessCategorySlug = "",
+  customCategoryName = "",
   planCode,
 }: SocialAuthButtonsProps) {
   const { locale } = useLanguage();
@@ -161,26 +167,29 @@ export default function SocialAuthButtons({
       login: "Մուտք գործել",
       or: "կամ",
       suffix: "-ով",
-      profileRequired: "Սոցիալական գրանցման համար նախ լրացրեք բիզնեսի անունը, հեռախոսը, հասցեն և քարտեզի կետը։",
+      profileRequired: "Սոցիալական գրանցման համար նախ ընտրեք կատեգորիան և լրացրեք բիզնեսի տվյալներն ու քարտեզի կետը։",
     },
     ru: {
       register: "Зарегистрироваться",
       login: "Войти",
       or: "или",
       suffix: "",
-      profileRequired: "Для регистрации сначала заполните название, телефон, адрес и точку бизнеса на карте.",
+      profileRequired: "Для регистрации сначала выберите категорию, затем заполните название, телефон, адрес и точку на карте.",
     },
     en: {
       register: "Register",
       login: "Sign in",
       or: "or",
       suffix: "",
-      profileRequired: "Enter the business name, phone number, address and map location before social registration.",
+      profileRequired: "Choose a category and enter the business name, phone number, address and map location before social registration.",
     },
   }[locale];
   const actionText = mode === "register" ? text.register : text.login;
   const needsBusinessProfile = mode === "register" && audience === "business";
+  const needsCustomCategory = businessCategorySlug === "other-services" || businessCategorySlug === "other-healthcare";
   const hasBusinessProfile =
+    businessCategorySlug.trim().length > 0 &&
+    (!needsCustomCategory || customCategoryName.trim().length >= 2) &&
     businessName.trim().length >= 2 &&
     businessPhone.trim().length >= 5 &&
     businessAddress.trim().length >= 2 &&
@@ -197,6 +206,9 @@ export default function SocialAuthButtons({
         business_address: businessAddress.trim(),
         latitude: Number(businessLatitude),
         longitude: Number(businessLongitude),
+        business_category_id: businessCategoryId,
+        business_category_slug: businessCategorySlug.trim(),
+        custom_category_name: needsCustomCategory ? customCategoryName.trim() : undefined,
         provider,
       });
     }
@@ -208,7 +220,7 @@ export default function SocialAuthButtons({
     <motion.div variants={fadeUp} className={cn("space-y-4", className)}>
       <div className="relative">
         <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-slate-200" />
-        <div className="relative mx-auto w-fit rounded-full bg-white px-3 text-xs font-medium text-slate-400">
+        <div className="vizit-social-separator relative mx-auto w-fit rounded-full bg-white px-3 text-xs font-medium text-slate-400">
           {text.or}
         </div>
       </div>
@@ -225,7 +237,8 @@ export default function SocialAuthButtons({
               onClick={() => startSocialAuth(provider)}
               disabled={disabled}
               className={cn(
-                "inline-flex h-12 items-center justify-center gap-3 rounded-2xl border px-4 text-sm font-medium transition",
+                "vizit-social-provider-button inline-flex h-12 items-center justify-center gap-3 rounded-2xl border px-4 text-sm font-medium transition",
+                provider === "google" ? "is-google" : "is-facebook",
                 item.bg,
                 item.border,
                 item.text,

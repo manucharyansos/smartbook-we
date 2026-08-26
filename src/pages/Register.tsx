@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     AlertCircle,
     Check,
+    ChevronDown,
     Eye,
     EyeOff,
     Lock,
@@ -27,16 +28,121 @@ import { getApiErrorCode, getErrorMessage, getValidationMessages } from "../lib/
 import { cn } from "../lib/cn";
 import { getDeviceFingerprint } from "../lib/fingerprint";
 import { fadeUp, scaleIn, staggerContainer } from "../lib/motion";
+import { fetchPublicCategories, type PublicBusinessCategory } from "../lib/publicApi";
 import { useAuth } from "../store/auth";
 import { useLanguage } from "../contexts/LanguageContext";
 
-type BusinessType = "beauty" | "dental";
+type BusinessVertical = "services" | "healthcare";
+type RegistrationCategory = PublicBusinessCategory & {
+    slug: string;
+    vertical: BusinessVertical;
+};
 
 const copy = {
     hy: { title: "Գրանցվել", subtitle: "Ստեղծեք ձեր Vizit բիզնես հաշիվը", sideTitle: "Սկսեք Vizit-ը ձեր բիզնեսի համար", sideText: "Գրանցվեք, լրացրեք սկզբնական կարգավորումները և պատրաստեք աշխատանքային միջավայրը։", hasAccount: "Արդեն ունե՞ք հաշիվ", login: "Մուտք գործել", beautyLabel: "Գեղեցկության սրահ", beautyShort: "Գեղեցկություն", dentalLabel: "Ատամնաբուժական կլինիկա", dentalShort: "Կլինիկա", businessNameRequired: "Նշեք բիզնեսի անունը։", phoneRequired: "Հեռախոսահամարը պարտադիր է։", addressRequired: "Հասցեն պարտադիր է։", ownerRequired: "Նշեք պատասխանատուի անունը։", emailRequired: "Նշեք էլ. փոստը։", passwordShort: "Գաղտնաբառը պետք է պարունակի առնվազն 8 նիշ։", passwordMismatch: "Գաղտնաբառերը չեն համընկնում։", registerError: "Գրանցումը չհաջողվեց։", businessLogin: "Մուտք բիզնես հաշվով", resetPassword: "Վերականգնել գաղտնաբառը", contactSupport: "Կապվել աջակցման թիմի հետ", chooseType: "Ընտրեք բիզնեսի տեսակը", basics: "Սկսենք բիզնեսի հիմնական տվյալներից։", businessName: "Բիզնեսի անուն", salonPlaceholder: "Իմ սրահը", clinicPlaceholder: "Իմ կլինիկան", phone: "Հեռախոս", address: "Հասցե", addressPlaceholder: "Երևան, Հայաստան", continue: "Շարունակել", ownerName: "Պատասխանատուի անուն", ownerPlaceholder: "Անուն Ազգանուն", email: "Էլ. փոստ", password: "Գաղտնաբառ", confirmPassword: "Կրկնել գաղտնաբառը", strength: "Ուժգնություն", weak: "թույլ", medium: "միջին", strong: "ուժեղ", show: "Ցույց տալ գաղտնաբառը", hide: "Թաքցնել գաղտնաբառը", socialNote: "Google կամ Facebook մուտքը կարող եք միացնել նաև ավելի ուշ։", back: "Վերադառնալ", creating: "Ստեղծվում է…", create: "Ստեղծել հաշիվ" },
     ru: { title: "Регистрация", subtitle: "Создайте бизнес-аккаунт Vizit", sideTitle: "Запустите Vizit для своего бизнеса", sideText: "Зарегистрируйтесь, завершите начальную настройку и подготовьте рабочее пространство.", hasAccount: "Уже есть аккаунт?", login: "Войти", beautyLabel: "Салон красоты", beautyShort: "Красота", dentalLabel: "Стоматологическая клиника", dentalShort: "Клиника", businessNameRequired: "Укажите название бизнеса.", phoneRequired: "Номер телефона обязателен.", addressRequired: "Адрес обязателен.", ownerRequired: "Укажите имя ответственного лица.", emailRequired: "Укажите электронную почту.", passwordShort: "Пароль должен содержать не менее 8 символов.", passwordMismatch: "Пароли не совпадают.", registerError: "Не удалось зарегистрироваться.", businessLogin: "Войти в бизнес-аккаунт", resetPassword: "Восстановить пароль", contactSupport: "Связаться с поддержкой", chooseType: "Выберите тип бизнеса", basics: "Начнём с основной информации о бизнесе.", businessName: "Название бизнеса", salonPlaceholder: "Мой салон", clinicPlaceholder: "Моя клиника", phone: "Телефон", address: "Адрес", addressPlaceholder: "Ереван, Армения", continue: "Продолжить", ownerName: "Имя ответственного лица", ownerPlaceholder: "Имя Фамилия", email: "Электронная почта", password: "Пароль", confirmPassword: "Повторите пароль", strength: "Надёжность", weak: "слабый", medium: "средний", strong: "надёжный", show: "Показать пароль", hide: "Скрыть пароль", socialNote: "Вход через Google или Facebook можно подключить позже.", back: "Назад", creating: "Создание…", create: "Создать аккаунт" },
     en: { title: "Register", subtitle: "Create your Vizit business account", sideTitle: "Start using Vizit for your business", sideText: "Register, complete the initial setup and prepare your workspace.", hasAccount: "Already have an account?", login: "Sign in", beautyLabel: "Beauty salon", beautyShort: "Beauty", dentalLabel: "Dental clinic", dentalShort: "Clinic", businessNameRequired: "Enter the business name.", phoneRequired: "Phone number is required.", addressRequired: "Address is required.", ownerRequired: "Enter the account owner's name.", emailRequired: "Enter an email address.", passwordShort: "Password must be at least 8 characters.", passwordMismatch: "Passwords do not match.", registerError: "Registration failed.", businessLogin: "Sign in to a business account", resetPassword: "Reset password", contactSupport: "Contact support", chooseType: "Choose the business type", basics: "Let's start with the essential business details.", businessName: "Business name", salonPlaceholder: "My salon", clinicPlaceholder: "My clinic", phone: "Phone", address: "Address", addressPlaceholder: "Yerevan, Armenia", continue: "Continue", ownerName: "Account owner name", ownerPlaceholder: "First and last name", email: "Email", password: "Password", confirmPassword: "Confirm password", strength: "Strength", weak: "weak", medium: "medium", strong: "strong", show: "Show password", hide: "Hide password", socialNote: "You can connect Google or Facebook sign-in later.", back: "Back", creating: "Creating…", create: "Create account" },
 } as const;
+
+const categoryCopy = {
+    hy: {
+        chooseVertical: "Ընտրեք բիզնեսի ոլորտը",
+        services: "Ծառայություններ",
+        servicesDetail: "Գեղեցկություն, ավտո, կրթություն և այլ ծառայություններ",
+        healthcare: "Բժշկություն",
+        healthcareDetail: "Կլինիկաներ, բժիշկներ, ախտորոշում և վերականգնում",
+        category: "Բիզնեսի կատեգորիա",
+        categoryPlaceholder: "Ընտրեք կատեգորիան",
+        categoryHelp: "Ցուցակը վերցված է Vizit-ի գործող կատեգորիաներից։",
+        categoryRequired: "Ընտրեք բիզնեսի կատեգորիան։",
+        customCategory: "Նշեք կոնկրետ ծառայությունը",
+        customPlaceholder: "Օրինակ՝ կենդանիների խնամք",
+        customRequired: "Գրեք բիզնեսի կոնկրետ կատեգորիան։",
+        servicesPlaceholder: "Իմ բիզնեսը",
+        healthcarePlaceholder: "Իմ բժշկական կենտրոնը",
+    },
+    ru: {
+        chooseVertical: "Выберите сферу бизнеса",
+        services: "Услуги",
+        servicesDetail: "Красота, авто, образование и другие услуги",
+        healthcare: "Медицина",
+        healthcareDetail: "Клиники, врачи, диагностика и реабилитация",
+        category: "Категория бизнеса",
+        categoryPlaceholder: "Выберите категорию",
+        categoryHelp: "Список синхронизирован с действующими категориями Vizit.",
+        categoryRequired: "Выберите категорию бизнеса.",
+        customCategory: "Укажите конкретную услугу",
+        customPlaceholder: "Например, уход за животными",
+        customRequired: "Укажите конкретную категорию бизнеса.",
+        servicesPlaceholder: "Мой бизнес",
+        healthcarePlaceholder: "Мой медицинский центр",
+    },
+    en: {
+        chooseVertical: "Choose the business area",
+        services: "Services",
+        servicesDetail: "Beauty, automotive, education and other services",
+        healthcare: "Healthcare",
+        healthcareDetail: "Clinics, doctors, diagnostics and rehabilitation",
+        category: "Business category",
+        categoryPlaceholder: "Choose a category",
+        categoryHelp: "This list is synchronized with Vizit's active categories.",
+        categoryRequired: "Choose a business category.",
+        customCategory: "Specify the service",
+        customPlaceholder: "For example, pet care",
+        customRequired: "Enter the specific business category.",
+        servicesPlaceholder: "My business",
+        healthcarePlaceholder: "My medical center",
+    },
+} as const;
+
+const fallbackRegistrationCategories: RegistrationCategory[] = [
+    { vertical: "services", slug: "beauty-salon", name_hy: "Գեղեցկության սրահ", name_ru: "Салон красоты", name_en: "Beauty salon" },
+    { vertical: "services", slug: "barber-shop", name_hy: "Բարբերշոփ", name_ru: "Барбершоп", name_en: "Barber shop" },
+    { vertical: "services", slug: "nail-studio", name_hy: "Մատնահարդարման ստուդիա", name_ru: "Ногтевая студия", name_en: "Nail studio" },
+    { vertical: "services", slug: "massage-spa", name_hy: "Մերսում և SPA", name_ru: "Массаж и SPA", name_en: "Massage & SPA" },
+    { vertical: "services", slug: "fitness-trainer", name_hy: "Ֆիթնես մարզիչ", name_ru: "Фитнес-тренер", name_en: "Fitness trainer" },
+    { vertical: "services", slug: "car-wash", name_hy: "Ավտոլվացում", name_ru: "Автомойка", name_en: "Car wash" },
+    { vertical: "services", slug: "auto-service", name_hy: "Ավտոսերվիս", name_ru: "Автосервис", name_en: "Auto service" },
+    { vertical: "services", slug: "consulting", name_hy: "Խորհրդատվություն", name_ru: "Консультации", name_en: "Consulting" },
+    { vertical: "services", slug: "courses", name_hy: "Դասընթացներ", name_ru: "Курсы", name_en: "Courses" },
+    { vertical: "services", slug: "photo-studio", name_hy: "Ֆոտոստուդիա", name_ru: "Фотостудия", name_en: "Photo studio" },
+    { vertical: "services", slug: "other-services", name_hy: "Այլ ծառայություն", name_ru: "Другая услуга", name_en: "Other service" },
+    { vertical: "healthcare", slug: "clinic", name_hy: "Կլինիկա", name_ru: "Клиника", name_en: "Clinic" },
+    { vertical: "healthcare", slug: "dental-clinic", name_hy: "Ատամնաբուժարան", name_ru: "Стоматология", name_en: "Dental clinic" },
+    { vertical: "healthcare", slug: "private-doctor", name_hy: "Մասնավոր բժիշկ", name_ru: "Частный врач", name_en: "Private doctor" },
+    { vertical: "healthcare", slug: "diagnostic-center", name_hy: "Ախտորոշիչ կենտրոն", name_ru: "Диагностический центр", name_en: "Diagnostic center" },
+    { vertical: "healthcare", slug: "laboratory", name_hy: "Լաբորատորիա", name_ru: "Лаборатория", name_en: "Laboratory" },
+    { vertical: "healthcare", slug: "physiotherapy", name_hy: "Ֆիզիոթերապիա", name_ru: "Физиотерапия", name_en: "Physiotherapy" },
+    { vertical: "healthcare", slug: "rehabilitation", name_hy: "Ռեաբիլիտացիա", name_ru: "Реабилитация", name_en: "Rehabilitation" },
+    { vertical: "healthcare", slug: "other-healthcare", name_hy: "Այլ բժշկական ծառայություն", name_ru: "Другая медицинская услуга", name_en: "Other healthcare" },
+];
+
+function normalizeVertical(value: string | null | undefined): BusinessVertical {
+    return ["dental", "clinic", "medical", "health", "healthcare"].includes(String(value ?? "").toLowerCase())
+        ? "healthcare"
+        : "services";
+}
+
+function initialCategorySlug(value: string | null): string {
+    if (["beauty", "salon"].includes(String(value ?? "").toLowerCase())) return "beauty-salon";
+    if (["dental"].includes(String(value ?? "").toLowerCase())) return "dental-clinic";
+    return "";
+}
+
+function normalizeCategory(category: PublicBusinessCategory): RegistrationCategory | null {
+    const slug = String(category.slug ?? "").trim();
+    if (!slug) return null;
+
+    return {
+        ...category,
+        slug,
+        vertical: normalizeVertical(category.vertical ?? slug),
+    };
+}
+
+function localizedCategoryName(category: RegistrationCategory, locale: "hy" | "ru" | "en"): string {
+    return String(category[`name_${locale}`] ?? category.name ?? category.name_hy ?? category.name_en ?? category.slug);
+}
 
 const locationCopy = {
     hy: {
@@ -95,13 +201,15 @@ export default function Register() {
     const { setAuth } = useAuth();
     const { locale } = useLanguage();
     const text = copy[locale];
+    const categoryText = categoryCopy[locale];
     const locationText = locationCopy[locale];
     const [searchParams] = useSearchParams();
     const requestedPlanCode = searchParams.get("plan")?.trim() || undefined;
+    const typeParam = searchParams.get("type");
 
-    const initialType = (searchParams.get("type") as BusinessType) || "beauty";
-
-    const [business_type, setBusinessType] = useState<BusinessType>(initialType);
+    const [business_type, setBusinessType] = useState<BusinessVertical>(() => normalizeVertical(typeParam));
+    const [business_category_slug, setBusinessCategorySlug] = useState(() => initialCategorySlug(typeParam));
+    const [custom_category_name, setCustomCategoryName] = useState("");
     const [business_name, setBusinessName] = useState("");
     const [business_phone, setBusinessPhone] = useState("");
     const [business_address, setBusinessAddress] = useState("");
@@ -123,6 +231,31 @@ export default function Register() {
         "weak" | "medium" | "strong" | null
     >(null);
 
+    const categoriesQuery = useQuery({
+        queryKey: ["registration-business-categories", locale],
+        queryFn: () => fetchPublicCategories({ locale }),
+        retry: 1,
+        staleTime: 5 * 60_000,
+    });
+
+    const apiCategories = useMemo(
+        () => (categoriesQuery.data ?? [])
+            .map(normalizeCategory)
+            .filter((category): category is RegistrationCategory => category !== null),
+        [categoriesQuery.data],
+    );
+
+    const availableCategories = useMemo(() => {
+        const remote = apiCategories.filter((category) => category.vertical === business_type);
+        return remote.length
+            ? remote
+            : fallbackRegistrationCategories.filter((category) => category.vertical === business_type);
+    }, [apiCategories, business_type]);
+
+    const selectedCategory = availableCategories.find((category) => category.slug === business_category_slug) ?? null;
+    const selectedCategoryName = selectedCategory ? localizedCategoryName(selectedCategory, locale) : categoryText.categoryPlaceholder;
+    const isOtherCategory = business_category_slug === "other-services" || business_category_slug === "other-healthcare";
+
     useEffect(() => {
         if (!password) {
             setPasswordStrength(null);
@@ -142,21 +275,40 @@ export default function Register() {
     }, [password]);
 
     const businessMeta = {
-            beauty: {
-                label: text.beautyLabel,
-                short: text.beautyShort,
+            services: {
+                label: categoryText.servicesDetail,
+                short: categoryText.services,
                 icon: Sparkles,
             },
-            dental: {
-                label: text.dentalLabel,
-                short: text.dentalShort,
+            healthcare: {
+                label: categoryText.healthcareDetail,
+                short: categoryText.healthcare,
                 icon: Stethoscope,
             },
         };
 
     const CurrentIcon = businessMeta[business_type].icon;
 
+    function chooseVertical(vertical: BusinessVertical) {
+        if (vertical === business_type) return;
+        setBusinessType(vertical);
+        setBusinessCategorySlug("");
+        setCustomCategoryName("");
+        setError(null);
+        setErrorCode(null);
+    }
+
     function validateStepOne() {
+        if (!selectedCategory) {
+            setError(categoryText.categoryRequired);
+            return false;
+        }
+
+        if (isOtherCategory && !custom_category_name.trim()) {
+            setError(categoryText.customRequired);
+            return false;
+        }
+
         if (!business_name.trim()) {
             setError(text.businessNameRequired);
             return false;
@@ -230,6 +382,10 @@ export default function Register() {
                     latitude,
                     longitude,
                     business_type,
+                    vertical: business_type,
+                    business_category_id: selectedCategory?.id,
+                    business_category_slug,
+                    custom_category_name: isOtherCategory ? custom_category_name.trim() : null,
                     plan_code: requestedPlanCode,
                     name: owner_name,
                     email: owner_email,
@@ -321,14 +477,14 @@ export default function Register() {
                     </motion.div>
                 ) : null}
 
-                {!searchParams.get("type") ? (
-                    <motion.div variants={fadeUp}>
+                <motion.div variants={fadeUp} className="vizit-registration-classifier space-y-5">
+                    <div>
                         <div id="business-type-label" className="mb-3 block text-sm font-medium text-slate-700">
-                            {text.chooseType}
+                            {categoryText.chooseVertical}
                         </div>
 
                         <div role="radiogroup" aria-labelledby="business-type-label" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                            {(["beauty", "dental"] as BusinessType[]).map((type) => {
+                            {(["services", "healthcare"] as BusinessVertical[]).map((type) => {
                                 const Icon = businessMeta[type].icon;
                                 const active = business_type === type;
 
@@ -336,7 +492,7 @@ export default function Register() {
                                     <button
                                         key={type}
                                         type="button"
-                                        onClick={() => setBusinessType(type)}
+                                        onClick={() => chooseVertical(type)}
                                         role="radio"
                                         aria-checked={active}
                                         className={cn(
@@ -369,8 +525,57 @@ export default function Register() {
                                 );
                             })}
                         </div>
-                    </motion.div>
-                ) : null}
+                    </div>
+
+                    <div>
+                        <label htmlFor="business-register-category" className="mb-2 block text-sm font-medium text-slate-700">
+                            {categoryText.category}
+                        </label>
+                        <div className="relative">
+                            <select
+                                id="business-register-category"
+                                name="business_category_slug"
+                                value={business_category_slug}
+                                onChange={(event) => {
+                                    setBusinessCategorySlug(event.target.value);
+                                    setCustomCategoryName("");
+                                    setError(null);
+                                    setErrorCode(null);
+                                }}
+                                aria-busy={categoriesQuery.isLoading}
+                                className="h-14 w-full appearance-none rounded-2xl border border-slate-200 bg-white px-4 pr-11 text-base text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100 sm:h-12 sm:text-sm"
+                                required
+                            >
+                                <option value="">{categoryText.categoryPlaceholder}</option>
+                                {availableCategories.map((category) => (
+                                    <option key={category.slug} value={category.slug}>
+                                        {localizedCategoryName(category, locale)}
+                                    </option>
+                                ))}
+                            </select>
+                            <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                        </div>
+                        <p className="mt-2 text-xs leading-5 text-slate-500">{categoryText.categoryHelp}</p>
+                    </div>
+
+                    {isOtherCategory ? (
+                        <div>
+                            <label htmlFor="business-register-custom-category" className="mb-2 block text-sm font-medium text-slate-700">
+                                {categoryText.customCategory}
+                            </label>
+                            <input
+                                id="business-register-custom-category"
+                                name="custom_category_name"
+                                value={custom_category_name}
+                                onChange={(event) => setCustomCategoryName(event.target.value)}
+                                placeholder={categoryText.customPlaceholder}
+                                maxLength={120}
+                                className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100 sm:h-12 sm:text-sm"
+                                required
+                            />
+                        </div>
+                    ) : null}
+                </motion.div>
 
                 <motion.div variants={fadeUp} className="flex items-center justify-center gap-2 sm:gap-3">
                     {[1, 2].map((step, index) => (
@@ -419,10 +624,10 @@ export default function Register() {
 
                                     <div>
                                         <div className="text-sm font-semibold text-slate-900">
-                                            {businessMeta[business_type].label}
+                                            {selectedCategoryName}
                                         </div>
                                         <div className="mt-1 text-xs leading-6 text-slate-500">
-                                            {text.basics}
+                                            {businessMeta[business_type].short} · {text.basics}
                                         </div>
                                     </div>
                                 </div>
@@ -442,7 +647,7 @@ export default function Register() {
                                         value={business_name}
                                         onChange={(e) => setBusinessName(e.target.value)}
                                         placeholder={
-                                            business_type === "beauty" ? text.salonPlaceholder : text.clinicPlaceholder
+                                            business_type === "services" ? categoryText.servicesPlaceholder : categoryText.healthcarePlaceholder
                                         }
                                         className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
                                         required
@@ -528,6 +733,9 @@ export default function Register() {
                                 businessAddress={business_address}
                                 businessLatitude={latitude}
                                 businessLongitude={longitude}
+                                businessCategoryId={selectedCategory?.id}
+                                businessCategorySlug={business_category_slug}
+                                customCategoryName={isOtherCategory ? custom_category_name : undefined}
                                 planCode={requestedPlanCode}
                             />
 

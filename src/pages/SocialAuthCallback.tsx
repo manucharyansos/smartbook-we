@@ -109,6 +109,9 @@ export default function SocialAuthCallback() {
                             business_address: pendingBusinessProfile.business_address,
                             latitude: pendingBusinessProfile.latitude,
                             longitude: pendingBusinessProfile.longitude,
+                            business_category_id: pendingBusinessProfile.business_category_id,
+                            business_category_slug: pendingBusinessProfile.business_category_slug,
+                            custom_category_name: pendingBusinessProfile.custom_category_name,
                         }
                         : { code: exchangeCode };
 

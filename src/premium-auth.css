@@ -86,3 +86,76 @@ html.dark #root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] textarea{
   #root>div[class*="bg-[linear-gradient(180deg,#fffaf5"]>div[class*="grid"]{padding-left:14px!important;padding-right:14px!important}
   #root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] [class*="rounded-[28px]"]{border-radius:24px!important}
 }
+
+/* Stable semantic dark-theme pass. AuthShell owns this class, so generated
+   Tailwind class names can no longer leave dark text on a dark surface. */
+html.dark #root > .vizit-auth-shell{
+  background:
+    radial-gradient(circle at 88% 0%,rgba(139,76,125,.18),transparent 31%),
+    radial-gradient(circle at 5% 22%,rgba(221,168,92,.08),transparent 27%),
+    linear-gradient(180deg,#1b181b 0%,#171417 58%,#121012 100%)!important;
+  color:#fffaf5!important;
+}
+html.dark #root > .vizit-auth-shell > div.absolute{opacity:.22!important}
+html.dark #root > .vizit-auth-shell h1,
+html.dark #root > .vizit-auth-shell h2,
+html.dark #root > .vizit-auth-shell [class*="text-slate-950"],
+html.dark #root > .vizit-auth-shell [class*="text-slate-900"]{color:#fffaf5!important}
+html.dark #root > .vizit-auth-shell [class*="text-slate-800"],
+html.dark #root > .vizit-auth-shell [class*="text-slate-700"]{color:#eee4e9!important}
+html.dark #root > .vizit-auth-shell p,
+html.dark #root > .vizit-auth-shell [class*="text-slate-600"],
+html.dark #root > .vizit-auth-shell [class*="text-slate-500"]{color:#cbbfc6!important}
+html.dark #root > .vizit-auth-shell [class*="text-slate-400"]{color:#ad9fa8!important}
+html.dark #root > .vizit-auth-shell [class*="bg-[linear-gradient(135deg,#fff7ed"]{
+  background:linear-gradient(145deg,#292429,#241f24 58%,#201c20)!important;
+}
+html.dark #root > .vizit-auth-shell [class*="bg-white"]{
+  border-color:rgba(221,168,92,.18)!important;
+  background-color:rgba(43,38,43,.96)!important;
+}
+html.dark #root > .vizit-auth-shell [class*="bg-slate-50"],
+html.dark #root > .vizit-auth-shell [class*="bg-slate-100"],
+html.dark #root > .vizit-auth-shell [class*="bg-violet-50"]{
+  background-color:#332c32!important;
+}
+html.dark #root > .vizit-auth-shell [class*="border-slate-200"],
+html.dark #root > .vizit-auth-shell [class*="border-slate-300"],
+html.dark #root > .vizit-auth-shell [class*="border-violet"]{
+  border-color:rgba(221,168,92,.24)!important;
+}
+html.dark #root > .vizit-auth-shell [class*="text-violet"]{color:#efc57e!important}
+html.dark #root > .vizit-auth-shell input,
+html.dark #root > .vizit-auth-shell select,
+html.dark #root > .vizit-auth-shell textarea{
+  border-color:rgba(221,168,92,.22)!important;
+  background:#191619!important;
+  color:#fffaf5!important;
+  color-scheme:dark;
+}
+html.dark #root > .vizit-auth-shell input::placeholder,
+html.dark #root > .vizit-auth-shell textarea::placeholder{color:#938690!important;opacity:1}
+html.dark #root > .vizit-auth-shell input:focus,
+html.dark #root > .vizit-auth-shell select:focus,
+html.dark #root > .vizit-auth-shell textarea:focus{
+  border-color:rgba(239,197,126,.68)!important;
+  box-shadow:0 0 0 4px rgba(221,168,92,.12)!important;
+}
+html.dark #root > .vizit-auth-shell .vizit-registration-classifier button[aria-checked="true"]{
+  border-color:rgba(239,197,126,.54)!important;
+  background:#3a3037!important;
+}
+html.dark #root > .vizit-auth-shell .vizit-social-separator{
+  background:#2b262b!important;
+  color:#b8abb3!important;
+}
+html.dark #root > .vizit-auth-shell .vizit-social-provider-button.is-google{
+  border-color:#ded8da!important;
+  background:#fff!important;
+  color:#292329!important;
+}
+html.dark #root > .vizit-auth-shell .vizit-social-provider-button.is-facebook{
+  border-color:#1877f2!important;
+  background:#1877f2!important;
+  color:#fff!important;
+}

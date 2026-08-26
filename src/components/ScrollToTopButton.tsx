@@ -23,7 +23,7 @@ export function ScrollToTopButton() {
                     exit={{ opacity: 0, scale: 0.7, y: 10 }}
                     transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                     onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                    className="vizit-scroll-top-button fixed bottom-24 right-4 z-40 grid h-11 w-11 place-items-center rounded-2xl border border-[#f5dfb7]/80 bg-[#c58b35] text-white shadow-[0_14px_34px_rgba(133,85,30,0.30)] transition hover:bg-[#ad7428] active:scale-95 dark:border-[#efd59f]/35 dark:bg-[#c58b35] dark:hover:bg-[#d39a43] xl:bottom-8 xl:right-8"
+                    className="vizit-scroll-top-button fixed bottom-24 right-4 z-40 grid h-11 w-11 place-items-center rounded-2xl border border-[#f5dfb7] bg-[#edc77f] text-[#3f143c] shadow-[0_14px_34px_rgba(80,38,50,0.22)] transition hover:bg-[#e3b964] active:scale-95 dark:border-[#efd59f]/45 dark:bg-[#e8c174] dark:text-[#2d102d] dark:hover:bg-[#f0cf8d] xl:bottom-8 xl:right-8"
                     aria-label={label}
                     title={label}
                 >

@@ -1190,7 +1190,7 @@ export default function PublicBooking() {
                     </p>
                 </div>
                 </div>
-                <PublicBusinessFooter />
+                <PublicBusinessFooter compact />
             </div>
         );
     }
@@ -1211,7 +1211,7 @@ export default function PublicBooking() {
                     </p>
                 </div>
                 </div>
-                <PublicBusinessFooter />
+                <PublicBusinessFooter compact />
             </div>
         );
     }
@@ -1862,11 +1862,8 @@ export default function PublicBooking() {
                     </div>
                 </motion.div>
 
-                <div className="mt-6 text-center text-xs text-slate-500">
-                    © {new Date().getFullYear()} Vizit • {isBeauty ? text.beautyFooter : text.clinicFooter} {text.bookingSystem}
-                </div>
             </div>
-            <PublicBusinessFooter business={business} />
+            <PublicBusinessFooter compact />
         </div>
     );
 }

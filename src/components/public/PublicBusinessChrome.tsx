@@ -78,9 +78,35 @@ export function PublicBusinessHeader({
   );
 }
 
-export function PublicBusinessFooter({ business }: { business?: PublicBusiness | null }) {
+export function PublicBusinessFooter({
+  business,
+  compact = false,
+}: {
+  business?: PublicBusiness | null;
+  compact?: boolean;
+}) {
   const { locale } = useLanguage();
   const text = copy[locale];
+
+  if (compact) {
+    return (
+      <footer className="vizit-public-chrome vizit-public-footer-compact border-t border-[#e8e2f0] bg-[#faf8fc]/90 dark:border-[#312641] dark:bg-[#090712]">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-5 text-center sm:flex-row sm:px-6 sm:text-left lg:px-8">
+          <Link to="/" className="inline-flex items-center gap-2.5 text-[#241736] dark:text-white">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#3e1f78] text-white shadow-sm dark:bg-[#e7bd72] dark:text-[#2d102d]">
+              <CalendarDays className="h-4 w-4" aria-hidden="true" />
+            </span>
+            <span>
+              <strong className="block text-sm font-semibold">Vizit</strong>
+              <small className="block text-[11px] text-[#756777] dark:text-[#cbbfc6]">{text.booking}</small>
+            </span>
+          </Link>
+          <span className="text-xs text-[#756777] dark:text-[#cbbfc6]">© {new Date().getFullYear()} Vizit</span>
+        </div>
+      </footer>
+    );
+  }
+
   const websiteUrl = safeExternalUrl(business?.website_url);
   const messengerUrl = safeExternalUrl(business?.messenger_url);
   const whatsappUrl = safeExternalUrl(business?.whatsapp_url);

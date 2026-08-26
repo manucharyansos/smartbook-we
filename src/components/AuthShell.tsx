@@ -53,7 +53,7 @@ export default function AuthShell({
                 </Link>
             </motion.div>
 
-            <motion.div variants={fadeDown} className="absolute right-2.5 top-2.5 z-30 rounded-full border border-white/70 bg-white/90 text-slate-700 shadow-sm backdrop-blur sm:right-6 sm:top-6">
+            <motion.div variants={fadeDown} className="vizit-auth-language-control absolute right-2.5 top-2.5 z-[100] overflow-visible rounded-full border border-white/70 bg-white/95 text-slate-700 shadow-sm backdrop-blur sm:right-6 sm:top-6">
                 <LanguageToggle compact />
             </motion.div>
 

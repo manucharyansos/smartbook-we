@@ -10,7 +10,6 @@ import {
     MapPin,
     Phone,
     Sparkles,
-    Star,
     Stethoscope,
     Users,
     CheckCircle2,
@@ -140,7 +139,7 @@ export default function PublicBusinessProfile() {
                         <div className="h-80 animate-pulse rounded-[30px] border border-slate-200 bg-white/80" />
                     </div>
                 </main>
-                <PublicBusinessFooter />
+                <PublicBusinessFooter compact />
             </div>
         );
     }
@@ -168,7 +167,7 @@ export default function PublicBusinessProfile() {
                         </Link>
                     </div>
                 </main>
-                <PublicBusinessFooter />
+                <PublicBusinessFooter compact />
             </div>
         );
     }
@@ -193,17 +192,32 @@ export default function PublicBusinessProfile() {
                             transition={{ duration: 0.35 }}
                             className="relative overflow-hidden rounded-[38px] border border-white/70 bg-white/85 shadow-[0_24px_90px_rgba(15,23,42,0.08)] backdrop-blur-xl"
                         >
-                            {business.cover_url && <img src={business.cover_url} alt={business.name} className="absolute inset-0 h-full w-full object-cover opacity-20" />}
-                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(91,47,168,0.16),transparent_27%),radial-gradient(circle_at_bottom_left,rgba(30,158,146,0.14),transparent_28%),linear-gradient(135deg,#faf8fc_0%,#f7f2fb_55%,#ffffff_100%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(169,128,243,0.20),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(88,208,196,0.12),transparent_30%),linear-gradient(135deg,#151020_0%,#1b1328_55%,#100c18_100%)]" />
+                            <div className="vizit-business-profile-backdrop absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(231,193,169,0.30),transparent_29%),radial-gradient(circle_at_bottom_left,rgba(244,220,190,0.36),transparent_29%),linear-gradient(135deg,#fffaf5_0%,#fbf3eb_58%,#fffdf9_100%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(139,76,125,0.16),transparent_31%),linear-gradient(135deg,#221d22_0%,#1c181c_58%,#171417_100%)]" />
 
-                            <div className="relative grid gap-8 p-6 sm:p-8 2xl:grid-cols-[1fr_340px] lg:p-10">
-                                <div>
-                                    <div className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-4 py-2 text-sm font-medium text-slate-700 shadow-sm">
+                            <div className="vizit-business-profile-hero relative grid gap-4 p-3 sm:p-4 lg:grid-cols-[minmax(280px,0.78fr)_minmax(0,1.22fr)] lg:gap-5 2xl:grid-cols-[320px_minmax(0,1fr)_300px]">
+                                <div className="vizit-business-profile-cover relative min-h-[230px] overflow-hidden rounded-[28px] border border-white/70 bg-[linear-gradient(145deg,#e9cfc3,#f7e9dd_52%,#d8c0d0)] shadow-[0_18px_52px_rgba(72,35,49,0.13)] sm:min-h-[300px] lg:min-h-full">
+                                    {business.cover_url ? (
+                                        <img src={business.cover_url} alt={business.name} className="absolute inset-0 h-full w-full object-cover" />
+                                    ) : (
+                                        <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(circle_at_80%_10%,rgba(255,255,255,.45),transparent_30%),radial-gradient(circle_at_12%_100%,rgba(109,42,99,.20),transparent_34%),linear-gradient(145deg,#e8c8ba,#f7e9de_58%,#d7becf)]">
+                                            <div className="grid h-28 w-28 place-items-center overflow-hidden rounded-[32px] border border-white/60 bg-white/35 text-[#4a2146] shadow-[0_24px_70px_rgba(72,35,49,.16)] backdrop-blur-xl">
+                                                {business.logo_url ? <img src={business.logo_url} alt={business.name} className="h-full w-full object-cover" /> : <Building2 className="h-11 w-11" />}
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#2b0d35]/70 via-transparent to-white/10" />
+                                    <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/88 px-3 py-2 text-xs font-bold text-[#4a2146] shadow-sm backdrop-blur-xl">
                                         {business.business_type === "dental" ? <Stethoscope className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
                                         {businessTypeLabel(business.business_type, locale)}
                                     </div>
+                                    <div className="absolute inset-x-4 bottom-4 flex items-center justify-between gap-3 rounded-2xl border border-white/25 bg-[#2b0d35]/72 px-4 py-3 text-white backdrop-blur-xl">
+                                        <span className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold"><MapPin className="h-4 w-4 shrink-0 text-[#edc77f]" /><span className="truncate">{business.address || text.onlineVia}</span></span>
+                                        <CheckCircle2 className="h-5 w-5 shrink-0 text-[#edc77f]" aria-hidden="true" />
+                                    </div>
+                                </div>
 
-                                    <div className="mt-6 flex items-start gap-4">
+                                <div className="vizit-business-profile-summary min-w-0 px-2 py-3 sm:px-4 sm:py-5 lg:px-3">
+                                    <div className="flex items-start gap-4">
                                         <div className="h-16 w-16 shrink-0 overflow-hidden rounded-[22px] border border-white/70 bg-white/90 shadow-md">
                                             {business.logo_url ? (
                                                 <img src={business.logo_url} alt={business.name} className="h-full w-full object-cover" />
@@ -294,7 +308,7 @@ export default function PublicBusinessProfile() {
                                     </div>
                                 </div>
 
-                                <div className="relative 2xl:sticky 2xl:top-24">
+                                <div className="vizit-business-profile-contact relative lg:col-span-2 2xl:col-span-1">
                                     <div className="rounded-[30px] border border-white/70 bg-white/88 p-5 shadow-xl">
                                         <div className="text-sm text-slate-500">{text.quick}</div>
                                         <div className="mt-2 text-2xl font-semibold text-slate-900">
@@ -401,9 +415,9 @@ export default function PublicBusinessProfile() {
                                         {topServices.map((service) => (
                                             <div
                                                 key={service.id}
-                                                className="rounded-[24px] border border-slate-100 bg-slate-50/70 p-5 transition hover:border-violet-100 hover:bg-violet-50/40"
+                                                className="vizit-profile-service-card rounded-[24px] border border-slate-100 bg-slate-50/70 p-4 transition hover:border-violet-100 hover:bg-violet-50/40 sm:p-5"
                                             >
-                                                {service.image_url && <div className="mb-4 h-40 overflow-hidden rounded-2xl"><img src={service.image_url} alt={service.name} className="h-full w-full object-cover" /></div>}
+                                                {service.image_url && <div className="vizit-profile-service-image mb-4 h-32 overflow-hidden rounded-2xl"><img src={service.image_url} alt={service.name} className="h-full w-full object-cover" /></div>}
                                                 <div className="flex items-start justify-between gap-4">
                                                     <div>
                                                         <h3 className="text-lg font-semibold text-slate-900">
@@ -505,30 +519,6 @@ export default function PublicBusinessProfile() {
                             <motion.div
                                 initial={{ opacity: 0, y: 16 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.35, delay: 0.1 }}
-                                className="rounded-[30px] border border-white/70 bg-white/88 p-5 shadow-sm"
-                            >
-                                <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
-                                    <Star className="h-4 w-4 text-amber-500" />
-                                    {text.why}
-                                </div>
-
-                                <div className="mt-4 space-y-3">
-                                    {text.whyItems.map((item) => (
-                                        <div
-                                            key={item}
-                                            className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-4"
-                                        >
-                                            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
-                                            <span className="text-sm text-slate-600">{item}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </motion.div>
-
-                            <motion.div
-                                initial={{ opacity: 0, y: 16 }}
-                                animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.35, delay: 0.12 }}
                                 className="rounded-[30px] border border-white/70 bg-[linear-gradient(135deg,#1e1b4b_0%,#581c87_50%,#7c2d12_100%)] p-6 text-white shadow-lg"
                             >
@@ -553,7 +543,7 @@ export default function PublicBusinessProfile() {
                 </section>
             </main>
 
-            <PublicBusinessFooter business={business} />
+            <PublicBusinessFooter compact />
         </div>
     );
 }

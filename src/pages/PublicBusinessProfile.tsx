@@ -520,7 +520,7 @@ export default function PublicBusinessProfile() {
                                 initial={{ opacity: 0, y: 16 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.35, delay: 0.12 }}
-                                className="rounded-[30px] border border-white/70 bg-[linear-gradient(135deg,#1e1b4b_0%,#581c87_50%,#7c2d12_100%)] p-6 text-white shadow-lg"
+                                className="vizit-profile-booking-cta rounded-[30px] border border-white/70 p-6 text-white shadow-lg"
                             >
                                 <div className="text-sm text-white/75">{text.ready}</div>
                                 <div className="mt-2 text-2xl font-semibold">

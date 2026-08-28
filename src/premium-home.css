@@ -230,11 +230,11 @@ body:has(.vizit-public-page) header a[href="/register"]{
   border-color:rgba(211,154,67,.30)!important;background:#fff2df!important;color:#98641f!important
 }
 .vizit-public-page #plans{background:#f4e9df!important;padding-top:78px!important;padding-bottom:86px!important}
-.vizit-public-page #plans>div>div.grid>div{
+.vizit-public-page #plans .vizit-plans-grid>div{
   border-color:rgba(211,154,67,.22)!important;background:#fffdf9!important;box-shadow:var(--vz-shadow)!important
 }
-.vizit-public-page #plans>div>div.grid>div h3{color:var(--vz-plum)!important}
-.vizit-public-page #plans>div>div.grid>div p{color:var(--vz-muted)!important}
+.vizit-public-page #plans .vizit-plans-grid>div h3{color:var(--vz-plum)!important}
+.vizit-public-page #plans .vizit-plans-grid>div p{color:var(--vz-muted)!important}
 .vizit-public-page main>section:last-of-type>div{
   border-color:rgba(211,154,67,.28)!important;
   background:radial-gradient(circle at 90% 0%,rgba(230,190,161,.35),transparent 34%),#fffaf5!important;
@@ -268,7 +268,7 @@ html.dark .vizit-public-page #categories>div,
 html.dark .vizit-public-page #how>div,
 html.dark .vizit-public-page #map>div>div.grid>div:last-child,
 html.dark .vizit-public-page #businesses article,
-html.dark .vizit-public-page #plans>div>div.grid>div{
+html.dark .vizit-public-page #plans .vizit-plans-grid>div{
   border-color:rgba(231,188,107,.15)!important;background:rgba(47,24,46,.82)!important
 }
 html.dark .vizit-public-page #categories button,

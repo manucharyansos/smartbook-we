@@ -496,7 +496,7 @@ export default function Register() {
                                         role="radio"
                                         aria-checked={active}
                                         className={cn(
-                                            "flex items-center gap-3 rounded-[22px] border p-4 text-left transition",
+                                            "vizit-registration-type-option flex items-center gap-3 rounded-[22px] border p-4 text-left transition",
                                             active
                                                 ? "border-violet-300 bg-violet-50 shadow-sm"
                                                 : "border-slate-200 bg-white hover:border-violet-200 hover:bg-violet-50/60"

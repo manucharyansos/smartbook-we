@@ -52,8 +52,8 @@
   border-color:rgba(211,154,67,.62)!important;
   box-shadow:0 0 0 4px rgba(211,154,67,.11)!important;
 }
-#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] button[class*="bg-violet"],
-#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] button[class*="from-violet"],
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] button[type="submit"][class*="bg-violet"],
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] button[type="submit"][class*="from-violet"],
 #root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] a[class*="bg-violet"]{
   background:linear-gradient(135deg,#2b0d35,#6d2a63)!important;
   color:#fff!important;
@@ -158,4 +158,54 @@ html.dark #root > .vizit-auth-shell .vizit-social-provider-button.is-facebook{
   border-color:#1877f2!important;
   background:#1877f2!important;
   color:#fff!important;
+}
+
+/* Business verticals are choices, not primary CTA buttons. Semantic selectors
+   keep hover utility class names from permanently triggering gradient styles. */
+#root > .vizit-auth-shell .vizit-registration-type-option{
+  border-color:rgba(211,154,67,.22)!important;
+  background:#fffdf9!important;
+  color:#321c37!important;
+  box-shadow:none!important;
+}
+#root > .vizit-auth-shell .vizit-registration-type-option:hover{
+  border-color:rgba(109,42,99,.32)!important;
+  background:#fcf3eb!important;
+}
+#root > .vizit-auth-shell .vizit-registration-type-option[aria-checked="true"]{
+  border-color:rgba(173,118,47,.52)!important;
+  background:#f8eadf!important;
+  box-shadow:0 12px 28px rgba(72,35,49,.08)!important;
+}
+#root > .vizit-auth-shell .vizit-registration-type-option > div:first-of-type{
+  background:#f3ebe5!important;
+  color:#766575!important;
+}
+#root > .vizit-auth-shell .vizit-registration-type-option[aria-checked="true"] > div:first-of-type{
+  background:linear-gradient(135deg,#43143b,#6a315b)!important;
+  color:#fff!important;
+}
+#root > .vizit-auth-shell .vizit-registration-type-option > div:nth-of-type(2) > div:first-child{
+  color:#321c37!important;
+}
+#root > .vizit-auth-shell .vizit-registration-type-option > div:nth-of-type(2) > div:last-child{
+  color:#756777!important;
+}
+#root > .vizit-auth-shell .vizit-registration-type-option[aria-checked="true"] > svg{
+  color:#ad762f!important;
+}
+html.dark #root > .vizit-auth-shell .vizit-registration-type-option{
+  border-color:rgba(221,168,92,.16)!important;
+  background:#282328!important;
+}
+html.dark #root > .vizit-auth-shell .vizit-registration-type-option:hover,
+html.dark #root > .vizit-auth-shell .vizit-registration-type-option[aria-checked="true"]{
+  border-color:rgba(239,197,126,.46)!important;
+  background:#393137!important;
+}
+html.dark #root > .vizit-auth-shell .vizit-registration-type-option > div:nth-of-type(2) > div:first-child{
+  color:#fffaf5!important;
+}
+html.dark #root > .vizit-auth-shell .vizit-registration-type-option > div:nth-of-type(2) > div:last-child{
+  color:#cbbfc6!important;
 }

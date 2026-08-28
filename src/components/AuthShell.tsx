@@ -5,6 +5,7 @@ import { ArrowLeft, CalendarDays, ShieldCheck, Sparkles } from "lucide-react";
 import { fadeDown, fadeUp, pageTransition, scaleIn, staggerContainer, hoverLift } from "../lib/motion";
 import { useLanguage } from "../contexts/LanguageContext";
 import LanguageToggle from "./LanguageToggle";
+import ThemeToggle from "./ThemeToggle";
 
 type AuthShellProps = {
     title: string;
@@ -19,7 +20,7 @@ type AuthShellProps = {
 export default function AuthShell({
                                       title,
                                       subtitle,
-                                      badge = "Vizit access",
+                                      badge,
                                       sideTitle,
                                       sideText,
                                       children,
@@ -27,10 +28,11 @@ export default function AuthShell({
                                   }: AuthShellProps) {
     const { locale } = useLanguage();
     const text = {
-        hy: { home: "Գլխավոր", homeAria: "Վերադառնալ գլխավոր էջ", tagline: "Ամրագրման միջավայր", features: ["Հանրային ամրագրում և օրացույց", "Թիմի ու ծառայությունների կառավարում", "Մաքուր ու պրոֆեսիոնալ միջավայր"] },
-        ru: { home: "Главная", homeAria: "Вернуться на главную", tagline: "Платформа онлайн-записи", features: ["Публичная запись и календарь", "Управление командой и услугами", "Понятное профессиональное пространство"] },
-        en: { home: "Home", homeAria: "Return home", tagline: "Online booking platform", features: ["Public booking and calendar", "Staff and service management", "A clean professional workspace"] },
+        hy: { home: "Գլխավոր", homeAria: "Վերադառնալ գլխավոր էջ", defaultBadge: "Vizit-ի անվտանգ մուտք", tagline: "Ամրագրման միջավայր", features: ["Հանրային ամրագրում և օրացույց", "Թիմի ու ծառայությունների կառավարում", "Մաքուր ու պրոֆեսիոնալ միջավայր"] },
+        ru: { home: "Главная", homeAria: "Вернуться на главную", defaultBadge: "Безопасный вход в Vizit", tagline: "Платформа онлайн-записи", features: ["Публичная запись и календарь", "Управление командой и услугами", "Понятное профессиональное пространство"] },
+        en: { home: "Home", homeAria: "Return home", defaultBadge: "Secure Vizit access", tagline: "Online booking platform", features: ["Public booking and calendar", "Staff and service management", "A clean professional workspace"] },
     }[locale];
+    const resolvedBadge = badge ?? text.defaultBadge;
 
     return (
         <motion.div
@@ -53,18 +55,22 @@ export default function AuthShell({
                 </Link>
             </motion.div>
 
-            <motion.div variants={fadeDown} className="vizit-auth-language-control absolute right-2.5 top-2.5 z-[100] overflow-visible rounded-full border border-white/70 bg-white/95 text-slate-700 shadow-sm backdrop-blur sm:right-6 sm:top-6">
+            <motion.div variants={fadeDown} className="vizit-auth-language-control absolute right-2.5 top-2.5 z-[100] flex items-center gap-1 overflow-visible rounded-full border border-white/70 bg-white/95 p-1 text-slate-700 shadow-sm backdrop-blur sm:right-6 sm:top-6">
                 <LanguageToggle compact />
+                <ThemeToggle
+                    compact
+                    className="h-10 w-10 border-[#eadbd0] bg-[#fffaf5] text-[#5a465c] shadow-none hover:bg-[#f8eee4] sm:h-11 sm:w-11 dark:border-white/10 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/[0.10]"
+                />
             </motion.div>
 
-            <div className="relative z-10 mx-auto grid min-h-screen max-w-7xl items-start gap-6 px-3 pb-8 pt-20 sm:gap-8 sm:px-6 sm:pb-12 sm:pt-24 lg:px-8 2xl:grid-cols-[0.95fr_1.05fr] 2xl:items-center">
+            <div className="relative z-10 mx-auto grid min-h-screen max-w-[1320px] items-start gap-6 px-3 pb-8 pt-20 sm:gap-8 sm:px-6 sm:pb-12 sm:pt-24 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:gap-10 lg:px-8 2xl:items-center">
                 <motion.div
                     variants={staggerContainer(0.08, 0.05)}
-                    className="hidden 2xl:block"
+                    className="hidden min-w-0 lg:block"
                 >
                     <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-4 py-2 text-sm font-medium text-violet-700 shadow-sm backdrop-blur">
                         <ShieldCheck className="h-4 w-4" />
-                        {badge}
+                        {resolvedBadge}
                     </motion.div>
 
                     <motion.div variants={fadeUp} className="mt-8 max-w-xl">
@@ -110,12 +116,12 @@ export default function AuthShell({
                     </motion.div>
                 </motion.div>
 
-                <motion.div variants={scaleIn} className="relative">
-                    <div className="rounded-[28px] border border-white/70 bg-white/86 p-2 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:rounded-[34px] sm:p-5 xl:p-6 2xl:min-h-[740px]">
+                <motion.div variants={scaleIn} className="relative mx-auto w-full max-w-[780px] min-w-0 lg:mx-0 lg:justify-self-end">
+                    <div className="rounded-[28px] border border-white/70 bg-white/86 p-2 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:rounded-[34px] sm:p-5 xl:p-6">
                         <div className="rounded-[20px] bg-[linear-gradient(135deg,#fff7ed_0%,#faf5ff_55%,#ffffff_100%)] p-1.5 sm:rounded-[28px] sm:p-4 xl:p-6">
                             <div className="rounded-[18px] border border-white/70 bg-white/90 p-4 shadow-sm sm:rounded-[26px] sm:p-6 xl:p-8">
                                 <motion.div variants={fadeUp} className="text-center">
-                                    <Link to="/" className="inline-flex items-center gap-3 xl:hidden max-w-full">
+                                    <Link to="/" className="inline-flex max-w-full items-center gap-3 lg:hidden">
                                         <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white shadow-lg">
                                             <CalendarDays className="h-5 w-5" />
                                         </div>

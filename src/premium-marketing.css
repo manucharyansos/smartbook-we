@@ -56,12 +56,14 @@
 .vizit-public-page:not(:has(#categories)) main [class*="shadow"]{--tw-shadow-color:rgba(75,36,52,.10)!important}
 
 html.dark .vizit-public-page:not(:has(#categories)) main{
-  background:radial-gradient(circle at 90% 0%,rgba(109,42,99,.30),transparent 30rem),linear-gradient(180deg,#1d1220,#150e17 55%,#120b14)!important;
+  background:radial-gradient(circle at 90% 0%,rgba(139,76,125,.15),transparent 30rem),linear-gradient(180deg,#1b181b,#171417 55%,#121012)!important;
 }
 html.dark .vizit-public-page:not(:has(#categories)) main>section:first-child h1{color:#fff7ef!important}
-html.dark .vizit-public-page:not(:has(#categories)) main :is([class~="bg-white"],[class*="bg-white/"],[class~="bg-slate-50"]){background-color:rgba(47,24,46,.82)!important}
+html.dark .vizit-public-page:not(:has(#categories)) main>section:first-child p{color:#cbbfc6!important}
+html.dark .vizit-public-page:not(:has(#categories)) main :is([class~="bg-white"],[class*="bg-white/"],[class~="bg-slate-50"]){background-color:rgba(43,38,43,.96)!important}
 html.dark .vizit-public-page:not(:has(#categories)) main :is([class~="border-slate-100"],[class~="border-slate-200"],[class*="border-[#e8e2f0]"]){border-color:rgba(231,188,107,.14)!important}
 html.dark .vizit-public-page:not(:has(#categories)) main :is([class~="text-slate-950"],[class~="text-slate-900"],[class*="text-[#241736]"]){color:#fff8f2!important}
+html.dark .vizit-public-page:not(:has(#categories)) main :is([class~="text-slate-500"],[class~="text-slate-600"],[class~="text-slate-700"],[class*="text-[#6b6178]"]){color:#cbbfc6!important}
 
 @media(max-width:767px){
   .vizit-public-page:not(:has(#categories)) main>section:first-child{padding-bottom:44px!important}

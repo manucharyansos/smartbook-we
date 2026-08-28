@@ -20,7 +20,8 @@ const PricingCard: React.FC<PricingCardProps> = ({ plan, selectedType }) => {
     // Format features from backend
     const features: string[] = plan.features ? [
         Number(plan.features.staff_limit ?? 0) > 0 ? (custom ? "16+ ակտիվ մասնագետ" : `Մինչև ${Number(plan.features.staff_limit)} աշխատակից`) : null,
-        plan.features.sms_reminders ? `SMS հիշեցումներ (${plan.features.sms_reminders === 'unlimited' ? 'անսահմանափակ' : `${String(plan.features.sms_reminders)}/ամիս`})` : null,
+        plan.features.email_notifications !== false ? 'Email հաստատումներ' : null,
+        plan.features.telegram_notifications === true ? 'Telegram ծանուցումներ' : null,
         plan.features.api_access === true ? 'API հասանելիություն' : null,
         plan.features.priority_support === true ? 'Առաջնահերթ աջակցություն' : null,
         plan.features.dedicated_manager === true ? 'Անհատական մենեջեր' : null,

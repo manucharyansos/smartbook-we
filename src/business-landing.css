@@ -1,0 +1,56 @@
+.vizit-public-page.vizit-business-page main > section#vizit-business-hero.vizit-business-hero:first-child {
+  padding-top: 128px !important;
+  padding-bottom: 80px !important;
+}
+
+.vizit-business-workflow-card {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.vizit-public-page.vizit-business-page main > section#vizit-business-final.vizit-business-final:last-of-type > .vizit-business-final-card {
+  border-color: rgba(244, 217, 159, 0.18) !important;
+  background:
+    radial-gradient(circle at 85% 0%, rgba(244, 217, 159, 0.28), transparent 34%),
+    linear-gradient(135deg, #2b0d35 0%, #6d2a63 100%) !important;
+  box-shadow: 0 32px 100px rgba(75, 22, 75, 0.25) !important;
+}
+
+.vizit-public-page.vizit-business-page main > section#vizit-business-final.vizit-business-final:last-of-type .vizit-business-final-card h2 {
+  color: #fff !important;
+}
+
+.vizit-public-page.vizit-business-page main > section#vizit-business-final.vizit-business-final:last-of-type .vizit-business-final-card p {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.vizit-business-final-badge,
+.vizit-business-final-secondary {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.vizit-public-page.vizit-business-page main > section#vizit-business-final.vizit-business-final:last-of-type .vizit-business-final-primary {
+  border-color: transparent !important;
+  background: #fff8ef !important;
+  color: #2b0d35 !important;
+}
+
+.vizit-public-page.vizit-business-page main > section#vizit-business-final.vizit-business-final:last-of-type .vizit-business-final-secondary {
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #fff !important;
+}
+
+.vizit-business-final-secondary:hover {
+  background: rgba(255, 255, 255, 0.13) !important;
+}
+
+@media (min-width: 640px) {
+  .vizit-public-page.vizit-business-page main > section#vizit-business-hero.vizit-business-hero:first-child {
+    padding-top: 160px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .vizit-public-page.vizit-business-page main > section#vizit-business-hero.vizit-business-hero:first-child {
+    padding-bottom: 112px !important;
+  }
+}

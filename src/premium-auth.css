@@ -7,7 +7,7 @@
   color:#2c1931!important;
   font-family:"Rubik","Noto Sans Armenian",ui-sans-serif,system-ui,sans-serif!important;
 }
-#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"]>div.absolute{opacity:.36!important}
+#root>div[class*="bg-[linear-gradient(180deg,#fffaf5"]>.vizit-auth-decoration{opacity:.36!important}
 #root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] h1,
 #root>div[class*="bg-[linear-gradient(180deg,#fffaf5"] h2{
   font-family:"Noto Serif Armenian",Georgia,serif!important;
@@ -96,7 +96,7 @@ html.dark #root > .vizit-auth-shell{
     linear-gradient(180deg,#1b181b 0%,#171417 58%,#121012 100%)!important;
   color:#fffaf5!important;
 }
-html.dark #root > .vizit-auth-shell > div.absolute{opacity:.22!important}
+html.dark #root > .vizit-auth-shell > .vizit-auth-decoration{opacity:.22!important}
 html.dark #root > .vizit-auth-shell h1,
 html.dark #root > .vizit-auth-shell h2,
 html.dark #root > .vizit-auth-shell [class*="text-slate-950"],

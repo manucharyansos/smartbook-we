@@ -39,9 +39,9 @@ export default function AuthShell({
             animate="show"
             className="vizit-auth-shell relative min-h-screen overflow-x-clip bg-[linear-gradient(180deg,#fffaf5_0%,#ffffff_18%,#faf7ff_100%)]"
         >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(251,146,60,0.14),transparent_24%),radial-gradient(circle_at_top_right,rgba(168,85,247,0.16),transparent_26%),radial-gradient(circle_at_bottom_left,rgba(244,114,182,0.10),transparent_26%)]" />
-            <div className="absolute -top-20 left-[-80px] h-72 w-72 rounded-full bg-orange-200/20 blur-3xl" />
-            <div className="absolute bottom-[-80px] right-[-60px] h-80 w-80 rounded-full bg-violet-200/20 blur-3xl" />
+            <div className="vizit-auth-decoration absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(251,146,60,0.14),transparent_24%),radial-gradient(circle_at_top_right,rgba(168,85,247,0.16),transparent_26%),radial-gradient(circle_at_bottom_left,rgba(244,114,182,0.10),transparent_26%)]" />
+            <div className="vizit-auth-decoration absolute -top-20 left-[-80px] h-72 w-72 rounded-full bg-orange-200/20 blur-3xl" />
+            <div className="vizit-auth-decoration absolute bottom-[-80px] right-[-60px] h-80 w-80 rounded-full bg-violet-200/20 blur-3xl" />
 
             <motion.div
                 variants={fadeDown}

@@ -265,19 +265,19 @@ function SmartSuggestions({
                             type="button"
                             onClick={() => onSelect(slot)}
                             className={mergeClass(
-                                "rounded-2xl border px-3 py-3 text-left transition-all",
+                                "vizit-smart-slot rounded-2xl border px-3 py-3 text-left transition-all",
                                 active
-                                    ? "border-emerald-400 bg-emerald-100 shadow-sm dark:border-emerald-400/45 dark:bg-emerald-500/15"
+                                    ? "is-active border-emerald-400 bg-emerald-100 shadow-sm dark:border-emerald-400/45 dark:bg-emerald-500/15"
                                     : "border-white/70 bg-white/90 hover:border-emerald-300 hover:bg-white dark:border-[#312641] dark:hover:border-emerald-400/35 dark:hover:bg-white/[0.08]"
                             )}
                         >
                             <div className="flex items-center justify-between gap-2">
-                                <div className="text-sm font-semibold text-slate-900">{slotLabel(slot, showStaff)}</div>
+                                <div className="vizit-smart-slot-title text-sm font-semibold text-slate-900">{slotLabel(slot, showStaff)}</div>
                                 <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[11px] font-semibold text-white">
                                     #{slot.recommendation_rank ?? "★"}
                                 </span>
                             </div>
-                            <div className="mt-1 text-xs text-slate-500">{localizeSmartReason(slot.smart_reason, locale)}</div>
+                            <div className="vizit-smart-slot-reason mt-1 text-xs text-slate-500">{localizeSmartReason(slot.smart_reason, locale)}</div>
                         </button>
                     );
                 })}
@@ -1235,12 +1235,12 @@ export default function PublicBooking() {
                     className="grid gap-4 sm:gap-6 xl:grid-cols-[1fr_1.5fr]"
                 >
                     <div className="space-y-6">
-                        <div className="rounded-[28px] bg-gradient-to-br from-fuchsia-600 via-violet-600 to-sky-500 text-white shadow-2xl p-6 sm:p-8 overflow-hidden relative">
+                        <div className="vizit-booking-hero rounded-[28px] bg-gradient-to-br from-fuchsia-600 via-violet-600 to-sky-500 text-white shadow-2xl p-6 sm:p-8 overflow-hidden relative">
                             <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/15 blur-2xl" />
                             <div className="absolute -left-6 bottom-0 h-24 w-24 rounded-full bg-white/10 blur-2xl" />
 
                             <div className="relative">
-                                <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-medium backdrop-blur">
+                                <div className="vizit-booking-hero-badge inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-medium backdrop-blur">
                                     {isBeauty ? <Sparkles size={14} /> : <Stethoscope size={14} />}
                                     <span>{isBeauty ? text.beautyBadge : text.clinicBadge}</span>
                                 </div>
@@ -1254,13 +1254,13 @@ export default function PublicBooking() {
                                 </p>
 
                                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                                    <div className="rounded-2xl bg-white/12 px-4 py-3 backdrop-blur">
+                                    <div className="vizit-booking-hero-stat rounded-2xl bg-white/12 px-4 py-3 backdrop-blur">
                                         <div className="text-white/75 text-xs">{text.workingHours}</div>
                                         <div className="mt-1 font-semibold">
                                             {String(business.work_start || "09:00").slice(0,5)} – {String(business.work_end || "18:00").slice(0,5)}
                                         </div>
                                     </div>
-                                    <div className="rounded-2xl bg-white/12 px-4 py-3 backdrop-blur">
+                                    <div className="vizit-booking-hero-stat rounded-2xl bg-white/12 px-4 py-3 backdrop-blur">
                                         <div className="text-white/75 text-xs">{text.timezone}</div>
                                         <div className="mt-1 font-semibold">
                                             {business.timezone
@@ -1935,9 +1935,9 @@ function ModeCard({
             onClick={onClick}
             aria-pressed={active}
             className={mergeClass(
-                "w-full rounded-2xl border p-3 text-left transition-all sm:p-4",
+                "vizit-booking-mode-card w-full rounded-2xl border p-3 text-left transition-all sm:p-4",
                 active
-                    ? "border-violet-300 bg-violet-50 shadow-sm ring-2 ring-violet-100"
+                    ? "is-active border-[#d39a43]/55 bg-[#f8eee4] shadow-sm ring-2 ring-[#d39a43]/10"
                     : "border-slate-200 bg-white hover:border-violet-200 hover:bg-slate-50"
             )}
         >
@@ -1946,11 +1946,11 @@ function ModeCard({
                     {icon}
                 </div>
                 <div className="min-w-0">
-                    <div className="flex items-center gap-2 font-semibold text-slate-900">
+                    <div className="vizit-booking-mode-title flex items-center gap-2 font-semibold text-slate-900">
                         {title}
                         {active ? <CheckCircle2 className="h-4 w-4 shrink-0 text-violet-600" /> : null}
                     </div>
-                    <div className="mt-1 text-xs leading-5 text-slate-500">{description}</div>
+                    <div className="vizit-booking-mode-description mt-1 text-xs leading-5 text-slate-500">{description}</div>
                 </div>
             </div>
         </button>

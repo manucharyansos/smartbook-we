@@ -772,7 +772,7 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
       <div className="vizit-business-card-body flex flex-1 flex-col p-4 sm:p-5">
         <header className="vizit-business-mobile-identity flex h-full min-w-0 flex-col md:hidden">
           <div className="min-w-0">
-            <Link to={`/businesses/${item.slug}`} className="block truncate text-[15px] font-black tracking-[-0.02em] text-[#321735] dark:text-[#fff8f2]">{item.name}</Link>
+            <Link to={`/businesses/${item.slug}`} className="vizit-business-mobile-title block truncate text-[15px] font-black tracking-[-0.02em] text-[#321735] dark:text-[#fff8f2]">{item.name}</Link>
             <p className="mt-1 truncate text-[11px] font-semibold text-[#8a7182] dark:text-[#d7c8d4]">{categoryName}</p>
           </div>
           <div className="vizit-business-mobile-meta mt-auto flex min-w-0 items-center gap-3 pt-2 text-[10px] font-semibold text-[#786675] dark:text-[#cdbfca]">

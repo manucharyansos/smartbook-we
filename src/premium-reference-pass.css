@@ -2068,6 +2068,42 @@ html.dark .vizit-public-page .vizit-business-cta a[href="/pricing"]{
     -webkit-box-orient:vertical;
     -webkit-line-clamp:3;
   }
+
+  /* The legacy desktop-card rules target the last nested div and all business
+     links. Keep them from turning the mobile title into a button or revealing
+     the hidden desktop action row. */
+  .vizit-public-page #businesses article.vizit-business-directory-card
+  > .vizit-business-card-body
+  > .vizit-business-actions {
+    display: none !important;
+  }
+
+  .vizit-public-page #businesses article.vizit-business-directory-card
+  .vizit-business-mobile-identity
+  .vizit-business-mobile-title {
+    display: -webkit-box !important;
+    width: auto !important;
+    min-height: 0 !important;
+    max-height: 34px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #321735 !important;
+    line-height: 17px !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  html.dark .vizit-public-page #businesses article.vizit-business-directory-card
+  .vizit-business-mobile-identity
+  .vizit-business-mobile-title {
+    color: #fff8f2 !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

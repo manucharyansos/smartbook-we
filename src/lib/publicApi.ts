@@ -187,6 +187,8 @@ export type PublicBookingDetail = {
     phone_verified_at?: string | null;
     guest_access_expires_at?: string | null;
     can_cancel?: boolean;
+    can_reschedule?: boolean;
+    reschedule_cutoff_hours?: number;
     total_price?: number | null;
     currency?: string | null;
     business: {
@@ -208,6 +210,8 @@ export type PublicBookingItem = {
     status: string;
     starts_at: string;
     ends_at: string;
+    can_reschedule?: boolean;
+    reschedule_deadline?: string | null;
     final_price?: number | null;
     currency?: string | null;
     service?: {
@@ -630,4 +634,56 @@ export async function cancelPublicBooking(payload: {
         throw new Error("Սերվերը չի հաստատել ընտրված ամրագրման չեղարկումը։");
     }
     return { ...data, cover_url: resolveMediaUrl(data.cover_url), logo_url: resolveMediaUrl(data.logo_url) };
+}
+
+export async function fetchPublicRescheduleOptions(payload: {
+    booking_code: string;
+    token: string;
+    booking_id: number;
+    date: string;
+    staff_id?: number;
+}): Promise<{
+    data: Slot[];
+    meta?: {
+        booking_id: number;
+        can_reschedule: boolean;
+        reschedule_cutoff_hours: number;
+        reschedule_deadline?: string | null;
+    };
+}> {
+    const { data } = await publicApi.get(`/public/bookings/${payload.booking_code}/reschedule-options`, {
+        params: {
+            booking_id: payload.booking_id,
+            date: payload.date,
+            ...(payload.staff_id ? { staff_id: payload.staff_id } : {}),
+        },
+        headers: {
+            "X-Guest-Token": payload.token,
+        },
+    });
+    return data;
+}
+
+export async function reschedulePublicBooking(payload: {
+    booking_code: string;
+    token: string;
+    booking_id: number;
+    staff_id: number;
+    starts_at: string;
+}): Promise<{ data: PublicBookingDetail }> {
+    const { booking_code, token, ...body } = payload;
+    const { data } = await publicApi.post(
+        `/public/bookings/${booking_code}/reschedule`,
+        body,
+        {
+            headers: {
+                "X-Guest-Token": token,
+            },
+        }
+    );
+    const detail = data?.data as PublicBookingDetail | undefined;
+    if (!detail || detail.booking_code !== booking_code) {
+        throw new Error("Սերվերը չի հաստատել ամրագրման նոր ժամը։");
+    }
+    return data;
 }

@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
     CalendarDays,
+    CalendarClock,
     Clock3,
     User,
     Phone,
@@ -44,7 +45,9 @@ import {
     verifyPublicBooking,
     resendPublicBookingCode,
     fetchPublicBookingDetail,
+    fetchPublicRescheduleOptions,
     cancelPublicBooking,
+    reschedulePublicBooking,
     type PublicBookingDetail,
     type PublicLocation,
     type PublicService,
@@ -88,6 +91,21 @@ function ymd(d: Date) {
     const mm = String(d.getMonth() + 1).padStart(2, "0");
     const dd = String(d.getDate()).padStart(2, "0");
     return `${yyyy}-${mm}-${dd}`;
+}
+
+function ymdInTimezone(value: string, timezone: string) {
+    try {
+        const parts = new Intl.DateTimeFormat("en-CA", {
+            timeZone: timezone,
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        }).formatToParts(new Date(value));
+        const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+        return `${values.year}-${values.month}-${values.day}`;
+    } catch {
+        return value.slice(0, 10);
+    }
 }
 
 const todayYmd = ymd(new Date());
@@ -767,7 +785,7 @@ export default function PublicBooking() {
         queryClient.invalidateQueries({
             predicate: (query) => {
                 const key0 = Array.isArray(query.queryKey) ? String(query.queryKey[0] ?? "") : "";
-                return key0 === "public-availability" || key0 === "public-availability-multi" || key0 === "public-line-availability";
+                return key0 === "public-availability" || key0 === "public-availability-multi" || key0 === "public-line-availability" || key0 === "public-booking-reschedule-options";
             },
         });
     };
@@ -1011,6 +1029,11 @@ export default function PublicBooking() {
             setMsg(text.phoneRequired);
             return false;
         }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clientEmail.trim())) {
+            setMsgType("error");
+            setMsg(text.emailRequired);
+            return false;
+        }
         return true;
     }
 
@@ -1050,7 +1073,7 @@ export default function PublicBooking() {
                 starts_at: chosen.starts_at.slice(0, 16),
                 client_name: clientName.trim(),
                 client_phone: clientPhone.trim(),
-                client_email: clientEmail.trim() || undefined,
+                client_email: clientEmail.trim(),
                 notes: notes.trim() || null,
                 source: bookingSource,
                 location_id: selectedLocationId ? Number(selectedLocationId) : undefined,
@@ -1086,7 +1109,7 @@ export default function PublicBooking() {
                 starts_at: chosen.starts_at.slice(0, 16),
                 client_name: clientName.trim(),
                 client_phone: clientPhone.trim(),
-                client_email: clientEmail.trim() || undefined,
+                client_email: clientEmail.trim(),
                 notes: notes.trim() || null,
                 source: bookingSource,
                 location_id: selectedLocationId ? Number(selectedLocationId) : undefined,
@@ -1142,7 +1165,7 @@ export default function PublicBooking() {
                 lines: payloadLines,
                 client_name: clientName.trim(),
                 client_phone: clientPhone.trim(),
-                client_email: clientEmail.trim() || undefined,
+                client_email: clientEmail.trim(),
                 notes: notes.trim() || null,
                 source: bookingSource,
                 location_id: selectedLocationId ? Number(selectedLocationId) : undefined,
@@ -1224,7 +1247,8 @@ export default function PublicBooking() {
                 title={`${text.bookNow} — ${business.name} | Vizit`}
                 description={business.short_description || (isBeauty ? text.beautyIntro : text.clinicIntro)}
                 image={business.cover_url || business.logo_url}
-                canonical={`/book/${business.slug}`}
+                canonical={`/businesses/${business.slug}`}
+                robots="noindex,follow"
             />
             <PublicBusinessHeader business={business} primaryHref={`/businesses/${business.slug}`} primaryLabel={text.businessPage} secondaryHref="/" secondaryLabel="Vizit" />
             <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
@@ -1369,9 +1393,21 @@ export default function PublicBooking() {
                                 <ManageBookingCard
                                     key={bookingDetailQ.data.data.booking_code}
                                     detail={bookingDetailQ.data.data}
+                                    bookingCode={activeBookingCode}
+                                    guestToken={guestToken}
                                     isLoading={bookingDetailQ.isFetching}
                                     onCancel={() => activeBookingCode && guestToken && cancelMut.mutate({ booking_code: activeBookingCode, token: guestToken })}
                                     isCancelling={cancelMut.isPending}
+                                    onRescheduled={() => {
+                                        invalidateAvailabilityQueries();
+                                        setMsgType("success");
+                                        setMsg(text.rescheduled);
+                                        bookingDetailQ.refetch();
+                                    }}
+                                    onRescheduleError={(error) => {
+                                        setMsgType("error");
+                                        setMsg(formatApiError(error, text.rescheduleError));
+                                    }}
                                 />
                             </div>
                         )}
@@ -1765,7 +1801,7 @@ export default function PublicBooking() {
                                         />
                                     </Field>
 
-                                    <Field label={text.emailOptional} icon={<Mail className="h-4 w-4" />}>
+                                    <Field label={`${text.email} *`} icon={<Mail className="h-4 w-4" />}>
                                         <input
                                             type="email"
                                             name="client_email"
@@ -1774,6 +1810,7 @@ export default function PublicBooking() {
                                             value={clientEmail}
                                             onChange={(e) => setClientEmail(e.target.value)}
                                             placeholder="example@mail.com"
+                                            required
                                         />
                                     </Field>
 
@@ -2062,21 +2099,93 @@ function OtpVerifyPanel({
 
 function ManageBookingCard({
     detail,
+    bookingCode,
+    guestToken,
     isLoading,
     onCancel,
     isCancelling,
+    onRescheduled,
+    onRescheduleError,
 }: {
     detail: PublicBookingDetail;
+    bookingCode: string;
+    guestToken: string;
     isLoading: boolean;
     onCancel: () => void;
     isCancelling: boolean;
+    onRescheduled: () => void;
+    onRescheduleError: (error: unknown) => void;
 }) {
     const { locale } = useLanguage();
     const text = publicBookingCopy[locale];
     const statusMeta = getStatusMeta(detail.status, detail.status_label, locale);
     const timezone = detail.business.timezone || "Asia/Yerevan";
     const [confirmingCancel, setConfirmingCancel] = useState(false);
+    const [reschedulingBookingId, setReschedulingBookingId] = useState<number | null>(null);
+    const [rescheduleDate, setRescheduleDate] = useState("");
+    const [rescheduleSlotKey, setRescheduleSlotKey] = useState("");
     const cancellableBookings = detail.bookings.filter((booking) => !["cancelled", "done", "completed", "no_show"].includes(booking.status));
+    const reschedulingBooking = detail.bookings.find((booking) => booking.id === reschedulingBookingId) ?? null;
+    const rescheduleOptionsQ = useQuery({
+        queryKey: ["public-booking-reschedule-options", bookingCode, reschedulingBookingId, rescheduleDate, guestToken],
+        queryFn: () => fetchPublicRescheduleOptions({
+            booking_code: bookingCode,
+            token: guestToken,
+            booking_id: reschedulingBookingId as number,
+            date: rescheduleDate,
+        }),
+        enabled: Boolean(bookingCode && guestToken && reschedulingBookingId && rescheduleDate),
+        retry: false,
+    });
+    const rescheduleSlots = rescheduleOptionsQ.data?.data ?? EMPTY_SLOTS;
+    const selectedRescheduleSlot = rescheduleSlots.find((slot) => slotKey(slot) === rescheduleSlotKey) ?? null;
+    const rescheduleMut = useMutation({
+        mutationFn: reschedulePublicBooking,
+        onSuccess: () => {
+            setReschedulingBookingId(null);
+            setRescheduleDate("");
+            setRescheduleSlotKey("");
+            onRescheduled();
+        },
+        onError: onRescheduleError,
+    });
+
+    useEffect(() => {
+        if (!reschedulingBookingId) return;
+        if (!rescheduleSlots.length) {
+            setRescheduleSlotKey("");
+            return;
+        }
+        const preferred = rescheduleSlots.find((slot) => slotKey(slot) === rescheduleSlotKey)
+            ?? rescheduleSlots.find((slot) => slot.is_recommended)
+            ?? rescheduleSlots[0];
+        setRescheduleSlotKey(slotKey(preferred));
+    }, [reschedulingBookingId, rescheduleSlots, rescheduleSlotKey]);
+
+    function openReschedule(bookingId: number, startsAt: string) {
+        setConfirmingCancel(false);
+        setReschedulingBookingId(bookingId);
+        setRescheduleDate(ymdInTimezone(startsAt, timezone));
+        setRescheduleSlotKey("");
+    }
+
+    function closeReschedule() {
+        if (rescheduleMut.isPending) return;
+        setReschedulingBookingId(null);
+        setRescheduleDate("");
+        setRescheduleSlotKey("");
+    }
+
+    function confirmReschedule() {
+        if (!reschedulingBooking || !selectedRescheduleSlot?.staff_id) return;
+        rescheduleMut.mutate({
+            booking_code: bookingCode,
+            token: guestToken,
+            booking_id: reschedulingBooking.id,
+            staff_id: selectedRescheduleSlot.staff_id,
+            starts_at: selectedRescheduleSlot.starts_at.slice(0, 16),
+        });
+    }
 
     async function copyBookingCode() {
         try {
@@ -2177,25 +2286,123 @@ function ManageBookingCard({
                 </div>
             ) : null}
 
-            <div className="mt-5 grid gap-3 2xl:grid-cols-[1.2fr_0.8fr]">
-                <div className="space-y-3">
-                    {detail.bookings.map((booking) => (
-                        <div data-booking-id={booking.id} key={booking.id} className="rounded-3xl border border-white bg-white/90 px-4 py-4 shadow-sm">
-                            <div className="flex flex-wrap items-start justify-between gap-3">
-                                <div>
-                                    <div className="font-semibold text-slate-900">{booking.service?.name ?? text.service}</div>
-                                    <div className="mt-1 text-sm text-slate-500">
-                                        {formatDateTime(booking.starts_at, timezone, locale)}
-                                        {booking.staff?.name ? ` • ${booking.staff.name}` : ""}
-                                    </div>
-                                </div>
-                                <div className="text-right text-sm">
-                                    <div className="font-semibold text-slate-900">{formatMoney(booking.final_price ?? booking.service?.price, booking.currency ?? booking.service?.currency ?? detail.currency ?? "AMD", locale)}</div>
-                                    <div className="mt-1 text-slate-500">#{booking.booking_code}</div>
-                                </div>
+            {reschedulingBooking ? (
+                <div className="mt-5 rounded-3xl border border-violet-200 bg-violet-50/80 p-4 sm:p-5">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                            <div className="flex items-center gap-2 font-semibold text-violet-950">
+                                <CalendarClock className="h-5 w-5" />
+                                {text.rescheduleTitle}
+                            </div>
+                            <div className="mt-1 text-sm text-violet-800/75">
+                                {reschedulingBooking.service?.name ?? text.service} · {formatDateTime(reschedulingBooking.starts_at, timezone, locale)}
                             </div>
                         </div>
-                    ))}
+                        <button
+                            type="button"
+                            onClick={closeReschedule}
+                            disabled={rescheduleMut.isPending}
+                            className="rounded-xl border border-violet-200 bg-white px-3 py-2 text-sm font-semibold text-violet-800 disabled:opacity-60"
+                        >
+                            {text.goBack}
+                        </button>
+                    </div>
+
+                    <p className="mt-3 text-sm leading-6 text-violet-900/75">{text.rescheduleHelp}</p>
+
+                    <div className="mt-4 grid gap-3 lg:grid-cols-[0.65fr_1.35fr]">
+                        <Field label={text.date} icon={<CalendarDays className="h-4 w-4" />}>
+                            <input
+                                type="date"
+                                value={rescheduleDate}
+                                min={ymdInTimezone(new Date().toISOString(), timezone)}
+                                onChange={(event) => {
+                                    setRescheduleDate(event.target.value);
+                                    setRescheduleSlotKey("");
+                                }}
+                                disabled={rescheduleMut.isPending}
+                                className={inputClass}
+                            />
+                        </Field>
+                        <Field label={text.time} icon={<Clock3 className="h-4 w-4" />}>
+                            <select
+                                value={rescheduleSlotKey}
+                                onChange={(event) => setRescheduleSlotKey(event.target.value)}
+                                disabled={rescheduleOptionsQ.isFetching || rescheduleMut.isPending || !rescheduleSlots.length}
+                                className={inputClass}
+                            >
+                                <option value="">
+                                    {rescheduleOptionsQ.isFetching ? text.loadingRescheduleTimes : text.selectTime}
+                                </option>
+                                {rescheduleSlots.map((slot) => (
+                                    <option key={slotKey(slot)} value={slotKey(slot)}>{slotLabel(slot, true)}</option>
+                                ))}
+                            </select>
+                        </Field>
+                    </div>
+
+                    {rescheduleOptionsQ.isError ? (
+                        <div className="mt-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+                            {formatApiError(rescheduleOptionsQ.error, text.rescheduleError)}
+                        </div>
+                    ) : null}
+                    {!rescheduleOptionsQ.isFetching && rescheduleOptionsQ.isSuccess && !rescheduleSlots.length ? (
+                        <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                            {text.noRescheduleTimes}
+                        </div>
+                    ) : null}
+
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                        <div className="text-xs leading-5 text-violet-800/70">
+                            {text.rescheduleCutoff.replace("{hours}", String(detail.reschedule_cutoff_hours ?? 12))}
+                        </div>
+                        <button
+                            type="button"
+                            onClick={confirmReschedule}
+                            disabled={!selectedRescheduleSlot || rescheduleMut.isPending}
+                            className="inline-flex items-center gap-2 rounded-2xl bg-violet-700 px-5 py-3 text-sm font-semibold text-white shadow-sm disabled:opacity-60"
+                        >
+                            {rescheduleMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                            {rescheduleMut.isPending ? text.rescheduling : text.saveNewTime}
+                        </button>
+                    </div>
+                </div>
+            ) : null}
+
+            <div className="mt-5 grid gap-3 2xl:grid-cols-[1.2fr_0.8fr]">
+                <div className="space-y-3">
+                    {detail.bookings.map((booking) => {
+                        const inactive = ["cancelled", "done", "completed", "no_show"].includes(booking.status);
+                        const canReschedule = !inactive && booking.can_reschedule !== false;
+                        return (
+                            <div data-booking-id={booking.id} key={booking.id} className="rounded-3xl border border-white bg-white/90 px-4 py-4 shadow-sm">
+                                <div className="flex flex-wrap items-start justify-between gap-3">
+                                    <div>
+                                        <div className="font-semibold text-slate-900">{booking.service?.name ?? text.service}</div>
+                                        <div className="mt-1 text-sm text-slate-500">
+                                            {formatDateTime(booking.starts_at, timezone, locale)}
+                                            {booking.staff?.name ? ` • ${booking.staff.name}` : ""}
+                                        </div>
+                                    </div>
+                                    <div className="text-right text-sm">
+                                        <div className="font-semibold text-slate-900">{formatMoney(booking.final_price ?? booking.service?.price, booking.currency ?? booking.service?.currency ?? detail.currency ?? "AMD", locale)}</div>
+                                        <div className="mt-1 text-slate-500">#{booking.booking_code}</div>
+                                    </div>
+                                </div>
+                                <div className="mt-3 flex justify-end">
+                                    <button
+                                        type="button"
+                                        onClick={() => openReschedule(booking.id, booking.starts_at)}
+                                        disabled={!canReschedule || rescheduleMut.isPending}
+                                        className="inline-flex items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-3 py-2 text-xs font-semibold text-violet-800 disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400"
+                                    >
+                                        <CalendarClock className="h-4 w-4" />
+                                        {canReschedule ? text.changeTime : text.rescheduleClosed}
+                                    </button>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
 
                 <div className="rounded-3xl border border-white bg-white/90 px-4 py-4 shadow-sm space-y-4">

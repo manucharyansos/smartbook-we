@@ -14,6 +14,7 @@ import { ScrollToTopButton } from "./components/ScrollToTopButton";
 import { RouteSeo } from "./components/RouteSeo";
 
 const Index = lazy(() => import("./pages/Index"));
+const BusinessLanding = lazy(() => import("./pages/BusinessLanding"));
 const Login = lazy(() => import("./pages/Login"));
 const ClientLogin = lazy(() => import("./pages/ClientLogin"));
 const ClientRegister = lazy(() => import("./pages/ClientRegister"));
@@ -77,6 +78,7 @@ export default function App() {
             <RouteSeo />
             <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/business" element={<BusinessLanding />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/business/login" element={<Navigate to="/login" replace />} />
                 <Route path="/client/login" element={<ClientLogin />} />

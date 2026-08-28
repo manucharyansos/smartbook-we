@@ -11,6 +11,11 @@ const routeMeta: Record<string, MetaCopy> = {
     ru: { title: "Vizit.am — онлайн-запись на услуги и медицинские визиты", description: "Находите услуги и медицинские центры, выбирайте бизнес и бронируйте удобное время на Vizit.am." },
     en: { title: "Vizit.am — online booking for services and medical visits", description: "Find services and medical centers, choose a business and book an available time on Vizit.am." },
   },
+  "/business": {
+    hy: { title: "Vizit բիզնեսների համար — ամրագրումներ և հաճախորդների կառավարում", description: "Կառավարեք օնլայն ամրագրումները, օրացույցը, թիմը, ծառայություններն ու հաճախորդներին Vizit-ի մեկ հարթակում։" },
+    ru: { title: "Vizit для бизнеса — записи и управление клиентами", description: "Управляйте онлайн-записью, календарём, командой, услугами и клиентами на одной платформе Vizit." },
+    en: { title: "Vizit for business — bookings and client management", description: "Manage online bookings, calendars, staff, services and clients on one Vizit platform." },
+  },
   "/features": {
     hy: { title: "Vizit-ի հնարավորությունները բիզնեսների համար", description: "Կառավարեք ամրագրումները, օրացույցը, ծառայությունները, թիմը և հաճախորդներին մեկ հարթակում։" },
     ru: { title: "Возможности Vizit для бизнеса", description: "Управляйте записями, календарём, услугами, командой и клиентами на одной платформе." },

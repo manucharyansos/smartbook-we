@@ -33,6 +33,7 @@ import "./premium-refinements.css";
 import "./premium-polish.css";
 import "./premium-business-cards.css";
 import "./premium-reference-pass.css";
+import "./business-landing.css";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AppErrorBoundary } from "./components/AppErrorBoundary";

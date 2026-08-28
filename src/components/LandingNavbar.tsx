@@ -9,19 +9,39 @@ import LanguageToggle from "./LanguageToggle";
 import ThemeToggle from "./ThemeToggle";
 import VizitLogo from "./VizitLogo";
 
-export default function LandingNavbar() {
-  const { t } = useLanguage();
+type LandingNavbarProps = {
+  audience?: "consumer" | "business";
+};
+
+const businessNavCopy = {
+  hy: { marketplace: "Հաճախորդների համար", solutions: "Ուղղություններ", features: "Հնարավորություններ", workflow: "Ինչպես է աշխատում" },
+  ru: { marketplace: "Для клиентов", solutions: "Решения", features: "Возможности", workflow: "Как работает" },
+  en: { marketplace: "For customers", solutions: "Solutions", features: "Features", workflow: "How it works" },
+} as const;
+
+export default function LandingNavbar({ audience = "consumer" }: LandingNavbarProps) {
+  const { t, locale } = useLanguage();
   const { scrollY } = useScroll();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const navItems = [
-    { href: "/#categories", label: t("nav.services") },
-    { href: "/#businesses", label: t("nav.businesses") },
-    { href: "/#map", label: t("nav.map") },
-    { href: "/#how", label: t("nav.how") },
-    { href: "/pricing", label: t("nav.pricing"), route: true },
-  ];
+  const businessText = businessNavCopy[locale];
+  const navItems = audience === "business"
+    ? [
+        { href: "/", label: businessText.marketplace, route: true },
+        { href: "/business#solutions", label: businessText.solutions },
+        { href: "/business#features", label: businessText.features },
+        { href: "/business#workflow", label: businessText.workflow },
+        { href: "/pricing", label: t("nav.pricing"), route: true },
+      ]
+    : [
+        { href: "/#categories", label: t("nav.services") },
+        { href: "/#businesses", label: t("nav.businesses") },
+        { href: "/#map", label: t("nav.map") },
+        { href: "/#how", label: t("nav.how") },
+        { href: "/business", label: t("nav.forBusiness"), route: true },
+        { href: "/pricing", label: t("nav.pricing"), route: true },
+      ];
 
   useEffect(() => {
     const unsubscribe = scrollY.on("change", (latest) => {

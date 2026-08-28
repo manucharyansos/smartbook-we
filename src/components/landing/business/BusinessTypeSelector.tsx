@@ -26,7 +26,7 @@ const BusinessTypeSelector: React.FC<BusinessTypeSelectorProps> = ({ selectedTyp
         'Պացիենտի էլեկտրոնային քարտ',
         'Բուժման պլանների կազմում',
         'Բժշկական նշումներ և ֆայլեր',
-        'Հիշեցումներ SMS-ով և email-ով',
+        'Հաստատումներ email-ով և Telegram ծանուցումներ',
     ];
 
     return (

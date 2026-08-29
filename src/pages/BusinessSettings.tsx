@@ -20,6 +20,8 @@ import {
   Plus,
   Pencil,
   Trash2,
+  Send,
+  Unplug,
 } from "lucide-react";
 
 import { page, card, cardTransition } from "../lib/motion";
@@ -43,6 +45,11 @@ import { uploadMedia } from "../lib/mediaApi";
 import { useAuth } from "../store/auth";
 import { LocationMapPicker } from "../components/settings/LocationMapPicker";
 import { useLanguage, type Locale } from "../contexts/LanguageContext";
+import {
+  createTelegramConnectionLink,
+  disconnectTelegram,
+  fetchTelegramConnection,
+} from "../lib/telegramApi";
 
 type ToastState = {
   open: boolean;
@@ -80,7 +87,7 @@ const settingsCopy = {
     saved: "Պահպանվեց", saveFailed: "Չհաջողվեց պահպանել", locationUpdated: "Հասցեն թարմացվեց", locationAdded: "Հասցեն ավելացվեց", locationSaveFailed: "Չհաջողվեց պահպանել հասցեն", locationDeleted: "Հասցեն ջնջվեց", locationDeleteFailed: "Չհաջողվեց ջնջել հասցեն", mapSaved: "Քարտեզի դիրքը պահպանվեց", mapSaveFailed: "Չհաջողվեց պահպանել քարտեզի դիրքը", copyFailed: "Չհաջողվեց պատճենել հղումը", scheduleSaved: "Գրաֆիկը պահպանվեց", scheduleSaveFailed: "Չհաջողվեց պահպանել գրաֆիկը",
     badge: "Բիզնեսի կարգավորումներ", medicalBadge: "Կլինիկայի կարգավորումներ", title: "Կարգավորումներ", intro: "Կառավարեք տվյալները, աշխատանքային ժամերը, հանրային ամրագրման հղումը և շաբաթական գրաֆիկը։", medicalIntro: "Կառավարեք կլինիկայի տվյալները, մասնաճյուղերը, Yandex քարտեզը, ընդունելության ժամերը և հանրային էջը։", copied: "Պատճենված է", copy: "Պատճենել", markOnMap: "Նշել քարտեզում", save: "Պահպանել",
     branding: "Հանրային էջ և բրենդինգ", brandingText: "Կառավարեք լոգոն, շապիկը, հանրային էջի նկարագրությունն ու որոնման տեսանելիությունը։", shortDescription: "Կարճ նկարագրություն", fullDescription: "Լրիվ նկարագրություն", profileEnabled: "Հանրային էջը ակտիվ է", marketplaceVisible: "Ցուցադրել գլխավոր էջում", showLogo: "Ցուցադրել լոգոն", showCover: "Ցուցադրել շապիկը", showStaff: "Ցուցադրել թիմը", showDoctors: "Ցուցադրել բժիշկներին", showServices: "Ցուցադրել ծառայությունները",
-    social: "Սոցիալական հղումներ", socialText: "Հղումները կերևան հանրային էջում և կօգնեն գրանցումների աղբյուրները հասկանալ։", instagram: "Instagram հղում", facebook: "Facebook հղում", whatsapp: "WhatsApp համար", messenger: "Messenger հղում", logo: "Լոգո", uploadLogo: "Վերբեռնել լոգոն", logoHint: "Լավագույն արդյունքի համար օգտագործեք քառակուսի նկար։", cover: "Շապիկ", coverPreview: "Շապիկի նախադիտում", uploadCover: "Վերբեռնել շապիկը", businessDefault: "Ձեր բիզնեսը", previewDefault: "Հանրային էջի նախադիտումը կերևա այստեղ։", publicPage: "Հանրային էջ", marketplace: "Գլխավոր ցուցակ", ready: "Պատրաստ է", hidden: "Թաքցված է", visible: "Տեսանելի է", notVisible: "Չի ցուցադրվում",
+    social: "Սոցիալական հղումներ", socialText: "Հղումները կերևան հանրային էջում և կօգնեն գրանցումների աղբյուրները հասկանալ։", instagram: "Instagram հղում", facebook: "Facebook հղում", whatsapp: "WhatsApp համար", messenger: "Messenger հղում", telegramTitle: "Telegram ծանուցումներ", telegramText: "Միացրեք Vizit բոտը՝ նոր, տեղափոխված և չեղարկված ամրագրումները Telegram-ում ստանալու համար։", telegramConnect: "Միացնել բոտը", telegramConnected: "Միացված է", telegramDisconnect: "Անջատել", telegramConnecting: "Բացում ենք…", telegramUnavailable: "Telegram բոտը դեռ կարգավորված չէ սերվերում։", telegramConnectError: "Չհաջողվեց ստեղծել Telegram-ի միացման հղումը", telegramDisconnectError: "Չհաջողվեց անջատել Telegram-ը", logo: "Լոգո", uploadLogo: "Վերբեռնել լոգոն", logoHint: "Լավագույն արդյունքի համար օգտագործեք քառակուսի նկար։", cover: "Շապիկ", coverPreview: "Շապիկի նախադիտում", uploadCover: "Վերբեռնել շապիկը", businessDefault: "Ձեր բիզնեսը", previewDefault: "Հանրային էջի նախադիտումը կերևա այստեղ։", publicPage: "Հանրային էջ", marketplace: "Գլխավոր ցուցակ", ready: "Պատրաստ է", hidden: "Թաքցված է", visible: "Տեսանելի է", notVisible: "Չի ցուցադրվում",
     billingBadge: "Սեփականատիրոջ վճարումների կենտրոն", billingTitle: "Պլան և վճարումներ", billingText: "Պլանները, բաժանորդագրությունը, հաշիվներն ու բանկային վճարումները կառավարվում են առանձին, միայն սեփականատիրոջ համար հասանելի էջում։", openBilling: "Բացել պլանը և վճարումները", quickNote: "ԱՐԱԳ ՀԻՇԵՑՈՒՄ", ownerOnly: "Միայն սեփականատիրոջ համար", ownerOnlyText: "Վճարումների բաժինը հասանելի չէ կառավարիչներին և աշխատակիցներին։", hosted: "Անվտանգ բանկային վճարում", hostedText: "Վճարումը կատարվում է բանկի էջում, ապա օգտատերը վերադառնում է Vizit.am։", annual: "Տարեկան պլան", annualText: "Տարեկան պլանի 2 ամիս անվճար տարբերակը ցուցադրվում է վճարումների էջում։",
     settingsLoadFailed: "Չհաջողվեց բեռնել բիզնեսի կարգավորումները", scheduleLoadFailed: "Չհաջողվեց բեռնել գրաֆիկը", loading: "Բեռնում ենք…", general: "Ընդհանուր", editable: "Կարող եք խմբագրել", readOnly: "Միայն դիտում", phone: "Հեռախոս", phonePlaceholder: "օր․ 077 12 34 56", bookingStep: "Ամրագրման քայլ", bookingStepHint: "15 րոպե քայլով ժամերը կլինեն 09:00, 09:15, 09:30։ Սա ծառայության տևողությունը չէ։", minutes: "րոպե", primaryAddress: "Գլխավոր հասցե", addressPlaceholder: "օր․ Երևան, Աբովյան 10",
     branches: "Մասնաճյուղեր և հասցեներ", branchesText: "Կարող եք ավելացնել մինչև {limit} հասցե։ Գլխավոր հասցեն ցուցադրվում է հանրային էջում։", addAddress: "Ավելացնել հասցե", address: "Հասցե", primary: "Գլխավոր", mapSet: "Քարտեզում նշված է", mapMissing: "Քարտեզի դիրքը նշված չէ", mapTitle: "Բիզնեսի տեղը Yandex քարտեզում", mapText: "Տեղադրեք նշիչը հենց մուտքի վրա և պահպանեք դիրքը։", selectedAddress: "Ընտրված հասցե", noAddress: "Հասցե նշված չէ", savePosition: "Պահպանել դիրքը", editAddress: "Խմբագրել հասցեն", newAddress: "Նոր հասցե", locationNamePlaceholder: "Անվանում (օր․ Կենտրոն)", fullAddress: "Լրիվ հասցե", makePrimary: "Սարքել գլխավոր հասցե", updateAddress: "Թարմացնել հասցեն", saveAddress: "Պահպանել հասցեն", cancel: "Չեղարկել", addAnother: "Ավելացնել ևս մեկ հասցե",
@@ -90,7 +97,7 @@ const settingsCopy = {
     saved: "Сохранено", saveFailed: "Не удалось сохранить", locationUpdated: "Адрес обновлен", locationAdded: "Адрес добавлен", locationSaveFailed: "Не удалось сохранить адрес", locationDeleted: "Адрес удален", locationDeleteFailed: "Не удалось удалить адрес", mapSaved: "Положение на карте сохранено", mapSaveFailed: "Не удалось сохранить положение на карте", copyFailed: "Не удалось скопировать ссылку", scheduleSaved: "Расписание сохранено", scheduleSaveFailed: "Не удалось сохранить расписание",
     badge: "Настройки бизнеса", medicalBadge: "Настройки клиники", title: "Настройки", intro: "Управляйте данными, рабочими часами, публичной ссылкой записи и недельным расписанием.", medicalIntro: "Управляйте данными клиники, филиалами, картой Yandex, часами приема и публичной страницей.", copied: "Скопировано", copy: "Копировать", markOnMap: "Отметить на карте", save: "Сохранить",
     branding: "Публичная страница и бренд", brandingText: "Управляйте логотипом, обложкой, описанием и видимостью в поиске.", shortDescription: "Краткое описание", fullDescription: "Полное описание", profileEnabled: "Публичная страница активна", marketplaceVisible: "Показывать на главной", showLogo: "Показывать логотип", showCover: "Показывать обложку", showStaff: "Показывать команду", showDoctors: "Показывать врачей", showServices: "Показывать услуги",
-    social: "Социальные ссылки", socialText: "Ссылки появятся на публичной странице и помогут отслеживать источники записей.", instagram: "Ссылка Instagram", facebook: "Ссылка Facebook", whatsapp: "Номер WhatsApp", messenger: "Ссылка Messenger", logo: "Логотип", uploadLogo: "Загрузить логотип", logoHint: "Для лучшего результата используйте квадратное изображение.", cover: "Обложка", coverPreview: "Предпросмотр обложки", uploadCover: "Загрузить обложку", businessDefault: "Ваш бизнес", previewDefault: "Здесь появится предпросмотр публичной страницы.", publicPage: "Публичная страница", marketplace: "Главный каталог", ready: "Готова", hidden: "Скрыта", visible: "Видна", notVisible: "Не показывается",
+    social: "Социальные ссылки", socialText: "Ссылки появятся на публичной странице и помогут отслеживать источники записей.", instagram: "Ссылка Instagram", facebook: "Ссылка Facebook", whatsapp: "Номер WhatsApp", messenger: "Ссылка Messenger", telegramTitle: "Уведомления Telegram", telegramText: "Подключите бота Vizit, чтобы получать новые, перенесённые и отменённые записи в Telegram.", telegramConnect: "Подключить бота", telegramConnected: "Подключено", telegramDisconnect: "Отключить", telegramConnecting: "Открываем…", telegramUnavailable: "Telegram-бот ещё не настроен на сервере.", telegramConnectError: "Не удалось создать ссылку подключения Telegram", telegramDisconnectError: "Не удалось отключить Telegram", logo: "Логотип", uploadLogo: "Загрузить логотип", logoHint: "Для лучшего результата используйте квадратное изображение.", cover: "Обложка", coverPreview: "Предпросмотр обложки", uploadCover: "Загрузить обложку", businessDefault: "Ваш бизнес", previewDefault: "Здесь появится предпросмотр публичной страницы.", publicPage: "Публичная страница", marketplace: "Главный каталог", ready: "Готова", hidden: "Скрыта", visible: "Видна", notVisible: "Не показывается",
     billingBadge: "Платежный центр владельца", billingTitle: "Тариф и платежи", billingText: "Тарифы, подписка, счета и банковские платежи управляются на отдельной странице, доступной только владельцу.", openBilling: "Открыть тариф и платежи", quickNote: "КРАТКОЕ НАПОМИНАНИЕ", ownerOnly: "Только для владельца", ownerOnlyText: "Раздел платежей недоступен менеджерам и сотрудникам.", hosted: "Безопасная оплата в банке", hostedText: "Оплата проходит на странице банка, затем пользователь возвращается в Vizit.am.", annual: "Годовой тариф", annualText: "Вариант с 2 бесплатными месяцами доступен на странице платежей.",
     settingsLoadFailed: "Не удалось загрузить настройки бизнеса", scheduleLoadFailed: "Не удалось загрузить расписание", loading: "Загрузка…", general: "Общее", editable: "Можно редактировать", readOnly: "Только чтение", phone: "Телефон", phonePlaceholder: "напр. 077 12 34 56", bookingStep: "Шаг записи", bookingStepHint: "При шаге 15 минут доступны 09:00, 09:15, 09:30. Это не длительность услуги.", minutes: "мин", primaryAddress: "Основной адрес", addressPlaceholder: "напр. Ереван, Абовяна 10",
     branches: "Филиалы и адреса", branchesText: "Можно добавить до {limit} адресов. Основной адрес показывается на публичной странице.", addAddress: "Добавить адрес", address: "Адрес", primary: "Основной", mapSet: "Отмечено на карте", mapMissing: "Положение на карте не указано", mapTitle: "Расположение на карте Yandex", mapText: "Поставьте маркер у входа и сохраните положение.", selectedAddress: "Выбранный адрес", noAddress: "Адрес не указан", savePosition: "Сохранить положение", editAddress: "Редактировать адрес", newAddress: "Новый адрес", locationNamePlaceholder: "Название (напр. Центр)", fullAddress: "Полный адрес", makePrimary: "Сделать основным", updateAddress: "Обновить адрес", saveAddress: "Сохранить адрес", cancel: "Отменить", addAnother: "Добавить еще один адрес",
@@ -100,7 +107,7 @@ const settingsCopy = {
     saved: "Saved", saveFailed: "Could not save", locationUpdated: "Address updated", locationAdded: "Address added", locationSaveFailed: "Could not save the address", locationDeleted: "Address deleted", locationDeleteFailed: "Could not delete the address", mapSaved: "Map position saved", mapSaveFailed: "Could not save the map position", copyFailed: "Could not copy the link", scheduleSaved: "Schedule saved", scheduleSaveFailed: "Could not save the schedule",
     badge: "Business settings", medicalBadge: "Clinic settings", title: "Settings", intro: "Manage business details, working hours, the public booking link and weekly schedule.", medicalIntro: "Manage clinic details, locations, the Yandex map, consultation hours and public page.", copied: "Copied", copy: "Copy", markOnMap: "Mark on map", save: "Save",
     branding: "Public page & branding", brandingText: "Manage the logo, cover, public description and search visibility.", shortDescription: "Short description", fullDescription: "Full description", profileEnabled: "Public page enabled", marketplaceVisible: "Show on home page", showLogo: "Show logo", showCover: "Show cover", showStaff: "Show team", showDoctors: "Show doctors", showServices: "Show services",
-    social: "Social links", socialText: "Links appear on the public page and help track booking sources.", instagram: "Instagram link", facebook: "Facebook link", whatsapp: "WhatsApp number", messenger: "Messenger link", logo: "Logo", uploadLogo: "Upload logo", logoHint: "Use a square image for the best result.", cover: "Cover", coverPreview: "Cover preview", uploadCover: "Upload cover", businessDefault: "Your business", previewDefault: "Your public page preview will appear here.", publicPage: "Public page", marketplace: "Main directory", ready: "Ready", hidden: "Hidden", visible: "Visible", notVisible: "Not shown",
+    social: "Social links", socialText: "Links appear on the public page and help track booking sources.", instagram: "Instagram link", facebook: "Facebook link", whatsapp: "WhatsApp number", messenger: "Messenger link", telegramTitle: "Telegram notifications", telegramText: "Connect the Vizit bot to receive new, rescheduled and cancelled bookings in Telegram.", telegramConnect: "Connect bot", telegramConnected: "Connected", telegramDisconnect: "Disconnect", telegramConnecting: "Opening…", telegramUnavailable: "The Telegram bot is not configured on the server yet.", telegramConnectError: "Could not create the Telegram connection link", telegramDisconnectError: "Could not disconnect Telegram", logo: "Logo", uploadLogo: "Upload logo", logoHint: "Use a square image for the best result.", cover: "Cover", coverPreview: "Cover preview", uploadCover: "Upload cover", businessDefault: "Your business", previewDefault: "Your public page preview will appear here.", publicPage: "Public page", marketplace: "Main directory", ready: "Ready", hidden: "Hidden", visible: "Visible", notVisible: "Not shown",
     billingBadge: "Owner billing center", billingTitle: "Plan & payments", billingText: "Plans, subscriptions, invoices and bank payments are managed on a separate owner-only page.", openBilling: "Open plan and payments", quickNote: "QUICK REMINDER", ownerOnly: "Owner access only", ownerOnlyText: "Billing is not available to managers or staff.", hosted: "Secure hosted payment", hostedText: "Payment is completed on the bank page, then the user returns to Vizit.am.", annual: "Annual plan", annualText: "The annual option with 2 free months appears on the billing page.",
     settingsLoadFailed: "Could not load business settings", scheduleLoadFailed: "Could not load the schedule", loading: "Loading…", general: "General", editable: "Editable", readOnly: "Read only", phone: "Phone", phonePlaceholder: "e.g. 077 12 34 56", bookingStep: "Booking interval", bookingStepHint: "A 15-minute step gives 09:00, 09:15, 09:30. It is not the service duration.", minutes: "min", primaryAddress: "Primary address", addressPlaceholder: "e.g. 10 Abovyan St, Yerevan",
     branches: "Locations & addresses", branchesText: "You can add up to {limit} addresses. The primary address appears on the public page.", addAddress: "Add address", address: "Address", primary: "Primary", mapSet: "Marked on map", mapMissing: "Map position not set", mapTitle: "Business location on Yandex Maps", mapText: "Place the marker at the entrance and save the position.", selectedAddress: "Selected address", noAddress: "Address not set", savePosition: "Save position", editAddress: "Edit address", newAddress: "New address", locationNamePlaceholder: "Name (e.g. Downtown)", fullAddress: "Full address", makePrimary: "Make primary", updateAddress: "Update address", saveAddress: "Save address", cancel: "Cancel", addAnother: "Add another address",
@@ -210,6 +217,36 @@ export default function BusinessSettingsPage() {
   const scheduleQ = useQuery({
     queryKey: ["schedule"],
     queryFn: fetchSchedule,
+  });
+
+  const telegramQ = useQuery({
+    queryKey: ["telegram-connection"],
+    queryFn: fetchTelegramConnection,
+    enabled: Boolean(user && canEdit),
+    retry: false,
+    refetchOnWindowFocus: true,
+  });
+
+  const connectTelegramMut = useMutation({
+    mutationFn: createTelegramConnectionLink,
+    onSuccess: (connection) => {
+      window.location.assign(connection.url);
+    },
+    onError: (error: unknown) => {
+      setToast({ open: true, text: getErrorMessage(error, text.telegramConnectError), type: "error" });
+      window.setTimeout(() => setToast((previous) => ({ ...previous, open: false })), 2600);
+    },
+  });
+
+  const disconnectTelegramMut = useMutation({
+    mutationFn: disconnectTelegram,
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: ["telegram-connection"] });
+    },
+    onError: (error: unknown) => {
+      setToast({ open: true, text: getErrorMessage(error, text.telegramDisconnectError), type: "error" });
+      window.setTimeout(() => setToast((previous) => ({ ...previous, open: false })), 2600);
+    },
   });
 
   const [form, setForm] = useState<Partial<BusinessSettings>>({});
@@ -572,6 +609,51 @@ export default function BusinessSettingsPage() {
                       <InputShell label={text.messenger} icon={<LinkIcon className="h-4 w-4 text-violet-500" />}>
                         <input value={form.messenger_url ?? ""} onChange={(e) => setForm((p) => ({ ...p, messenger_url: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="https://m.me/..." />
                       </InputShell>
+                    </div>
+                    <div className="mt-4 flex flex-col gap-4 rounded-3xl border border-sky-200 bg-gradient-to-br from-sky-50 to-white p-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex min-w-0 items-start gap-3">
+                        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-sky-500 text-white shadow-sm">
+                          <Send className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <div className="font-semibold text-slate-900">{text.telegramTitle}</div>
+                          <p className="mt-1 max-w-xl text-xs leading-5 text-slate-600">{text.telegramText}</p>
+                          {telegramQ.data && !telegramQ.data.available && !telegramQ.data.connected ? (
+                            <p className="mt-2 text-xs font-medium text-amber-700">{text.telegramUnavailable}</p>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className="flex shrink-0 flex-wrap items-center gap-2">
+                        {telegramQ.isLoading ? <Spinner size={18} /> : null}
+                        {telegramQ.data?.connected ? (
+                          <>
+                            <span className="inline-flex min-h-10 items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-3 text-sm font-semibold text-emerald-700">
+                              <CheckCircle2 className="h-4 w-4" /> {text.telegramConnected}
+                            </span>
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              size="sm"
+                              disabled={disconnectTelegramMut.isPending}
+                              onClick={() => disconnectTelegramMut.mutate()}
+                            >
+                              {disconnectTelegramMut.isPending ? <Spinner size={15} /> : <Unplug className="h-4 w-4" />}
+                              {text.telegramDisconnect}
+                            </Button>
+                          </>
+                        ) : (
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            disabled={!telegramQ.data?.available || connectTelegramMut.isPending}
+                            onClick={() => connectTelegramMut.mutate()}
+                          >
+                            {connectTelegramMut.isPending ? <Spinner size={15} /> : <Send className="h-4 w-4" />}
+                            {connectTelegramMut.isPending ? text.telegramConnecting : text.telegramConnect}
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

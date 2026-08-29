@@ -177,6 +177,10 @@ export type PublicBookingResponse = {
         expires_at: string;
         recurrence_id?: string | null;
         recurrence_count?: number;
+        verification_delivery?: {
+            email: boolean;
+            telegram: boolean;
+        };
     };
     meta?: {
         business_type?: "services" | "healthcare";
@@ -190,6 +194,7 @@ export type PublicBookingDetail = {
     client_name: string;
     client_phone: string;
     client_email?: string | null;
+    telegram_connected?: boolean;
     notes?: string | null;
     phone_verified_at?: string | null;
     guest_access_expires_at?: string | null;
@@ -613,9 +618,25 @@ export async function verifyPublicBooking(payload: {
     return { ...data, cover_url: resolveMediaUrl(data.cover_url), logo_url: resolveMediaUrl(data.logo_url) };
 }
 
-export async function resendPublicBookingCode(bookingCode: string): Promise<{ ok: boolean; already?: boolean; expires_at?: string; message?: string; manage_token?: string; manage_url?: string; data?: PublicBookingDetail }> {
+export async function resendPublicBookingCode(bookingCode: string): Promise<{ ok: boolean; already?: boolean; expires_at?: string; message?: string; manage_token?: string; manage_url?: string; data?: PublicBookingDetail; verification_delivery?: { email: boolean; telegram: boolean } }> {
     const { data } = await publicApi.post(`/public/bookings/${bookingCode}/resend`);
     return { ...data, cover_url: resolveMediaUrl(data.cover_url), logo_url: resolveMediaUrl(data.logo_url) };
+}
+
+export async function createPublicBookingTelegramLink(payload: {
+    booking_code: string;
+    token: string;
+}): Promise<{ url: string; expires_at: string; connected: boolean }> {
+    const { data } = await publicApi.post(
+        `/public/bookings/${payload.booking_code}/telegram-link`,
+        {},
+        {
+            headers: {
+                "X-Guest-Token": payload.token,
+            },
+        },
+    );
+    return data.data;
 }
 
 export async function fetchPublicBookingDetail(payload: {

@@ -42,6 +42,7 @@ type Props = {
   onMarkerClick?: (id: string) => void;
   onLocationChange?: (center: MapCoordinates, zoom: number) => void;
   behaviors?: readonly YandexMapBehavior[];
+  interactionLocked?: boolean;
   disabled?: boolean;
   className?: string;
   ariaLabel?: string;
@@ -106,6 +107,7 @@ export default function YandexMap({
   onMarkerClick,
   onLocationChange,
   behaviors,
+  interactionLocked = false,
   disabled = false,
   className,
   ariaLabel,
@@ -266,11 +268,19 @@ export default function YandexMap({
 
   return (
     <div
-      className={cn("vizit-yandex-map-shell relative isolate overflow-hidden bg-slate-100 dark:bg-slate-900", className)}
+      className={cn(
+        "vizit-yandex-map-shell relative isolate overflow-hidden bg-slate-100 dark:bg-slate-900",
+        interactionLocked && "vizit-yandex-map-shell--interaction-locked",
+        className,
+      )}
       role="region"
       aria-label={ariaLabel}
     >
-      <div ref={containerRef} className="absolute inset-0 z-0" />
+      <div
+        ref={containerRef}
+        className="vizit-yandex-map-provider absolute inset-0 z-0"
+        style={{ touchAction: interactionLocked ? "pan-y" : undefined }}
+      />
 
       {status === "loading" ? (
         <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center bg-white/72 text-sm font-semibold text-slate-600 backdrop-blur-sm dark:bg-slate-950/65 dark:text-slate-200" role="status">

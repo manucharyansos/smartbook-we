@@ -113,7 +113,9 @@ const stagger: Variants = {
   visible: { transition: { staggerChildren: 0.075 } },
 };
 
-const HOME_MAP_BEHAVIORS: readonly YandexMapBehavior[] = ["drag", "pinchZoom", "dblClick", "magnifier"];
+const HOME_DESKTOP_MAP_BEHAVIORS: readonly YandexMapBehavior[] = ["drag", "pinchZoom", "dblClick", "magnifier"];
+const HOME_MOBILE_MAP_BEHAVIORS: readonly YandexMapBehavior[] = ["drag", "pinchZoom"];
+const LOCKED_MAP_BEHAVIORS: readonly YandexMapBehavior[] = [];
 
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState(() => typeof window !== "undefined" && window.matchMedia(query).matches);
@@ -465,16 +467,23 @@ function InteractiveBusinessMap({
   selectedPinKey,
   onSelectPin,
   userLocation,
+  isCompact,
 }: {
   pins: MapPinItem[];
   selectedPin: MapPinItem | null;
   selectedPinKey: string | null;
   onSelectPin: (key: string) => void;
   userLocation: { lat: number; lng: number } | null;
+  isCompact: boolean;
 }) {
   const { t } = useLanguage();
   const [center, setCenter] = useState(() => defaultMapCenter(pins, userLocation));
   const [zoom, setZoom] = useState(() => chooseMapZoom(pins));
+  const [mobileInteractionEnabled, setMobileInteractionEnabled] = useState(false);
+  const interactionLocked = isCompact && !mobileInteractionEnabled;
+  const mapBehaviors = isCompact
+    ? mobileInteractionEnabled ? HOME_MOBILE_MAP_BEHAVIORS : LOCKED_MAP_BEHAVIORS
+    : HOME_DESKTOP_MAP_BEHAVIORS;
   const pinByKey = useMemo(() => new Map(pins.map((pin) => [`${pin.businessId}-${pin.locationId}`, pin])), [pins]);
   const markers = useMemo<VizitMapMarker[]>(() => {
     const businessMarkers = pins.map((pin) => {
@@ -516,7 +525,8 @@ function InteractiveBusinessMap({
       center={{ latitude: center.lat, longitude: center.lng }}
       zoom={zoom}
       markers={markers}
-      behaviors={HOME_MAP_BEHAVIORS}
+      behaviors={mapBehaviors}
+      interactionLocked={interactionLocked}
       onLocationChange={(nextCenter, nextZoom) => {
         setCenter({ lat: nextCenter.latitude, lng: nextCenter.longitude });
         setZoom(nextZoom);
@@ -533,7 +543,7 @@ function InteractiveBusinessMap({
     >
       <div className="pointer-events-none absolute left-3 top-3 z-30 flex max-w-[calc(100%_-_96px)] items-center gap-2 rounded-2xl border border-white/70 bg-white/88 px-3 py-2 text-[11px] font-bold text-[#3e1f78] shadow-[0_18px_60px_rgba(62,31,120,0.16)] backdrop-blur-2xl dark:border-white/14 dark:bg-slate-950/78 dark:text-white sm:left-5 sm:top-5 sm:px-4 sm:py-3 sm:text-xs">
         <MapPin className="h-3.5 w-3.5 shrink-0 text-[#1e9e92] dark:text-cyan-200" />
-        <span className="truncate">{t("map.instructions")}</span>
+        <span className="truncate">{isCompact ? t("map.mobileInstructions") : t("map.instructions")}</span>
       </div>
 
       <div className="absolute right-3 top-3 z-30 grid overflow-hidden rounded-2xl border border-white/70 bg-white/92 text-[#3e1f78] shadow-[0_18px_60px_rgba(62,31,120,0.16)] backdrop-blur-2xl dark:border-white/14 dark:bg-slate-950/80 dark:text-white sm:right-5 sm:top-5">
@@ -541,6 +551,23 @@ function InteractiveBusinessMap({
         <button type="button" onClick={() => zoomMap(-1)} className="grid h-10 w-10 place-items-center border-b border-[#e8e2f0] text-lg font-black transition hover:bg-[#f1edf7] dark:border-white/10 dark:hover:bg-white/10" aria-label={t("map.zoomOut")}>−</button>
         <button type="button" onClick={fitMap} className="grid h-10 w-10 place-items-center transition hover:bg-[#f1edf7] dark:hover:bg-white/10" aria-label={t("map.center")}><LocateFixed className="h-4 w-4" /></button>
       </div>
+
+      {isCompact ? (
+        <button
+          type="button"
+          onClick={() => setMobileInteractionEnabled((enabled) => !enabled)}
+          aria-pressed={mobileInteractionEnabled}
+          className={cn(
+            "absolute bottom-3 left-1/2 z-30 inline-flex min-h-11 -translate-x-1/2 items-center justify-center gap-2 rounded-full border px-4 text-xs font-black shadow-[0_16px_44px_rgba(43,13,53,0.18)] backdrop-blur-xl transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6d2a63] focus-visible:ring-offset-2",
+            mobileInteractionEnabled
+              ? "border-[#6d2a63]/30 bg-[#2b0d35] text-white"
+              : "border-[#d39a43]/35 bg-[#fffaf5]/94 text-[#4b164b]",
+          )}
+        >
+          <Hand className="h-4 w-4" aria-hidden="true" />
+          {mobileInteractionEnabled ? t("map.disableInteraction") : t("map.enableInteraction")}
+        </button>
+      ) : null}
 
       {!pins.length ? (
         <div className="pointer-events-none absolute inset-0 z-20 grid place-items-center p-6 text-center">
@@ -916,7 +943,7 @@ function MobileMapBusinessSheet({
 
   return (
     <motion.div
-      className="vizit-map-mobile-modal fixed inset-0 z-[90] lg:hidden"
+      className="vizit-map-mobile-modal fixed inset-0 z-[130] lg:hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -938,7 +965,7 @@ function MobileMapBusinessSheet({
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
-        className="vizit-map-mobile-sheet absolute inset-x-0 bottom-0 max-h-[min(82dvh,720px)] overflow-y-auto rounded-t-[30px] border border-b-0 border-[#d39a43]/30 bg-[#fffaf5] px-4 pb-[max(18px,env(safe-area-inset-bottom))] pt-3 text-[#2b0d35] shadow-[0_-24px_80px_rgba(43,13,53,0.26)] dark:border-[#edc982]/18 dark:bg-[#1b111d] dark:text-[#fff8f2]"
+        className="vizit-map-mobile-sheet absolute inset-x-0 bottom-0 max-h-[min(62dvh,430px)] overflow-y-auto rounded-t-[30px] border border-b-0 border-[#d39a43]/30 bg-[#fffaf5] px-4 pb-[max(18px,env(safe-area-inset-bottom))] pt-3 text-[#2b0d35] shadow-[0_-24px_80px_rgba(43,13,53,0.26)] dark:border-[#edc982]/18 dark:bg-[#1b111d] dark:text-[#fff8f2]"
       >
         <div className="mx-auto h-1.5 w-11 rounded-full bg-[#6d2a63]/20 dark:bg-white/20" aria-hidden="true" />
         <div className="mt-3 flex items-center justify-between gap-4">
@@ -954,43 +981,36 @@ function MobileMapBusinessSheet({
           </button>
         </div>
 
-        <div className="group mt-2 overflow-hidden rounded-[24px] border border-[#d39a43]/24 shadow-[0_16px_42px_rgba(72,35,49,0.13)] dark:border-white/12">
-          <BusinessCardVisual
-            key={`${item.id}:${item.cover_url ?? ""}:${item.logo_url ?? ""}`}
-            item={item}
-            Icon={Icon}
-            categoryName={categoryName}
-          />
-        </div>
-
-        <div className="px-1 pb-1 pt-5">
-          <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-[#d39a43]/25 bg-[#fff2df] px-3 py-2 text-xs font-bold text-[#76501f] dark:border-[#edc982]/18 dark:bg-[#edc982]/10 dark:text-[#efc98a]">
-            <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-            <span className="truncate">{categoryName}</span>
+        <Link
+          to={`/businesses/${pin.slug}`}
+          className="vizit-map-mobile-card group mt-3 grid grid-cols-[108px_minmax(0,1fr)] gap-3 rounded-[24px] border border-[#d39a43]/24 bg-white/72 p-2 shadow-[0_16px_42px_rgba(72,35,49,0.12)] transition hover:border-[#d39a43]/42 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6d2a63] focus-visible:ring-offset-2 dark:border-white/12 dark:bg-white/[0.055] dark:hover:bg-white/[0.09] dark:focus-visible:ring-[#edc982] dark:focus-visible:ring-offset-[#1b111d]"
+          aria-label={`${pin.name} — ${t("business.card.view")}`}
+        >
+          <div className="vizit-map-mobile-visual overflow-hidden rounded-[18px]">
+            <BusinessCardVisual
+              key={`${item.id}:${item.cover_url ?? ""}:${item.logo_url ?? ""}`}
+              item={item}
+              Icon={Icon}
+              categoryName={categoryName}
+            />
           </div>
-          <h3 id={titleId} className="vizit-display mt-4 break-words text-[26px] leading-[1.12] text-[#2b0d35] dark:text-white">
-            {pin.name}
-          </h3>
-          <p id={descriptionId} className="mt-3 flex items-start gap-2 text-sm font-medium leading-6 text-[#5f5062] dark:text-[#d8cbd5]">
-            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#c88e37]" aria-hidden="true" />
-            <span>{pin.locationName ? `${pin.locationName} · ` : ""}{pin.address || t("business.card.noAddress")}</span>
-          </p>
-
-          <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
-            <Link
-              to={pin.bookingUrl}
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(135deg,#2b0d35,#6d2a63)] px-5 text-sm font-bold text-white shadow-[0_12px_28px_rgba(74,22,74,0.22)] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6d2a63] focus-visible:ring-offset-2 dark:focus-visible:ring-[#edc982] dark:focus-visible:ring-offset-[#1b111d]"
-            >
-              {t("business.card.book")} <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-            <Link
-              to={`/businesses/${pin.slug}`}
-              className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-[#d39a43]/28 bg-white px-5 text-sm font-bold text-[#4b164b] transition hover:bg-[#fff2df] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6d2a63] focus-visible:ring-offset-2 dark:border-white/14 dark:bg-white/[0.07] dark:text-white dark:hover:bg-white/[0.12] dark:focus-visible:ring-[#edc982] dark:focus-visible:ring-offset-[#1b111d]"
-            >
-              {t("business.card.view")}
-            </Link>
+          <div className="flex min-w-0 flex-col py-1 pr-1">
+            <div className="inline-flex max-w-full items-center gap-1.5 text-[11px] font-bold text-[#8e5d21] dark:text-[#efc98a]">
+              <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              <span className="truncate">{categoryName}</span>
+            </div>
+            <h3 id={titleId} className="vizit-display mt-2 line-clamp-2 break-words text-[21px] leading-[1.08] text-[#2b0d35] dark:text-white">
+              {pin.name}
+            </h3>
+            <p id={descriptionId} className="mt-2 flex min-w-0 items-start gap-1.5 text-[12px] font-medium leading-[18px] text-[#5f5062] dark:text-[#d8cbd5]">
+              <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#c88e37]" aria-hidden="true" />
+              <span className="line-clamp-2">{pin.locationName ? `${pin.locationName} · ` : ""}{pin.address || t("business.card.noAddress")}</span>
+            </p>
+            <span className="mt-auto inline-flex h-8 w-8 items-center justify-center self-end rounded-full bg-[#fff2df] text-[#6d2a63] transition group-hover:translate-x-0.5 dark:bg-[#edc982]/10 dark:text-[#efc98a]" aria-hidden="true">
+              <ChevronRight className="h-4 w-4" />
+            </span>
           </div>
-        </div>
+        </Link>
       </motion.section>
     </motion.div>
   );
@@ -1383,6 +1403,7 @@ export default function Index() {
                 selectedPinKey={selectedPinKey}
                 onSelectPin={selectMapPin}
                 userLocation={userLocation}
+                isCompact={isCompactMap}
               />
 
               <div className="vizit-map-panel min-w-0 max-w-full overflow-hidden rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)] sm:rounded-[30px] sm:p-5">

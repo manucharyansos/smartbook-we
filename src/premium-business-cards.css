@@ -715,10 +715,25 @@ html.dark .vizit-public-page #map .vizit-map-business-view{border-color:rgba(237
 
 /* The mobile map sheet reuses the same editorial artwork without inheriting
    the desktop sidebar proportions. */
+.vizit-yandex-map-shell--interaction-locked .vizit-yandex-map-provider,
+.vizit-yandex-map-shell--interaction-locked .vizit-yandex-map-provider [class*="ymaps3"]{
+  touch-action:pan-y!important;
+  overscroll-behavior:auto!important;
+}
+.vizit-yandex-map-shell--interaction-locked .vizit-yandex-marker{
+  touch-action:manipulation!important;
+}
+.vizit-public-page #map .vizit-map-mobile-sheet .vizit-map-mobile-visual{
+  width:108px;
+  height:118px;
+  min-height:118px;
+  background:linear-gradient(145deg,#2b0d35,#6d2a63);
+}
 .vizit-public-page #map .vizit-map-mobile-sheet .vizit-business-card-media{
   position:relative;
-  height:176px!important;
-  min-height:176px!important;
+  width:100%!important;
+  height:118px!important;
+  min-height:118px!important;
   overflow:hidden;
   background:linear-gradient(145deg,#2b0d35,#6d2a63);
 }
@@ -770,7 +785,14 @@ html.dark .vizit-public-page #map .vizit-map-business-view{border-color:rgba(237
   transform:translate(-50%,-50%);
   text-shadow:0 4px 22px rgba(39,15,33,.24);
 }
-.vizit-public-page #map .vizit-map-mobile-sheet .vizit-business-fallback-symbol svg{width:38px;height:38px;stroke-width:1.55}
-.vizit-public-page #map .vizit-map-mobile-sheet .vizit-business-fallback-symbol strong{font-family:"Noto Serif Armenian",Georgia,serif;font-size:30px;line-height:1}
+.vizit-public-page #map .vizit-map-mobile-sheet .vizit-business-fallback-symbol{gap:7px}
+.vizit-public-page #map .vizit-map-mobile-sheet .vizit-business-fallback-symbol svg{width:27px;height:27px;stroke-width:1.55}
+.vizit-public-page #map .vizit-map-mobile-sheet .vizit-business-fallback-symbol strong{font-family:"Noto Serif Armenian",Georgia,serif;font-size:22px;line-height:1}
 .vizit-public-page #map .vizit-map-mobile-sheet .vizit-business-category-pill,
 .vizit-public-page #map .vizit-map-mobile-sheet .vizit-business-overlay-identity{display:none!important}
+
+@media(max-width:360px){
+  .vizit-public-page #map .vizit-map-mobile-sheet .vizit-map-mobile-card{grid-template-columns:96px minmax(0,1fr)}
+  .vizit-public-page #map .vizit-map-mobile-sheet .vizit-map-mobile-visual{width:96px;height:108px;min-height:108px}
+  .vizit-public-page #map .vizit-map-mobile-sheet .vizit-business-card-media{height:108px!important;min-height:108px!important}
+}

@@ -27,6 +27,7 @@ import {
     Copy,
     MapPin,
     ShieldCheck,
+    Send,
 } from "lucide-react";
 import { PublicBusinessFooter, PublicBusinessHeader } from "../components/public/PublicBusinessChrome";
 import Seo from "../components/Seo";
@@ -45,6 +46,7 @@ import {
     verifyPublicBooking,
     resendPublicBookingCode,
     fetchPublicBookingDetail,
+    createPublicBookingTelegramLink,
     fetchPublicRescheduleOptions,
     cancelPublicBooking,
     reschedulePublicBooking,
@@ -52,6 +54,7 @@ import {
     fetchPublicWaitlistOffer,
     acceptPublicWaitlistOffer,
     type PublicBookingDetail,
+    type PublicBookingResponse,
     type PublicLocation,
     type PublicService,
     type PublicStaff,
@@ -72,6 +75,11 @@ const EMPTY_SERVICES: PublicService[] = [];
 const EMPTY_STAFF: PublicStaff[] = [];
 const EMPTY_LOCATIONS: PublicLocation[] = [];
 const EMPTY_SLOTS: Slot[] = [];
+
+function verificationWasNotDelivered(response: PublicBookingResponse): boolean {
+    const delivery = response.data.verification_delivery;
+    return Boolean(delivery && !delivery.email && !delivery.telegram);
+}
 
 function storeGuestToken(bookingCode: string, token: string) {
     try {
@@ -511,7 +519,6 @@ export default function PublicBooking() {
 
     const [msg, setMsg] = useState<string | null>(null);
     const [msgType, setMsgType] = useState<"success" | "error">("success");
-    const [resultCode, setResultCode] = useState<string | null>(null);
     const [activeBookingCode, setActiveBookingCode] = useState<string>(searchParams.get("booking") ?? "");
     const [guestToken, setGuestToken] = useState<string>(searchParams.get("token") ?? "");
     const [otp, setOtp] = useState("");
@@ -877,9 +884,9 @@ export default function PublicBooking() {
         mutationFn: createPublicBooking,
         onSuccess: (res) => {
             invalidateAvailabilityQueries();
-            setMsgType("success");
-            setResultCode(res?.data?.booking_code ?? null);
-            setMsg(text.bookingCreated);
+            const deliveryFailed = verificationWasNotDelivered(res);
+            setMsgType(deliveryFailed ? "error" : "success");
+            setMsg(deliveryFailed ? text.codeDeliveryFailed : text.bookingCreated);
             setActiveBookingCode(res?.data?.booking_code ?? "");
             setGuestToken("");
             setOtpExpiresAt(res?.data?.expires_at ?? null);
@@ -900,9 +907,9 @@ export default function PublicBooking() {
         mutationFn: createPublicBookingMulti,
         onSuccess: (res) => {
             invalidateAvailabilityQueries();
-            setMsgType("success");
-            setResultCode(res?.data?.booking_code ?? null);
-            setMsg(text.multiCreated);
+            const deliveryFailed = verificationWasNotDelivered(res);
+            setMsgType(deliveryFailed ? "error" : "success");
+            setMsg(deliveryFailed ? text.codeDeliveryFailed : text.multiCreated);
             setActiveBookingCode(res?.data?.booking_code ?? "");
             setGuestToken("");
             setOtpExpiresAt(res?.data?.expires_at ?? null);
@@ -925,9 +932,9 @@ export default function PublicBooking() {
         mutationFn: createPublicBookingLines,
         onSuccess: (res) => {
             invalidateAvailabilityQueries();
-            setMsgType("success");
-            setResultCode(res?.data?.booking_code ?? null);
-            setMsg(text.linesCreated);
+            const deliveryFailed = verificationWasNotDelivered(res);
+            setMsgType(deliveryFailed ? "error" : "success");
+            setMsg(deliveryFailed ? text.codeDeliveryFailed : text.linesCreated);
             setActiveBookingCode(res?.data?.booking_code ?? "");
             setGuestToken("");
             setOtpExpiresAt(res?.data?.expires_at ?? null);
@@ -1002,7 +1009,6 @@ export default function PublicBooking() {
         setOtp("");
         setOtpExpiresAt(null);
         setOtpPanelOpen(false);
-        setResultCode(null);
         setMsg(null);
         setTime("");
         setSingleSlotKey("");
@@ -1128,7 +1134,6 @@ export default function PublicBooking() {
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setMsg(null);
-        setResultCode(null);
 
         if (locations.length > 1 && !selectedLocationId) {
             setMsgType("error");
@@ -1438,14 +1443,7 @@ export default function PublicBooking() {
                                 ) : (
                                     <AlertCircle className="h-5 w-5 mt-0.5 shrink-0" />
                                 )}
-                                <div>
-                                    <div className="font-medium">{msg}</div>
-                                    {resultCode && (
-                                        <div className="mt-1 text-sm opacity-80">
-                                            {text.bookingCode}: <span className="font-semibold">{resultCode}</span>
-                                        </div>
-                                    )}
-                                </div>
+                                <div className="font-medium">{msg}</div>
                             </div>
                         )}
 
@@ -1480,7 +1478,6 @@ export default function PublicBooking() {
                         {(otpPanelOpen || (!!activeBookingCode && !guestToken)) && (
                             <div className="mb-6">
                                 <OtpVerifyPanel
-                                    bookingCode={activeBookingCode}
                                     otp={otp}
                                     expiresAt={otpExpiresAt}
                                     isSubmitting={verifyMut.isPending}
@@ -2144,8 +2141,58 @@ function StatPill({ label, value }: { label: string; value: string }) {
     );
 }
 
-function OtpVerifyPanel({
+function TelegramConnectButton({
+    connected,
     bookingCode,
+    guestToken,
+}: {
+    connected: boolean;
+    bookingCode: string;
+    guestToken: string;
+}) {
+    const { locale } = useLanguage();
+    const text = publicBookingCopy[locale];
+    const [error, setError] = useState<string | null>(null);
+    const connectMut = useMutation({
+        mutationFn: () => createPublicBookingTelegramLink({
+            booking_code: bookingCode,
+            token: guestToken,
+        }),
+        onSuccess: (connection) => {
+            setError(null);
+            window.location.assign(connection.url);
+        },
+        onError: (connectError: unknown) => {
+            setError(formatApiError(connectError, text.telegramConnectError));
+        },
+    });
+
+    if (connected) {
+        return (
+            <div className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-sky-200 bg-sky-50 px-4 py-2.5 text-sm font-semibold text-sky-800">
+                <CheckCircle2 className="h-4 w-4" />
+                {text.telegramConnected}
+            </div>
+        );
+    }
+
+    return (
+        <div>
+            <button
+                type="button"
+                onClick={() => connectMut.mutate()}
+                disabled={connectMut.isPending || !bookingCode || !guestToken}
+                className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-sky-200 bg-white px-4 py-2.5 text-sm font-semibold text-sky-800 shadow-sm transition hover:bg-sky-50 disabled:opacity-60"
+            >
+                {connectMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                {connectMut.isPending ? text.telegramConnecting : text.telegramConnect}
+            </button>
+            {error ? <div className="mt-2 text-sm text-rose-700">{error}</div> : null}
+        </div>
+    );
+}
+
+function OtpVerifyPanel({
     otp,
     expiresAt,
     isSubmitting,
@@ -2154,7 +2201,6 @@ function OtpVerifyPanel({
     onVerify,
     onResend,
 }: {
-    bookingCode: string;
     otp: string;
     expiresAt: string | null;
     isSubmitting: boolean;
@@ -2193,9 +2239,6 @@ function OtpVerifyPanel({
                 <div>
                     <div className="text-sm font-medium text-violet-700 dark:text-violet-300">{text.otpStep}</div>
                     <div className="mt-1 text-2xl font-bold text-slate-900">{text.otpTitle}</div>
-                    <div className="mt-2 text-sm text-slate-500">
-                        {text.otpBookingCode}: <span className="font-semibold text-slate-900">{bookingCode}</span>
-                    </div>
                 </div>
                 <div className="rounded-2xl bg-white border border-violet-100 px-4 py-3 text-sm text-slate-600">
                     <div className="font-semibold text-slate-900">{text.contactChannels}</div>
@@ -2387,6 +2430,17 @@ function ManageBookingCard({
                                     : text.cancelOne}
                     </button>
                 </div>
+            </div>
+
+            <div className="mt-4">
+                <TelegramConnectButton
+                    connected={Boolean(detail.telegram_connected)}
+                    bookingCode={bookingCode}
+                    guestToken={guestToken}
+                />
+                {!detail.telegram_connected ? (
+                    <p className="mt-2 max-w-xl text-xs leading-5 text-slate-500">{text.telegramConnectHelp}</p>
+                ) : null}
             </div>
 
             {confirmingCancel ? (

@@ -16,11 +16,6 @@ const routeMeta: Record<string, MetaCopy> = {
     ru: { title: "Vizit для бизнеса — записи и управление клиентами", description: "Управляйте онлайн-записью, календарём, командой, услугами и клиентами на одной платформе Vizit." },
     en: { title: "Vizit for business — bookings and client management", description: "Manage online bookings, calendars, staff, services and clients on one Vizit platform." },
   },
-  "/features": {
-    hy: { title: "Vizit-ի հնարավորությունները բիզնեսների համար", description: "Կառավարեք ամրագրումները, օրացույցը, ծառայությունները, թիմը և հաճախորդներին մեկ հարթակում։" },
-    ru: { title: "Возможности Vizit для бизнеса", description: "Управляйте записями, календарём, услугами, командой и клиентами на одной платформе." },
-    en: { title: "Vizit features for businesses", description: "Manage bookings, calendars, services, staff and clients from one platform." },
-  },
   "/pricing": {
     hy: { title: "Vizit-ի գնային պլանները", description: "Ընտրեք ձեր բիզնեսի չափին համապատասխան Vizit պլանը և սկսեք 14-օրյա փորձաշրջանը։" },
     ru: { title: "Тарифы Vizit", description: "Выберите тариф Vizit под размер вашего бизнеса и начните 14-дневный пробный период." },

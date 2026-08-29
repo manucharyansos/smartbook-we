@@ -293,6 +293,298 @@ html.dark .vizit-public-page #businesses article a[href^="/businesses/"]{
   color:#fff8f2!important;
 }
 
+/* Map results use the same editorial image, cream surface, plum typography and
+   action hierarchy as the directory cards. The smaller horizontal proportion
+   keeps the map useful while making both lists feel like one component family. */
+.vizit-public-page #map .vizit-map-panel{
+  display:flex;
+  min-height:0;
+  flex-direction:column;
+}
+.vizit-public-page #map .vizit-map-panel-heading{
+  flex:none;
+  padding:2px 2px 0;
+}
+.vizit-public-page #map .vizit-map-panel-eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 11px;
+  border:1px solid rgba(211,154,67,.28);
+  border-radius:999px;
+  background:#fff2df;
+  color:#8e5d21;
+  font-size:11px;
+  font-weight:800;
+}
+.vizit-public-page #map .vizit-map-panel-eyebrow svg{width:14px;height:14px;color:#c88e37}
+.vizit-public-page #map .vizit-map-panel-heading>p{
+  margin:9px 2px 0!important;
+  color:#786879!important;
+  font-size:12px!important;
+  line-height:19px!important;
+}
+.vizit-public-page #map .vizit-map-slider{
+  overscroll-behavior:contain;
+}
+.vizit-public-page #map .vizit-map-business-card{
+  position:relative;
+  display:grid;
+  grid-template-columns:112px minmax(0,1fr);
+  width:min(344px,calc(100vw - 58px));
+  min-width:min(344px,calc(100vw - 58px));
+  max-width:344px;
+  min-height:142px;
+  flex:none;
+  padding:7px;
+  overflow:hidden;
+  border:1px solid rgba(211,154,67,.22);
+  border-radius:23px;
+  background:linear-gradient(180deg,#fffdf9,#fff9f2);
+  box-shadow:0 15px 40px rgba(72,35,49,.09);
+  scroll-snap-align:start;
+  transition:border-color .22s ease,box-shadow .22s ease,transform .22s ease;
+}
+.vizit-public-page #map .vizit-map-business-card:hover{
+  border-color:rgba(211,154,67,.46);
+  box-shadow:0 20px 48px rgba(72,35,49,.13);
+  transform:translateY(-2px);
+}
+.vizit-public-page #map .vizit-map-business-card.is-active{
+  border-color:rgba(109,42,99,.52);
+  background:linear-gradient(180deg,#fffdf9,#fbf0e8);
+  box-shadow:0 0 0 2px rgba(109,42,99,.08),0 20px 50px rgba(72,35,49,.14);
+}
+.vizit-public-page #map .vizit-map-business-media-button{
+  position:relative;
+  display:block;
+  width:112px;
+  height:128px;
+  padding:0;
+  overflow:hidden;
+  border:0!important;
+  border-radius:17px;
+  background:#2b0d35;
+  box-shadow:0 10px 26px rgba(43,13,53,.16);
+  cursor:pointer;
+}
+.vizit-public-page #map .vizit-map-business-media-button::after{
+  content:"✓";
+  position:absolute;
+  z-index:5;
+  top:8px;
+  right:8px;
+  display:grid;
+  width:25px;
+  height:25px;
+  place-items:center;
+  border:1px solid rgba(255,248,239,.62);
+  border-radius:999px;
+  background:#d39a43;
+  color:#2b0d35;
+  font-size:12px;
+  font-weight:900;
+  opacity:0;
+  box-shadow:0 8px 18px rgba(43,13,53,.20);
+  transform:scale(.76);
+  transition:opacity .2s ease,transform .2s ease;
+}
+.vizit-public-page #map .vizit-map-business-card.is-active .vizit-map-business-media-button::after{
+  opacity:1;
+  transform:scale(1);
+}
+.vizit-public-page #map .vizit-map-business-media-button>.vizit-business-card-media{
+  width:100%!important;
+  height:100%!important;
+  min-height:100%!important;
+  border-radius:inherit!important;
+}
+.vizit-public-page #map .vizit-map-business-card .vizit-business-category-pill,
+.vizit-public-page #map .vizit-map-business-card .vizit-business-overlay-identity{
+  display:none!important;
+}
+.vizit-public-page #map .vizit-map-business-card .vizit-business-cover-fallback{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  isolation:isolate;
+  background:linear-gradient(145deg,#865e58,#dfb7a8);
+}
+.vizit-public-page #map .vizit-map-business-card .vizit-business-cover-fallback::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background:linear-gradient(120deg,rgba(255,250,243,.24),transparent 38%),repeating-linear-gradient(135deg,rgba(255,255,255,.055) 0 1px,transparent 1px 16px);
+}
+.vizit-public-page #map .vizit-map-business-card .vizit-business-cover-fallback.is-0{background:linear-gradient(145deg,#885c58,#ddb1a5)}
+.vizit-public-page #map .vizit-map-business-card .vizit-business-cover-fallback.is-1{background:linear-gradient(145deg,#98703c,#e7c48f)}
+.vizit-public-page #map .vizit-map-business-card .vizit-business-cover-fallback.is-2{background:linear-gradient(145deg,#46675e,#a9c4b4)}
+.vizit-public-page #map .vizit-map-business-card .vizit-business-cover-fallback.is-3{background:linear-gradient(145deg,#624759,#c7a7b8)}
+.vizit-public-page #map .vizit-map-business-card .vizit-business-cover-fallback.is-4{background:linear-gradient(145deg,#76523f,#d4a17f)}
+.vizit-public-page #map .vizit-map-business-card .vizit-business-cover-fallback.is-5{background:linear-gradient(145deg,#455d65,#a8c2bf)}
+.vizit-public-page #map .vizit-map-business-card .vizit-business-cover-orb{
+  position:absolute;
+  border:1px solid rgba(255,248,238,.38);
+  border-radius:50%;
+  background:rgba(255,246,232,.09);
+}
+.vizit-public-page #map .vizit-map-business-card .vizit-business-cover-orb.is-top{top:-38px;right:-25px;width:100px;height:100px}
+.vizit-public-page #map .vizit-map-business-card .vizit-business-cover-orb.is-bottom{bottom:-64px;left:-34px;width:138px;height:138px}
+.vizit-public-page #map .vizit-map-business-card .vizit-business-logo-backdrop{
+  position:absolute;
+  inset:-16%;
+  width:132%;
+  height:132%;
+  object-fit:cover;
+  opacity:.36;
+  filter:blur(18px) saturate(.82) contrast(.94);
+}
+.vizit-public-page #map .vizit-map-business-card .vizit-business-fallback-symbol{
+  position:absolute;
+  top:50%;
+  left:50%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:5px;
+  color:rgba(255,250,244,.92);
+  transform:translate(-50%,-50%);
+  text-shadow:0 4px 20px rgba(39,15,33,.24);
+}
+.vizit-public-page #map .vizit-map-business-card .vizit-business-fallback-symbol svg{width:29px;height:29px;stroke-width:1.55}
+.vizit-public-page #map .vizit-map-business-card .vizit-business-fallback-symbol strong{font-family:"Noto Serif Armenian",Georgia,serif;font-size:22px;line-height:1}
+.vizit-public-page #map .vizit-map-business-body{
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+  padding:5px 5px 4px 11px;
+}
+.vizit-public-page #map .vizit-map-business-copy{
+  display:block;
+  min-width:0;
+  padding:0;
+  border:0!important;
+  background:transparent!important;
+  color:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+.vizit-public-page #map .vizit-map-business-category{
+  display:flex;
+  min-width:0;
+  align-items:center;
+  gap:5px;
+  color:#9b6a2c;
+  font-size:9.5px;
+  font-weight:800;
+  line-height:1.2;
+}
+.vizit-public-page #map .vizit-map-business-category svg{width:12px;height:12px;flex:none}
+.vizit-public-page #map .vizit-map-business-category span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vizit-public-page #map .vizit-map-business-name{
+  display:-webkit-box;
+  max-height:38px;
+  margin-top:5px;
+  overflow:hidden;
+  color:#321735;
+  font-family:"Noto Serif Armenian",Georgia,serif;
+  font-size:14px;
+  font-weight:700;
+  line-height:18px;
+  overflow-wrap:anywhere;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+}
+.vizit-public-page #map .vizit-map-business-address{
+  display:flex;
+  min-width:0;
+  align-items:flex-start;
+  gap:5px;
+  margin-top:6px;
+  color:#7b6b7b;
+  font-size:9.5px;
+  font-weight:600;
+  line-height:14px;
+}
+.vizit-public-page #map .vizit-map-business-address svg{width:12px;height:12px;flex:none;margin-top:1px;color:#d39a43}
+.vizit-public-page #map .vizit-map-business-address span{display:-webkit-box;max-height:28px;overflow:hidden;overflow-wrap:anywhere;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.vizit-public-page #map .vizit-map-business-actions{
+  display:grid;
+  grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);
+  gap:5px;
+  margin-top:auto;
+  padding-top:6px;
+}
+.vizit-public-page #map .vizit-map-business-actions>a{
+  display:flex;
+  min-width:0;
+  min-height:29px;
+  align-items:center;
+  justify-content:center;
+  border-radius:9px!important;
+  font-size:9px!important;
+  line-height:1!important;
+  font-weight:800!important;
+  white-space:nowrap;
+}
+.vizit-public-page #map .vizit-map-business-book{
+  gap:3px;
+  background:linear-gradient(135deg,#2b0d35,#6d2a63)!important;
+  color:#fff!important;
+  box-shadow:0 8px 18px rgba(74,22,74,.18)!important;
+}
+.vizit-public-page #map .vizit-map-business-book svg{width:11px;height:11px;flex:none}
+.vizit-public-page #map .vizit-map-business-view{
+  border:1px solid rgba(211,154,67,.23)!important;
+  background:#fff8ef!important;
+  color:#4c394f!important;
+}
+.vizit-public-page #map .vizit-map-panel-empty{
+  display:grid;
+  min-height:280px;
+  place-items:center;
+  align-content:center;
+  padding:28px;
+  text-align:center;
+}
+.vizit-public-page #map .vizit-map-panel-empty>svg{width:38px;height:38px;color:#d39a43}
+.vizit-public-page #map .vizit-map-panel-empty h3{margin-top:12px;font-family:"Noto Serif Armenian",Georgia,serif;font-size:20px}
+.vizit-public-page #map .vizit-map-panel-empty p{margin-top:8px!important;font-size:12px!important;line-height:20px!important}
+
+html.dark .vizit-public-page #map .vizit-map-panel-eyebrow{
+  border-color:rgba(237,201,130,.18);
+  background:rgba(237,201,130,.09);
+  color:#f4d99f;
+}
+html.dark .vizit-public-page #map .vizit-map-panel-heading>p{color:#cfc0cb!important}
+html.dark .vizit-public-page #map .vizit-map-business-card{
+  border-color:rgba(237,201,130,.14);
+  background:linear-gradient(180deg,#302730,#282228);
+  box-shadow:0 16px 44px rgba(0,0,0,.24);
+}
+html.dark .vizit-public-page #map .vizit-map-business-card.is-active{
+  border-color:rgba(237,201,130,.42);
+  background:linear-gradient(180deg,#392d37,#2b232a);
+  box-shadow:0 0 0 2px rgba(237,201,130,.06),0 20px 48px rgba(0,0,0,.30);
+}
+html.dark .vizit-public-page #map .vizit-map-business-name{color:#fff8f2}
+html.dark .vizit-public-page #map .vizit-map-business-category{color:#efc98a}
+html.dark .vizit-public-page #map .vizit-map-business-address{color:#cfbfca}
+html.dark .vizit-public-page #map .vizit-map-business-view{border-color:rgba(237,201,130,.15)!important;background:rgba(255,255,255,.055)!important;color:#fff8f2!important}
+
+@media(min-width:1024px){
+  .vizit-public-page #map .vizit-map-panel{height:100%}
+  .vizit-public-page #map .vizit-map-slider{flex:1}
+  .vizit-public-page #map .vizit-map-business-card{width:100%;min-width:0;max-width:none;scroll-snap-align:none}
+}
+
+@media(max-width:390px){
+  .vizit-public-page #map .vizit-map-business-card{grid-template-columns:104px minmax(0,1fr);width:calc(100vw - 54px);min-width:calc(100vw - 54px)}
+  .vizit-public-page #map .vizit-map-business-media-button{width:104px}
+  .vizit-public-page #map .vizit-map-business-body{padding-left:9px}
+}
+
 /* The supplied mobile reference uses compact horizontal business rows. */
 @media(max-width:767px){
   .vizit-public-page #businesses article.vizit-business-directory-card{

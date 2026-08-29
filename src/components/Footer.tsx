@@ -17,7 +17,7 @@ export default function Footer() {
       { to: "/about", label: t("nav.about") }, { to: "/contact", label: t("nav.contact") },
     ],
     product: [
-      { to: "/business", label: t("nav.forBusiness") }, { to: "/features", label: t("footer.features") }, { to: "/support", label: t("footer.support") },
+      { to: "/business", label: t("nav.forBusiness") }, { to: "/support", label: t("footer.support") },
       { to: "/faq", label: t("footer.faq") }, { to: "/login", label: t("nav.login") },
       { to: "/register", label: t("footer.register") },
     ],

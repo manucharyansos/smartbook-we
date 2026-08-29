@@ -14,7 +14,6 @@ const Navigation: React.FC<NavigationProps> = ({ isScrolled, selectedType }) => 
 
     const navItems = [
         { name: 'Գլխավոր', path: '/' },
-        { name: 'Առանձնահատկություններ', path: '/features' },
         { name: 'Գներ', path: '/pricing' },
         { name: 'Կապ', path: '/contact' },
     ];

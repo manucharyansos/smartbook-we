@@ -394,6 +394,38 @@ function publicPinToMapPin(pin: PublicMapPin): MapPinItem {
   };
 }
 
+function directoryBusinessFromPin(pin: MapPinItem): PublicDirectoryBusiness {
+  const isHealthcare = pin.vertical === "healthcare";
+
+  return {
+    id: pin.businessId,
+    name: pin.name,
+    slug: pin.slug,
+    business_type: isHealthcare ? "dental" : "beauty",
+    vertical: pin.vertical,
+    category: {
+      vertical: pin.vertical,
+      name: pin.categoryName,
+      name_hy: pin.categoryName,
+      name_ru: pin.categoryName,
+      name_en: pin.categoryName,
+    },
+    custom_category_name: pin.categoryName,
+    address: pin.address ?? null,
+    phone: null,
+    locations: [],
+    timezone: null,
+    work_start: null,
+    work_end: null,
+    short_description: null,
+    cover_url: null,
+    logo_url: null,
+    services_count: 0,
+    staff_count: 0,
+    is_featured: false,
+  };
+}
+
 function matchesPinSearch(pin: MapPinItem, search: string) {
   const needle = normalizeText(search);
   if (!needle) return true;
@@ -506,7 +538,7 @@ function InteractiveBusinessMap({
 }
 
 function SectionBadge({ children }: { children: ReactNode }) {
-  return <div className="inline-flex items-center gap-2 rounded-full border border-[#1e9e92]/25 bg-[#1e9e92]/[0.08] px-4 py-2 text-xs font-semibold text-[#167d74] shadow-sm backdrop-blur-2xl dark:border-[#58d0c4]/25 dark:bg-[#58d0c4]/10 dark:text-[#8be3da] dark:shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:text-sm">{children}</div>;
+  return <div className="inline-flex items-center gap-2 rounded-full border border-[#d39a43]/30 bg-[#fff2df] px-4 py-2 text-xs font-semibold text-[#98641f] shadow-sm backdrop-blur-2xl dark:border-[#edc982]/20 dark:bg-[#edc982]/10 dark:text-[#f4d99f] dark:shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:text-sm">{children}</div>;
 }
 
 function SearchPanel({
@@ -742,6 +774,66 @@ function BusinessCardVisual({
   );
 }
 
+function MapBusinessCard({
+  pin,
+  item,
+  active,
+  onSelect,
+}: {
+  pin: MapPinItem;
+  item: PublicDirectoryBusiness;
+  active: boolean;
+  onSelect: () => void;
+}) {
+  const { locale, t } = useLanguage();
+  const vertical = normalizeVertical(item.category?.vertical ?? item.vertical ?? item.business_type);
+  const isHealthcare = vertical === "healthcare";
+  const Icon = isHealthcare ? HeartPulse : Sparkles;
+  const categoryName = pin.categoryName
+    || getCategoryName(item.category, locale)
+    || item.custom_category_name
+    || (isHealthcare ? t("businesses.healthcare") : t("businesses.services"));
+
+  return (
+    <article className={cn("vizit-map-business-card group", active && "is-active")}>
+      <button
+        type="button"
+        onClick={onSelect}
+        aria-pressed={active}
+        aria-label={`${pin.name} — ${pin.address || t("business.card.noAddress")}`}
+        className="vizit-map-business-media-button"
+      >
+        <BusinessCardVisual
+          key={`${item.id}:${item.cover_url ?? ""}:${item.logo_url ?? ""}`}
+          item={item}
+          Icon={Icon}
+          categoryName={categoryName}
+        />
+      </button>
+
+      <div className="vizit-map-business-body">
+        <button type="button" onClick={onSelect} aria-pressed={active} className="vizit-map-business-copy">
+          <span className="vizit-map-business-category"><Icon aria-hidden="true" /> <span>{categoryName}</span></span>
+          <span className="vizit-map-business-name">{pin.name}</span>
+          <span className="vizit-map-business-address">
+            <MapPin aria-hidden="true" />
+            <span>{pin.locationName ? `${pin.locationName} · ` : ""}{pin.address || t("business.card.noAddress")}</span>
+          </span>
+        </button>
+
+        <div className="vizit-map-business-actions">
+          <Link to={pin.bookingUrl} className="vizit-map-business-book" aria-label={`${t("business.card.book")} — ${pin.name}`}>
+            <span>{t("business.card.book")}</span><ArrowRight aria-hidden="true" />
+          </Link>
+          <Link to={`/businesses/${pin.slug}`} className="vizit-map-business-view">
+            {t("business.card.view")}
+          </Link>
+        </div>
+      </div>
+    </article>
+  );
+}
+
 function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: number }) {
   const { locale, t } = useLanguage();
   const vertical = normalizeVertical(item.category?.vertical ?? item.vertical ?? item.business_type);
@@ -906,6 +998,7 @@ export default function Index() {
   });
 
   const allBusinesses = useMemo(() => businessesQ.data ?? [], [businessesQ.data]);
+  const businessesById = useMemo(() => new Map(allBusinesses.map((business) => [business.id, business])), [allBusinesses]);
   const categories = useMemo(() => mergeCategories(mergeCategories(categoriesQ.data ?? [], defaultPublicCategories), deriveCategories(allBusinesses)), [allBusinesses, categoriesQ.data]);
   const filteredBusinesses = useMemo(() => {
     const matching = allBusinesses.filter((business) => matchesFilter(business, filter) && matchesCategory(business, selectedCategorySlug) && matchesSearch(business, search));
@@ -1116,48 +1209,34 @@ export default function Index() {
               />
 
               <div className="vizit-map-panel min-w-0 max-w-full overflow-hidden rounded-[24px] border border-slate-200 bg-white p-4 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)] sm:rounded-[30px] sm:p-5">
-                {selectedPin ? (
-                  <div className="min-w-0">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1.5 text-xs font-bold text-cyan-700 dark:border-white/12 dark:bg-white/[0.08] dark:text-cyan-100"><MapPin className="h-3.5 w-3.5" /> {t("map.selectedAddress")}</div>
-                    <h3 className="mt-3 line-clamp-2 break-words text-xl font-black leading-7 text-slate-950 dark:text-white sm:mt-4 sm:text-2xl">{selectedPin.name}</h3>
-                    <p className="mt-1.5 text-sm font-semibold text-slate-600 dark:text-slate-300">{selectedPin.categoryName || (selectedPin.vertical === "healthcare" ? t("businesses.healthcare") : t("businesses.services"))}</p>
-                    <p className="mt-3 line-clamp-2 break-words text-sm leading-6 text-slate-500 dark:text-slate-300 sm:mt-4 sm:leading-7">{selectedPin.locationName ? `${selectedPin.locationName} · ` : ""}{selectedPin.address || t("business.card.noAddress")}</p>
-                    <div className="mt-4 grid min-w-0 gap-2 sm:mt-5 sm:gap-3">
-                      <Link to={selectedPin.bookingUrl} className="inline-flex min-w-0 items-center justify-center gap-2 rounded-2xl bg-white px-4 py-2.5 text-sm font-black text-slate-950 transition hover:bg-slate-100 sm:px-5 sm:py-3">{t("map.bookAddress")} <ArrowRight className="h-4 w-4 shrink-0" /></Link>
-                      <Link to={`/businesses/${selectedPin.slug}`} className="inline-flex min-w-0 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-bold text-slate-800 transition hover:bg-slate-100 dark:border-white/12 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/[0.10] sm:px-5 sm:py-3">{t("business.card.view")}</Link>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center">
-                    <MapPin className="mx-auto h-10 w-10 text-cyan-200" />
-                    <h3 className="mt-4 text-xl font-black text-slate-950 dark:text-white">{t("map.choosePin")}</h3>
-                    <p className="mt-3 text-sm leading-7 text-slate-500 dark:text-slate-300">{t("map.choosePinText")}</p>
-                  </div>
-                )}
+                <div className="vizit-map-panel-heading">
+                  <div className="vizit-map-panel-eyebrow"><MapPin aria-hidden="true" /> {selectedPin ? t("map.selectedAddress") : t("map.choosePin")}</div>
+                  <p>{t("map.choosePinText")}</p>
+                </div>
 
                 {pins.length ? (
-                  <div className="vizit-map-slider -mx-4 mt-4 flex min-w-0 max-w-[calc(100%_+_32px)] snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-5 sm:mt-6 sm:max-w-[calc(100%_+_40px)] sm:scroll-px-5 sm:px-5 lg:mx-0 lg:block lg:max-h-[280px] lg:max-w-full lg:space-y-2 lg:overflow-y-auto lg:px-0 lg:pb-0 lg:pr-1">
+                  <div className="vizit-map-slider -mx-4 mt-4 flex min-w-0 max-w-[calc(100%_+_32px)] snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-5 sm:mt-5 sm:max-w-[calc(100%_+_40px)] sm:scroll-px-5 sm:px-5 lg:mx-0 lg:max-h-[420px] lg:max-w-full lg:flex-col lg:overflow-y-auto lg:px-0 lg:pb-0 lg:pr-1">
                     {pins.map((pin) => {
                       const active = selectedPin?.businessId === pin.businessId && selectedPin?.locationId === pin.locationId;
+                      const item = businessesById.get(pin.businessId) ?? directoryBusinessFromPin(pin);
                       return (
-                        <button
+                        <MapBusinessCard
                           key={`list-${pin.businessId}-${pin.locationId}`}
-                          type="button"
-                          onClick={() => setSelectedPinKey(`${pin.businessId}-${pin.locationId}`)}
-                          className={cn(
-                            "flex w-[calc(100vw_-_80px)] max-w-[292px] shrink-0 snap-start items-start gap-3 rounded-2xl border p-3 text-left transition lg:w-full lg:max-w-none",
-                            active
-                              ? "border-violet-300 bg-violet-50 shadow-sm dark:border-violet-400/40 dark:bg-violet-500/15"
-                              : "border-slate-200 bg-slate-50 hover:bg-slate-100 dark:border-white/10 dark:bg-white/[0.045] dark:hover:bg-white/[0.09]",
-                          )}
-                        >
-                          <span className={cn("mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl", active ? "bg-gradient-to-br from-violet-600 to-sky-500 text-white" : "bg-white text-slate-950")}><MapPin className="h-4 w-4" /></span>
-                          <span className="min-w-0"><span className="block truncate text-sm font-black text-slate-950 dark:text-white">{pin.name}</span><span className="mt-1 block truncate text-xs text-slate-500 dark:text-slate-300">{pin.address}</span></span>
-                        </button>
+                          pin={pin}
+                          item={item}
+                          active={active}
+                          onSelect={() => setSelectedPinKey(`${pin.businessId}-${pin.locationId}`)}
+                        />
                       );
                     })}
                   </div>
-                ) : null}
+                ) : (
+                  <div className="vizit-map-panel-empty">
+                    <MapPin aria-hidden="true" />
+                    <h3>{t("map.choosePin")}</h3>
+                    <p>{t("map.choosePinText")}</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

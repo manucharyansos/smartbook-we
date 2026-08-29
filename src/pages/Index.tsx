@@ -1050,7 +1050,7 @@ function MobileMapBusinessSheet({
         transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
         className="relative flex h-[100dvh] w-full flex-col overflow-hidden bg-[#fffaf5] dark:bg-[#160e19]"
       >
-        <div className={cn("relative h-[36dvh] min-h-[250px] max-h-[390px] shrink-0 overflow-hidden bg-gradient-to-br", heroTone)}>
+        <div className={cn("relative h-[30dvh] min-h-[215px] max-h-[330px] shrink-0 overflow-hidden bg-gradient-to-br", heroTone)}>
           {coverUrl ? (
             <img
               src={coverUrl}
@@ -1080,10 +1080,16 @@ function MobileMapBusinessSheet({
             </div>
           )}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#170c19]/80 via-transparent to-black/20" />
-          <span className="absolute bottom-5 left-5 inline-flex max-w-[calc(100%_-_40px)] items-center gap-2 rounded-full border border-white/25 bg-[#241126]/60 px-3.5 py-2 text-xs font-bold text-white shadow-xl backdrop-blur-xl">
-            <Icon className="h-4 w-4 shrink-0 text-[#f3cd87]" aria-hidden="true" />
-            <span className="truncate">{categoryName}</span>
-          </span>
+          <div className="absolute inset-x-5 bottom-4 min-w-0 text-white drop-shadow-lg">
+            <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/25 bg-[#241126]/65 px-3.5 py-2 text-xs font-bold shadow-xl backdrop-blur-xl">
+              <Icon className="h-4 w-4 shrink-0 text-[#f3cd87]" aria-hidden="true" />
+              <span className="truncate">{categoryName}</span>
+            </span>
+            <span className="mt-2 flex max-w-full items-start gap-2 text-xs font-bold leading-5 text-white/95">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#f3cd87]" aria-hidden="true" />
+              <span className="line-clamp-2">{pin.locationName ? `${pin.locationName} · ` : ""}{pin.address || item.address || t("business.card.noAddress")}</span>
+            </span>
+          </div>
           <button
             ref={closeButtonRef}
             type="button"
@@ -1097,7 +1103,7 @@ function MobileMapBusinessSheet({
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-          <div className="px-5 pb-[max(24px,env(safe-area-inset-bottom))] pt-6 sm:px-7">
+          <div className="px-5 pb-8 pt-5 sm:px-7">
             <h2 id={titleId} className="vizit-display break-words text-[34px] leading-[1.05] tracking-[-0.035em] text-[#2b0d35] dark:text-white">
               {pin.name}
             </h2>
@@ -1105,12 +1111,7 @@ function MobileMapBusinessSheet({
               {description}
             </p>
 
-            <div className="mt-5 flex items-start gap-3 rounded-[20px] border border-[#d39a43]/22 bg-white/70 px-4 py-3.5 text-sm font-semibold leading-6 text-[#5c4d60] shadow-[0_12px_34px_rgba(69,36,53,0.06)] dark:border-white/10 dark:bg-white/[0.055] dark:text-[#d9cdd7]">
-              <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-[#c88e37]" aria-hidden="true" />
-              <span>{pin.locationName ? `${pin.locationName} · ` : ""}{pin.address || item.address || t("business.card.noAddress")}</span>
-            </div>
-
-            <section className="mt-7" aria-labelledby={hoursTitleId}>
+            <section className="mt-6" aria-labelledby={hoursTitleId}>
               <div className="flex items-center gap-3">
                 <span className="grid h-10 w-10 place-items-center rounded-[14px] bg-[#fff0d8] text-[#98641f] dark:bg-[#edc982]/10 dark:text-[#f1cf90]">
                   <Clock3 className="h-5 w-5" aria-hidden="true" />
@@ -1135,22 +1136,25 @@ function MobileMapBusinessSheet({
               </div>
             </section>
 
-            <div className="mt-8 grid gap-3">
-              <Link
-                to={pin.bookingUrl}
-                className="inline-flex min-h-14 items-center justify-center gap-2 rounded-[18px] bg-gradient-to-r from-[#2b0d35] to-[#6d2a63] px-5 text-base font-black text-white shadow-[0_16px_38px_rgba(75,22,75,0.24)] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d39a43] focus-visible:ring-offset-2 dark:from-[#f0c979] dark:to-[#d9a54f] dark:text-[#28142b]"
-                aria-label={`${t("business.card.book")} — ${pin.name}`}
-              >
-                {t("business.card.book")}<ArrowRight className="h-5 w-5" aria-hidden="true" />
-              </Link>
-              <Link
-                to={`/businesses/${pin.slug}`}
-                className="inline-flex min-h-14 items-center justify-center rounded-[18px] border border-[#6d2a63]/24 bg-white/72 px-5 text-base font-black text-[#4b164b] transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6d2a63] focus-visible:ring-offset-2 dark:border-white/14 dark:bg-white/[0.055] dark:text-white dark:hover:bg-white/[0.09]"
-                aria-label={`${t("business.card.view")} — ${pin.name}`}
-              >
-                {t("business.card.view")}
-              </Link>
-            </div>
+          </div>
+        </div>
+
+        <div className="shrink-0 border-t border-[#d39a43]/20 bg-[#fffaf5]/96 px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 shadow-[0_-16px_38px_rgba(43,13,53,0.08)] backdrop-blur-xl dark:border-white/10 dark:bg-[#160e19]/96 sm:px-6">
+          <div className="mx-auto grid max-w-xl grid-cols-2 gap-2.5">
+            <Link
+              to={pin.bookingUrl}
+              className="inline-flex min-h-14 min-w-0 items-center justify-center gap-2 rounded-[18px] bg-gradient-to-r from-[#2b0d35] to-[#6d2a63] px-3 text-sm font-black text-white shadow-[0_14px_32px_rgba(75,22,75,0.22)] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d39a43] focus-visible:ring-offset-2 dark:from-[#f0c979] dark:to-[#d9a54f] dark:text-[#28142b]"
+              aria-label={`${t("business.card.book")} — ${pin.name}`}
+            >
+              <span className="truncate">{t("business.card.book")}</span><ArrowRight className="h-5 w-5 shrink-0" aria-hidden="true" />
+            </Link>
+            <Link
+              to={`/businesses/${pin.slug}`}
+              className="inline-flex min-h-14 min-w-0 items-center justify-center rounded-[18px] border border-[#6d2a63]/24 bg-white/80 px-3 text-sm font-black text-[#4b164b] transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6d2a63] focus-visible:ring-offset-2 dark:border-white/14 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/[0.1]"
+              aria-label={`${t("business.card.view")} — ${pin.name}`}
+            >
+              <span className="truncate">{t("business.card.view")}</span>
+            </Link>
           </div>
         </div>
       </motion.section>

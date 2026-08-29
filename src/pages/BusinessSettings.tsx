@@ -20,8 +20,6 @@ import {
   Plus,
   Pencil,
   Trash2,
-  Send,
-  Unplug,
 } from "lucide-react";
 
 import { page, card, cardTransition } from "../lib/motion";
@@ -45,11 +43,7 @@ import { uploadMedia } from "../lib/mediaApi";
 import { useAuth } from "../store/auth";
 import { LocationMapPicker } from "../components/settings/LocationMapPicker";
 import { useLanguage, type Locale } from "../contexts/LanguageContext";
-import {
-  createTelegramConnectionLink,
-  disconnectTelegram,
-  fetchTelegramConnection,
-} from "../lib/telegramApi";
+import { TelegramConnectionCard } from "../components/TelegramConnectionCard";
 
 type ToastState = {
   open: boolean;
@@ -217,36 +211,6 @@ export default function BusinessSettingsPage() {
   const scheduleQ = useQuery({
     queryKey: ["schedule"],
     queryFn: fetchSchedule,
-  });
-
-  const telegramQ = useQuery({
-    queryKey: ["telegram-connection"],
-    queryFn: fetchTelegramConnection,
-    enabled: Boolean(user && canEdit),
-    retry: false,
-    refetchOnWindowFocus: true,
-  });
-
-  const connectTelegramMut = useMutation({
-    mutationFn: createTelegramConnectionLink,
-    onSuccess: (connection) => {
-      window.location.assign(connection.url);
-    },
-    onError: (error: unknown) => {
-      setToast({ open: true, text: getErrorMessage(error, text.telegramConnectError), type: "error" });
-      window.setTimeout(() => setToast((previous) => ({ ...previous, open: false })), 2600);
-    },
-  });
-
-  const disconnectTelegramMut = useMutation({
-    mutationFn: disconnectTelegram,
-    onSuccess: async () => {
-      await qc.invalidateQueries({ queryKey: ["telegram-connection"] });
-    },
-    onError: (error: unknown) => {
-      setToast({ open: true, text: getErrorMessage(error, text.telegramDisconnectError), type: "error" });
-      window.setTimeout(() => setToast((previous) => ({ ...previous, open: false })), 2600);
-    },
   });
 
   const [form, setForm] = useState<Partial<BusinessSettings>>({});
@@ -610,51 +574,7 @@ export default function BusinessSettingsPage() {
                         <input value={form.messenger_url ?? ""} onChange={(e) => setForm((p) => ({ ...p, messenger_url: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="https://m.me/..." />
                       </InputShell>
                     </div>
-                    <div className="mt-4 flex flex-col gap-4 rounded-3xl border border-sky-200 bg-gradient-to-br from-sky-50 to-white p-4 sm:flex-row sm:items-center sm:justify-between">
-                      <div className="flex min-w-0 items-start gap-3">
-                        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-sky-500 text-white shadow-sm">
-                          <Send className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <div className="font-semibold text-slate-900">{text.telegramTitle}</div>
-                          <p className="mt-1 max-w-xl text-xs leading-5 text-slate-600">{text.telegramText}</p>
-                          {telegramQ.data && !telegramQ.data.available && !telegramQ.data.connected ? (
-                            <p className="mt-2 text-xs font-medium text-amber-700">{text.telegramUnavailable}</p>
-                          ) : null}
-                        </div>
-                      </div>
-                      <div className="flex shrink-0 flex-wrap items-center gap-2">
-                        {telegramQ.isLoading ? <Spinner size={18} /> : null}
-                        {telegramQ.data?.connected ? (
-                          <>
-                            <span className="inline-flex min-h-10 items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-3 text-sm font-semibold text-emerald-700">
-                              <CheckCircle2 className="h-4 w-4" /> {text.telegramConnected}
-                            </span>
-                            <Button
-                              type="button"
-                              variant="secondary"
-                              size="sm"
-                              disabled={disconnectTelegramMut.isPending}
-                              onClick={() => disconnectTelegramMut.mutate()}
-                            >
-                              {disconnectTelegramMut.isPending ? <Spinner size={15} /> : <Unplug className="h-4 w-4" />}
-                              {text.telegramDisconnect}
-                            </Button>
-                          </>
-                        ) : (
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            disabled={!telegramQ.data?.available || connectTelegramMut.isPending}
-                            onClick={() => connectTelegramMut.mutate()}
-                          >
-                            {connectTelegramMut.isPending ? <Spinner size={15} /> : <Send className="h-4 w-4" />}
-                            {connectTelegramMut.isPending ? text.telegramConnecting : text.telegramConnect}
-                          </Button>
-                        )}
-                      </div>
-                    </div>
+                    <TelegramConnectionCard className="mt-4" variant="settings" />
                   </div>
                 </div>
 

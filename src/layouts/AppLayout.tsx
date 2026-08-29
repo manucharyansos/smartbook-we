@@ -15,6 +15,7 @@ import ThemeToggle from "../components/ThemeToggle";
 import LanguageToggle from "../components/LanguageToggle";
 import VizitLogo from "../components/VizitLogo";
 import { useLanguage } from "../contexts/LanguageContext";
+import { TelegramConnectionCard } from "../components/TelegramConnectionCard";
 
 type NavItem = {
   to: string; label: string;
@@ -281,17 +282,20 @@ export function AppLayout() {
                 </nav>
               </div>
               {!isDesktopCollapsed && (
-                <div className="rounded-[24px] border border-slate-200/80 bg-white/96 p-4 shadow-[0_14px_38px_rgba(15,23,42,0.06)]">
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-r from-violet-100 to-fuchsia-100">
-                      <Sparkles size={16} className="text-violet-700" />
-                    </div>
-                    <div>
-                      <div className="mb-1 text-xs font-semibold text-slate-900">{text.hintTitle}</div>
-                      <div className="text-xs leading-relaxed text-slate-500">{text.hintText}</div>
+                <>
+                  <TelegramConnectionCard variant="sidebar" />
+                  <div className="rounded-[24px] border border-slate-200/80 bg-white/96 p-4 shadow-[0_14px_38px_rgba(15,23,42,0.06)]">
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-r from-violet-100 to-fuchsia-100">
+                        <Sparkles size={16} className="text-violet-700" />
+                      </div>
+                      <div>
+                        <div className="mb-1 text-xs font-semibold text-slate-900">{text.hintTitle}</div>
+                        <div className="text-xs leading-relaxed text-slate-500">{text.hintText}</div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </>
               )}
             </motion.div>
           </aside>
@@ -353,6 +357,9 @@ export function AppLayout() {
                         <ChevronRight className="h-4 w-4 shrink-0 opacity-40" />
                       </NavLink>
                     ))}
+                    <div className="px-1 pb-2 pt-3">
+                      <TelegramConnectionCard variant="drawer" />
+                    </div>
                   </nav>
                   {/* Logout */}
                   <div className="vizit-admin-drawer-footer border-t border-slate-200 p-3">

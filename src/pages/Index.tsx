@@ -1,7 +1,7 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { motion, type Variants } from "framer-motion";
+import { AnimatePresence, motion, type Variants } from "framer-motion";
 import {
   Accessibility,
   Activity,
@@ -42,6 +42,7 @@ import {
   Users,
   WandSparkles,
   Wrench,
+  X,
   type LucideIcon,
 } from "lucide-react";
 
@@ -49,7 +50,7 @@ import Footer from "../components/Footer";
 import LandingNavbar from "../components/LandingNavbar";
 import Seo from "../components/Seo";
 import VizitLogo from "../components/VizitLogo";
-import YandexMap, { type VizitMapMarker } from "../components/maps/YandexMap";
+import YandexMap, { type VizitMapMarker, type YandexMapBehavior } from "../components/maps/YandexMap";
 import { useLanguage } from "../contexts/LanguageContext";
 import { cn } from "../lib/cn";
 import {
@@ -111,6 +112,22 @@ const stagger: Variants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.075 } },
 };
+
+const HOME_MAP_BEHAVIORS: readonly YandexMapBehavior[] = ["drag", "pinchZoom", "dblClick", "magnifier"];
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => typeof window !== "undefined" && window.matchMedia(query).matches);
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    const update = () => setMatches(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, [query]);
+
+  return matches;
+}
 
 const categoryIconRules: Array<{ keywords: string[]; Icon: LucideIcon; tone: string }> = [
   { keywords: ["hair", "barber", "beauty", "salon", "վարս", "գեղեց", "барбер", "салон"], Icon: Scissors, tone: "from-violet-100 to-indigo-50 text-violet-500" },
@@ -446,13 +463,13 @@ function InteractiveBusinessMap({
   pins,
   selectedPin,
   selectedPinKey,
-  setSelectedPinKey,
+  onSelectPin,
   userLocation,
 }: {
   pins: MapPinItem[];
   selectedPin: MapPinItem | null;
   selectedPinKey: string | null;
-  setSelectedPinKey: (key: string) => void;
+  onSelectPin: (key: string) => void;
   userLocation: { lat: number; lng: number } | null;
 }) {
   const { t } = useLanguage();
@@ -499,6 +516,7 @@ function InteractiveBusinessMap({
       center={{ latitude: center.lat, longitude: center.lng }}
       zoom={zoom}
       markers={markers}
+      behaviors={HOME_MAP_BEHAVIORS}
       onLocationChange={(nextCenter, nextZoom) => {
         setCenter({ lat: nextCenter.latitude, lng: nextCenter.longitude });
         setZoom(nextZoom);
@@ -506,7 +524,7 @@ function InteractiveBusinessMap({
       onMarkerClick={(key) => {
         const pin = pinByKey.get(key);
         if (!pin) return;
-        setSelectedPinKey(key);
+        onSelectPin(key);
         setCenter({ lat: pin.lat, lng: pin.lng });
         setZoom((current) => Math.max(current, 14));
       }}
@@ -834,6 +852,150 @@ function MapBusinessCard({
   );
 }
 
+function MobileMapBusinessSheet({
+  pin,
+  item,
+  onClose,
+}: {
+  pin: MapPinItem;
+  item: PublicDirectoryBusiness;
+  onClose: () => void;
+}) {
+  const { locale, t } = useLanguage();
+  const dialogRef = useRef<HTMLElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const titleId = useId();
+  const descriptionId = useId();
+  const markerKey = `${pin.businessId}-${pin.locationId}`;
+  const vertical = normalizeVertical(item.category?.vertical ?? item.vertical ?? item.business_type);
+  const isHealthcare = vertical === "healthcare";
+  const Icon = isHealthcare ? HeartPulse : Sparkles;
+  const categoryName = pin.categoryName
+    || getCategoryName(item.category, locale)
+    || item.custom_category_name
+    || (isHealthcare ? t("businesses.healthcare") : t("businesses.services"));
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    const trigger = document.querySelector<HTMLButtonElement>(`.vizit-yandex-marker[data-marker-id="${markerKey}"]`);
+    document.body.style.overflow = "hidden";
+    window.requestAnimationFrame(() => closeButtonRef.current?.focus());
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+      if (event.key !== "Tab") return;
+
+      const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (!focusable?.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+      window.requestAnimationFrame(() => {
+        if (trigger?.isConnected) trigger.focus();
+      });
+    };
+  }, [markerKey, onClose]);
+
+  return (
+    <motion.div
+      className="vizit-map-mobile-modal fixed inset-0 z-[90] lg:hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <button
+        type="button"
+        className="absolute inset-0 h-full w-full cursor-default bg-[#1b1020]/52 backdrop-blur-[3px]"
+        aria-label={t("map.closeDetails")}
+        onClick={onClose}
+      />
+      <motion.section
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={descriptionId}
+        initial={{ y: "100%" }}
+        animate={{ y: 0 }}
+        exit={{ y: "100%" }}
+        transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+        className="vizit-map-mobile-sheet absolute inset-x-0 bottom-0 max-h-[min(82dvh,720px)] overflow-y-auto rounded-t-[30px] border border-b-0 border-[#d39a43]/30 bg-[#fffaf5] px-4 pb-[max(18px,env(safe-area-inset-bottom))] pt-3 text-[#2b0d35] shadow-[0_-24px_80px_rgba(43,13,53,0.26)] dark:border-[#edc982]/18 dark:bg-[#1b111d] dark:text-[#fff8f2]"
+      >
+        <div className="mx-auto h-1.5 w-11 rounded-full bg-[#6d2a63]/20 dark:bg-white/20" aria-hidden="true" />
+        <div className="mt-3 flex items-center justify-between gap-4">
+          <span className="text-xs font-bold uppercase tracking-[0.14em] text-[#76501f] dark:text-[#efc98a]">{t("map.businessDetails")}</span>
+          <button
+            ref={closeButtonRef}
+            type="button"
+            onClick={onClose}
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#d39a43]/25 bg-white text-[#4b164b] shadow-sm transition hover:bg-[#fff2df] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6d2a63] focus-visible:ring-offset-2 dark:border-white/12 dark:bg-white/[0.07] dark:text-white dark:hover:bg-white/[0.12] dark:focus-visible:ring-[#edc982] dark:focus-visible:ring-offset-[#1b111d]"
+            aria-label={t("map.closeDetails")}
+          >
+            <X className="h-5 w-5" aria-hidden="true" />
+          </button>
+        </div>
+
+        <div className="group mt-2 overflow-hidden rounded-[24px] border border-[#d39a43]/24 shadow-[0_16px_42px_rgba(72,35,49,0.13)] dark:border-white/12">
+          <BusinessCardVisual
+            key={`${item.id}:${item.cover_url ?? ""}:${item.logo_url ?? ""}`}
+            item={item}
+            Icon={Icon}
+            categoryName={categoryName}
+          />
+        </div>
+
+        <div className="px-1 pb-1 pt-5">
+          <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-[#d39a43]/25 bg-[#fff2df] px-3 py-2 text-xs font-bold text-[#76501f] dark:border-[#edc982]/18 dark:bg-[#edc982]/10 dark:text-[#efc98a]">
+            <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <span className="truncate">{categoryName}</span>
+          </div>
+          <h3 id={titleId} className="vizit-display mt-4 break-words text-[26px] leading-[1.12] text-[#2b0d35] dark:text-white">
+            {pin.name}
+          </h3>
+          <p id={descriptionId} className="mt-3 flex items-start gap-2 text-sm font-medium leading-6 text-[#5f5062] dark:text-[#d8cbd5]">
+            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#c88e37]" aria-hidden="true" />
+            <span>{pin.locationName ? `${pin.locationName} · ` : ""}{pin.address || t("business.card.noAddress")}</span>
+          </p>
+
+          <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
+            <Link
+              to={pin.bookingUrl}
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(135deg,#2b0d35,#6d2a63)] px-5 text-sm font-bold text-white shadow-[0_12px_28px_rgba(74,22,74,0.22)] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6d2a63] focus-visible:ring-offset-2 dark:focus-visible:ring-[#edc982] dark:focus-visible:ring-offset-[#1b111d]"
+            >
+              {t("business.card.book")} <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+            <Link
+              to={`/businesses/${pin.slug}`}
+              className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-[#d39a43]/28 bg-white px-5 text-sm font-bold text-[#4b164b] transition hover:bg-[#fff2df] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6d2a63] focus-visible:ring-offset-2 dark:border-white/14 dark:bg-white/[0.07] dark:text-white dark:hover:bg-white/[0.12] dark:focus-visible:ring-[#edc982] dark:focus-visible:ring-offset-[#1b111d]"
+            >
+              {t("business.card.view")}
+            </Link>
+          </div>
+        </div>
+      </motion.section>
+    </motion.div>
+  );
+}
+
 function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: number }) {
   const { locale, t } = useLanguage();
   const vertical = normalizeVertical(item.category?.vertical ?? item.vertical ?? item.business_type);
@@ -966,8 +1128,10 @@ export default function Index() {
   const [filter, setFilter] = useState<BusinessFilter>("all");
   const [selectedCategorySlug, setSelectedCategorySlug] = useState<string | null>(null);
   const [selectedPinKey, setSelectedPinKey] = useState<string | null>(null);
+  const [mobileMapPinKey, setMobileMapPinKey] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
+  const isCompactMap = useMediaQuery("(max-width: 1023px)");
 
   const businessesQ = useQuery({
     queryKey: ["public-businesses-home-final"],
@@ -1012,6 +1176,12 @@ export default function Index() {
     return source.filter((pin) => matchesPinSearch(pin, search));
   }, [apiPins, filteredBusinesses, locale, search, userLocation]);
   const selectedPin = pins.find((pin) => `${pin.businessId}-${pin.locationId}` === selectedPinKey) ?? pins[0] ?? null;
+  const mobileMapPin = mobileMapPinKey
+    ? pins.find((pin) => `${pin.businessId}-${pin.locationId}` === mobileMapPinKey) ?? null
+    : null;
+  const mobileMapBusiness = mobileMapPin
+    ? businessesById.get(mobileMapPin.businessId) ?? directoryBusinessFromPin(mobileMapPin)
+    : null;
   const popularChips = categories.slice(0, 5);
 
   const stats = useMemo(() => ({
@@ -1023,6 +1193,8 @@ export default function Index() {
 
   const businessStat = (value: number) => businessesQ.isLoading ? "..." : businessesQ.isError ? "—" : value;
   const categoryStat = businessesQ.isLoading || categoriesQ.isLoading ? "..." : businessesQ.isError ? "—" : stats.categories;
+
+  const closeMobileMapSheet = useCallback(() => setMobileMapPinKey(null), []);
 
   const bookingSteps = useMemo(() => [
     { number: "1", title: t("steps.search.title"), text: t("steps.search.text"), Icon: Search },
@@ -1042,6 +1214,11 @@ export default function Index() {
     setFilter("all");
     setSelectedCategorySlug(null);
     requestAnimationFrame(() => document.getElementById("categories")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
+
+  function selectMapPin(key: string) {
+    setSelectedPinKey(key);
+    setMobileMapPinKey(isCompactMap ? key : null);
   }
 
   function scrollToResults() {
@@ -1204,7 +1381,7 @@ export default function Index() {
                 pins={pins}
                 selectedPin={selectedPin}
                 selectedPinKey={selectedPinKey}
-                setSelectedPinKey={setSelectedPinKey}
+                onSelectPin={selectMapPin}
                 userLocation={userLocation}
               />
 
@@ -1225,7 +1402,7 @@ export default function Index() {
                           pin={pin}
                           item={item}
                           active={active}
-                          onSelect={() => setSelectedPinKey(`${pin.businessId}-${pin.locationId}`)}
+                          onSelect={() => selectMapPin(`${pin.businessId}-${pin.locationId}`)}
                         />
                       );
                     })}
@@ -1239,6 +1416,17 @@ export default function Index() {
                 )}
               </div>
             </div>
+
+            <AnimatePresence>
+              {isCompactMap && mobileMapPin && mobileMapBusiness ? (
+                <MobileMapBusinessSheet
+                  key={`${mobileMapPin.businessId}-${mobileMapPin.locationId}`}
+                  pin={mobileMapPin}
+                  item={mobileMapBusiness}
+                  onClose={closeMobileMapSheet}
+                />
+              ) : null}
+            </AnimatePresence>
           </div>
         </section>
 
@@ -1321,7 +1509,7 @@ export default function Index() {
       </main>
 
       <MobileDock />
-      <Footer />
+      <Footer showCta={false} />
     </div>
   );
 }

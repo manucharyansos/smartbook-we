@@ -60,7 +60,7 @@
   background: #fffaf5 !important;
 }
 
-.vizit-public-page > footer > div > div:first-child {
+.vizit-public-page > footer .vizit-footer-cta {
   border-color: rgba(226,189,125,.22) !important;
   background:
     radial-gradient(circle at 86% 8%, rgba(211,154,67,.18), transparent 27%),
@@ -69,23 +69,23 @@
   box-shadow: 0 30px 90px rgba(43,13,53,.20) !important;
 }
 
-.vizit-public-page > footer > div > div:first-child h2 {
+.vizit-public-page > footer .vizit-footer-cta h2 {
   color: #fff9f2 !important;
   font-family: "Noto Serif Armenian", Georgia, serif !important;
 }
 
-.vizit-public-page > footer > div > div:first-child a[href="/register"] {
+.vizit-public-page > footer .vizit-footer-cta a[href="/register"] {
   background: #fff8ef !important;
   color: #2b0d35 !important;
   box-shadow: 0 10px 30px rgba(0,0,0,.14) !important;
 }
 
-.vizit-public-page > footer > div > div:first-child a[href="/pricing"] {
+.vizit-public-page > footer .vizit-footer-cta a[href="/pricing"] {
   border-color: rgba(255,255,255,.18) !important;
   background: rgba(255,255,255,.08) !important;
 }
 
-.vizit-public-page > footer > div > div:nth-child(2) > div:first-child > a > div:first-child {
+.vizit-public-page > footer .vizit-footer-brand .vizit-brand-mark {
   background: linear-gradient(145deg,#2b0d35,#6d2a63) !important;
   box-shadow: 0 10px 26px rgba(75,22,75,.22) !important;
 }
@@ -174,7 +174,7 @@ html.dark .vizit-public-detail-page main > section:first-child > div > div {
     padding-right: 14px !important;
   }
 
-  .vizit-public-page > footer > div > div:first-child {
+  .vizit-public-page > footer .vizit-footer-cta {
     border-radius: 28px !important;
   }
 

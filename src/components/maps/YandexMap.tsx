@@ -23,12 +23,25 @@ export type VizitMapMarker = MapCoordinates & {
   active?: boolean;
 };
 
+export type YandexMapBehavior =
+  | "drag"
+  | "pinchZoom"
+  | "scrollZoom"
+  | "dblClick"
+  | "magnifier"
+  | "oneFingerZoom"
+  | "mouseRotate"
+  | "mouseTilt"
+  | "pinchRotate"
+  | "panTilt";
+
 type Props = {
   center: MapCoordinates;
   zoom: number;
   markers?: VizitMapMarker[];
   onMarkerClick?: (id: string) => void;
   onLocationChange?: (center: MapCoordinates, zoom: number) => void;
+  behaviors?: readonly YandexMapBehavior[];
   disabled?: boolean;
   className?: string;
   ariaLabel?: string;
@@ -71,6 +84,7 @@ function makePinElement(marker: VizitMapMarker) {
     marker.active ? "is-active" : "",
   ].filter(Boolean).join(" ");
   button.setAttribute("aria-label", marker.label);
+  button.dataset.markerId = marker.id;
   button.title = marker.label;
 
   const icon = document.createElement("span");
@@ -91,6 +105,7 @@ export default function YandexMap({
   markers = [],
   onMarkerClick,
   onLocationChange,
+  behaviors,
   disabled = false,
   className,
   ariaLabel,
@@ -132,6 +147,7 @@ export default function YandexMap({
           type: "future-map",
           showScaleInCopyrights: true,
           copyrightsPosition: "bottom right",
+          ...(behaviors ? { behaviors: [...behaviors] } : {}),
         });
 
         map.addChild(new api.YMapDefaultSchemeLayer());
@@ -186,6 +202,31 @@ export default function YandexMap({
 
   useEffect(() => {
     const map = mapRef.current;
+    if (!map || !behaviors) return;
+    map.update({ behaviors: [...behaviors] });
+  }, [behaviors, readyVersion]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || status !== "ready") return;
+
+    const improveProviderAccessibility = () => {
+      container.querySelectorAll<HTMLImageElement>("img:not([alt])").forEach((image) => {
+        image.alt = "";
+      });
+      container.querySelectorAll<HTMLAnchorElement>("a.ymaps3--map-copyrights__logo").forEach((link) => {
+        if (!link.getAttribute("aria-label")) link.setAttribute("aria-label", "Yandex Maps");
+      });
+    };
+
+    improveProviderAccessibility();
+    const observer = new MutationObserver(improveProviderAccessibility);
+    observer.observe(container, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [status]);
+
+  useEffect(() => {
+    const map = mapRef.current;
     const api = apiRef.current;
     if (!map || !api || status !== "ready") return;
 
@@ -224,7 +265,11 @@ export default function YandexMap({
   }, [markers, readyVersion, status]);
 
   return (
-    <div className={cn("vizit-yandex-map-shell relative isolate overflow-hidden bg-slate-100 dark:bg-slate-900", className)} aria-label={ariaLabel}>
+    <div
+      className={cn("vizit-yandex-map-shell relative isolate overflow-hidden bg-slate-100 dark:bg-slate-900", className)}
+      role="region"
+      aria-label={ariaLabel}
+    >
       <div ref={containerRef} className="absolute inset-0 z-0" />
 
       {status === "loading" ? (

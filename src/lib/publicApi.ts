@@ -43,6 +43,15 @@ export type PublicBusinessCategory = {
     icon?: string | null;
 };
 
+export type PublicWorkingHour = {
+    weekday: number;
+    is_closed: boolean;
+    start: string | null;
+    end: string | null;
+    break_start?: string | null;
+    break_end?: string | null;
+};
+
 export type PublicBusiness = {
     id: number;
     name: string;
@@ -56,6 +65,7 @@ export type PublicBusiness = {
     locations?: PublicLocation[];
     work_start: string | null;
     work_end: string | null;
+    working_hours?: PublicWorkingHour[];
     timezone: string | null;
     short_description?: string | null;
     cover_url?: string | null;
@@ -92,6 +102,7 @@ export type PublicDirectoryBusiness = {
     timezone: string | null;
     work_start: string | null;
     work_end: string | null;
+    working_hours?: PublicWorkingHour[];
     short_description: string | null;
     cover_url: string | null;
     logo_url: string | null;

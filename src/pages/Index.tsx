@@ -55,17 +55,21 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { cn } from "../lib/cn";
 import {
   fetchPublicBusinesses,
+  fetchPublicBusiness,
   fetchPublicCategories,
   fetchPublicMapPins,
+  type PublicBusiness,
   type PublicBusinessCategory,
   type PublicDirectoryBusiness,
   type PublicMapPin,
+  type PublicWorkingHour,
 } from "../lib/publicApi";
 import { publicPlansApi, type PublicPlan } from "../lib/planApi";
 import { formatPlanPrice, localizePlanDescription, localizePlanNameForLocale, monthlyPlanPrice } from "../lib/planPresentation";
 
 type BusinessFilter = "all" | "services" | "healthcare";
 type LocationStatus = "idle" | "loading" | "active" | "error" | "unsupported";
+type MapBusinessDetails = PublicDirectoryBusiness | PublicBusiness;
 
 const defaultPublicCategories: PublicBusinessCategory[] = [
   { slug: "beauty-salon", vertical: "services", name_hy: "Գեղեցկության սրահ", name_ru: "Салон красоты", name_en: "Beauty salon", icon: "sparkles" },
@@ -226,6 +230,69 @@ function getBusinessInitials(name: string) {
     .toLocaleUpperCase();
 
   return initials || "V";
+}
+
+const weekdayNames: Record<"hy" | "ru" | "en", string[]> = {
+  hy: ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ", "Շաբաթ", "Կիրակի"],
+  ru: ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"],
+  en: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+};
+
+function compactTime(value?: string | null) {
+  const match = String(value ?? "").match(/^(\d{2}):(\d{2})/);
+  return match ? `${match[1]}:${match[2]}` : null;
+}
+
+type WorkingHoursRow = {
+  days: string;
+  hours: string | null;
+  isClosed: boolean;
+  breakHours: string | null;
+};
+
+function groupWorkingHours(hours: PublicWorkingHour[] | undefined, locale: string): WorkingHoursRow[] {
+  const names = weekdayNames[locale as keyof typeof weekdayNames] ?? weekdayNames.hy;
+  const normalized = [...(hours ?? [])]
+    .filter((entry) => Number.isInteger(entry.weekday) && entry.weekday >= 1 && entry.weekday <= 7)
+    .sort((a, b) => a.weekday - b.weekday);
+
+  const groups: Array<{
+    firstDay: number;
+    lastDay: number;
+    signature: string;
+    entry: PublicWorkingHour;
+  }> = [];
+
+  normalized.forEach((entry) => {
+    const signature = [
+      entry.is_closed ? "closed" : "open",
+      compactTime(entry.start),
+      compactTime(entry.end),
+      compactTime(entry.break_start),
+      compactTime(entry.break_end),
+    ].join("|");
+    const previous = groups.at(-1);
+
+    if (previous && previous.lastDay + 1 === entry.weekday && previous.signature === signature) {
+      previous.lastDay = entry.weekday;
+      return;
+    }
+
+    groups.push({ firstDay: entry.weekday, lastDay: entry.weekday, signature, entry });
+  });
+
+  return groups.map(({ firstDay, lastDay, entry }) => {
+    const start = compactTime(entry.start);
+    const end = compactTime(entry.end);
+    const breakStart = compactTime(entry.break_start);
+    const breakEnd = compactTime(entry.break_end);
+    return {
+      days: firstDay === lastDay ? names[firstDay - 1] : `${names[firstDay - 1]}–${names[lastDay - 1]}`,
+      hours: start && end ? `${start}–${end}` : null,
+      isClosed: Boolean(entry.is_closed),
+      breakHours: breakStart && breakEnd ? `${breakStart}–${breakEnd}` : null,
+    };
+  });
 }
 
 function getCategoryPresentation(category: PublicBusinessCategory): { Icon: LucideIcon; tone: string } {
@@ -436,6 +503,7 @@ function directoryBusinessFromPin(pin: MapPinItem): PublicDirectoryBusiness {
     timezone: null,
     work_start: null,
     work_end: null,
+    working_hours: [],
     short_description: null,
     cover_url: null,
     logo_url: null,
@@ -885,18 +953,39 @@ function MobileMapBusinessSheet({
   onClose,
 }: {
   pin: MapPinItem;
-  item: PublicDirectoryBusiness;
+  item: MapBusinessDetails;
   onClose: () => void;
 }) {
   const { locale, t } = useLanguage();
   const dialogRef = useRef<HTMLElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [failedCoverUrl, setFailedCoverUrl] = useState<string | null>(null);
+  const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null);
   const titleId = useId();
   const descriptionId = useId();
+  const hoursTitleId = useId();
   const markerKey = `${pin.businessId}-${pin.locationId}`;
   const vertical = normalizeVertical(item.category?.vertical ?? item.vertical ?? item.business_type);
   const isHealthcare = vertical === "healthcare";
   const Icon = isHealthcare ? HeartPulse : Sparkles;
+  const coverUrl = item.cover_url && item.cover_url !== failedCoverUrl ? item.cover_url : null;
+  const logoUrl = item.logo_url && item.logo_url !== failedLogoUrl ? item.logo_url : null;
+  const description = item.short_description
+    || ("description" in item ? item.description : null)
+    || t("business.card.defaultDescription");
+  const workingHoursRows = useMemo(() => groupWorkingHours(item.working_hours, locale), [item.working_hours, locale]);
+  const fallbackHours = compactTime(item.work_start) && compactTime(item.work_end)
+    ? `${compactTime(item.work_start)}–${compactTime(item.work_end)}`
+    : null;
+  const visualVariant = stableBusinessHash(`${item.slug}:${item.name}`) % 6;
+  const heroTone = [
+    "from-[#50303d] via-[#96665f] to-[#e2baa9]",
+    "from-[#49301e] via-[#9b6f37] to-[#ebca91]",
+    "from-[#263f39] via-[#557b70] to-[#b8d0c3]",
+    "from-[#392738] via-[#73536c] to-[#cfadbf]",
+    "from-[#42291f] via-[#8b5c43] to-[#ddb08e]",
+    "from-[#22343d] via-[#55717a] to-[#b6cfcb]",
+  ][visualVariant];
   const categoryName = pin.categoryName
     || getCategoryName(item.category, locale)
     || item.custom_category_name
@@ -943,18 +1032,12 @@ function MobileMapBusinessSheet({
 
   return (
     <motion.div
-      className="vizit-map-mobile-modal fixed inset-0 z-[130] lg:hidden"
+      className="vizit-map-mobile-modal fixed inset-0 z-[160] bg-[#fffaf5] text-[#2b0d35] dark:bg-[#160e19] dark:text-[#fff8f2] lg:hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
     >
-      <button
-        type="button"
-        className="absolute inset-0 h-full w-full cursor-default bg-[#1b1020]/52 backdrop-blur-[3px]"
-        aria-label={t("map.closeDetails")}
-        onClick={onClose}
-      />
       <motion.section
         ref={dialogRef}
         role="dialog"
@@ -965,52 +1048,111 @@ function MobileMapBusinessSheet({
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
-        className="vizit-map-mobile-sheet absolute inset-x-0 bottom-0 max-h-[min(62dvh,430px)] overflow-y-auto rounded-t-[30px] border border-b-0 border-[#d39a43]/30 bg-[#fffaf5] px-4 pb-[max(18px,env(safe-area-inset-bottom))] pt-3 text-[#2b0d35] shadow-[0_-24px_80px_rgba(43,13,53,0.26)] dark:border-[#edc982]/18 dark:bg-[#1b111d] dark:text-[#fff8f2]"
+        className="relative flex h-[100dvh] w-full flex-col overflow-hidden bg-[#fffaf5] dark:bg-[#160e19]"
       >
-        <div className="mx-auto h-1.5 w-11 rounded-full bg-[#6d2a63]/20 dark:bg-white/20" aria-hidden="true" />
-        <div className="mt-3 flex items-center justify-between gap-4">
-          <span className="text-xs font-bold uppercase tracking-[0.14em] text-[#76501f] dark:text-[#efc98a]">{t("map.businessDetails")}</span>
+        <div className={cn("relative h-[36dvh] min-h-[250px] max-h-[390px] shrink-0 overflow-hidden bg-gradient-to-br", heroTone)}>
+          {coverUrl ? (
+            <img
+              src={coverUrl}
+              alt={item.name}
+              decoding="async"
+              onError={() => setFailedCoverUrl(coverUrl)}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="absolute inset-0 grid place-items-center overflow-hidden" aria-hidden="true">
+              <span className="absolute -right-12 -top-16 h-56 w-56 rounded-full border border-white/25 bg-white/10" />
+              <span className="absolute -bottom-28 -left-16 h-72 w-72 rounded-full border border-white/20 bg-white/[0.07]" />
+              {logoUrl ? (
+                <img
+                  src={logoUrl}
+                  alt=""
+                  decoding="async"
+                  onError={() => setFailedLogoUrl(logoUrl)}
+                  className="relative h-28 w-28 rounded-[30px] border border-white/25 bg-white/15 object-cover shadow-2xl backdrop-blur-xl"
+                />
+              ) : (
+                <div className="relative flex items-center gap-4 text-white/95 drop-shadow-xl">
+                  <Icon className="h-12 w-12 stroke-[1.35]" />
+                  <span className="vizit-display text-5xl">{getBusinessInitials(item.name)}</span>
+                </div>
+              )}
+            </div>
+          )}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#170c19]/80 via-transparent to-black/20" />
+          <span className="absolute bottom-5 left-5 inline-flex max-w-[calc(100%_-_40px)] items-center gap-2 rounded-full border border-white/25 bg-[#241126]/60 px-3.5 py-2 text-xs font-bold text-white shadow-xl backdrop-blur-xl">
+            <Icon className="h-4 w-4 shrink-0 text-[#f3cd87]" aria-hidden="true" />
+            <span className="truncate">{categoryName}</span>
+          </span>
           <button
             ref={closeButtonRef}
             type="button"
             onClick={onClose}
-            className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#d39a43]/25 bg-white text-[#4b164b] shadow-sm transition hover:bg-[#fff2df] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6d2a63] focus-visible:ring-offset-2 dark:border-white/12 dark:bg-white/[0.07] dark:text-white dark:hover:bg-white/[0.12] dark:focus-visible:ring-[#edc982] dark:focus-visible:ring-offset-[#1b111d]"
+            style={{ top: "max(16px, env(safe-area-inset-top))" }}
+            className="absolute right-4 grid h-12 w-12 place-items-center rounded-full border border-white/40 bg-white/92 text-[#4b164b] shadow-[0_12px_34px_rgba(30,13,28,0.22)] backdrop-blur-xl transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#edc982] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent dark:border-white/20 dark:bg-[#221326]/88 dark:text-white"
             aria-label={t("map.closeDetails")}
           >
-            <X className="h-5 w-5" aria-hidden="true" />
+            <X className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
 
-        <Link
-          to={`/businesses/${pin.slug}`}
-          className="vizit-map-mobile-card group mt-3 grid grid-cols-[108px_minmax(0,1fr)] gap-3 rounded-[24px] border border-[#d39a43]/24 bg-white/72 p-2 shadow-[0_16px_42px_rgba(72,35,49,0.12)] transition hover:border-[#d39a43]/42 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6d2a63] focus-visible:ring-offset-2 dark:border-white/12 dark:bg-white/[0.055] dark:hover:bg-white/[0.09] dark:focus-visible:ring-[#edc982] dark:focus-visible:ring-offset-[#1b111d]"
-          aria-label={`${pin.name} — ${t("business.card.view")}`}
-        >
-          <div className="vizit-map-mobile-visual overflow-hidden rounded-[18px]">
-            <BusinessCardVisual
-              key={`${item.id}:${item.cover_url ?? ""}:${item.logo_url ?? ""}`}
-              item={item}
-              Icon={Icon}
-              categoryName={categoryName}
-            />
-          </div>
-          <div className="flex min-w-0 flex-col py-1 pr-1">
-            <div className="inline-flex max-w-full items-center gap-1.5 text-[11px] font-bold text-[#8e5d21] dark:text-[#efc98a]">
-              <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-              <span className="truncate">{categoryName}</span>
-            </div>
-            <h3 id={titleId} className="vizit-display mt-2 line-clamp-2 break-words text-[21px] leading-[1.08] text-[#2b0d35] dark:text-white">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+          <div className="px-5 pb-[max(24px,env(safe-area-inset-bottom))] pt-6 sm:px-7">
+            <h2 id={titleId} className="vizit-display break-words text-[34px] leading-[1.05] tracking-[-0.035em] text-[#2b0d35] dark:text-white">
               {pin.name}
-            </h3>
-            <p id={descriptionId} className="mt-2 flex min-w-0 items-start gap-1.5 text-[12px] font-medium leading-[18px] text-[#5f5062] dark:text-[#d8cbd5]">
-              <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#c88e37]" aria-hidden="true" />
-              <span className="line-clamp-2">{pin.locationName ? `${pin.locationName} · ` : ""}{pin.address || t("business.card.noAddress")}</span>
+            </h2>
+            <p id={descriptionId} className="mt-4 text-[15px] font-medium leading-7 text-[#66576a] dark:text-[#d8ccd7]">
+              {description}
             </p>
-            <span className="mt-auto inline-flex h-8 w-8 items-center justify-center self-end rounded-full bg-[#fff2df] text-[#6d2a63] transition group-hover:translate-x-0.5 dark:bg-[#edc982]/10 dark:text-[#efc98a]" aria-hidden="true">
-              <ChevronRight className="h-4 w-4" />
-            </span>
+
+            <div className="mt-5 flex items-start gap-3 rounded-[20px] border border-[#d39a43]/22 bg-white/70 px-4 py-3.5 text-sm font-semibold leading-6 text-[#5c4d60] shadow-[0_12px_34px_rgba(69,36,53,0.06)] dark:border-white/10 dark:bg-white/[0.055] dark:text-[#d9cdd7]">
+              <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-[#c88e37]" aria-hidden="true" />
+              <span>{pin.locationName ? `${pin.locationName} · ` : ""}{pin.address || item.address || t("business.card.noAddress")}</span>
+            </div>
+
+            <section className="mt-7" aria-labelledby={hoursTitleId}>
+              <div className="flex items-center gap-3">
+                <span className="grid h-10 w-10 place-items-center rounded-[14px] bg-[#fff0d8] text-[#98641f] dark:bg-[#edc982]/10 dark:text-[#f1cf90]">
+                  <Clock3 className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <h3 id={hoursTitleId} className="text-base font-black text-[#35173a] dark:text-white">{t("map.workingHours")}</h3>
+              </div>
+
+              <div className="mt-4 overflow-hidden rounded-[22px] border border-[#d39a43]/22 bg-white/76 shadow-[0_12px_38px_rgba(69,36,53,0.07)] dark:border-white/10 dark:bg-white/[0.055]">
+                {workingHoursRows.length ? workingHoursRows.map((row, index) => (
+                  <div key={`${row.days}-${row.hours}-${index}`} className="flex items-start justify-between gap-4 border-b border-[#eadfdb] px-4 py-3.5 last:border-b-0 dark:border-white/8">
+                    <span className="min-w-0 text-sm font-bold text-[#4f3d52] dark:text-[#e5dce4]">{row.days}</span>
+                    <span className="shrink-0 text-right">
+                      <strong className={cn("block text-sm", row.isClosed ? "text-[#9b5261] dark:text-[#f2a9b8]" : "text-[#6d2a63] dark:text-[#f1cf90]")}>{row.isClosed ? t("map.closed") : row.hours}</strong>
+                      {row.breakHours && !row.isClosed ? <small className="mt-1 block text-[11px] font-semibold text-[#8a7a8d] dark:text-[#bfb2bd]">{t("map.break")} {row.breakHours}</small> : null}
+                    </span>
+                  </div>
+                )) : fallbackHours ? (
+                  <div className="flex items-center justify-center px-4 py-5 text-base font-black text-[#6d2a63] dark:text-[#f1cf90]">{fallbackHours}</div>
+                ) : (
+                  <p className="px-4 py-5 text-center text-sm font-semibold leading-6 text-[#776a7a] dark:text-[#c6bbc4]">{t("map.hoursNotProvided")}</p>
+                )}
+              </div>
+            </section>
+
+            <div className="mt-8 grid gap-3">
+              <Link
+                to={pin.bookingUrl}
+                className="inline-flex min-h-14 items-center justify-center gap-2 rounded-[18px] bg-gradient-to-r from-[#2b0d35] to-[#6d2a63] px-5 text-base font-black text-white shadow-[0_16px_38px_rgba(75,22,75,0.24)] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d39a43] focus-visible:ring-offset-2 dark:from-[#f0c979] dark:to-[#d9a54f] dark:text-[#28142b]"
+                aria-label={`${t("business.card.book")} — ${pin.name}`}
+              >
+                {t("business.card.book")}<ArrowRight className="h-5 w-5" aria-hidden="true" />
+              </Link>
+              <Link
+                to={`/businesses/${pin.slug}`}
+                className="inline-flex min-h-14 items-center justify-center rounded-[18px] border border-[#6d2a63]/24 bg-white/72 px-5 text-base font-black text-[#4b164b] transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6d2a63] focus-visible:ring-offset-2 dark:border-white/14 dark:bg-white/[0.055] dark:text-white dark:hover:bg-white/[0.09]"
+                aria-label={`${t("business.card.view")} — ${pin.name}`}
+              >
+                {t("business.card.view")}
+              </Link>
+            </div>
           </div>
-        </Link>
+        </div>
       </motion.section>
     </motion.div>
   );
@@ -1199,9 +1341,17 @@ export default function Index() {
   const mobileMapPin = mobileMapPinKey
     ? pins.find((pin) => `${pin.businessId}-${pin.locationId}` === mobileMapPinKey) ?? null
     : null;
-  const mobileMapBusiness = mobileMapPin
+  const mobileMapBusinessQ = useQuery({
+    queryKey: ["public-map-business-details", mobileMapPin?.slug ?? null],
+    queryFn: () => fetchPublicBusiness(mobileMapPin!.slug),
+    enabled: isCompactMap && Boolean(mobileMapPin?.slug),
+    retry: 1,
+    staleTime: 5 * 60_000,
+  });
+  const mobileMapBusinessFallback = mobileMapPin
     ? businessesById.get(mobileMapPin.businessId) ?? directoryBusinessFromPin(mobileMapPin)
     : null;
+  const mobileMapBusiness = mobileMapBusinessQ.data ?? mobileMapBusinessFallback;
   const popularChips = categories.slice(0, 5);
 
   const stats = useMemo(() => ({

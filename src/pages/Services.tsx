@@ -46,6 +46,7 @@ const serviceCopy = {
         loadFailed: "Չհաջողվեց բեռնել ծառայությունները", loadHint: "Ստուգեք պլանի կարգավիճակը կամ կրկին փորձեք։", retry: "Կրկին փորձել", planStatus: "Պլանի կարգավիճակ", loading: "Բեռնում ենք ծառայությունները…",
         emptyTitle: "Ծառայություններ չկան", emptyText: "Ավելացրեք առաջին ծառայությունը, որպեսզի սկսեք առցանց գրանցումները։", allBranches: "Բոլոր հասցեների համար", active: "Ակտիվ", inactive: "Ոչ ակտիվ", minutes: "րոպե", noPrice: "Գին նշված չէ", edit: "Խմբագրել", deleteConfirm: "Վստա՞հ եք, որ ուզում եք ջնջել ծառայությունը։",
         editTitle: "Խմբագրել ծառայությունը", newTitle: "Նոր ծառայություն", formText: "Լրացրեք ծառայության անունը, տևողությունը և գինը։", name: "Անուն", namePlaceholder: "օր․ Սրտաբանի խորհրդատվություն", description: "Նկարագրություն", descriptionPlaceholder: "Օր․ խորհրդատվություն, զննում և անհատական բուժման պլան…", branch: "Հասցե / մասնաճյուղ", chooseBranch: "Ընտրեք հասցեն", branchHint: "Մի քանի մասնաճյուղ ունենալու դեպքում ընտրեք կոնկրետ հասցեն։", duration: "Տևողություն (րոպե)", price: "Գին", pricePlaceholder: "օր․ 15000", currency: "Արժույթ", status: "Կարգավիճակ", preview: "Նախադիտում", previewText: "Այսպես ծառայությունը կերևա ամրագրման էջում։", newService: "Նոր ծառայություն", activeService: "Ակտիվ ծառայություն", inactiveService: "Ոչ ակտիվ ծառայություն", image: "Նկար", changeImage: "Փոխել նկարը", uploadImage: "Բեռնել նկար", close: "Փակել", save: "Պահպանել փոփոխությունները", create: "Ստեղծել ծառայությունը",
+        bookingType: "Ամրագրման տեսակ", individual: "Անհատական", group: "Խմբային", capacity: "Տեղերի քանակ", groupHint: "Նույն ժամին կարելի է ընդունել մինչև նշված թվով մասնակից։", seats: "տեղ",
     },
     ru: {
         created: "Услуга создана", createFailed: "Не удалось создать услугу", updated: "Услуга обновлена", updateFailed: "Не удалось обновить услугу", deleted: "Услуга удалена", deleteFailed: "Не удалось удалить услугу",
@@ -57,6 +58,7 @@ const serviceCopy = {
         loadFailed: "Не удалось загрузить услуги", loadHint: "Проверьте тариф или попробуйте еще раз.", retry: "Повторить", planStatus: "Статус тарифа", loading: "Загружаем услуги…",
         emptyTitle: "Услуг пока нет", emptyText: "Добавьте первую услугу, чтобы начать онлайн-запись.", allBranches: "Для всех адресов", active: "Активна", inactive: "Неактивна", minutes: "мин", noPrice: "Цена не указана", edit: "Изменить", deleteConfirm: "Удалить эту услугу?",
         editTitle: "Редактировать услугу", newTitle: "Новая услуга", formText: "Укажите название, длительность и цену услуги.", name: "Название", namePlaceholder: "напр. Консультация кардиолога", description: "Описание", descriptionPlaceholder: "Напр. консультация, осмотр и индивидуальный план лечения…", branch: "Адрес / филиал", chooseBranch: "Выберите адрес", branchHint: "Для нескольких филиалов выберите конкретный адрес.", duration: "Длительность (мин)", price: "Цена", pricePlaceholder: "напр. 15000", currency: "Валюта", status: "Статус", preview: "Предпросмотр", previewText: "Так услуга будет выглядеть на странице записи.", newService: "Новая услуга", activeService: "Активная услуга", inactiveService: "Неактивная услуга", image: "Изображение", changeImage: "Заменить", uploadImage: "Загрузить", close: "Закрыть", save: "Сохранить изменения", create: "Создать услугу",
+        bookingType: "Тип записи", individual: "Индивидуальная", group: "Групповая", capacity: "Количество мест", groupHint: "На одно время можно записать до указанного числа участников.", seats: "мест",
     },
     en: {
         created: "Service created", createFailed: "Could not create the service", updated: "Service updated", updateFailed: "Could not update the service", deleted: "Service deleted", deleteFailed: "Could not delete the service",
@@ -68,6 +70,7 @@ const serviceCopy = {
         loadFailed: "Could not load services", loadHint: "Check the plan status or try again.", retry: "Try again", planStatus: "Plan status", loading: "Loading services…",
         emptyTitle: "No services yet", emptyText: "Add the first service to start accepting online bookings.", allBranches: "Available at all locations", active: "Active", inactive: "Inactive", minutes: "min", noPrice: "Price not set", edit: "Edit", deleteConfirm: "Delete this service?",
         editTitle: "Edit service", newTitle: "New service", formText: "Enter the service name, duration and price.", name: "Name", namePlaceholder: "e.g. Cardiology consultation", description: "Description", descriptionPlaceholder: "e.g. consultation, examination and a personalized care plan…", branch: "Address / location", chooseBranch: "Choose a location", branchHint: "Choose a specific address when there are multiple locations.", duration: "Duration (minutes)", price: "Price", pricePlaceholder: "e.g. 15000", currency: "Currency", status: "Status", preview: "Preview", previewText: "This is how the service appears on the booking page.", newService: "New service", activeService: "Active service", inactiveService: "Inactive service", image: "Image", changeImage: "Change image", uploadImage: "Upload image", close: "Close", save: "Save changes", create: "Create service",
+        bookingType: "Booking type", individual: "Individual", group: "Group", capacity: "Seat capacity", groupHint: "Customers can share the same time until this capacity is reached.", seats: "seats",
     },
 } as const;
 
@@ -85,6 +88,8 @@ type ServiceForm = {
     name: string;
     description: string;
     duration_minutes: number;
+    booking_mode: "individual" | "group";
+    capacity: number;
     price: number | "";
     currency: string;
     image_url?: string | null;
@@ -96,6 +101,8 @@ const initialForm: ServiceForm = {
     name: "",
     description: "",
     duration_minutes: 30,
+    booking_mode: "individual",
+    capacity: 1,
     price: "",
     currency: "AMD",
     image_url: null,
@@ -257,6 +264,8 @@ export default function ServicesPage() {
             name: service.name,
             description: service.description ?? "",
             duration_minutes: service.duration_minutes,
+            booking_mode: service.booking_mode ?? "individual",
+            capacity: service.capacity ?? 1,
             price: service.price ?? "",
             currency: service.currency ?? "AMD",
             image_url: service.image_url ?? null,
@@ -277,6 +286,8 @@ export default function ServicesPage() {
             name: form.name,
             description: form.description.trim() || null,
             duration_minutes: Number(form.duration_minutes),
+            booking_mode: form.booking_mode,
+            capacity: form.booking_mode === "group" ? Math.max(2, Number(form.capacity)) : 1,
             price: form.price === "" ? null : Number(form.price),
             currency: form.currency,
             image_url: form.image_url ?? null,
@@ -421,6 +432,11 @@ export default function ServicesPage() {
                                                 <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700">
                                                     {service.location_id ? (locationNameById.get(service.location_id) ?? `#${service.location_id}`) : text.allBranches}
                                                 </div>
+                                                {service.booking_mode === "group" ? (
+                                                    <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700">
+                                                        {text.group} · {service.capacity} {text.seats}
+                                                    </div>
+                                                ) : null}
                                             </div>
                                             </div>
                                         </div>
@@ -576,6 +592,37 @@ export default function ServicesPage() {
                                                         placeholder={text.pricePlaceholder}
                                                     />
                                                 </div>
+                                            </div>
+
+                                            <div className="grid gap-4 rounded-2xl border border-violet-100 bg-violet-50/60 p-4 sm:grid-cols-2">
+                                                <div>
+                                                    <label className="mb-2 block text-sm font-medium text-slate-800">{text.bookingType}</label>
+                                                    <select
+                                                        value={form.booking_mode}
+                                                        onChange={(e) => setForm((p) => ({
+                                                            ...p,
+                                                            booking_mode: e.target.value as "individual" | "group",
+                                                            capacity: e.target.value === "group" ? Math.max(2, p.capacity) : 1,
+                                                        }))}
+                                                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+                                                    >
+                                                        <option value="individual">{text.individual}</option>
+                                                        <option value="group">{text.group}</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label className="mb-2 block text-sm font-medium text-slate-800">{text.capacity}</label>
+                                                    <input
+                                                        type="number"
+                                                        min={form.booking_mode === "group" ? 2 : 1}
+                                                        max={500}
+                                                        disabled={form.booking_mode !== "group"}
+                                                        value={form.capacity}
+                                                        onChange={(e) => setForm((p) => ({ ...p, capacity: Math.max(1, Number(e.target.value)) }))}
+                                                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition disabled:bg-slate-100 disabled:text-slate-400 focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+                                                    />
+                                                </div>
+                                                {form.booking_mode === "group" ? <p className="text-xs leading-5 text-violet-700 sm:col-span-2">{text.groupHint}</p> : null}
                                             </div>
 
                                             <div className="grid gap-4 sm:grid-cols-2">

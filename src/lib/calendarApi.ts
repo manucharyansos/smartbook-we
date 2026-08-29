@@ -5,6 +5,11 @@ export type BookingStatus = "pending" | "confirmed" | "done" | "cancelled" | "no
 export type Booking = {
   id: number;
   booking_code?: string | null;
+  party_size?: number;
+  recurrence_id?: string | null;
+  recurrence_frequency?: "weekly" | "biweekly" | "monthly" | null;
+  recurrence_index?: number;
+  recurrence_count?: number;
   business_id?: number;
   service_id: number;
   staff_id: number | null;
@@ -16,6 +21,8 @@ export type Booking = {
   starts_at: string;
   ends_at: string;
   source?: string | null;
+  final_price?: number | null;
+  currency?: string | null;
   items?: Array<{
     id: number;
     service_id: number;
@@ -54,6 +61,9 @@ export type CreateBookingPayload = {
   redeem_points?: number;
   gift_card_code?: string;
   gift_card_amount?: number;
+  party_size?: number;
+  recurrence_frequency?: "weekly" | "biweekly" | "monthly";
+  recurrence_count?: number;
 };
 
 export type CreateBookingLinesPayload = {
@@ -126,6 +136,11 @@ export async function cancelBooking(id: number): Promise<Booking> {
   }
 
   return booking;
+}
+
+export async function cancelBookingRecurrence(id: number, scope: "future" | "all" = "future") {
+  const response = await api.patch(`/bookings/${id}/recurrence/cancel`, { scope });
+  return response.data as { ok: boolean; cancelled_booking_ids: number[]; recurrence_id: string };
 }
 
 export async function doneBooking(id: number) {

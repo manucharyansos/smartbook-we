@@ -29,7 +29,7 @@ const clientsCopy = {
     reminders: "Հիշեցումներ", reminderPlaceholder: "Ինչի՞ մասին հիշեցնել", internal: "Ներքին", atTime: "Հենց ժամին", min15: "15 րոպե առաջ", min30: "30 րոպե առաջ", hour1: "1 ժամ առաջ", hour3: "3 ժամ առաջ", day1: "1 օր առաջ", inApp: "Համակարգում", activeReminder: "Ակտիվ հիշեցում", details: "Մանրամասներ…", createReminder: "Ստեղծել հիշեցում", minBefore: "ր առաջ", disabled: "անջատված է", markDone: "Ավարտված", sendNow: "Ուղարկել հիմա", noReminders: "Հիշեցումներ դեռ չկան։",
     timeline: "Գործողությունների պատմություն", emptyTimeline: "Պատմությունը դեռ դատարկ է։", recentBookings: "Վերջին այցերը", service: "Ծառայություն", noBookings: "Դեռ այցեր չկան։", selectClient: "Ընտրեք պացիենտ", genericSelectClient: "Ընտրեք հաճախորդ", selectText: "Ցուցակից ընտրեք անձին՝ մանրամասն քարտը բացելու համար։",
     editClient: "Խմբագրել հաճախորդին", editPatient: "Խմբագրել պացիենտին", name: "Անուն և ազգանուն", namePlaceholder: "Օր․ Մարիամ Հովհաննիսյան", phone: "Հեռախոս", email: "Էլ. փոստ", group: "Խումբ", groupPlaceholder: "Օր․ VIP, կորպորատիվ", select: "Ընտրել", emergencyName: "Արտակարգ կապի անուն", emergencyPhone: "Արտակարգ կապի հեռախոս", nameShort: "Անուն", vipClient: "VIP հաճախորդ", vipPatient: "VIP պացիենտ", blacklist: "Սև ցուցակ", reason: "Սև ցուցակի պատճառ", reasonPlaceholder: "Նշեք պատճառը…", allergiesPlaceholder: "Օր․ լատեքս, պենիցիլին…", historyPlaceholder: "Այցերի ժամանակ հաշվի առնելու տեղեկություններ…", note: "Ընդհանուր նշում", profileNotePlaceholder: "Նախընտրություններ կամ այլ կարևոր տեղեկություն…", close: "Փակել", save: "Պահպանել", create: "Ստեղծել",
-    statusLost: "Կորած", statusReturning: "Վերադարձող", statusUpcoming: "Առաջիկա", statusBlacklist: "Սև ցուցակ",
+    statusLost: "Կորած", statusReturning: "Վերադարձող", statusUpcoming: "Առաջիկա", statusBlacklist: "Սև ցուցակ", marketingConsent: "Մարքեթինգային հաղորդագրությունների համաձայնություն", marketingConsentHint: "Հաճախորդը թույլատրել է ստանալ ակցիաներ և նորություններ էլ. փոստով։", marketingAllowed: "Մարքեթինգը թույլատրված է", marketingBlocked: "Մարքեթինգը թույլատրված չէ",
   },
   ru: {
     badge: "Управление пациентами", genericBadge: "Управление клиентами", title: "Пациенты и медицинские карты", genericTitle: "База клиентов", intro: "Визиты, медицинские заметки, аллергии, напоминания и история пациента в одной защищенной карте.", genericIntro: "Визиты, заметки, группы и напоминания клиентов в одном профиле.", newClient: "Новый клиент", newPatient: "Новый пациент",
@@ -42,7 +42,7 @@ const clientsCopy = {
     reminders: "Напоминания", reminderPlaceholder: "О чем напомнить?", internal: "Внутреннее", atTime: "В назначенное время", min15: "За 15 минут", min30: "За 30 минут", hour1: "За 1 час", hour3: "За 3 часа", day1: "За 1 день", inApp: "В системе", activeReminder: "Напоминание активно", details: "Подробности…", createReminder: "Создать напоминание", minBefore: "мин. до", disabled: "отключено", markDone: "Завершено", sendNow: "Отправить сейчас", noReminders: "Напоминаний пока нет.",
     timeline: "История действий", emptyTimeline: "История пока пуста.", recentBookings: "Последние визиты", service: "Услуга", noBookings: "Визитов пока нет.", selectClient: "Выберите пациента", genericSelectClient: "Выберите клиента", selectText: "Выберите человека из списка, чтобы открыть карточку.",
     editClient: "Редактировать клиента", editPatient: "Редактировать пациента", name: "Имя и фамилия", namePlaceholder: "Напр. Мария Иванова", phone: "Телефон", email: "Эл. почта", group: "Группа", groupPlaceholder: "Напр. VIP, корпоративные", select: "Выбрать", emergencyName: "Имя экстренного контакта", emergencyPhone: "Телефон экстренного контакта", nameShort: "Имя", vipClient: "VIP-клиент", vipPatient: "VIP-пациент", blacklist: "Черный список", reason: "Причина блокировки", reasonPlaceholder: "Укажите причину…", allergiesPlaceholder: "Напр. латекс, пенициллин…", historyPlaceholder: "Информация, важная во время визитов…", note: "Общая заметка", profileNotePlaceholder: "Предпочтения и другая важная информация…", close: "Закрыть", save: "Сохранить", create: "Создать",
-    statusLost: "Потерян", statusReturning: "Возвращается", statusUpcoming: "Предстоящий", statusBlacklist: "Черный список",
+    statusLost: "Потерян", statusReturning: "Возвращается", statusUpcoming: "Предстоящий", statusBlacklist: "Черный список", marketingConsent: "Согласие на маркетинговые сообщения", marketingConsentHint: "Клиент разрешил получать акции и новости по электронной почте.", marketingAllowed: "Маркетинг разрешен", marketingBlocked: "Маркетинг не разрешен",
   },
   en: {
     badge: "Patient management", genericBadge: "Client management", title: "Patients & medical records", genericTitle: "Client database", intro: "Visits, clinical notes, allergies, reminders and patient history in one secure, clear record.", genericIntro: "Client visits, notes, groups and reminders in one clear profile.", newClient: "New client", newPatient: "New patient",
@@ -55,7 +55,7 @@ const clientsCopy = {
     reminders: "Reminders", reminderPlaceholder: "What should we remind you about?", internal: "Internal", atTime: "At the scheduled time", min15: "15 minutes before", min30: "30 minutes before", hour1: "1 hour before", hour3: "3 hours before", day1: "1 day before", inApp: "In app", activeReminder: "Reminder enabled", details: "Details…", createReminder: "Create reminder", minBefore: "min before", disabled: "disabled", markDone: "Done", sendNow: "Send now", noReminders: "No reminders yet.",
     timeline: "Activity history", emptyTimeline: "The history is empty.", recentBookings: "Recent visits", service: "Service", noBookings: "No visits yet.", selectClient: "Select a patient", genericSelectClient: "Select a client", selectText: "Select someone from the list to open the full record.",
     editClient: "Edit client", editPatient: "Edit patient", name: "Full name", namePlaceholder: "e.g. Mary Smith", phone: "Phone", email: "Email", group: "Group", groupPlaceholder: "e.g. VIP, corporate", select: "Select", emergencyName: "Emergency contact name", emergencyPhone: "Emergency contact phone", nameShort: "Name", vipClient: "VIP client", vipPatient: "VIP patient", blacklist: "Block list", reason: "Block reason", reasonPlaceholder: "Enter the reason…", allergiesPlaceholder: "e.g. latex, penicillin…", historyPlaceholder: "Information to consider during visits…", note: "General note", profileNotePlaceholder: "Preferences or other important information…", close: "Close", save: "Save", create: "Create",
-    statusLost: "Lost", statusReturning: "Returning", statusUpcoming: "Upcoming", statusBlacklist: "Blocked",
+    statusLost: "Lost", statusReturning: "Returning", statusUpcoming: "Upcoming", statusBlacklist: "Blocked", marketingConsent: "Marketing message consent", marketingConsentHint: "The client has agreed to receive offers and news by email.", marketingAllowed: "Marketing allowed", marketingBlocked: "Marketing not allowed",
   },
 } satisfies Record<Locale, Record<string, string>>;
 
@@ -116,6 +116,7 @@ type FormState = {
   name: string;
   phone: string;
   email: string;
+  marketing_opt_in: boolean;
   notes: string;
   birth_date: string;
   group_name: string;
@@ -133,6 +134,7 @@ const emptyForm: FormState = {
   name: "",
   phone: "",
   email: "",
+  marketing_opt_in: false,
   notes: "",
   birth_date: "",
   group_name: "",
@@ -312,6 +314,7 @@ export default function Clients() {
       name: client.name ?? "",
       phone: client.phone ?? "",
       email: client.email ?? "",
+      marketing_opt_in: !!client.marketing_opt_in,
       notes: client.notes ?? "",
       birth_date: client.birth_date ?? "",
       group_name: client.group_name ?? "",
@@ -333,6 +336,7 @@ export default function Clients() {
       name: form.name.trim(),
       phone: form.phone.trim() || null,
       email: form.email.trim() || null,
+      marketing_opt_in: form.marketing_opt_in,
       notes: form.notes.trim() || null,
       birth_date: form.birth_date || null,
       group_name: form.group_name.trim() || null,
@@ -524,6 +528,9 @@ export default function Clients() {
                     <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-slate-500">
                       <span className="inline-flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {clientQ.data.phone || "—"}</span>
                       {clientQ.data.email ? <span className="inline-flex items-center gap-1"><Mail className="h-3.5 w-3.5" /> {clientQ.data.email}</span> : null}
+                      <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold", clientQ.data.marketing_opt_in ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500")}>
+                        <Mail className="h-3.5 w-3.5" /> {clientQ.data.marketing_opt_in ? text.marketingAllowed : text.marketingBlocked}
+                      </span>
                     </div>
                   </div>
                   {canManage ? <Button variant="secondary" onClick={() => openEdit(clientQ.data)}>{text.edit}</Button> : null}
@@ -828,6 +835,15 @@ export default function Clients() {
               <AlertTriangle className="h-4 w-4 text-rose-500" /> {text.blacklist}
             </label>
           </div>
+
+          <label className="flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/70 px-4 py-3 text-sm text-slate-700">
+            <input className="mt-1" type="checkbox" checked={form.marketing_opt_in} onChange={(e) => setForm((p) => ({ ...p, marketing_opt_in: e.target.checked }))} />
+            <Mail className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+            <span>
+              <span className="block font-semibold text-slate-900">{text.marketingConsent}</span>
+              <span className="mt-1 block text-xs leading-5 text-slate-500">{text.marketingConsentHint}</span>
+            </span>
+          </label>
 
           {form.is_blacklisted ? (
             <label className="block text-sm text-slate-600">

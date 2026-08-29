@@ -14,6 +14,7 @@ import {
   fetchLoyaltyClientLedger,
   fetchLoyaltyClients,
   fetchLoyaltyProgram,
+  fetchLoyaltySummary,
   previewLoyalty,
   updateLoyaltyProgram,
   type LoyaltyClient,
@@ -42,6 +43,7 @@ export default function Loyalty() {
   const [previewPoints, setPreviewPoints] = useState<number>(100);
 
   const programQ = useQuery({ queryKey: ['loyalty', 'program'], queryFn: fetchLoyaltyProgram });
+  const summaryQ = useQuery({ queryKey: ['loyalty', 'summary'], queryFn: fetchLoyaltySummary });
   const clientsQ = useQuery({ queryKey: ['loyalty', 'clients', q], queryFn: () => fetchLoyaltyClients(q) });
   const ledgerQ = useQuery({
     queryKey: ['loyalty', 'ledger', ledgerClient?.id ?? 0],
@@ -70,7 +72,7 @@ export default function Loyalty() {
 
   const program = programQ.data;
   const clients = useMemo(() => clientsQ.data ?? [], [clientsQ.data]);
-  const totalBalance = useMemo(() => clients.reduce((sum, client) => sum + client.points, 0), [clients]);
+  const totalBalance = summaryQ.data?.outstanding_points ?? clients.reduce((sum, client) => sum + client.points, 0);
 
   return (
     <motion.div {...page} className="admin-page space-y-4">
@@ -91,6 +93,12 @@ export default function Loyalty() {
             </div>
             <div className="rounded-[24px] border border-slate-200 bg-slate-50 px-5 py-4 text-sm font-medium text-slate-700">
               {program ? `${program.points_per_currency_unit} միավոր / ${program.currency_unit} դրամ` : 'Բեռնում է…'}
+            </div>
+            <div className="rounded-[24px] border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-medium text-emerald-800">
+              Ակտիվ անդամներ՝ {summaryQ.data?.members ?? 0}
+            </div>
+            <div className="rounded-[24px] border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-medium text-rose-800">
+              30 օրում ավարտվող՝ {summaryQ.data?.expiring_in_30_days ?? 0}
             </div>
           </div>
         </div>
@@ -225,6 +233,7 @@ export default function Loyalty() {
                 <div className={entry.delta_points >= 0 ? 'font-semibold text-emerald-700' : 'font-semibold text-rose-700'}>{entry.delta_points >= 0 ? `+${entry.delta_points}` : entry.delta_points}</div>
               </div>
               <div className="mt-1 text-slate-500">{entry.reason || '—'}</div>
+              {entry.expires_at ? <div className="mt-1 text-xs font-medium text-amber-700">Վավեր է մինչև՝ {new Date(entry.expires_at).toLocaleDateString('hy-AM')}</div> : null}
               <div className="mt-1 text-xs text-slate-400">{new Date(entry.created_at).toLocaleString('hy-AM')}</div>
             </div>
           ))}

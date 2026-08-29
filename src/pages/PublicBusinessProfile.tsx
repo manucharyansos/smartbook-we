@@ -36,21 +36,21 @@ const copy = {
         loadingTitle: "Բեռնում ենք բիզնեսի էջը", loadingText: "Խնդրում ենք մի փոքր սպասել։", notFoundTitle: "Բիզնեսը չի գտնվել", notFoundText: "Հնարավոր է էջը ջնջվել է կամ հղումը սխալ է։", home: "Վերադառնալ գլխավոր էջ", bookNow: "Ամրագրել հիմա", defaultDescription: "Պրոֆեսիոնալ սպասարկում, հարմար ժամերի ընտրություն և արագ օնլայն ամրագրում Vizit-ի միջոցով։", whatsapp: "Բարև, ուզում եմ ամրագրում կատարել",
         workingHours: "Աշխատանքային ժամեր", team: "Թիմ", staffUnit: "մասնագետ", services: "Ծառայություններ", servicesUnit: "ակտիվ ծառայություն", booking: "Ամրագրում", online: "Հասանելի է օնլայն", quick: "Արագ գործողություններ", quickTitle: "Ամրագրեք հիմա", quickText: "Ընտրեք ծառայությունը, մասնագետին և հարմար ժամը մի քանի քայլով։", openBooking: "Անցնել ամրագրման էջ", allBusinesses: "Բոլոր բիզնեսները", locations: "Հասցեներ", mainLocation: "Գլխավոր հասցե", branch: "Մասնաճյուղ", onlineVia: "Օնլայն ամրագրում Vizit հարթակում",
         publicServices: "Հանրային հասանելի ծառայությունները", noServices: "Այս պահին հանրային ծառայություններ դեռ ցուցադրված չեն։", minutes: "րոպե", book: "Ամրագրել", specialists: "Մասնագետներ", teamTitle: "Թիմը", noStaff: "Այս պահին թիմի հանրային ցուցադրում չկա։", onlineBooking: "Օնլայն ամրագրում", publicProfile: "Հանրային էջ", bioFallback: "Մասնագետի մասին մանրամասները հասանելի են ամրագրման ընթացքում։", available: "Հասանելի է օնլայն ամրագրման համար", bookSpecialist: "Ամրագրել այս մասնագետի մոտ",
-        why: "Ինչու ընտրել այս բիզնեսը", whyItems: ["Օնլայն ամրագրում առանց զանգերի", "Ծառայությունների և մասնագետների հարմար ընտրություն", "Ազատ ժամերի արագ ստուգում", "Պրոֆեսիոնալ ներկայացում Vizit-ում"], ready: "Պատրա՞ստ եք ամրագրել", chooseTime: "Ընտրեք հարմար ժամը", readyText: "Բացեք ամրագրման էջը և ավարտեք ամրագրումը մի քանի պարզ քայլով։", start: "Սկսել ամրագրումը",
+        why: "Ինչու ընտրել այս բիզնեսը", whyItems: ["Օնլայն ամրագրում առանց զանգերի", "Ծառայությունների և մասնագետների հարմար ընտրություն", "Ազատ ժամերի արագ ստուգում", "Պրոֆեսիոնալ ներկայացում Vizit-ում"], ready: "Պատրա՞ստ եք ամրագրել", chooseTime: "Ընտրեք հարմար ժամը", readyText: "Բացեք ամրագրման էջը և ավարտեք ամրագրումը մի քանի պարզ քայլով։", start: "Սկսել ամրագրումը", viewServices: "Դիտել ծառայությունները",
     },
     ru: {
         dental: "Стоматологическая клиника", beauty: "Салон красоты", unavailableHours: "Время доступно на странице записи", askPrice: "Уточнить цену", owner: "Владелец · специалист", manager: "Менеджер · специалист", specialist: "Специалист",
         loadingTitle: "Загружаем страницу бизнеса", loadingText: "Пожалуйста, подождите немного.", notFoundTitle: "Бизнес не найден", notFoundText: "Возможно, страница удалена или ссылка указана неверно.", home: "Вернуться на главную", bookNow: "Записаться", defaultDescription: "Профессиональный сервис, удобный выбор времени и быстрая онлайн-запись через Vizit.", whatsapp: "Здравствуйте, хочу записаться в",
         workingHours: "Рабочие часы", team: "Команда", staffUnit: "специалистов", services: "Услуги", servicesUnit: "активных услуг", booking: "Запись", online: "Доступна онлайн", quick: "Быстрые действия", quickTitle: "Запишитесь сейчас", quickText: "Выберите услугу, специалиста и удобное время за несколько шагов.", openBooking: "Открыть страницу записи", allBusinesses: "Все бизнесы", locations: "Адреса", mainLocation: "Основной адрес", branch: "Филиал", onlineVia: "Онлайн-запись на платформе Vizit",
         publicServices: "Услуги, доступные для записи", noServices: "Публичные услуги пока не добавлены.", minutes: "мин", book: "Записаться", specialists: "Специалисты", teamTitle: "Команда", noStaff: "Команда пока не показывается публично.", onlineBooking: "Онлайн-запись", publicProfile: "Публичный профиль", bioFallback: "Подробнее о специалисте можно узнать во время записи.", available: "Доступен для онлайн-записи", bookSpecialist: "Записаться к специалисту",
-        why: "Почему стоит выбрать этот бизнес", whyItems: ["Онлайн-запись без звонков", "Удобный выбор услуг и специалистов", "Быстрая проверка свободного времени", "Профессиональная страница в Vizit"], ready: "Готовы записаться?", chooseTime: "Выберите удобное время", readyText: "Откройте страницу записи и завершите бронирование за несколько простых шагов.", start: "Начать запись",
+        why: "Почему стоит выбрать этот бизнес", whyItems: ["Онлайн-запись без звонков", "Удобный выбор услуг и специалистов", "Быстрая проверка свободного времени", "Профессиональная страница в Vizit"], ready: "Готовы записаться?", chooseTime: "Выберите удобное время", readyText: "Откройте страницу записи и завершите бронирование за несколько простых шагов.", start: "Начать запись", viewServices: "Посмотреть услуги",
     },
     en: {
         dental: "Dental clinic", beauty: "Beauty salon", unavailableHours: "Times are available on the booking page", askPrice: "Ask for price", owner: "Owner · specialist", manager: "Manager · specialist", specialist: "Specialist",
         loadingTitle: "Loading the business page", loadingText: "Please wait a moment.", notFoundTitle: "Business not found", notFoundText: "The page may have been removed or the link may be incorrect.", home: "Return home", bookNow: "Book now", defaultDescription: "Professional service, convenient time selection and fast online booking through Vizit.", whatsapp: "Hello, I would like to book at",
         workingHours: "Working hours", team: "Team", staffUnit: "specialists", services: "Services", servicesUnit: "active services", booking: "Booking", online: "Available online", quick: "Quick actions", quickTitle: "Book now", quickText: "Choose a service, specialist and convenient time in a few steps.", openBooking: "Open booking page", allBusinesses: "All businesses", locations: "Locations", mainLocation: "Main location", branch: "Branch", onlineVia: "Online booking through Vizit",
         publicServices: "Services available to book", noServices: "No public services are listed yet.", minutes: "min", book: "Book", specialists: "Specialists", teamTitle: "The team", noStaff: "The team is not currently shown publicly.", onlineBooking: "Online booking", publicProfile: "Public profile", bioFallback: "More information about this specialist is available while booking.", available: "Available for online booking", bookSpecialist: "Book this specialist",
-        why: "Why choose this business", whyItems: ["Online booking without phone calls", "Convenient service and specialist selection", "Fast availability checks", "A professional profile on Vizit"], ready: "Ready to book?", chooseTime: "Choose a convenient time", readyText: "Open the booking page and complete your booking in a few simple steps.", start: "Start booking",
+        why: "Why choose this business", whyItems: ["Online booking without phone calls", "Convenient service and specialist selection", "Fast availability checks", "A professional profile on Vizit"], ready: "Ready to book?", chooseTime: "Choose a convenient time", readyText: "Open the booking page and complete your booking in a few simple steps.", start: "Start booking", viewServices: "View services",
     },
 } as const;
 
@@ -194,7 +194,7 @@ export default function PublicBusinessProfile() {
                         >
                             <div className="vizit-business-profile-backdrop absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(231,193,169,0.30),transparent_29%),radial-gradient(circle_at_bottom_left,rgba(244,220,190,0.36),transparent_29%),linear-gradient(135deg,#fffaf5_0%,#fbf3eb_58%,#fffdf9_100%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(139,76,125,0.16),transparent_31%),linear-gradient(135deg,#221d22_0%,#1c181c_58%,#171417_100%)]" />
 
-                            <div className="vizit-business-profile-hero relative grid gap-4 p-3 sm:p-4 lg:grid-cols-[minmax(280px,0.78fr)_minmax(0,1.22fr)] lg:gap-5 2xl:grid-cols-[320px_minmax(0,1fr)_300px]">
+                            <div className="vizit-business-profile-hero relative grid gap-4 p-3 sm:p-4 lg:grid-cols-[minmax(300px,0.82fr)_minmax(0,1.18fr)] lg:gap-6">
                                 <div className="vizit-business-profile-cover relative min-h-[230px] overflow-hidden rounded-[28px] border border-white/70 bg-[linear-gradient(145deg,#e9cfc3,#f7e9dd_52%,#d8c0d0)] shadow-[0_18px_52px_rgba(72,35,49,0.13)] sm:min-h-[300px] lg:min-h-full">
                                     {business.cover_url ? (
                                         <img src={business.cover_url} alt={business.name} className="absolute inset-0 h-full w-full object-cover" />
@@ -216,7 +216,7 @@ export default function PublicBusinessProfile() {
                                     </div>
                                 </div>
 
-                                <div className="vizit-business-profile-summary min-w-0 px-2 py-3 sm:px-4 sm:py-5 lg:px-3">
+                                <div className="vizit-business-profile-summary min-w-0 px-2 py-3 sm:px-4 sm:py-5 lg:px-3 lg:py-8">
                                     <div className="flex items-start gap-4">
                                         <div className="h-16 w-16 shrink-0 overflow-hidden rounded-[22px] border border-white/70 bg-white/90 shadow-md">
                                             {business.logo_url ? (
@@ -226,78 +226,83 @@ export default function PublicBusinessProfile() {
                                             )}
                                         </div>
 
-                                        <div>
-                                            <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+                                        <div className="min-w-0">
+                                            <h1 className="break-words text-3xl font-semibold tracking-tight text-slate-950 dark:text-white sm:text-4xl lg:text-5xl">
                                                 {business.name}
                                             </h1>
-                                            <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
+                                            <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600 dark:text-slate-300">
                                                 {business.short_description || text.defaultDescription}
                                             </p>
                                         </div>
                                     </div>
 
-                                    <div className="mt-8 flex flex-wrap gap-3">
+                                    <div className="mt-7 flex flex-wrap items-center gap-2.5">
                                         <Link
                                             to={`/book/${business.slug}?source=website`}
-                                            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800 sm:w-auto"
+                                            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#5b214f] to-[#7b2f68] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(91,33,79,0.24)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_38px_rgba(91,33,79,0.28)] sm:w-auto"
                                         >
-                                            <CalendarDays className="h-4 w-4" /> {text.bookNow}
+                                            <CalendarDays className="h-4 w-4" /> {text.bookNow}<ArrowRight className="h-4 w-4" />
                                         </Link>
+                                        {business.show_services !== false ? (
+                                            <a href="#services" className="inline-flex w-full items-center justify-center rounded-2xl border border-slate-200/90 bg-white/80 px-5 py-3.5 text-sm font-semibold text-slate-700 backdrop-blur transition hover:bg-white dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10 sm:w-auto">
+                                                {text.viewServices}
+                                            </a>
+                                        ) : null}
                                         {instagramUrl ? (
-                                            <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 sm:w-auto">
-                                                <Instagram className="h-4 w-4 text-pink-500" /> Instagram
+                                            <a aria-label="Instagram" href={instagramUrl} target="_blank" rel="noopener noreferrer" className="grid h-12 w-12 place-items-center rounded-2xl border border-slate-200/90 bg-white/80 text-pink-500 transition hover:-translate-y-0.5 hover:bg-white dark:border-white/15 dark:bg-white/5">
+                                                <Instagram className="h-5 w-5" />
                                             </a>
                                         ) : null}
                                         {facebookUrl ? (
-                                            <a href={facebookUrl} target="_blank" rel="noopener noreferrer" className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 sm:w-auto">
-                                                <Facebook className="h-4 w-4 text-sky-600" /> Facebook
+                                            <a aria-label="Facebook" href={facebookUrl} target="_blank" rel="noopener noreferrer" className="grid h-12 w-12 place-items-center rounded-2xl border border-slate-200/90 bg-white/80 text-sky-600 transition hover:-translate-y-0.5 hover:bg-white dark:border-white/15 dark:bg-white/5">
+                                                <Facebook className="h-5 w-5" />
                                             </a>
                                         ) : null}
                                         {whatsappUrl ? (
-                                            <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 sm:w-auto">
-                                                <MessageCircleMore className="h-4 w-4 text-emerald-600" /> WhatsApp
+                                            <a aria-label="WhatsApp" href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="grid h-12 w-12 place-items-center rounded-2xl border border-slate-200/90 bg-white/80 text-emerald-600 transition hover:-translate-y-0.5 hover:bg-white dark:border-white/15 dark:bg-white/5">
+                                                <MessageCircleMore className="h-5 w-5" />
                                             </a>
                                         ) : null}
                                         {messengerUrl ? (
-                                            <a href={messengerUrl} target="_blank" rel="noopener noreferrer" className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 sm:w-auto">
-                                                <MessageCircleMore className="h-4 w-4 text-violet-600" /> Messenger
+                                            <a aria-label="Messenger" href={messengerUrl} target="_blank" rel="noopener noreferrer" className="grid h-12 w-12 place-items-center rounded-2xl border border-slate-200/90 bg-white/80 text-violet-600 transition hover:-translate-y-0.5 hover:bg-white dark:border-white/15 dark:bg-white/5">
+                                                <MessageCircleMore className="h-5 w-5" />
                                             </a>
                                         ) : null}
                                     </div>
 
-                                    <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-2 2xl:grid-cols-4">
-                                        <div className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-sm">
-                                            <div className="flex items-center gap-2 text-sm text-slate-500">
+                                    <div className="mt-7 grid grid-cols-2 gap-3 xl:grid-cols-4">
+                                        <div className="rounded-2xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+                                            <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
                                                 <Clock3 className="h-4 w-4 text-violet-500" />
                                                 {text.workingHours}
                                             </div>
-                                            <div className="mt-2 text-sm font-semibold text-slate-900">
+                                            <div className="mt-2 text-sm font-semibold text-slate-900 dark:text-white">
                                                 {formatWorkHours(business.work_start, business.work_end, locale)}
                                             </div>
                                         </div>
 
-                                        <div className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-sm">
-                                            <div className="flex items-center gap-2 text-sm text-slate-500">
+                                        <div className="rounded-2xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+                                            <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
                                                 <Users className="h-4 w-4 text-violet-500" />
                                                 {text.team}
                                             </div>
-                                            <div className="mt-2 text-sm font-semibold text-slate-900">
+                                            <div className="mt-2 text-sm font-semibold text-slate-900 dark:text-white">
                                                 {staff.length} {text.staffUnit}
                                             </div>
                                         </div>
 
-                                        <div className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-sm">
-                                            <div className="flex items-center gap-2 text-sm text-slate-500">
+                                        <div className="rounded-2xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+                                            <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
                                                 <Sparkles className="h-4 w-4 text-violet-500" />
                                                 {text.services}
                                             </div>
-                                            <div className="mt-2 text-sm font-semibold text-slate-900">
+                                            <div className="mt-2 text-sm font-semibold text-slate-900 dark:text-white">
                                                 {services.length} {text.servicesUnit}
                                             </div>
                                         </div>
 
-                                        <div className="rounded-2xl border border-white/70 bg-white/80 p-4 shadow-sm">
-                                            <div className="flex items-center gap-2 text-sm text-slate-500">
+                                        <div className="rounded-2xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+                                            <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
                                                 <CalendarDays className="h-4 w-4 text-violet-500" />
                                                 {text.booking}
                                             </div>
@@ -308,69 +313,35 @@ export default function PublicBusinessProfile() {
                                     </div>
                                 </div>
 
-                                <div className="vizit-business-profile-contact relative lg:col-span-2 2xl:col-span-1">
-                                    <div className="rounded-[30px] border border-white/70 bg-white/88 p-5 shadow-xl">
-                                        <div className="text-sm text-slate-500">{text.quick}</div>
-                                        <div className="mt-2 text-2xl font-semibold text-slate-900">
-                                            {text.quickTitle}
+                                <div className="vizit-business-profile-contact relative grid gap-3 rounded-[26px] border border-white/70 bg-white/65 p-3 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/5 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-3">
+                                    {business.address ? (
+                                        <div className="flex items-start gap-3 rounded-2xl bg-white/75 px-4 py-3 text-sm text-slate-600 dark:bg-white/5 dark:text-slate-300">
+                                            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+                                            <span>{business.address}</span>
                                         </div>
-                                        <p className="mt-3 text-sm leading-6 text-slate-600">
-                                            {text.quickText}
-                                        </p>
-
-                                        <div className="mt-6 space-y-3">
-                                            <Link
-                                                to={`/book/${business.slug}`}
-                                                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-5 py-3.5 text-sm font-medium text-white shadow-lg shadow-violet-500/20"
-                                            >
-                                                {text.openBooking}
-                                                <ArrowRight className="h-4 w-4" />
-                                            </Link>
-
-                                            <Link
-                                                to="/"
-                                                className="inline-flex w-full items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-                                            >
-                                                {text.allBusinesses}
-                                            </Link>
-                                        </div>
-
-                                        <div className="mt-6 space-y-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-4">
-                                            {business.address && (
-                                                <div className="flex items-start gap-3 text-sm text-slate-600">
-                                                    <MapPin className="mt-0.5 h-4 w-4 text-orange-500" />
-                                                    <span>{business.address}</span>
-                                                </div>
-                                            )}
-
-                                            {Array.isArray(business.locations) && business.locations.length > 1 ? (
-                                                <div className="rounded-2xl border border-slate-200 bg-white/80 p-3">
-                                                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{text.locations}</div>
-                                                    <div className="mt-2 space-y-2">
-                                                        {business.locations.map((location) => (
-                                                            <div key={location.id} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600">
-                                                                <div className="font-medium text-slate-900">{location.name || (location.is_primary ? text.mainLocation : text.branch)}</div>
-                                                                <div className="mt-1 leading-6">{location.address}</div>
-                                                                {location.phone ? <a href={`tel:${location.phone}`} className="mt-1 inline-block text-xs text-slate-500 hover:text-slate-900">{location.phone}</a> : null}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            ) : null}
-
-                                            {business.phone && (
-                                                <div className="flex items-start gap-3 text-sm text-slate-600">
-                                                    <Phone className="mt-0.5 h-4 w-4 text-orange-500" />
-                                                    <a href={`tel:${business.phone}`} className="hover:text-slate-900">{business.phone}</a>
-                                                </div>
-                                            )}
-
-                                            <div className="flex items-start gap-3 text-sm text-slate-600">
-                                                <CheckCircle2 className="mt-0.5 h-4 w-4 text-emerald-500" />
-                                                <span>{text.onlineVia}</span>
-                                            </div>
-                                        </div>
+                                    ) : null}
+                                    {business.phone ? (
+                                        <a href={`tel:${business.phone}`} className="flex items-start gap-3 rounded-2xl bg-white/75 px-4 py-3 text-sm text-slate-600 transition hover:bg-white dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10">
+                                            <Phone className="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+                                            <span>{business.phone}</span>
+                                        </a>
+                                    ) : null}
+                                    <div className="flex items-start gap-3 rounded-2xl bg-white/75 px-4 py-3 text-sm text-slate-600 dark:bg-white/5 dark:text-slate-300">
+                                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                                        <span>{text.onlineVia}</span>
                                     </div>
+
+                                    {Array.isArray(business.locations) && business.locations.length > 1 ? (
+                                        <div className="grid gap-2 sm:col-span-2 sm:grid-cols-2 lg:col-span-3 lg:grid-cols-3">
+                                            {business.locations.map((location) => (
+                                                <div key={location.id} className="rounded-2xl border border-white/80 bg-white/75 px-4 py-3 text-sm text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
+                                                    <div className="font-semibold text-slate-900 dark:text-white">{location.name || (location.is_primary ? text.mainLocation : text.branch)}</div>
+                                                    <div className="mt-1 leading-6">{location.address}</div>
+                                                    {location.phone ? <a href={`tel:${location.phone}`} className="mt-1 inline-block text-xs hover:text-slate-900 dark:hover:text-white">{location.phone}</a> : null}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : null}
                                 </div>
                             </div>
                         </motion.div>
@@ -378,32 +349,26 @@ export default function PublicBusinessProfile() {
                 </section>
 
                 <section className="mt-8 px-4 sm:px-6 lg:px-8">
-                    <div className="mx-auto grid max-w-7xl gap-6 2xl:grid-cols-[1fr_340px]">
+                    <div className="mx-auto max-w-7xl space-y-6">
                         <div className="space-y-6">
                             {business.show_services !== false && (
                             <motion.section
+                                id="services"
                                 initial={{ opacity: 0, y: 16 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.35, delay: 0.05 }}
-                                className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-sm"
+                                className="scroll-mt-24 rounded-[32px] border border-white/70 bg-white/88 p-5 shadow-sm dark:border-white/10 dark:bg-white/5 sm:p-7"
                             >
-                                <div className="flex items-center justify-between gap-4">
+                                <div>
                                     <div>
                                         <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-medium text-violet-700">
                                             <Sparkles className="h-4 w-4" />
                                             {text.services}
                                         </div>
-                                        <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-950">
+                                        <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
                                             {text.publicServices}
                                         </h2>
                                     </div>
-
-                                    <Link
-                                        to={`/book/${business.slug}`}
-                                        className="hidden rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 sm:inline-flex"
-                                    >
-                                        {text.book}
-                                    </Link>
                                 </div>
 
                                 {!topServices.length ? (
@@ -411,31 +376,28 @@ export default function PublicBusinessProfile() {
                                         {text.noServices}
                                     </div>
                                 ) : (
-                                    <div className="mt-6 grid gap-4 md:grid-cols-2">
+                                    <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                                         {topServices.map((service) => (
                                             <div
                                                 key={service.id}
-                                                className="vizit-profile-service-card rounded-[24px] border border-slate-100 bg-slate-50/70 p-4 transition hover:border-violet-100 hover:bg-violet-50/40 sm:p-5"
+                                                className="vizit-profile-service-card rounded-[24px] border border-slate-100 bg-slate-50/70 p-4 transition hover:-translate-y-0.5 hover:border-violet-100 hover:bg-violet-50/40 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10 sm:p-5"
                                             >
                                                 {service.image_url && <div className="vizit-profile-service-image mb-4 h-32 overflow-hidden rounded-2xl"><img src={service.image_url} alt={service.name} className="h-full w-full object-cover" /></div>}
                                                 <div className="flex items-start justify-between gap-4">
                                                     <div>
-                                                        <h3 className="text-lg font-semibold text-slate-900">
+                                                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                                                             {service.name}
                                                         </h3>
                                                         <div className="mt-2 flex flex-wrap gap-2">
-                                                            <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600">
+                                                            <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600 dark:bg-white/10 dark:text-slate-300">
                                                                 {service.duration_minutes} {text.minutes}
                                                             </span>
-                                                            <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600">
+                                                            <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600 dark:bg-white/10 dark:text-slate-300">
                                                                 {formatPrice(service.price, service.currency, locale)}
                                                             </span>
                                                         </div>
                                                     </div>
 
-                                                    <div className="rounded-2xl bg-white px-3 py-2 text-sm font-semibold text-violet-600 shadow-sm">
-                                                        #{service.id}
-                                                    </div>
                                                 </div>
                                             </div>
                                         ))}
@@ -449,14 +411,14 @@ export default function PublicBusinessProfile() {
                                 initial={{ opacity: 0, y: 16 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.35, delay: 0.08 }}
-                                className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-sm"
+                                className="rounded-[32px] border border-white/70 bg-white/88 p-5 shadow-sm dark:border-white/10 dark:bg-white/5 sm:p-7"
                             >
                                 <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-medium text-orange-700">
                                     <Users className="h-4 w-4" />
                                     {text.specialists}
                                 </div>
 
-                                <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-950">
+                                <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
                                     {text.teamTitle}
                                 </h2>
 
@@ -465,11 +427,11 @@ export default function PublicBusinessProfile() {
                                         {text.noStaff}
                                     </div>
                                 ) : (
-                                    <div className="mt-6 grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">
+                                    <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                                         {topStaff.map((person) => (
                                             <div
                                                 key={person.id}
-                                                className="rounded-[26px] border border-slate-100 bg-slate-50/70 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-violet-100 hover:bg-white"
+                                                className="rounded-[26px] border border-slate-100 bg-slate-50/70 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-violet-100 hover:bg-white dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
                                             >
                                                 <div className="flex items-start justify-between gap-3">
                                                     <div className="flex items-center gap-3">
@@ -477,7 +439,7 @@ export default function PublicBusinessProfile() {
                                                             {person.avatar_url ? <img src={person.avatar_url} alt={person.name} className="h-full w-full object-cover" /> : <div className="grid h-full w-full place-items-center"><Users className="h-5 w-5 text-slate-500" /></div>}
                                                         </div>
                                                         <div>
-                                                            <div className="font-semibold text-slate-900">
+                                                            <div className="font-semibold text-slate-900 dark:text-white">
                                                                 {person.name}
                                                             </div>
                                                             <div className="text-sm text-slate-500">
@@ -498,15 +460,6 @@ export default function PublicBusinessProfile() {
                                                     {person.is_bookable ? <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">{text.available}</span> : null}
                                                 </div>
 
-                                                {person.is_bookable ? (
-                                                    <Link
-                                                        to={`/book/${business.slug}?staff_id=${person.id}&source=website`}
-                                                        className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
-                                                    >
-                                                        {text.bookSpecialist}
-                                                        <ArrowRight className="h-4 w-4" />
-                                                    </Link>
-                                                ) : null}
                                             </div>
                                         ))}
                                     </div>
@@ -515,30 +468,23 @@ export default function PublicBusinessProfile() {
                             )}
                         </div>
 
-                        <aside className="space-y-6">
-                            <motion.div
-                                initial={{ opacity: 0, y: 16 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.35, delay: 0.12 }}
-                                className="vizit-profile-booking-cta rounded-[30px] border border-white/70 p-6 text-white shadow-lg"
-                            >
-                                <div className="text-sm text-white/75">{text.ready}</div>
-                                <div className="mt-2 text-2xl font-semibold">
-                                    {text.chooseTime}
-                                </div>
-                                <p className="mt-3 text-sm leading-7 text-white/80">
-                                    {text.readyText}
-                                </p>
-
-                                <Link
-                                    to={`/book/${business.slug}`}
-                                    className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3.5 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
-                                >
-                                    {text.start}
-                                    <ArrowRight className="h-4 w-4" />
-                                </Link>
-                            </motion.div>
-                        </aside>
+                        <motion.section
+                            initial={{ opacity: 0, y: 16 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.35, delay: 0.12 }}
+                            className="overflow-hidden rounded-[32px] border border-white/70 bg-[linear-gradient(135deg,rgba(255,255,255,.92),rgba(249,238,244,.86))] p-5 shadow-sm dark:border-white/10 dark:bg-[linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.03))] sm:p-7"
+                        >
+                            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7b2f68] dark:text-[#e8b8d8]">Vizit</div>
+                            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">{text.why}</h2>
+                            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                                {text.whyItems.map((item) => (
+                                    <div key={item} className="flex items-start gap-3 rounded-2xl border border-white/80 bg-white/75 px-4 py-4 text-sm font-medium leading-6 text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-200">
+                                        <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" />
+                                        <span>{item}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </motion.section>
                     </div>
                 </section>
             </main>

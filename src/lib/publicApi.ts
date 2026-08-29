@@ -128,6 +128,8 @@ export type PublicService = {
     id: number;
     name: string;
     duration_minutes: number;
+    booking_mode: "individual" | "group";
+    capacity: number;
     price: number | null;
     currency: string;
     is_active: boolean;
@@ -156,6 +158,9 @@ export type Slot = {
     recommendation_rank?: number | null;
     gap_before_minutes?: number;
     gap_after_minutes?: number;
+    booking_mode?: "individual" | "group";
+    capacity?: number;
+    seats_remaining?: number;
     available_rooms?: Array<{
         id: number;
         name: string;
@@ -170,6 +175,8 @@ export type PublicBookingResponse = {
         needs_phone_verification: boolean;
         phone: string;
         expires_at: string;
+        recurrence_id?: string | null;
+        recurrence_count?: number;
     };
     meta?: {
         business_type?: "services" | "healthcare";
@@ -493,6 +500,7 @@ export async function fetchPublicAvailability(params: {
     date: string;
     staff_id?: number;
     location_id?: number;
+    party_size?: number;
 }): Promise<Slot[]> {
     const { slug, ...query } = params;
     const { data } = await publicApi.get(`/public/businesses/${slug}/availability`, {
@@ -541,6 +549,10 @@ export async function createPublicBooking(payload: {
     redeem_points?: number;
     gift_card_code?: string;
     gift_card_amount?: number;
+    party_size?: number;
+    recurrence_frequency?: "weekly" | "biweekly" | "monthly";
+    recurrence_count?: number;
+    marketing_opt_in?: boolean;
 }): Promise<PublicBookingResponse> {
     const { slug, ...body } = payload;
     const { data } = await publicApi.post(`/public/businesses/${slug}/bookings`, body);
@@ -562,6 +574,7 @@ export async function createPublicBookingMulti(payload: {
     redeem_points?: number;
     gift_card_code?: string;
     gift_card_amount?: number;
+    marketing_opt_in?: boolean;
 }): Promise<PublicBookingResponse> {
     const { slug, ...body } = payload;
     const { data } = await publicApi.post(`/public/businesses/${slug}/bookings/multi`, body);
@@ -585,6 +598,7 @@ export async function createPublicBookingLines(payload: {
     redeem_points?: number;
     gift_card_code?: string;
     gift_card_amount?: number;
+    marketing_opt_in?: boolean;
 }): Promise<PublicBookingResponse> {
     const { slug, ...body } = payload;
     const { data } = await publicApi.post(`/public/businesses/${slug}/bookings/lines`, body);
@@ -686,4 +700,46 @@ export async function reschedulePublicBooking(payload: {
         throw new Error("Սերվերը չի հաստատել ամրագրման նոր ժամը։");
     }
     return data;
+}
+
+export type PublicWaitlistOffer = {
+    id: number;
+    customer_name: string;
+    desired_date: string;
+    party_size: number;
+    status: string;
+    offered_starts_at: string;
+    offer_expires_at: string;
+    service: { id: number; name: string } | null;
+    offered_staff: { id: number; name: string } | null;
+};
+
+export async function joinPublicWaitlist(payload: {
+    slug: string;
+    service_id: number;
+    staff_id?: number;
+    location_id?: number;
+    customer_name: string;
+    customer_phone: string;
+    customer_email: string;
+    desired_date: string;
+    window_start?: string;
+    window_end?: string;
+    party_size?: number;
+    notes?: string | null;
+    source?: string;
+}) {
+    const { slug, ...body } = payload;
+    const { data } = await publicApi.post(`/public/businesses/${slug}/waitlist`, body);
+    return data.data;
+}
+
+export async function fetchPublicWaitlistOffer(payload: { slug: string; entry_id: number; token: string }): Promise<PublicWaitlistOffer> {
+    const { data } = await publicApi.get(`/public/businesses/${payload.slug}/waitlist/offers/${payload.entry_id}`, { params: { token: payload.token } });
+    return data.data;
+}
+
+export async function acceptPublicWaitlistOffer(payload: { slug: string; entry_id: number; token: string }): Promise<{ booking_code: string; guest_token: string; starts_at: string; status: string }> {
+    const { data } = await publicApi.post(`/public/businesses/${payload.slug}/waitlist/offers/${payload.entry_id}/accept`, { token: payload.token });
+    return data.data;
 }

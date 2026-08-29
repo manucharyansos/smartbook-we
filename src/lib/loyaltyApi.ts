@@ -37,6 +37,13 @@ export type LoyaltyLedgerEntry = {
   meta?: Record<string, unknown> | null;
 };
 
+export type LoyaltySummary = {
+  members: number;
+  outstanding_points: number;
+  lifetime_earned: number;
+  expiring_in_30_days: number;
+};
+
 export async function fetchLoyaltyProgram(): Promise<LoyaltyProgram> {
   const r = await api.get('/loyalty/program');
   return r.data.data as LoyaltyProgram;
@@ -50,6 +57,11 @@ export async function updateLoyaltyProgram(payload: Partial<LoyaltyProgram>): Pr
 export async function fetchLoyaltyClients(q = ''): Promise<LoyaltyClient[]> {
   const r = await api.get('/loyalty/clients', { params: q ? { q } : {} });
   return r.data.data as LoyaltyClient[];
+}
+
+export async function fetchLoyaltySummary(): Promise<LoyaltySummary> {
+  const r = await api.get('/loyalty/summary');
+  return r.data.data as LoyaltySummary;
 }
 
 export async function fetchLoyaltyClientLedger(clientId: number): Promise<LoyaltyLedgerEntry[]> {

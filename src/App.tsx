@@ -25,6 +25,7 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Register = lazy(() => import("./pages/Register"));
 const PublicBooking = lazy(() => import("./pages/PublicBooking"));
+const MarketingUnsubscribe = lazy(() => import("./pages/MarketingUnsubscribe"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Pricing = lazy(() => import("./pages/Pricing"));
@@ -53,6 +54,7 @@ const Billing = lazy(() => import("./pages/Billing"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const GiftCards = lazy(() => import("./pages/GiftCards").then((m) => ({ default: m.GiftCards })));
 const Loyalty = lazy(() => import("./pages/Loyalty"));
+const Growth = lazy(() => import("./pages/Growth"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const AppLayout = lazy(() => import("./layouts/AppLayout").then((m) => ({ default: m.AppLayout })));
 
@@ -92,6 +94,7 @@ export default function App() {
                 <Route path="/payment-return" element={<PaymentReturn />} />
                 {mockBankEnabled ? <Route path="/mock-bank/idbank" element={<MockBankIdBank />} /> : null}
                 <Route path="/book/:slug" element={<PublicBooking />} />
+                <Route path="/marketing/unsubscribe" element={<MarketingUnsubscribe />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/pricing" element={<Pricing />} />
@@ -138,6 +141,7 @@ export default function App() {
                                 <Route path="analytics" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><RequireFeature feature="analytics"><Analytics /></RequireFeature></RequireBusinessRoles>} />
                                 <Route path="gift-cards" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><RequireFeature feature="gift_cards"><GiftCards /></RequireFeature></RequireBusinessRoles>} />
                                 <Route path="loyalty" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><RequireFeature feature="loyalty"><Loyalty /></RequireFeature></RequireBusinessRoles>} />
+                                <Route path="growth" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><RequireFeature feature="waitlist"><Growth /></RequireFeature></RequireBusinessRoles>} />
                                 <Route path="settings" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><BusinessSettings /></RequireBusinessRoles>} />
                                 <Route path="billing" element={<RequireOwner><Billing /></RequireOwner>} />
                             </Route>

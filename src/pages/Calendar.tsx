@@ -50,6 +50,7 @@ import {
     updateBooking,
     updateBookingTime,
     cancelBooking,
+    cancelBookingRecurrence,
     confirmBooking,
     doneBooking,
     noShowBooking,
@@ -59,6 +60,7 @@ import {
 import { fetchBlocks, createBlock, deleteBlock, type Block } from "../lib/calendarBlocksApi";
 import { fetchClients, type ClientRow } from "../lib/clientsApi";
 import { fetchAvailabilityDay, type Slot } from "../lib/availabilityApi";
+import { getErrorMessage } from "../lib/http";
 
 type DraftBooking = {
     startsAt: Date;
@@ -87,6 +89,7 @@ type ActionBooking = Booking | null;
 type ConfirmState =
     | { type: "block"; block: Block }
     | { type: "booking-cancel"; booking: Booking }
+    | { type: "series-cancel"; booking: Booking }
     | null;
 
 type BookingMode = "single" | "multi" | "lines";
@@ -378,7 +381,7 @@ function BookingDetailsDrawer({
             }]
             : [];
 
-    const totalPrice = items.reduce((sum, item) => sum + Number(item.price ?? 0), 0);
+    const totalPrice = booking?.final_price ?? items.reduce((sum, item) => sum + Number(item.price ?? 0), 0);
     const staffName = booking?.staff_id ? staffById.get(booking.staff_id)?.name : null;
     const [editing, setEditing] = useState(false);
     const [form, setForm] = useState({
@@ -474,6 +477,8 @@ function BookingDetailsDrawer({
                   {bookingStatusLabel(booking.status)}
                 </span>
                                 {staffName ? <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">{staffName}</span> : null}
+                                {(booking.party_size ?? 1) > 1 ? <span className="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">{booking.party_size} մասնակից</span> : null}
+                                {booking.recurrence_id ? <span className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">Կրկնվող · {booking.recurrence_index ?? 1}/{booking.recurrence_count ?? 1}</span> : null}
                                 <span className={cn('rounded-full border px-3 py-1 text-xs font-semibold', bookingSourceTone(booking.source))}>{bookingSourceLabel(booking.source)}</span>
                             </div>
                         </div>
@@ -533,7 +538,7 @@ function BookingDetailsDrawer({
                                         </div>
                                     ))}
                                 </div>
-                                <div className="mt-4 rounded-2xl border border-violet-100 bg-violet-50 px-4 py-3 text-sm font-semibold text-violet-700">Ընդհանուր արժեքը՝ {totalPrice} AMD</div>
+                                <div className="mt-4 rounded-2xl border border-violet-100 bg-violet-50 px-4 py-3 text-sm font-semibold text-violet-700">Ընդհանուր արժեքը՝ {totalPrice} {booking.currency || "AMD"}</div>
                             </div>
 
                             {booking.notes ? (
@@ -1146,6 +1151,9 @@ export function Calendar() {
     const [redeemPoints, setRedeemPoints] = useState('');
     const [giftCardCode, setGiftCardCode] = useState('');
     const [giftCardAmount, setGiftCardAmount] = useState('');
+    const [partySize, setPartySize] = useState(1);
+    const [recurrenceFrequency, setRecurrenceFrequency] = useState<"none" | "weekly" | "biweekly" | "monthly">("none");
+    const [recurrenceCount, setRecurrenceCount] = useState(4);
 
     const [selectedBooking, setSelectedBooking] = useState<ActionBooking>(null);
     const [confirmState, setConfirmState] = useState<ConfirmState>(null);
@@ -1182,13 +1190,14 @@ export function Calendar() {
     });
     const smartAvailabilityDate = draft ? ymd(draft.startsAt) : "";
     const smartAvailabilityQ = useQuery({
-        queryKey: ["calendar-smart-availability", businessId, bookingMode, smartAvailabilityDate, staffId || "any", serviceIds.join(",")],
+        queryKey: ["calendar-smart-availability", businessId, bookingMode, smartAvailabilityDate, staffId || "any", partySize, serviceIds.join(",")],
         queryFn: () =>
             fetchAvailabilityDay({
                 service_id: bookingMode === "single" ? serviceIds[0] : undefined,
                 service_ids: bookingMode === "single" ? undefined : serviceIds,
                 staff_id: staffId ? Number(staffId) : undefined,
                 date: smartAvailabilityDate,
+                party_size: bookingMode === "single" ? partySize : undefined,
             }),
         enabled:
             createOpen &&
@@ -1305,6 +1314,11 @@ export function Calendar() {
         if (bookingMode === "single" && serviceIds.length > 1) {
             setServiceIds((prev) => prev.slice(0, 1));
         }
+        if (bookingMode !== "single") {
+            setPartySize(1);
+            setRecurrenceFrequency("none");
+            setRecurrenceCount(4);
+        }
     }, [bookingMode, serviceIds.length]);
 
     const filteredBlocks = useMemo(() => {
@@ -1388,22 +1402,30 @@ export function Calendar() {
         setRedeemPoints('');
         setGiftCardCode('');
         setGiftCardAmount('');
+        setPartySize(1);
+        setRecurrenceFrequency("none");
+        setRecurrenceCount(4);
     }
 
     const createMut = useMutation({
         mutationFn: createBooking,
         onSuccess: async () => {
+            const count = recurrenceFrequency === "none" ? 1 : recurrenceCount;
             resetCreateState();
+            showCalendarToast(count > 1 ? `${count} կրկնվող ամրագրում ստեղծվեց` : "Ամրագրումը ստեղծվեց");
             await qc.invalidateQueries({ queryKey: ["bookings", businessId] });
         },
+        onError: (error) => showCalendarToast(getErrorMessage(error, "Չհաջողվեց ստեղծել ամրագրումը"), "error"),
     });
 
     const createLinesMut = useMutation({
         mutationFn: createBookingLines,
         onSuccess: async () => {
             resetCreateState();
+            showCalendarToast("Ամրագրումները ստեղծվեցին");
             await qc.invalidateQueries({ queryKey: ["bookings", businessId] });
         },
+        onError: (error) => showCalendarToast(getErrorMessage(error, "Չհաջողվեց ստեղծել ամրագրումները"), "error"),
     });
 
     const updateBookingMut = useMutation({
@@ -1439,6 +1461,19 @@ export function Calendar() {
         },
         onError: (error) => {
             showCalendarToast(error instanceof Error ? error.message : "Չհաջողվեց չեղարկել ամրագրումը", "error");
+        },
+    });
+
+    const cancelSeriesMut = useMutation({
+        mutationFn: (booking: Booking) => cancelBookingRecurrence(booking.id, "future"),
+        onSuccess: async (result) => {
+            setConfirmState(null);
+            setSelectedBooking(null);
+            showCalendarToast(`${result.cancelled_booking_ids.length} կրկնվող ամրագրում չեղարկվեց`);
+            await qc.invalidateQueries({ queryKey: ["bookings", businessId] });
+        },
+        onError: (error) => {
+            showCalendarToast(error instanceof Error ? error.message : "Չհաջողվեց չեղարկել կրկնվող ամրագրումները", "error");
         },
     });
 
@@ -1733,6 +1768,9 @@ export function Calendar() {
                 redeem_points: redeemPoints ? Number(redeemPoints) : undefined,
                 gift_card_code: giftCardCode.trim() || undefined,
                 gift_card_amount: giftCardAmount ? Number(giftCardAmount) : undefined,
+                party_size: partySize,
+                recurrence_frequency: recurrenceFrequency === "none" ? undefined : recurrenceFrequency,
+                recurrence_count: recurrenceFrequency === "none" ? 1 : recurrenceCount,
             });
             return;
         }
@@ -1783,14 +1821,21 @@ export function Calendar() {
         const totalPrice = selected.reduce((sum, item) => sum + Number(item.price ?? 0), 0);
         return { selected, totalDuration, totalPrice };
     }, [serviceIds, serviceById]);
+    const selectedSingleService = bookingMode === "single" ? selectedServicesMeta.selected[0] ?? null : null;
+    const selectedServiceCapacity = Math.max(1, Number(selectedSingleService?.capacity ?? 1));
+    const selectedServiceIsGroup = selectedSingleService?.booking_mode === "group";
 
     const createDisabled = useMemo(() => {
         if (!draft || !clientName.trim() || !clientPhone.trim()) return true;
-        if (bookingMode === "single") return serviceIds.length !== 1 || !(staffId || selectedSmartSlot?.staff_id) || !hasMatchingSmartSlot;
+        if (bookingMode === "single") {
+            const invalidPartySize = partySize < 1 || partySize > selectedServiceCapacity || (!selectedServiceIsGroup && partySize !== 1);
+            const invalidRecurrence = recurrenceFrequency !== "none" && (recurrenceCount < 2 || recurrenceCount > 24);
+            return serviceIds.length !== 1 || !(staffId || selectedSmartSlot?.staff_id) || !hasMatchingSmartSlot || invalidPartySize || invalidRecurrence;
+        }
         if (bookingMode === "multi") return serviceIds.length < 2 || !(staffId || selectedSmartSlot?.staff_id) || !hasMatchingSmartSlot;
         if (!serviceIds.length || !lineDrafts.length || lineDrafts.length !== serviceIds.length) return true;
         return lineDrafts.some((line) => !line.starts_at || !(isStaff ? user?.id : line.staff_id));
-    }, [draft, clientName, clientPhone, bookingMode, serviceIds, staffId, selectedSmartSlot?.staff_id, lineDrafts, isStaff, user?.id, hasMatchingSmartSlot]);
+    }, [draft, clientName, clientPhone, bookingMode, serviceIds, staffId, selectedSmartSlot?.staff_id, lineDrafts, isStaff, user?.id, hasMatchingSmartSlot, partySize, selectedServiceCapacity, selectedServiceIsGroup, recurrenceFrequency, recurrenceCount]);
 
     const bookingActionOptions = useMemo(() => {
         if (!selectedBooking) return [];
@@ -1804,6 +1849,9 @@ export function Calendar() {
             options.push({ key: "done", title: "Նշել որպես կատարված", description: "Փակել որպես ավարտված" });
             options.push({ key: "no_show", title: "Նշել որպես չներկայացած", description: "Հաճախորդը չի եկել այցին", danger: true });
             options.push({ key: "cancel", title: "Չեղարկել ամրագրումը", description: "Նշել որպես չեղարկված", danger: true });
+        }
+        if (selectedBooking.recurrence_id && ["pending", "confirmed"].includes(selectedBooking.status)) {
+            options.push({ key: "series_cancel", title: "Չեղարկել այս և հաջորդ այցերը", description: "Անցած այցերը չեն փոխվի", danger: true });
         }
         if (selectedBooking.status === "done" || selectedBooking.status === "cancelled" || selectedBooking.status === "no_show") {
             options.push({ key: "close", title: "Փակել", description: "Միայն դիտել տվյալները" });
@@ -1819,6 +1867,9 @@ export function Calendar() {
             bookingServiceTitle(confirmState.booking, serviceById),
             confirmState.booking.staff_id ? staffById.get(confirmState.booking.staff_id)?.name : "Առանց մասնագետի",
         ].filter(Boolean).join(" · ")
+        : undefined;
+    const seriesCancellationDescription = confirmState?.type === "series-cancel"
+        ? `Կչեղարկվեն #${confirmState.booking.booking_code || confirmState.booking.id} այցը և նույն շարքի բոլոր հաջորդ ակտիվ այցերը։ Անցած այցերը չեն փոխվի։`
         : undefined;
 
     const monthDays = useMemo(() => monthMatrix(viewDate), [viewDate]);
@@ -2651,7 +2702,10 @@ export function Calendar() {
                                     <CreateField label="Ծառայություն">
                                         <select
                                             value={serviceIds[0] ?? ""}
-                                            onChange={(e) => setServiceIds(e.target.value ? [Number(e.target.value)] : [])}
+                                            onChange={(e) => {
+                                                setServiceIds(e.target.value ? [Number(e.target.value)] : []);
+                                                setPartySize(1);
+                                            }}
                                             className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
                                         >
                                             <option value="">Ընտրիր...</option>
@@ -2662,6 +2716,24 @@ export function Calendar() {
                                             ))}
                                         </select>
                                     </CreateField>
+
+                                    {selectedServiceIsGroup ? (
+                                        <CreateField label="Մասնակիցների քանակ">
+                                            <div>
+                                                <input
+                                                    type="number"
+                                                    min={1}
+                                                    max={selectedServiceCapacity}
+                                                    value={partySize}
+                                                    onChange={(e) => setPartySize(Math.max(1, Number(e.target.value) || 1))}
+                                                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                                                />
+                                                <div className="mt-2 text-xs text-slate-500">
+                                                    Առավելագույնը՝ {selectedServiceCapacity} մասնակից{selectedSmartSlot?.seats_remaining != null ? ` · ընտրված ժամին ազատ՝ ${selectedSmartSlot.seats_remaining}` : ""}
+                                                </div>
+                                            </div>
+                                        </CreateField>
+                                    ) : null}
 
                                     <CreateField label="Աշխատակից">
                                         <select
@@ -2676,6 +2748,42 @@ export function Calendar() {
                                             ))}
                                         </select>
                                     </CreateField>
+
+                                    <div className="rounded-2xl border border-violet-100 bg-violet-50/70 p-4 md:col-span-2">
+                                        <div className="flex items-start gap-3">
+                                            <CalendarRange className="mt-0.5 h-5 w-5 shrink-0 text-violet-600" />
+                                            <div className="min-w-0 flex-1">
+                                                <div className="font-semibold text-slate-900">Կրկնվող ամրագրում</div>
+                                                <div className="mt-1 text-xs leading-5 text-slate-500">Ստեղծիր նույն ժամով շաբաթական, երկշաբաթյա կամ ամսական այցերի շարք։</div>
+                                                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                                                    <CreateField label="Հաճախականություն">
+                                                        <select
+                                                            value={recurrenceFrequency}
+                                                            onChange={(e) => setRecurrenceFrequency(e.target.value as typeof recurrenceFrequency)}
+                                                            className="w-full rounded-2xl border border-violet-200 bg-white px-4 py-3 text-sm"
+                                                        >
+                                                            <option value="none">Չկրկնել</option>
+                                                            <option value="weekly">Ամեն շաբաթ</option>
+                                                            <option value="biweekly">Երկու շաբաթը մեկ</option>
+                                                            <option value="monthly">Ամեն ամիս</option>
+                                                        </select>
+                                                    </CreateField>
+                                                    {recurrenceFrequency !== "none" ? (
+                                                        <CreateField label="Այցերի քանակ">
+                                                            <input
+                                                                type="number"
+                                                                min={2}
+                                                                max={24}
+                                                                value={recurrenceCount}
+                                                                onChange={(e) => setRecurrenceCount(Math.max(2, Math.min(24, Number(e.target.value) || 2)))}
+                                                                className="w-full rounded-2xl border border-violet-200 bg-white px-4 py-3 text-sm"
+                                                            />
+                                                        </CreateField>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     {!!recommendedSmartSlots.length && (
                                         <div className="md:col-span-2">
                                             <SmartSlotPicker
@@ -2961,6 +3069,18 @@ export function Calendar() {
                                         <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Ընդհանուր տևողություն</div>
                                         <div className="mt-1 text-xl font-semibold">{selectedServicesMeta.totalDuration || 0} ր</div>
                                     </div>
+                                    {selectedServiceIsGroup ? (
+                                        <div className="rounded-2xl border border-slate-200 bg-[#fcfbf8] px-4 py-3">
+                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Մասնակիցներ</div>
+                                            <div className="mt-1 text-xl font-semibold">{partySize}</div>
+                                        </div>
+                                    ) : null}
+                                    {recurrenceFrequency !== "none" ? (
+                                        <div className="rounded-2xl border border-slate-200 bg-[#fcfbf8] px-4 py-3">
+                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Կրկնվող այցեր</div>
+                                            <div className="mt-1 text-xl font-semibold">{recurrenceCount}</div>
+                                        </div>
+                                    ) : null}
                                 </div>
                             </div>
 
@@ -3080,6 +3200,7 @@ export function Calendar() {
                     if (key === "done") doneMut.mutate(selectedBooking.id);
                     if (key === "no_show") noShowMut.mutate(selectedBooking.id);
                     if (key === "cancel") setConfirmState({ type: "booking-cancel", booking: selectedBooking });
+                    if (key === "series_cancel") setConfirmState({ type: "series-cancel", booking: selectedBooking });
                     if (key === "close") setSelectedBooking(null);
                 }}
             />
@@ -3088,24 +3209,25 @@ export function Calendar() {
 
             <ConfirmModal
                 open={!!confirmState}
-                title={confirmState?.type === "block" ? "Ջնջե՞լ փակ ժամանակը" : "Չեղարկե՞լ հենց այս ամրագրումը"}
+                title={confirmState?.type === "block" ? "Ջնջե՞լ փակ ժամանակը" : confirmState?.type === "series-cancel" ? "Չեղարկե՞լ կրկնվող այցերը" : "Չեղարկե՞լ հենց այս ամրագրումը"}
                 description={
                     confirmState?.type === "block"
                         ? `Դուք պատրաստվում եք ջնջել «${confirmState.block.reason ?? "Փակ է"}» փակ ժամանակը։`
                         : confirmState?.type === "booking-cancel"
                             ? cancellationDescription
-                            : undefined
+                            : seriesCancellationDescription
                 }
                 confirmText={confirmState?.type === "block" ? "Այո, ջնջել" : "Այո, չեղարկել"}
                 danger
-                loading={deleteBlockMut.isPending || cancelMut.isPending}
+                loading={deleteBlockMut.isPending || cancelMut.isPending || cancelSeriesMut.isPending}
                 onClose={() => {
-                    if (!deleteBlockMut.isPending && !cancelMut.isPending) setConfirmState(null);
+                    if (!deleteBlockMut.isPending && !cancelMut.isPending && !cancelSeriesMut.isPending) setConfirmState(null);
                 }}
                 onConfirm={() => {
                     if (!confirmState) return;
                     if (confirmState.type === "block") deleteBlockMut.mutate(confirmState.block.id);
                     if (confirmState.type === "booking-cancel") cancelMut.mutate(confirmState.booking.id);
+                    if (confirmState.type === "series-cancel") cancelSeriesMut.mutate(confirmState.booking);
                 }}
             />
         </motion.div>

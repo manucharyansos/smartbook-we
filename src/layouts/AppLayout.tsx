@@ -5,7 +5,7 @@ import {
   BarChart3, CalendarDays, LogOut, Menu, Scissors, Users,
   LayoutDashboard, Settings, ChevronRight, Sparkles, X,
   PanelLeftClose, PanelLeftOpen, Award, Gift, Star, Landmark,
-  ClipboardList, Contact, type LucideProps,
+  ClipboardList, Contact, Megaphone, type LucideProps,
 } from "lucide-react";
 import { cn } from "../lib/cn";
 import { useAuth } from "../store/auth";
@@ -38,16 +38,19 @@ const mobileBottomPaths = ["/app/dashboard", "/app/calendar", "/app/services", "
 
 const workspaceCopy = {
   hy: {
+    growth: "Աճ",
     nav: { "/app/dashboard": "Վահանակ", "/app/calendar": "Օրացույց", "/app/services": "Ծառայություններ", "/app/staff": "Աշխատակիցներ", "/app/clients": "Հաճախորդներ", "/app/tasks": "Ամրագրումների վահանակ", "/app/analytics": "Վերլուծություն", "/app/billing": "Պլան", "/app/settings": "Կարգավորումներ" },
     medicalNav: { "/app/services": "Բժշկական ծառայություններ", "/app/staff": "Բժիշկներ և թիմ", "/app/clients": "Պացիենտներ", "/app/tasks": "Այցերի վահանակ" },
     giftCards: "Նվերի քարտեր", loyalty: "Լոյալություն", more: "Ավելին", logout: "Ելք", navigation: "Նավիգացիա", menu: "Մենյու", openMenu: "Բացել մենյուն", closeMenu: "Փակել մենյուն", loading: "Բեռնվում է…", workspace: "Աշխատանքային միջավայր", owner: "Սեփականատեր", manager: "Կառավարիչ", staff: "Աշխատակից", superAdmin: "Սուպեր ադմին", healthcare: "Առողջապահություն", services: "Ծառայություններ", trial: "Փորձաշրջան", daysLeft: "օր մնաց", expand: "Բացել կողային վահանակը", collapse: "Փոքրացնել կողային վահանակը", hintTitle: "Արագ սկիզբ", hintText: "Ավելացրեք ծառայությունները, բժիշկներին և նրանց աշխատաժամերը, ապա ընդունեք առաջին այցը։",
   },
   ru: {
+    growth: "Рост",
     nav: { "/app/dashboard": "Панель", "/app/calendar": "Календарь", "/app/services": "Услуги", "/app/staff": "Сотрудники", "/app/clients": "Клиенты", "/app/tasks": "Панель записей", "/app/analytics": "Аналитика", "/app/billing": "Тариф", "/app/settings": "Настройки" },
     medicalNav: { "/app/services": "Медицинские услуги", "/app/staff": "Врачи и команда", "/app/clients": "Пациенты", "/app/tasks": "Панель визитов" },
     giftCards: "Подарочные карты", loyalty: "Лояльность", more: "Ещё", logout: "Выйти", navigation: "Навигация", menu: "Меню", openMenu: "Открыть меню", closeMenu: "Закрыть меню", loading: "Загрузка…", workspace: "Рабочее пространство", owner: "Владелец", manager: "Менеджер", staff: "Сотрудник", superAdmin: "Суперадмин", healthcare: "Здравоохранение", services: "Услуги", trial: "Пробный период", daysLeft: "дн. осталось", expand: "Развернуть боковую панель", collapse: "Свернуть боковую панель", hintTitle: "Быстрый старт", hintText: "Добавьте услуги, врачей и их расписание, затем примите первый визит.",
   },
   en: {
+    growth: "Growth",
     nav: { "/app/dashboard": "Dashboard", "/app/calendar": "Calendar", "/app/services": "Services", "/app/staff": "Staff", "/app/clients": "Clients", "/app/tasks": "Booking board", "/app/analytics": "Analytics", "/app/billing": "Plan", "/app/settings": "Settings" },
     medicalNav: { "/app/services": "Medical services", "/app/staff": "Doctors & team", "/app/clients": "Patients", "/app/tasks": "Visit board" },
     giftCards: "Gift cards", loyalty: "Loyalty", more: "More", logout: "Log out", navigation: "Navigation", menu: "Menu", openMenu: "Open menu", closeMenu: "Close menu", loading: "Loading…", workspace: "Workspace", owner: "Owner", manager: "Manager", staff: "Staff", superAdmin: "Super admin", healthcare: "Healthcare", services: "Services", trial: "Trial", daysLeft: "days left", expand: "Expand sidebar", collapse: "Collapse sidebar", hintTitle: "Quick start", hintText: "Add services, doctors and their schedules, then accept the first visit.",
@@ -92,6 +95,7 @@ export function AppLayout() {
     };
     if (hasFeature(features, "gift_cards")) insertBeforeSettings({ to: "/app/gift-cards", label: text.giftCards, icon: Gift, color: "from-violet-600 to-fuchsia-600", feature: "gift_cards" });
     if (hasFeature(features, "loyalty")) insertBeforeSettings({ to: "/app/loyalty", label: text.loyalty, icon: Star, color: "from-orange-500 to-amber-500", feature: "loyalty" });
+    if (hasFeature(features, "waitlist")) insertBeforeSettings({ to: "/app/growth", label: text.growth, icon: Megaphone, color: "from-emerald-600 to-teal-600", feature: "waitlist" });
     return items;
   }, [features, isHealthcare, text, user?.role]);
 
@@ -123,6 +127,7 @@ export function AppLayout() {
         import("../pages/Analytics"),
         import("../pages/GiftCards"),
         import("../pages/Loyalty"),
+        import("../pages/Growth"),
         import("../pages/BusinessSettings"),
         import("../pages/Billing"),
       ]);

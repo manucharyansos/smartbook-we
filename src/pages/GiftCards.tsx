@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { Gift, History, Plus, Search, Wallet } from 'lucide-react';
+import { Gift, History, Pencil, Plus, Search, Send, Wallet } from 'lucide-react';
 
 import { page } from '../lib/motion';
 import { cn } from '../lib/cn';
@@ -12,10 +12,12 @@ import { Input } from '../components/ui/Input';
 import {
   adjustGiftCard,
   createGiftCard,
+  deliverGiftCard,
   fetchGiftCardLedger,
   fetchGiftCards,
   lookupGiftCard,
   redeemGiftCard,
+  updateGiftCard,
   type GiftCard,
 } from '../lib/giftCardsApi';
 
@@ -52,6 +54,7 @@ export function GiftCards() {
   const [openCreate, setOpenCreate] = useState(false);
   const [openRedeem, setOpenRedeem] = useState<GiftCard | null>(null);
   const [openAdjust, setOpenAdjust] = useState<GiftCard | null>(null);
+  const [openEdit, setOpenEdit] = useState<GiftCard | null>(null);
   const [ledgerCard, setLedgerCard] = useState<GiftCard | null>(null);
   const [lookupCode, setLookupCode] = useState('');
 
@@ -84,6 +87,19 @@ export function GiftCards() {
     mutationFn: ({ id, delta, reason }: { id: number; delta: number; reason?: string }) => adjustGiftCard(id, delta, reason),
     onSuccess: async () => {
       setOpenAdjust(null);
+      await qc.invalidateQueries({ queryKey: ['gift-cards'] });
+    },
+  });
+  const deliverMut = useMutation({
+    mutationFn: deliverGiftCard,
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: ['gift-cards'] });
+    },
+  });
+  const updateMut = useMutation({
+    mutationFn: ({ id, payload }: { id: number; payload: Parameters<typeof updateGiftCard>[1] }) => updateGiftCard(id, payload),
+    onSuccess: async () => {
+      setOpenEdit(null);
       await qc.invalidateQueries({ queryKey: ['gift-cards'] });
     },
   });
@@ -134,11 +150,14 @@ export function GiftCards() {
                       <span className={cn('inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold', statusTone(gc.status))}>{statusLabel(gc.status)}</span>
                     </div>
                     <div className="mt-2 text-sm text-slate-600">{gc.issued_to_name || 'Անուն նշված չէ'} {gc.issued_to_phone ? `· ${gc.issued_to_phone}` : ''}</div>
+                    {gc.issued_to_email ? <div className="mt-1 text-xs text-slate-500">{gc.issued_to_email} · {gc.delivery_status === 'sent' ? 'Ուղարկված է' : gc.delivery_status === 'failed' ? 'Ուղարկումը ձախողվել է' : 'Դեռ չի ուղարկվել'}</div> : null}
                     <div className="mt-1 text-xs text-slate-500">Սկզբնական՝ {money(gc.initial_amount, gc.currency)} · Մնացորդ՝ {money(gc.balance, gc.currency)}</div>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Button variant="secondary" onClick={() => setLedgerCard(gc)} className="rounded-2xl"><History className="h-4 w-4" /> Պատմություն</Button>
+                    <Button variant="secondary" onClick={() => setOpenEdit(gc)} className="rounded-2xl"><Pencil className="h-4 w-4" /> Խմբագրել</Button>
                     <Button variant="secondary" disabled={gc.status !== 'active' || gc.balance <= 0} onClick={() => setOpenRedeem(gc)} className="rounded-2xl"><Wallet className="h-4 w-4" /> Մարել</Button>
+                    {gc.issued_to_email ? <Button variant="secondary" loading={deliverMut.isPending && deliverMut.variables === gc.id} onClick={() => deliverMut.mutate(gc.id)} className="rounded-2xl"><Send className="h-4 w-4" /> {gc.delivery_status === 'sent' ? 'Կրկին ուղարկել' : 'Ուղարկել'}</Button> : null}
                     <Button variant="secondary" onClick={() => setOpenAdjust(gc)} className="rounded-2xl">Կարգավորել</Button>
                   </div>
                 </div>
@@ -165,7 +184,8 @@ export function GiftCards() {
         </Card>
       </div>
 
-      <CreateGiftCardModal open={openCreate} onClose={() => setOpenCreate(false)} onCreate={(payload) => createMut.mutate(payload)} loading={createMut.isPending} />
+      {openCreate ? <CreateGiftCardModal open onClose={() => setOpenCreate(false)} onCreate={(payload) => createMut.mutate(payload)} loading={createMut.isPending} /> : null}
+      {openEdit ? <EditGiftCardModal giftCard={openEdit} onClose={() => setOpenEdit(null)} onSave={(payload) => updateMut.mutate({ id: openEdit.id, payload })} loading={updateMut.isPending} /> : null}
       <RedeemGiftCardModal giftCard={openRedeem} onClose={() => setOpenRedeem(null)} onRedeem={(amount, reason) => openRedeem && redeemMut.mutate({ id: openRedeem.id, amount, reason })} loading={redeemMut.isPending} />
       <AdjustGiftCardModal giftCard={openAdjust} onClose={() => setOpenAdjust(null)} onAdjust={(delta, reason) => openAdjust && adjustMut.mutate({ id: openAdjust.id, delta, reason })} loading={adjustMut.isPending} />
       <LedgerModal card={ledgerCard} entries={ledgerQ.data ?? []} loading={ledgerQ.isLoading} onClose={() => setLedgerCard(null)} />
@@ -178,9 +198,14 @@ function CreateGiftCardModal({ open, onClose, onCreate, loading }: { open: boole
   const [code, setCode] = useState('');
   const [issuedToName, setIssuedToName] = useState('');
   const [issuedToPhone, setIssuedToPhone] = useState('');
+  const [issuedToEmail, setIssuedToEmail] = useState('');
   const [purchasedByName, setPurchasedByName] = useState('');
+  const [purchasedByPhone, setPurchasedByPhone] = useState('');
+  const [purchasedByEmail, setPurchasedByEmail] = useState('');
   const [expiresAt, setExpiresAt] = useState('');
   const [notes, setNotes] = useState('');
+  const [deliveryMessage, setDeliveryMessage] = useState('');
+  const [deliverNow, setDeliverNow] = useState(true);
 
   return (
     <Modal open={open} onClose={onClose} title="Նոր նվերի քարտ">
@@ -190,16 +215,61 @@ function CreateGiftCardModal({ open, onClose, onCreate, loading }: { open: boole
           <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="Կոդ (ոչ պարտադիր)" />
           <Input value={issuedToName} onChange={(e) => setIssuedToName(e.target.value)} placeholder="Ում համար է" />
           <Input value={issuedToPhone} onChange={(e) => setIssuedToPhone(e.target.value)} placeholder="Ում համարի հեռախոս" />
+          <Input type="email" value={issuedToEmail} onChange={(e) => setIssuedToEmail(e.target.value)} placeholder="Ստացողի էլ. փոստ" />
           <Input value={purchasedByName} onChange={(e) => setPurchasedByName(e.target.value)} placeholder="Ով է գնել" />
+          <Input value={purchasedByPhone} onChange={(e) => setPurchasedByPhone(e.target.value)} placeholder="Գնողի հեռախոս" />
+          <Input type="email" value={purchasedByEmail} onChange={(e) => setPurchasedByEmail(e.target.value)} placeholder="Գնողի էլ. փոստ" />
           <div className="space-y-1">
             <div className="text-xs text-slate-500">Վերջնաժամկետ</div>
             <Input type="date" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} />
           </div>
         </div>
+        <textarea value={deliveryMessage} onChange={(e) => setDeliveryMessage(e.target.value)} rows={3} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Նվերի անձնական հաղորդագրություն" />
+        <label className={cn("flex items-start gap-3 rounded-2xl border px-4 py-3 text-sm", issuedToEmail ? "border-violet-200 bg-violet-50 text-slate-700" : "border-slate-200 bg-slate-50 text-slate-400")}>
+          <input className="mt-1" type="checkbox" checked={deliverNow && !!issuedToEmail} disabled={!issuedToEmail} onChange={(e) => setDeliverNow(e.target.checked)} />
+          <Send className="mt-0.5 h-4 w-4 shrink-0" />
+          <span><span className="block font-semibold">Ստեղծելուց հետո ուղարկել էլ. փոստով</span><span className="mt-1 block text-xs">Քարտի կոդը, գումարը, վերջնաժամկետն ու հաղորդագրությունը կուղարկվեն ստացողին։</span></span>
+        </label>
         <Input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Նշումներ" />
         <div className="flex justify-end gap-2">
           <Button variant="secondary" onClick={onClose}>Փակել</Button>
-          <Button loading={loading} onClick={() => onCreate({ amount: Number(amount), code: code || null, issued_to_name: issuedToName || null, issued_to_phone: issuedToPhone || null, purchased_by_name: purchasedByName || null, expires_at: expiresAt || null, notes: notes || null })}>Ստեղծել</Button>
+          <Button disabled={Number(amount) < 100} loading={loading} onClick={() => onCreate({ amount: Number(amount), code: code || null, issued_to_name: issuedToName || null, issued_to_phone: issuedToPhone || null, issued_to_email: issuedToEmail || null, purchased_by_name: purchasedByName || null, purchased_by_phone: purchasedByPhone || null, purchased_by_email: purchasedByEmail || null, delivery_message: deliveryMessage || null, deliver_now: deliverNow && !!issuedToEmail, expires_at: expiresAt || null, notes: notes || null })}>Ստեղծել</Button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+function EditGiftCardModal({ giftCard, onClose, onSave, loading }: { giftCard: GiftCard; onClose: () => void; onSave: (payload: Parameters<typeof updateGiftCard>[1]) => void; loading: boolean }) {
+  const [issuedToName, setIssuedToName] = useState(giftCard.issued_to_name ?? '');
+  const [issuedToPhone, setIssuedToPhone] = useState(giftCard.issued_to_phone ?? '');
+  const [issuedToEmail, setIssuedToEmail] = useState(giftCard.issued_to_email ?? '');
+  const [purchasedByName, setPurchasedByName] = useState(giftCard.purchased_by_name ?? '');
+  const [purchasedByPhone, setPurchasedByPhone] = useState(giftCard.purchased_by_phone ?? '');
+  const [purchasedByEmail, setPurchasedByEmail] = useState(giftCard.purchased_by_email ?? '');
+  const [deliveryMessage, setDeliveryMessage] = useState(giftCard.delivery_message ?? '');
+  const [expiresAt, setExpiresAt] = useState(giftCard.expires_at?.slice(0, 10) ?? '');
+  const [notes, setNotes] = useState(giftCard.notes ?? '');
+  const [status, setStatus] = useState<'active' | 'cancelled'>(giftCard.status === 'cancelled' ? 'cancelled' : 'active');
+
+  return (
+    <Modal open onClose={onClose} title={`${giftCard.code} — խմբագրել`}>
+      <div className="space-y-3">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Input value={issuedToName} onChange={(e) => setIssuedToName(e.target.value)} placeholder="Ում համար է" />
+          <Input value={issuedToPhone} onChange={(e) => setIssuedToPhone(e.target.value)} placeholder="Ստացողի հեռախոս" />
+          <Input type="email" value={issuedToEmail} onChange={(e) => setIssuedToEmail(e.target.value)} placeholder="Ստացողի էլ. փոստ" />
+          <Input value={purchasedByName} onChange={(e) => setPurchasedByName(e.target.value)} placeholder="Ով է գնել" />
+          <Input value={purchasedByPhone} onChange={(e) => setPurchasedByPhone(e.target.value)} placeholder="Գնողի հեռախոս" />
+          <Input type="email" value={purchasedByEmail} onChange={(e) => setPurchasedByEmail(e.target.value)} placeholder="Գնողի էլ. փոստ" />
+          <label className="text-xs text-slate-500">Վերջնաժամկետ<Input className="mt-1" type="date" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} /></label>
+          <label className="text-xs text-slate-500">Կարգավիճակ<select value={status} disabled={giftCard.status === 'redeemed'} onChange={(e) => setStatus(e.target.value as 'active' | 'cancelled')} className="mt-1 h-11 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm disabled:bg-slate-50"><option value="active">Ակտիվ</option><option value="cancelled">Չեղարկված</option></select></label>
+        </div>
+        <textarea value={deliveryMessage} onChange={(e) => setDeliveryMessage(e.target.value)} rows={3} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Նվերի անձնական հաղորդագրություն" />
+        <Input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Նշումներ" />
+        <div className="flex justify-end gap-2">
+          <Button variant="secondary" onClick={onClose}>Փակել</Button>
+          <Button loading={loading} onClick={() => onSave({ issued_to_name: issuedToName || null, issued_to_phone: issuedToPhone || null, issued_to_email: issuedToEmail || null, purchased_by_name: purchasedByName || null, purchased_by_phone: purchasedByPhone || null, purchased_by_email: purchasedByEmail || null, delivery_message: deliveryMessage || null, expires_at: expiresAt || null, notes: notes || null, status })}>Պահպանել</Button>
         </div>
       </div>
     </Modal>

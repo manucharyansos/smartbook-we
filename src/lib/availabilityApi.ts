@@ -10,6 +10,9 @@ export type Slot = {
   smart_reason?: string | null;
   is_recommended?: boolean;
   recommendation_rank?: number | null;
+  booking_mode?: "individual" | "group";
+  capacity?: number;
+  seats_remaining?: number;
 };
 
 export async function fetchAvailabilityDay(params: {
@@ -18,6 +21,7 @@ export async function fetchAvailabilityDay(params: {
   staff_id?: number;
   date: string;
   location_id?: number;
+  party_size?: number;
 }) {
   const token = localStorage.getItem("token");
 

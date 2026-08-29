@@ -48,6 +48,9 @@ import {
     fetchPublicRescheduleOptions,
     cancelPublicBooking,
     reschedulePublicBooking,
+    joinPublicWaitlist,
+    fetchPublicWaitlistOffer,
+    acceptPublicWaitlistOffer,
     type PublicBookingDetail,
     type PublicLocation,
     type PublicService,
@@ -501,6 +504,10 @@ export default function PublicBooking() {
     const [redeemPoints, setRedeemPoints] = useState('');
     const [giftCardCode, setGiftCardCode] = useState('');
     const [giftCardAmount, setGiftCardAmount] = useState('');
+    const [partySize, setPartySize] = useState(1);
+    const [recurrenceFrequency, setRecurrenceFrequency] = useState<"none" | "weekly" | "biweekly" | "monthly">("none");
+    const [recurrenceCount, setRecurrenceCount] = useState(4);
+    const [marketingOptIn, setMarketingOptIn] = useState(false);
 
     const [msg, setMsg] = useState<string | null>(null);
     const [msgType, setMsgType] = useState<"success" | "error">("success");
@@ -515,6 +522,15 @@ export default function PublicBooking() {
         queryKey: ["public-business", slug],
         queryFn: () => fetchPublicBusiness(slug),
         enabled: !!slug,
+    });
+
+    const waitlistOfferId = Number(searchParams.get("waitlist_offer") || 0);
+    const waitlistOfferToken = searchParams.get("waitlist_token") || "";
+    const waitlistOfferQ = useQuery({
+        queryKey: ["public-waitlist-offer", slug, waitlistOfferId, waitlistOfferToken],
+        queryFn: () => fetchPublicWaitlistOffer({ slug, entry_id: waitlistOfferId, token: waitlistOfferToken }),
+        enabled: !!slug && waitlistOfferId > 0 && !!waitlistOfferToken,
+        retry: false,
     });
 
     const business = businessQ.data;
@@ -537,6 +553,7 @@ export default function PublicBooking() {
     });
 
     const services = locationSelectionRequired ? EMPTY_SERVICES : servicesQ.data ?? EMPTY_SERVICES;
+    const individualServices = useMemo(() => services.filter((service) => (service.booking_mode ?? "individual") !== "group"), [services]);
     const staff = locationSelectionRequired ? EMPTY_STAFF : staffQ.data ?? EMPTY_STAFF;
     const bookingSource = searchParams.get("source") ?? "website";
 
@@ -629,20 +646,21 @@ export default function PublicBooking() {
         }
 
         const validServiceIds = new Set(services.map((item) => item.id));
+        const validIndividualIds = new Set(individualServices.map((item) => item.id));
 
         setServiceId((prev) => (prev && validServiceIds.has(prev) ? prev : services[0].id));
         setMultiServiceIds((prev) => {
-            const next = prev.filter((id) => validServiceIds.has(id));
+            const next = prev.filter((id) => validIndividualIds.has(id));
             if (next.length === prev.length && next.every((id, index) => id === prev[index])) {
                 return prev;
             }
-            return next.length ? next : [services[0].id];
+            return next.length ? next : (individualServices[0] ? [individualServices[0].id] : []);
         });
         setLines((prev) => {
             let changed = false;
             const next = prev.map((line, index) => {
-                const fallbackId = services[Math.min(index, services.length - 1)]?.id ?? services[0].id;
-                const nextServiceId = line.service_id && validServiceIds.has(line.service_id) ? line.service_id : fallbackId;
+                const fallbackId = individualServices[Math.min(index, individualServices.length - 1)]?.id ?? individualServices[0]?.id ?? 0;
+                const nextServiceId = line.service_id && validIndividualIds.has(line.service_id) ? line.service_id : fallbackId;
                 if (nextServiceId !== line.service_id) {
                     changed = true;
                     return { ...line, service_id: nextServiceId };
@@ -651,7 +669,7 @@ export default function PublicBooking() {
             });
             return changed ? next : prev;
         });
-    }, [services]);
+    }, [services, individualServices]);
 
     useEffect(() => {
         const validStaffIds = new Set(staff.map((item) => item.id));
@@ -673,7 +691,7 @@ export default function PublicBooking() {
     }, [staff]);
 
     const singleAvailabilityQ = useQuery({
-        queryKey: ["public-availability", slug, serviceId, staffId, date, selectedLocationId || "all"],
+        queryKey: ["public-availability", slug, serviceId, staffId, date, partySize, selectedLocationId || "all"],
         queryFn: () =>
             fetchPublicAvailability({
                 slug,
@@ -681,6 +699,7 @@ export default function PublicBooking() {
                 date,
                 staff_id: staffId === "any" ? undefined : staffId,
                 location_id: selectedLocationId ? Number(selectedLocationId) : undefined,
+                party_size: partySize,
             }),
         enabled: !!slug && !!serviceId && !!date && mode === "single",
         retry: false,
@@ -927,11 +946,46 @@ export default function PublicBooking() {
         },
     });
 
+    const joinWaitlistMut = useMutation({
+        mutationFn: joinPublicWaitlist,
+        onSuccess: () => {
+            setMsgType("success");
+            setMsg(text.waitlistJoined);
+        },
+        onError: (error: unknown) => {
+            setMsgType("error");
+            setMsg(formatApiError(error, text.waitlistError));
+        },
+    });
+
+    const acceptWaitlistMut = useMutation({
+        mutationFn: acceptPublicWaitlistOffer,
+        onSuccess: (response) => {
+            storeGuestToken(response.booking_code, response.guest_token);
+            setActiveBookingCode(response.booking_code);
+            setGuestToken(response.guest_token);
+            setOtpPanelOpen(false);
+            setMsgType("success");
+            setMsg(text.offerAccepted);
+            const next = new URLSearchParams(searchParams);
+            next.delete("waitlist_offer");
+            next.delete("waitlist_token");
+            next.set("booking", response.booking_code);
+            next.set("token", response.guest_token);
+            setSearchParams(next, { replace: true });
+        },
+        onError: (error: unknown) => {
+            setMsgType("error");
+            setMsg(formatApiError(error, text.offerExpired));
+        },
+    });
+
     function resetClientForm() {
         setClientName("");
         setClientPhone("");
         setClientEmail("");
         setNotes("");
+        setMarketingOptIn(false);
     }
 
     function startNewBooking() {
@@ -968,9 +1022,18 @@ export default function PublicBooking() {
         [services, serviceId]
     );
 
+    useEffect(() => {
+        if ((selectedSingleService?.booking_mode ?? "individual") !== "group") {
+            setPartySize(1);
+            return;
+        }
+        const capacity = Math.max(1, selectedSingleService?.capacity ?? 1);
+        setPartySize((current) => Math.min(Math.max(1, current), capacity));
+    }, [selectedSingleService]);
+
     const selectedMultiServices = useMemo(
-        () => services.filter((s) => multiServiceIds.includes(s.id)),
-        [services, multiServiceIds]
+        () => individualServices.filter((s) => multiServiceIds.includes(s.id)),
+        [individualServices, multiServiceIds]
     );
 
     const multiTotal = useMemo(() => {
@@ -1037,6 +1100,31 @@ export default function PublicBooking() {
         return true;
     }
 
+    function handleJoinWaitlist() {
+        setMsg(null);
+        if (!validateCommonFields()) return;
+        if (!serviceId) {
+            setMsgType("error");
+            setMsg(text.selectService);
+            return;
+        }
+        joinWaitlistMut.mutate({
+            slug,
+            service_id: serviceId,
+            staff_id: staffId === "any" ? undefined : staffId,
+            location_id: selectedLocationId ? Number(selectedLocationId) : undefined,
+            customer_name: clientName.trim(),
+            customer_phone: clientPhone.trim(),
+            customer_email: clientEmail.trim(),
+            desired_date: date,
+            window_start: String(business?.work_start || "09:00").slice(0, 5),
+            window_end: String(business?.work_end || "18:00").slice(0, 5),
+            party_size: partySize,
+            notes: notes.trim() || null,
+            source: bookingSource,
+        });
+    }
+
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setMsg(null);
@@ -1080,6 +1168,10 @@ export default function PublicBooking() {
                 redeem_points: redeemPoints ? Number(redeemPoints) : undefined,
                 gift_card_code: giftCardCode.trim() || undefined,
                 gift_card_amount: giftCardAmount ? Number(giftCardAmount) : undefined,
+                party_size: partySize,
+                recurrence_frequency: recurrenceFrequency === "none" ? undefined : recurrenceFrequency,
+                recurrence_count: recurrenceFrequency === "none" ? 1 : recurrenceCount,
+                marketing_opt_in: marketingOptIn,
             });
             return;
         }
@@ -1116,6 +1208,7 @@ export default function PublicBooking() {
                 redeem_points: redeemPoints ? Number(redeemPoints) : undefined,
                 gift_card_code: giftCardCode.trim() || undefined,
                 gift_card_amount: giftCardAmount ? Number(giftCardAmount) : undefined,
+                marketing_opt_in: marketingOptIn,
             });
             return;
         }
@@ -1133,7 +1226,7 @@ export default function PublicBooking() {
             return setMsg(`${text.overlapPrefix} ${lineOverlap.first}/${lineOverlap.second}. ${text.overlapAction}`);
         }
 
-        const validServiceIds = new Set(services.map((item) => item.id));
+        const validServiceIds = new Set(individualServices.map((item) => item.id));
         const validStaffIds = new Set(staff.map((item) => item.id));
 
         const payloadLines = lines.map((line) => {
@@ -1169,6 +1262,7 @@ export default function PublicBooking() {
                 notes: notes.trim() || null,
                 source: bookingSource,
                 location_id: selectedLocationId ? Number(selectedLocationId) : undefined,
+                marketing_opt_in: marketingOptIn,
             });
         } catch (error: unknown) {
             const message = getErrorMessage(error, "");
@@ -1355,6 +1449,22 @@ export default function PublicBooking() {
                             </div>
                         )}
 
+                        {waitlistOfferQ.data && !activeBookingCode ? (
+                            <div className="mb-6 rounded-2xl border border-emerald-300 bg-gradient-to-r from-emerald-50 to-violet-50 p-5 text-emerald-950">
+                                <div className="flex items-start gap-3">
+                                    <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                                    <div className="flex-1">
+                                        <div className="font-semibold">{text.offerReady}</div>
+                                        <div className="mt-1 text-sm leading-6">{waitlistOfferQ.data.service?.name} · {waitlistOfferQ.data.offered_starts_at} · {waitlistOfferQ.data.offered_staff?.name}</div>
+                                        <button type="button" disabled={acceptWaitlistMut.isPending} onClick={() => acceptWaitlistMut.mutate({ slug, entry_id: waitlistOfferId, token: waitlistOfferToken })} className="mt-3 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60">
+                                            {acceptWaitlistMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}{text.acceptOffer}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : null}
+                        {waitlistOfferQ.isError && waitlistOfferId > 0 ? <div className="mb-6 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">{text.offerExpired}</div> : null}
+
                         {availabilityErrorText && mode !== "lines" && (
                             <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-800">
                                 <div className="flex items-start gap-3">
@@ -1460,7 +1570,7 @@ export default function PublicBooking() {
                                             >
                                                 {services.map((s) => (
                                                     <option key={s.id} value={s.id}>
-                                                        {s.name} • {s.duration_minutes} {text.minuteShort} • {formatMoney(s.price, s.currency, locale)}
+                                                        {s.name} • {s.duration_minutes} {text.minuteShort} • {formatMoney(s.price, s.currency, locale)}{s.booking_mode === "group" ? ` • ${text.groupBooking}` : ""}
                                                     </option>
                                                 ))}
                                             </select>
@@ -1524,7 +1634,7 @@ export default function PublicBooking() {
                                                 {singleSlots.map((s) => {
                                                     return (
                                                         <option key={slotKey(s)} value={slotKey(s)}>
-                                                            {slotLabel(s, staffId === "any")}
+                                                            {slotLabel(s, staffId === "any")}{s.booking_mode === "group" ? ` · ${s.seats_remaining ?? 0} ${text.seatsLeft}` : ""}
                                                         </option>
                                                     );
                                                 })}
@@ -1532,9 +1642,36 @@ export default function PublicBooking() {
                                         </Field>
                                     </div>
 
+                                    {selectedSingleService?.booking_mode === "group" ? (
+                                        <div className="rounded-2xl border border-amber-200 bg-amber-50/80 p-4">
+                                            <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-amber-900"><Users className="h-4 w-4" />{text.groupBooking}</div>
+                                            <Field label={`${text.partySize} · max ${selectedSingleService.capacity}`}>
+                                                <input type="number" min={1} max={selectedSingleService.capacity} className={inputClass} value={partySize} onChange={(e) => { setPartySize(Math.min(selectedSingleService.capacity, Math.max(1, Number(e.target.value)))); setTime(""); setSingleSlotKey(""); }} />
+                                            </Field>
+                                        </div>
+                                    ) : null}
+
+                                    <details className="rounded-2xl border border-sky-200 bg-sky-50/70 p-4">
+                                        <summary className="cursor-pointer text-sm font-semibold text-sky-900">{text.recurring}</summary>
+                                        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                                            <Field label={text.repeat}>
+                                                <select className={inputClass} value={recurrenceFrequency} onChange={(e) => setRecurrenceFrequency(e.target.value as typeof recurrenceFrequency)}>
+                                                    <option value="none">{text.once}</option><option value="weekly">{text.weekly}</option><option value="biweekly">{text.biweekly}</option><option value="monthly">{text.monthly}</option>
+                                                </select>
+                                            </Field>
+                                            <Field label={text.occurrences}>
+                                                <input type="number" min={2} max={12} disabled={recurrenceFrequency === "none"} className={inputClass} value={recurrenceCount} onChange={(e) => setRecurrenceCount(Math.min(12, Math.max(2, Number(e.target.value))))} />
+                                            </Field>
+                                        </div>
+                                    </details>
+
                                     {!singleAvailabilityQ.isLoading && !singleSlots.length && serviceId > 0 && (
-                                        <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
-                                            {text.noDaySlots}
+                                        <div className="rounded-2xl border border-violet-200 bg-violet-50 px-4 py-4 text-sm text-violet-900">
+                                            <div>{text.noDaySlots}</div>
+                                            <div className="mt-1 text-xs leading-5 text-violet-700">{text.waitlistHint}</div>
+                                            <button type="button" onClick={handleJoinWaitlist} disabled={joinWaitlistMut.isPending} className="mt-3 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 font-semibold text-white disabled:opacity-60">
+                                                {joinWaitlistMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CalendarClock className="h-4 w-4" />}{text.joinWaitlist}
+                                            </button>
                                         </div>
                                     )}
 
@@ -1566,7 +1703,7 @@ export default function PublicBooking() {
                                             {text.chooseServices} *
                                         </label>
                                         <div className="grid gap-3 sm:grid-cols-2">
-                                            {services.map((service) => {
+                                            {individualServices.map((service) => {
                                                 const active = multiServiceIds.includes(service.id);
                                                 return (
                                                     <button
@@ -1751,7 +1888,7 @@ export default function PublicBooking() {
                                                 line={line}
                                                 index={index}
                                                 slug={slug}
-                                                services={services}
+                                                services={individualServices}
                                                 staff={staff}
                                                 locationId={selectedLocationId ? Number(selectedLocationId) : undefined}
                                                 onChange={updateLine}
@@ -1824,6 +1961,11 @@ export default function PublicBooking() {
                                         />
                                     </Field>
                                 </div>
+
+                                <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 text-sm leading-6 text-emerald-900">
+                                    <input type="checkbox" checked={marketingOptIn} onChange={(e) => setMarketingOptIn(e.target.checked)} className="mt-1 h-4 w-4 rounded border-emerald-300 text-emerald-600" />
+                                    <span>{text.marketingConsent}</span>
+                                </label>
 
                                 {mode !== 'lines' ? (
                                     <details className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">

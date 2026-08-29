@@ -6,6 +6,8 @@ export type Service = {
     name: string;
     description?: string | null;
     duration_minutes: number;
+    booking_mode: "individual" | "group";
+    capacity: number;
     price: number | null;
     currency?: string | null;
     is_active: boolean;
@@ -28,6 +30,8 @@ export async function createService(payload: {
     name: string;
     description?: string | null;
     duration_minutes: number;
+    booking_mode?: "individual" | "group";
+    capacity?: number;
     price?: number | null;
     currency?: string | null;
     is_active?: boolean;
@@ -43,6 +47,8 @@ export async function updateService(id: number, payload: Partial<{
     name: string;
     description: string | null;
     duration_minutes: number;
+    booking_mode: "individual" | "group";
+    capacity: number;
     price: number | null;
     currency: string | null;
     is_active: boolean;

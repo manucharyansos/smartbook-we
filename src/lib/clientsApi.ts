@@ -8,6 +8,9 @@ export type ClientRow = {
   name: string;
   phone?: string | null;
   email?: string | null;
+  marketing_opt_in?: boolean;
+  marketing_opted_in_at?: string | null;
+  marketing_unsubscribed_at?: string | null;
   notes?: string | null;
   group_name?: string | null;
   is_vip?: boolean;
@@ -228,6 +231,7 @@ export type ClientFormPayload = {
   name: string;
   phone?: string | null;
   email?: string | null;
+  marketing_opt_in?: boolean;
   notes?: string | null;
   birth_date?: string | null;
   group_name?: string | null;

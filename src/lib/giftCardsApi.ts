@@ -12,8 +12,13 @@ export type GiftCard = {
   expires_at: string | null;
   issued_to_name: string | null;
   issued_to_phone: string | null;
+  issued_to_email: string | null;
   purchased_by_name: string | null;
   purchased_by_phone: string | null;
+  purchased_by_email: string | null;
+  delivery_message: string | null;
+  delivery_status: 'not_requested' | 'sent' | 'failed';
+  delivered_at: string | null;
   notes: string | null;
   last_redeemed_at: string | null;
   created_at: string;
@@ -53,8 +58,12 @@ export async function createGiftCard(payload: {
   currency?: string | null;
   issued_to_name?: string | null;
   issued_to_phone?: string | null;
+  issued_to_email?: string | null;
   purchased_by_name?: string | null;
   purchased_by_phone?: string | null;
+  purchased_by_email?: string | null;
+  delivery_message?: string | null;
+  deliver_now?: boolean;
   expires_at?: string | null;
   notes?: string | null;
 }) {
@@ -65,8 +74,11 @@ export async function createGiftCard(payload: {
 export async function updateGiftCard(id: number, payload: Partial<{
   issued_to_name: string | null;
   issued_to_phone: string | null;
+  issued_to_email: string | null;
   purchased_by_name: string | null;
   purchased_by_phone: string | null;
+  purchased_by_email: string | null;
+  delivery_message: string | null;
   expires_at: string | null;
   notes: string | null;
   status: 'active' | 'cancelled';
@@ -82,5 +94,10 @@ export async function redeemGiftCard(id: number, amount: number, reason?: string
 
 export async function adjustGiftCard(id: number, delta_amount: number, reason?: string) {
   const r = await api.patch(`/gift-cards/${id}/adjust`, { delta_amount, reason });
+  return r.data.data as GiftCard;
+}
+
+export async function deliverGiftCard(id: number) {
+  const r = await api.post(`/gift-cards/${id}/deliver`);
   return r.data.data as GiftCard;
 }

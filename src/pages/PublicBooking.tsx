@@ -782,6 +782,7 @@ export default function PublicBooking() {
         queryFn: () => fetchPublicBookingDetail({ booking_code: activeBookingCode, token: guestToken }),
         enabled: !!activeBookingCode && !!guestToken,
         retry: false,
+        refetchOnWindowFocus: true,
     });
 
     useEffect(() => {

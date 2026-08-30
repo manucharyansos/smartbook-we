@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
@@ -1030,9 +1031,12 @@ function MobileMapBusinessSheet({
     };
   }, [markerKey, onClose]);
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <motion.div
-      className="vizit-map-mobile-modal fixed inset-0 z-[160] bg-[#fffaf5] text-[#2b0d35] dark:bg-[#160e19] dark:text-[#fff8f2] lg:hidden"
+      className="vizit-map-mobile-modal fixed inset-0 z-[300] bg-[#fffaf5] text-[#2b0d35] dark:bg-[#160e19] dark:text-[#fff8f2] lg:hidden"
+      data-map-business-modal="true"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -1143,6 +1147,7 @@ function MobileMapBusinessSheet({
           <div className="mx-auto grid max-w-xl grid-cols-2 gap-2.5">
             <Link
               to={pin.bookingUrl}
+              onClick={onClose}
               className="inline-flex min-h-14 min-w-0 items-center justify-center gap-2 rounded-[18px] bg-gradient-to-r from-[#2b0d35] to-[#6d2a63] px-3 text-sm font-black text-white shadow-[0_14px_32px_rgba(75,22,75,0.22)] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d39a43] focus-visible:ring-offset-2 dark:from-[#f0c979] dark:to-[#d9a54f] dark:text-[#28142b]"
               aria-label={`${t("business.card.book")} — ${pin.name}`}
             >
@@ -1150,6 +1155,7 @@ function MobileMapBusinessSheet({
             </Link>
             <Link
               to={`/businesses/${pin.slug}`}
+              onClick={onClose}
               className="inline-flex min-h-14 min-w-0 items-center justify-center rounded-[18px] border border-[#6d2a63]/24 bg-white/80 px-3 text-sm font-black text-[#4b164b] transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6d2a63] focus-visible:ring-offset-2 dark:border-white/14 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/[0.1]"
               aria-label={`${t("business.card.view")} — ${pin.name}`}
             >
@@ -1158,7 +1164,8 @@ function MobileMapBusinessSheet({
           </div>
         </div>
       </motion.section>
-    </motion.div>
+    </motion.div>,
+    document.body,
   );
 }
 

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-effect -- this form reconciles URL, location and async availability state after each external source updates */
-import { cloneElement, isValidElement, useEffect, useId, useMemo, useState, type ReactElement, type ReactNode } from "react";
+import { cloneElement, isValidElement, useEffect, useId, useMemo, useRef, useState, type ReactElement, type ReactNode } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -524,6 +524,7 @@ export default function PublicBooking() {
     const [otp, setOtp] = useState("");
     const [otpExpiresAt, setOtpExpiresAt] = useState<string | null>(null);
     const [otpPanelOpen, setOtpPanelOpen] = useState<boolean>(Boolean(searchParams.get("booking") && !searchParams.get("token")));
+    const shouldFocusTelegramAfterVerifyRef = useRef(false);
 
     const businessQ = useQuery({
         queryKey: ["public-business", slug],
@@ -786,6 +787,19 @@ export default function PublicBooking() {
     });
 
     useEffect(() => {
+        if (!bookingDetailQ.data?.data || !shouldFocusTelegramAfterVerifyRef.current) return;
+
+        shouldFocusTelegramAfterVerifyRef.current = false;
+        const frame = window.requestAnimationFrame(() => {
+            document.getElementById("customer-telegram-notifications")?.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+            });
+        });
+        return () => window.cancelAnimationFrame(frame);
+    }, [bookingDetailQ.data?.data]);
+
+    useEffect(() => {
         if (!bookingDetailQ.error || !activeBookingCode || !guestToken) return;
 
         const status = getHttpStatus(bookingDetailQ.error);
@@ -822,6 +836,7 @@ export default function PublicBooking() {
         onSuccess: (res) => {
             invalidateAvailabilityQueries();
             if (res.manage_token && activeBookingCode) {
+                shouldFocusTelegramAfterVerifyRef.current = true;
                 storeGuestToken(activeBookingCode, res.manage_token);
                 setGuestToken(res.manage_token);
                 const next = new URLSearchParams(searchParams);
@@ -844,6 +859,7 @@ export default function PublicBooking() {
         mutationFn: resendPublicBookingCode,
         onSuccess: (res) => {
             if (res.manage_token && activeBookingCode) {
+                shouldFocusTelegramAfterVerifyRef.current = true;
                 storeGuestToken(activeBookingCode, res.manage_token);
                 setGuestToken(res.manage_token);
                 setOtpPanelOpen(false);
@@ -2170,7 +2186,7 @@ function TelegramConnectButton({
 
     if (connected) {
         return (
-            <div className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-sky-200 bg-sky-50 px-4 py-2.5 text-sm font-semibold text-sky-800">
+            <div className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-center text-sm font-bold text-emerald-800">
                 <CheckCircle2 className="h-4 w-4" />
                 {text.telegramConnected}
             </div>
@@ -2178,12 +2194,12 @@ function TelegramConnectButton({
     }
 
     return (
-        <div>
+        <div className="w-full">
             <button
                 type="button"
                 onClick={() => connectMut.mutate()}
                 disabled={connectMut.isPending || !bookingCode || !guestToken}
-                className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-sky-200 bg-white px-4 py-2.5 text-sm font-semibold text-sky-800 shadow-sm transition hover:bg-sky-50 disabled:opacity-60"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#229ED9] px-4 py-3 text-sm font-bold text-white shadow-[0_12px_28px_rgba(34,158,217,0.24)] transition hover:bg-[#168ac0] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-200 disabled:opacity-60"
             >
                 {connectMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 {connectMut.isPending ? text.telegramConnecting : text.telegramConnect}
@@ -2249,6 +2265,16 @@ function OtpVerifyPanel({
 
             <div className="mt-5 rounded-2xl border border-violet-100 bg-white/90 px-4 py-4 text-sm text-slate-600">
                 {text.otpHelp}
+            </div>
+
+            <div className="mt-3 flex items-start gap-3 rounded-2xl border border-sky-200 bg-sky-50/90 px-4 py-4 text-sky-950">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#229ED9] text-white shadow-sm">
+                    <Send className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <div className="min-w-0">
+                    <div className="text-sm font-bold">{text.telegramAfterVerificationTitle}</div>
+                    <p className="mt-1 text-xs font-medium leading-5 text-sky-800">{text.telegramAfterVerificationHelp}</p>
+                </div>
             </div>
 
             <div className="mt-5 grid gap-3 xl:grid-cols-[1fr_auto_auto]">
@@ -2433,16 +2459,33 @@ function ManageBookingCard({
                 </div>
             </div>
 
-            <div className="mt-4">
-                <TelegramConnectButton
-                    connected={Boolean(detail.telegram_connected)}
-                    bookingCode={bookingCode}
-                    guestToken={guestToken}
-                />
+            <section
+                id="customer-telegram-notifications"
+                aria-labelledby="customer-telegram-title"
+                className="mt-5 scroll-mt-24 rounded-[24px] border border-sky-200 bg-gradient-to-br from-sky-50 via-white to-cyan-50 p-4 shadow-[0_14px_38px_rgba(14,116,144,0.10)] sm:p-5"
+            >
+                <div className="flex items-start gap-3">
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[#229ED9] text-white shadow-[0_10px_24px_rgba(34,158,217,0.24)]">
+                        <Send className="h-5 w-5" aria-hidden="true" />
+                    </span>
+                    <div className="min-w-0">
+                        <h4 id="customer-telegram-title" className="text-base font-bold text-slate-900">{text.telegramCardTitle}</h4>
+                        <p className="mt-1 text-sm leading-6 text-slate-600">
+                            {detail.telegram_connected ? text.telegramConnectedHelp : text.telegramCardText}
+                        </p>
+                    </div>
+                </div>
+                <div className="mt-4">
+                    <TelegramConnectButton
+                        connected={Boolean(detail.telegram_connected)}
+                        bookingCode={bookingCode}
+                        guestToken={guestToken}
+                    />
+                </div>
                 {!detail.telegram_connected ? (
-                    <p className="mt-2 max-w-xl text-xs leading-5 text-slate-500">{text.telegramConnectHelp}</p>
+                    <p className="mt-3 text-xs font-medium leading-5 text-sky-800">{text.telegramConnectHelp}</p>
                 ) : null}
-            </div>
+            </section>
 
             {confirmingCancel ? (
                 <div className="mt-5 rounded-3xl border border-rose-200 bg-rose-50 p-4 sm:p-5">

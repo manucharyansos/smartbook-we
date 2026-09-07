@@ -1,0 +1,189 @@
+/*
+ * Final theme contrast safeguards.
+ *
+ * The visual passes intentionally restyle Tailwind utilities. Keep the
+ * accessibility-critical corrections here, loaded last, so a light surface
+ * can never inherit dark-theme copy (or the inverse) because of specificity.
+ */
+
+:root {
+  --vizit-ref-gold-deep: #8f5d22;
+}
+
+html.dark {
+  --vizit-ref-gold-deep: #efc98a;
+}
+
+/* Homepage: the legacy home pass has deliberately strong selectors. */
+html.dark .vizit-home-page main > section:first-child .vizit-hero-badge {
+  border-color: rgba(239, 201, 138, 0.24) !important;
+  background: rgba(239, 201, 138, 0.1) !important;
+  color: #f3d49a !important;
+}
+
+html.dark .vizit-home-page main > section:first-child .vizit-search-panel {
+  border-color: rgba(223, 183, 120, 0.2) !important;
+  background: rgba(37, 34, 37, 0.98) !important;
+  color: #fff8f2 !important;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34) !important;
+}
+
+html.dark .vizit-home-page main > section:first-child .vizit-search-panel
+  :is(.vizit-search-field, .vizit-location-button) {
+  border-color: rgba(223, 183, 120, 0.15) !important;
+  background: #2e292d !important;
+  color: #fff8f2 !important;
+}
+
+html.dark .vizit-home-page .vizit-search-panel input {
+  color: #fff8f2 !important;
+}
+
+html.dark .vizit-home-page .vizit-search-panel input::placeholder {
+  color: #b8adb5 !important;
+  opacity: 1;
+}
+
+html.dark .vizit-home-page main > section:first-child .vizit-hero-chips button {
+  border-color: rgba(223, 183, 120, 0.16) !important;
+  background: #2b272b !important;
+  color: #d8cdd4 !important;
+}
+
+html.dark .vizit-home-page #how p,
+html.dark .vizit-home-page #map > div > div.grid > div:last-child p,
+html.dark .vizit-home-page #businesses article > div:last-child > p,
+html.dark .vizit-home-page #plans .vizit-plans-grid > div p,
+html.dark .vizit-home-page .vizit-business-cta p {
+  color: #c9c0c5 !important;
+}
+
+html.dark .vizit-home-page #plans .vizit-plans-grid > div h3,
+html.dark .vizit-home-page #plans .vizit-plans-grid > div div[class*="text-3xl"],
+html.dark .vizit-home-page .vizit-business-cta h2 {
+  color: #fff8f2 !important;
+  -webkit-text-fill-color: #fff8f2 !important;
+}
+
+/* The miniature phone is decorative, but its labels still remain legible. */
+.vizit-phone-search,
+.vizit-phone-business-copy > small,
+.vizit-phone-business-place,
+.vizit-phone-dock > span {
+  color: #665764;
+}
+
+html.dark .vizit-phone-search,
+html.dark .vizit-phone-business-copy > small,
+html.dark .vizit-phone-business-place,
+html.dark .vizit-phone-dock > span {
+  color: #bfb3bb;
+}
+
+html.dark .vizit-phone-dock > span.is-active {
+  color: #efc98a;
+}
+
+/* Shared public business/booking chrome. */
+html.dark header.vizit-public-chrome .vizit-public-chrome-control,
+html.dark header.vizit-public-chrome .vizit-public-chrome-control .vizit-language-button,
+html.dark header.vizit-public-chrome .vizit-public-chrome-control .vizit-language-code,
+html.dark header.vizit-public-chrome .vizit-public-chrome-control .vizit-language-chevron {
+  color: #eee4e9 !important;
+}
+
+html.dark header.vizit-public-chrome .vizit-public-chrome-control {
+  border-color: rgba(231, 188, 107, 0.16) !important;
+  background: #2b262b !important;
+}
+
+html.dark .vizit-booking-page .vizit-booking-recurrence {
+  border-color: rgba(125, 211, 252, 0.24) !important;
+  background: #172935 !important;
+  color: #e0f2fe !important;
+}
+
+html.dark .vizit-booking-page .vizit-booking-recurrence
+  :is(summary, label, [class*="text-slate-"]) {
+  color: #e0f2fe !important;
+}
+
+html.dark .vizit-booking-page .vizit-booking-marketing-consent {
+  border-color: rgba(110, 231, 183, 0.24) !important;
+  background: #183128 !important;
+  color: #d1fae5 !important;
+}
+
+/* Authentication controls that carry product-provider colors. */
+#root > .vizit-auth-shell .vizit-social-provider-button.is-facebook,
+html.dark #root > .vizit-auth-shell .vizit-social-provider-button.is-facebook {
+  border-color: #166fe5 !important;
+  background: #166fe5 !important;
+  color: #fff !important;
+}
+
+/*
+ * Dark status surfaces. These exact class-token matches avoid accidentally
+ * activating hover:* utilities while keeping alerts, badges and analytics
+ * labels readable throughout public, onboarding and workspace screens.
+ */
+html.dark :is(.vizit-public-page, .vizit-booking-page, .vizit-public-detail-page, .vizit-onboarding-page, .vizit-admin-shell)
+  :is([class~="bg-violet-50"], [class~="bg-violet-50/30"], [class~="bg-violet-50/40"], [class~="bg-violet-50/50"], [class~="bg-violet-50/60"], [class~="bg-violet-50/70"], [class~="bg-violet-50/80"], [class~="bg-violet-100"]) {
+  border-color: rgba(196, 181, 253, 0.22) !important;
+  background: #2d2738 !important;
+}
+
+html.dark :is(.vizit-public-page, .vizit-booking-page, .vizit-public-detail-page, .vizit-onboarding-page, .vizit-admin-shell)
+  :is([class~="bg-emerald-50"], [class~="bg-emerald-50/40"], [class~="bg-emerald-50/70"], [class~="bg-emerald-50/80"], [class~="bg-emerald-100"]) {
+  border-color: rgba(110, 231, 183, 0.22) !important;
+  background: #183128 !important;
+}
+
+html.dark :is(.vizit-public-page, .vizit-booking-page, .vizit-public-detail-page, .vizit-onboarding-page, .vizit-admin-shell)
+  :is([class~="bg-amber-50"], [class~="bg-amber-50/70"], [class~="bg-amber-50/80"], [class~="bg-amber-100"], [class~="bg-orange-50"]) {
+  border-color: rgba(252, 211, 77, 0.22) !important;
+  background: #382c19 !important;
+}
+
+html.dark :is(.vizit-public-page, .vizit-booking-page, .vizit-public-detail-page, .vizit-onboarding-page, .vizit-admin-shell)
+  :is([class~="bg-rose-50"], [class~="bg-rose-50/50"], [class~="bg-rose-50/70"], [class~="bg-rose-100"]) {
+  border-color: rgba(253, 164, 175, 0.22) !important;
+  background: #3a2027 !important;
+}
+
+html.dark :is(.vizit-public-page, .vizit-booking-page, .vizit-public-detail-page, .vizit-onboarding-page, .vizit-admin-shell)
+  :is([class~="bg-sky-50"], [class~="bg-sky-50/70"], [class~="bg-sky-50/90"], [class~="bg-sky-100"]) {
+  border-color: rgba(125, 211, 252, 0.22) !important;
+  background: #172935 !important;
+}
+
+html.dark :is(.vizit-public-page, .vizit-booking-page, .vizit-public-detail-page, .vizit-onboarding-page, .vizit-admin-shell)
+  :is([class~="text-violet-500"], [class~="text-violet-600"], [class~="text-violet-700"], [class~="text-violet-800"], [class~="text-violet-800/70"], [class~="text-violet-800/75"], [class~="text-violet-900"], [class~="text-violet-900/75"], [class~="text-violet-950"], [class~="text-indigo-500"]) {
+  color: #ddd6fe !important;
+}
+
+html.dark :is(.vizit-public-page, .vizit-booking-page, .vizit-public-detail-page, .vizit-onboarding-page, .vizit-admin-shell)
+  :is([class~="text-emerald-500"], [class~="text-emerald-600"], [class~="text-emerald-700"], [class~="text-emerald-800"], [class~="text-emerald-900"], [class~="text-emerald-900/75"], [class~="text-emerald-950"]) {
+  color: #a7f3d0 !important;
+}
+
+html.dark :is(.vizit-public-page, .vizit-booking-page, .vizit-public-detail-page, .vizit-onboarding-page, .vizit-admin-shell)
+  :is([class~="text-amber-500"], [class~="text-amber-600"], [class~="text-amber-700"], [class~="text-amber-800"], [class~="text-amber-900"], [class~="text-amber-900/70"], [class~="text-amber-950"], [class~="text-orange-500"], [class~="text-orange-600"], [class~="text-orange-700"]) {
+  color: #fde68a !important;
+}
+
+html.dark :is(.vizit-public-page, .vizit-booking-page, .vizit-public-detail-page, .vizit-onboarding-page, .vizit-admin-shell)
+  :is([class~="text-rose-500"], [class~="text-rose-600"], [class~="text-rose-700"], [class~="text-rose-800"], [class~="text-rose-900"]) {
+  color: #fecdd3 !important;
+}
+
+html.dark :is(.vizit-public-page, .vizit-booking-page, .vizit-public-detail-page, .vizit-onboarding-page, .vizit-admin-shell)
+  :is([class~="text-sky-500"], [class~="text-sky-600"], [class~="text-sky-700"], [class~="text-sky-800"], [class~="text-sky-900"], [class~="text-sky-950"], [class~="text-cyan-500"], [class~="text-cyan-600"]) {
+  color: #bae6fd !important;
+}
+
+/* Normal-size white copy needs a slightly darker solid brand surface. */
+:is(.vizit-public-page, .vizit-booking-page, .vizit-public-detail-page, .vizit-onboarding-page, .vizit-admin-shell, .vizit-auth-shell)
+  [class~="bg-emerald-600"][class~="text-white"] {
+  background-color: #047857 !important;
+}

@@ -46,8 +46,8 @@ const providerMeta: Record<
   },
   facebook: {
     label: "Facebook",
-    bg: "bg-[#1877F2]",
-    border: "border-[#1877F2]",
+    bg: "bg-[#166FE5]",
+    border: "border-[#166FE5]",
     text: "text-white",
   },
 };
@@ -220,7 +220,7 @@ export default function SocialAuthButtons({
     <motion.div variants={fadeUp} className={cn("space-y-4", className)}>
       <div className="relative">
         <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-slate-200" />
-        <div className="vizit-social-separator relative mx-auto w-fit rounded-full bg-white px-3 text-xs font-medium text-slate-400">
+        <div className="vizit-social-separator relative mx-auto w-fit rounded-full bg-white px-3 text-xs font-medium text-slate-600">
           {text.or}
         </div>
       </div>

@@ -585,7 +585,7 @@ export default function Register() {
                                     "grid h-10 w-10 place-items-center rounded-full text-sm font-semibold transition",
                                     currentStep >= step
                                         ? "bg-violet-600 text-white shadow-md"
-                                        : "bg-slate-100 text-slate-400"
+                                        : "bg-slate-100 text-slate-600"
                                 )}
                             >
                                 {step}

@@ -43,7 +43,7 @@ export function PublicBusinessHeader({
     <header className="vizit-public-chrome sticky top-0 z-40 border-b border-[#e8e2f0] bg-[#faf8fc]/90 shadow-sm backdrop-blur-xl dark:border-[#312641] dark:bg-[#151020]/90">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2 sm:gap-4 sm:px-6 sm:py-3 lg:px-8">
         <div className="flex min-w-0 items-center gap-3">
-          <Link to={fallbackHref} aria-label={business ? text.back : text.home} className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[#e8e2f0] bg-white text-[#5b2fa8] shadow-sm transition hover:bg-[#f1edf7] dark:border-[#312641] dark:bg-white/[0.06] dark:text-[#c3a7ff] dark:hover:bg-white/10 sm:h-11 sm:w-11">
+          <Link to={fallbackHref} aria-label={business ? text.back : text.home} className="vizit-public-chrome-control inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-[#e8e2f0] bg-white text-[#5b2fa8] shadow-sm transition hover:bg-[#f1edf7] dark:border-[#312641] dark:bg-white/[0.06] dark:text-[#c3a7ff] dark:hover:bg-white/10 sm:h-11 sm:w-11">
             {business ? <ArrowLeft className="h-4 w-4" /> : <CalendarDays className="h-4 w-4" />}
           </Link>
           <div className="flex min-w-0 items-center gap-3">
@@ -62,11 +62,11 @@ export function PublicBusinessHeader({
         </div>
 
         <div className="flex items-center gap-1 sm:gap-3">
-          <Link to={fallbackHref} className="hidden rounded-full border border-[#e8e2f0] bg-white px-4 py-2 text-sm font-medium text-[#5f536e] transition hover:bg-[#f1edf7] dark:border-[#312641] dark:bg-white/[0.06] dark:text-slate-200 dark:hover:bg-white/10 md:inline-flex">
+          <Link to={fallbackHref} className="vizit-public-chrome-control hidden rounded-full border border-[#e8e2f0] bg-white px-4 py-2 text-sm font-medium text-[#5f536e] transition hover:bg-[#f1edf7] dark:border-[#312641] dark:bg-white/[0.06] dark:text-slate-200 dark:hover:bg-white/10 md:inline-flex">
             {secondaryLabel || text.home}
           </Link>
-          <LanguageToggle compact className="rounded-full border border-[#e8e2f0] bg-white text-[#5f536e] dark:border-[#312641] dark:bg-white/[0.06] dark:text-white" />
-          <ThemeToggle compact className="h-10 w-10 border-[#e8e2f0] bg-white text-[#5f536e] dark:border-[#312641] dark:bg-white/[0.06] dark:text-white sm:h-11 sm:w-11" />
+          <LanguageToggle compact className="vizit-public-chrome-control rounded-full border border-[#e8e2f0] bg-white text-[#5f536e] dark:border-[#312641] dark:bg-white/[0.06] dark:text-white" />
+          <ThemeToggle compact className="vizit-public-chrome-control h-10 w-10 border-[#e8e2f0] bg-white text-[#5f536e] dark:border-[#312641] dark:bg-white/[0.06] dark:text-white sm:h-11 sm:w-11" />
           {primaryHref && primaryLabel ? (
             <Link to={primaryHref} className="hidden items-center justify-center rounded-full bg-[#3e1f78] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#5b2fa8] sm:inline-flex dark:bg-[#a980f3] dark:text-[#160d22] dark:hover:bg-[#bd9cf8]">
               {primaryLabel}
@@ -98,10 +98,10 @@ export function PublicBusinessFooter({
             </span>
             <span>
               <strong className="block text-sm font-semibold">Vizit</strong>
-              <small className="block text-[11px] text-[#756777] dark:text-[#cbbfc6]">{text.booking}</small>
+              <small className="block text-[11px] text-[#665764] dark:text-[#d2c7ce]">{text.booking}</small>
             </span>
           </Link>
-          <span className="text-xs text-[#756777] dark:text-[#cbbfc6]">© {new Date().getFullYear()} Vizit</span>
+          <span className="text-xs text-[#665764] dark:text-[#d2c7ce]">© {new Date().getFullYear()} Vizit</span>
         </div>
       </footer>
     );

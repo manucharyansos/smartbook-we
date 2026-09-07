@@ -1665,7 +1665,7 @@ export default function PublicBooking() {
                                         </div>
                                     ) : null}
 
-                                    <details className="rounded-2xl border border-sky-200 bg-sky-50/70 p-4">
+                                    <details className="vizit-booking-recurrence rounded-2xl border border-sky-200 bg-sky-50/70 p-4">
                                         <summary className="cursor-pointer text-sm font-semibold text-sky-900">{text.recurring}</summary>
                                         <div className="mt-4 grid gap-3 sm:grid-cols-2">
                                             <Field label={text.repeat}>
@@ -1976,7 +1976,7 @@ export default function PublicBooking() {
                                     </Field>
                                 </div>
 
-                                <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 text-sm leading-6 text-emerald-900">
+                                <label className="vizit-booking-marketing-consent flex cursor-pointer items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 text-sm leading-6 text-emerald-900">
                                     <input type="checkbox" checked={marketingOptIn} onChange={(e) => setMarketingOptIn(e.target.checked)} className="mt-1 h-4 w-4 rounded border-emerald-300 text-emerald-600" />
                                     <span>{text.marketingConsent}</span>
                                 </label>

@@ -306,7 +306,7 @@ export default function PublicBusinessProfile() {
                                                 <CalendarDays className="h-4 w-4 text-violet-500" />
                                                 {text.booking}
                                             </div>
-                                            <div className="mt-2 text-sm font-semibold text-emerald-600">
+                                            <div className="mt-2 text-sm font-semibold text-emerald-700 dark:text-emerald-300">
                                                 {text.online}
                                             </div>
                                         </div>

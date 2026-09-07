@@ -1427,7 +1427,7 @@ export default function Index() {
 
 
   return (
-    <div className="vizit-public-page min-h-screen overflow-x-clip bg-[#faf8fc] text-[#241736] transition-colors dark:bg-[#090712] dark:text-white">
+    <div className="vizit-public-page vizit-home-page min-h-screen overflow-x-clip bg-[#faf8fc] text-[#241736] transition-colors dark:bg-[#090712] dark:text-white">
       <Seo title={t("seo.homeTitle")} description={t("seo.homeDescription")} image="/og-default.svg" />
       <LandingNavbar />
 

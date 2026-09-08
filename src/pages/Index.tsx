@@ -627,10 +627,10 @@ function InteractiveBusinessMap({
           onClick={() => setMobileInteractionEnabled((enabled) => !enabled)}
           aria-pressed={mobileInteractionEnabled}
           className={cn(
-            "absolute bottom-3 left-1/2 z-30 inline-flex min-h-11 -translate-x-1/2 items-center justify-center gap-2 rounded-full border px-4 text-xs font-black shadow-[0_16px_44px_rgba(43,13,53,0.18)] backdrop-blur-xl transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6d2a63] focus-visible:ring-offset-2",
+            "absolute bottom-3 left-1/2 z-30 inline-flex min-h-11 -translate-x-1/2 items-center justify-center gap-2 rounded-xl border px-4 text-xs font-black shadow-[0_16px_44px_rgba(7,22,36,0.24)] backdrop-blur-xl transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#84c1f2] focus-visible:ring-offset-2",
             mobileInteractionEnabled
-              ? "border-[#6d2a63]/30 bg-[#2b0d35] text-white"
-              : "border-[#d39a43]/35 bg-[#fffaf5]/94 text-[#4b164b]",
+              ? "border-[#378add]/40 bg-[#15558e] text-white"
+              : "border-[#315a77] bg-[#0b2133]/95 text-[#d9eaf7]",
           )}
         >
           <Hand className="h-4 w-4" aria-hidden="true" />
@@ -652,7 +652,7 @@ function InteractiveBusinessMap({
 }
 
 function SectionBadge({ children }: { children: ReactNode }) {
-  return <div className="inline-flex items-center gap-2 rounded-full border border-[#d39a43]/30 bg-[#fff2df] px-4 py-2 text-xs font-semibold text-[#98641f] shadow-sm backdrop-blur-2xl dark:border-[#edc982]/20 dark:bg-[#edc982]/10 dark:text-[#f4d99f] dark:shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:text-sm">{children}</div>;
+  return <div className="inline-flex items-center gap-2 rounded-xl border border-[#84c1f2]/50 bg-[#e5f2fd] px-4 py-2 text-xs font-semibold text-[#2578c8] shadow-sm backdrop-blur-2xl dark:border-[#245171] dark:bg-[#123653] dark:text-[#b9dcfa] dark:shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:text-sm">{children}</div>;
 }
 
 function SearchPanel({
@@ -687,10 +687,10 @@ function SearchPanel({
         event.preventDefault();
         onSubmit();
       }}
-      className="vizit-search-panel mt-7 w-full max-w-[680px] rounded-[20px] border border-[#e8e2f0] bg-white p-2.5 shadow-[0_20px_55px_rgba(62,31,120,0.14)] dark:border-[#312641] dark:bg-[#151020] dark:shadow-[0_24px_70px_rgba(0,0,0,0.34)] sm:p-3"
+      className="vizit-search-panel mt-7 w-full min-w-0 max-w-[680px] overflow-hidden rounded-[20px] border border-[#e8e2f0] bg-white p-2.5 shadow-[0_20px_55px_rgba(62,31,120,0.14)] dark:border-[#312641] dark:bg-[#151020] dark:shadow-[0_24px_70px_rgba(0,0,0,0.34)] sm:p-3"
     >
-      <div className="grid items-stretch gap-2 md:grid-cols-[1fr_170px_118px]">
-        <label className="vizit-search-field relative flex min-h-[62px] items-center rounded-[16px] px-3 text-left transition focus-within:bg-[#faf8fc] dark:focus-within:bg-white/[0.05] sm:px-4 md:border-r md:border-[#e8e2f0] dark:md:border-[#312641]">
+      <div className="grid min-w-0 items-stretch gap-2 md:grid-cols-[1fr_170px_118px]">
+        <label className="vizit-search-field relative flex min-h-[62px] min-w-0 items-center rounded-[16px] px-3 text-left transition focus-within:bg-[#faf8fc] dark:focus-within:bg-white/[0.05] sm:px-4 md:border-r md:border-[#e8e2f0] dark:md:border-[#312641]">
           <Search className="mr-3 h-[21px] w-[21px] shrink-0 text-[#8f829e] dark:text-[#9488a3]" />
           <span className="min-w-0 flex-1">
             <span className="block text-[13px] font-semibold text-[#6b6178] dark:text-[#b7adc5] sm:text-[14px]">{t("search.label")}</span>
@@ -702,7 +702,7 @@ function SearchPanel({
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder={t("search.placeholder")}
-              className="mt-1 w-full bg-transparent text-[14px] font-medium text-[#241736] outline-none placeholder:text-[#a79db5] dark:text-white dark:placeholder:text-[#766b83]"
+              className="mt-1 w-full min-w-0 bg-transparent text-[14px] font-medium text-[#241736] outline-none placeholder:text-[#a79db5] dark:text-white dark:placeholder:text-[#766b83]"
             />
           </span>
         </label>
@@ -711,7 +711,7 @@ function SearchPanel({
           type="button"
           onClick={onUseLocation}
           disabled={locationStatus === "loading"}
-          className="vizit-location-button flex min-h-[58px] items-center rounded-[16px] px-3 text-left transition hover:bg-[#faf8fc] disabled:cursor-wait disabled:opacity-70 dark:hover:bg-white/[0.05] sm:px-4"
+          className="vizit-location-button flex min-h-[58px] min-w-0 items-center rounded-[16px] px-3 text-left transition hover:bg-[#faf8fc] disabled:cursor-wait disabled:opacity-70 dark:hover:bg-white/[0.05] sm:px-4"
           aria-label={t("search.useLocation")}
           title={t("search.useLocation")}
         >
@@ -723,7 +723,7 @@ function SearchPanel({
           <LocateFixed className="ml-2 h-4 w-4 shrink-0 text-[#1e9e92] dark:text-[#58d0c4]" />
         </button>
 
-        <button type="submit" className="vizit-search-submit inline-flex h-[54px] items-center justify-center gap-2 rounded-[16px] bg-[#5b2fa8] px-5 text-[14px] font-semibold text-white shadow-[0_14px_30px_rgba(91,47,168,0.24)] transition hover:bg-[#3e1f78] dark:bg-[#a980f3] dark:text-[#160d22] dark:hover:bg-[#bd9cf8] md:h-auto">
+        <button type="submit" className="vizit-search-submit inline-flex h-[54px] min-w-0 items-center justify-center gap-2 rounded-[16px] bg-[#5b2fa8] px-5 text-[14px] font-semibold text-white shadow-[0_14px_30px_rgba(91,47,168,0.24)] transition hover:bg-[#3e1f78] dark:bg-[#a980f3] dark:text-[#160d22] dark:hover:bg-[#bd9cf8] md:h-auto">
           <Search className="h-4 w-4" /> {t("search.button")}
         </button>
       </div>
@@ -980,12 +980,12 @@ function MobileMapBusinessSheet({
     : null;
   const visualVariant = stableBusinessHash(`${item.slug}:${item.name}`) % 6;
   const heroTone = [
-    "from-[#50303d] via-[#96665f] to-[#e2baa9]",
-    "from-[#49301e] via-[#9b6f37] to-[#ebca91]",
-    "from-[#263f39] via-[#557b70] to-[#b8d0c3]",
-    "from-[#392738] via-[#73536c] to-[#cfadbf]",
-    "from-[#42291f] via-[#8b5c43] to-[#ddb08e]",
-    "from-[#22343d] via-[#55717a] to-[#b6cfcb]",
+    "from-[#071624] via-[#0b2133] to-[#15558e]",
+    "from-[#071624] via-[#102b42] to-[#2578c8]",
+    "from-[#071624] via-[#123653] to-[#1d6fb2]",
+    "from-[#071624] via-[#0e2940] to-[#378add]",
+    "from-[#071624] via-[#15558e] to-[#58a5e8]",
+    "from-[#071624] via-[#173b57] to-[#245171]",
   ][visualVariant];
   const categoryName = pin.categoryName
     || getCategoryName(item.category, locale)
@@ -1035,7 +1035,7 @@ function MobileMapBusinessSheet({
 
   return createPortal(
     <motion.div
-      className="vizit-map-mobile-modal fixed inset-0 z-[300] bg-[#fffaf5] text-[#2b0d35] dark:bg-[#160e19] dark:text-[#fff8f2] lg:hidden"
+      className="vizit-map-mobile-modal fixed inset-0 z-[300] bg-[#071624] text-white lg:hidden"
       data-map-business-modal="true"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -1052,9 +1052,9 @@ function MobileMapBusinessSheet({
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
-        className="relative flex h-[100dvh] w-full flex-col overflow-hidden bg-[#fffaf5] dark:bg-[#160e19]"
+        className="vizit-map-mobile-sheet relative flex h-[100dvh] w-full flex-col overflow-hidden bg-[#071624]"
       >
-        <div className={cn("relative h-[30dvh] min-h-[215px] max-h-[330px] shrink-0 overflow-hidden bg-gradient-to-br", heroTone)}>
+        <div className={cn("vizit-map-mobile-hero relative h-[30dvh] min-h-[215px] max-h-[330px] shrink-0 overflow-hidden bg-gradient-to-br", heroTone)}>
           {coverUrl ? (
             <img
               src={coverUrl}
@@ -1064,7 +1064,7 @@ function MobileMapBusinessSheet({
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="absolute inset-0 grid place-items-center overflow-hidden" aria-hidden="true">
+            <div className="vizit-map-mobile-cover-fallback absolute inset-0 grid place-items-center overflow-hidden" aria-hidden="true">
               <span className="absolute -right-12 -top-16 h-56 w-56 rounded-full border border-white/25 bg-white/10" />
               <span className="absolute -bottom-28 -left-16 h-72 w-72 rounded-full border border-white/20 bg-white/[0.07]" />
               {logoUrl ? (
@@ -1083,14 +1083,14 @@ function MobileMapBusinessSheet({
               )}
             </div>
           )}
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#170c19]/80 via-transparent to-black/20" />
+          <div className="vizit-map-mobile-hero-overlay pointer-events-none absolute inset-0 bg-gradient-to-t from-[#071624]/90 via-transparent to-black/20" />
           <div className="absolute inset-x-5 bottom-4 min-w-0 text-white drop-shadow-lg">
-            <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/25 bg-[#241126]/65 px-3.5 py-2 text-xs font-bold shadow-xl backdrop-blur-xl">
-              <Icon className="h-4 w-4 shrink-0 text-[#f3cd87]" aria-hidden="true" />
+            <span className="vizit-map-mobile-category inline-flex max-w-full items-center gap-2 rounded-xl border border-white/20 bg-[#071624]/75 px-3.5 py-2 text-xs font-bold shadow-xl backdrop-blur-xl">
+              <Icon className="h-4 w-4 shrink-0 text-[#84c1f2]" aria-hidden="true" />
               <span className="truncate">{categoryName}</span>
             </span>
-            <span className="mt-2 flex max-w-full items-start gap-2 text-xs font-bold leading-5 text-white/95">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#f3cd87]" aria-hidden="true" />
+            <span className="vizit-map-mobile-location mt-2 flex max-w-full items-start gap-2 text-xs font-bold leading-5 text-white/95">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#84c1f2]" aria-hidden="true" />
               <span className="line-clamp-2">{pin.locationName ? `${pin.locationName} · ` : ""}{pin.address || item.address || t("business.card.noAddress")}</span>
             </span>
           </div>
@@ -1099,43 +1099,43 @@ function MobileMapBusinessSheet({
             type="button"
             onClick={onClose}
             style={{ top: "max(16px, env(safe-area-inset-top))" }}
-            className="absolute right-4 grid h-12 w-12 place-items-center rounded-full border border-white/40 bg-white/92 text-[#4b164b] shadow-[0_12px_34px_rgba(30,13,28,0.22)] backdrop-blur-xl transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#edc982] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent dark:border-white/20 dark:bg-[#221326]/88 dark:text-white"
+            className="vizit-map-mobile-close absolute right-4 grid h-12 w-12 place-items-center rounded-xl border border-white/25 bg-[#0b2133]/90 text-white shadow-[0_12px_34px_rgba(0,0,0,0.24)] backdrop-blur-xl transition hover:bg-[#123653] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#84c1f2] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             aria-label={t("map.closeDetails")}
           >
             <X className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        <div className="vizit-map-mobile-content min-h-0 flex-1 overflow-y-auto overscroll-contain">
           <div className="px-5 pb-8 pt-5 sm:px-7">
-            <h2 id={titleId} className="vizit-display break-words text-[34px] leading-[1.05] tracking-[-0.035em] text-[#2b0d35] dark:text-white">
+            <h2 id={titleId} className="break-words text-[32px] font-bold leading-[1.08] tracking-[-0.035em] text-white">
               {pin.name}
             </h2>
-            <p id={descriptionId} className="mt-4 text-[15px] font-medium leading-7 text-[#66576a] dark:text-[#d8ccd7]">
+            <p id={descriptionId} className="mt-4 text-[15px] font-medium leading-7 text-[#a9c2d6]">
               {description}
             </p>
 
             <section className="mt-6" aria-labelledby={hoursTitleId}>
               <div className="flex items-center gap-3">
-                <span className="grid h-10 w-10 place-items-center rounded-[14px] bg-[#fff0d8] text-[#98641f] dark:bg-[#edc982]/10 dark:text-[#f1cf90]">
+                <span className="vizit-map-mobile-hours-icon grid h-10 w-10 place-items-center rounded-xl bg-[#123653] text-[#84c1f2]">
                   <Clock3 className="h-5 w-5" aria-hidden="true" />
                 </span>
-                <h3 id={hoursTitleId} className="text-base font-black text-[#35173a] dark:text-white">{t("map.workingHours")}</h3>
+                <h3 id={hoursTitleId} className="text-base font-black text-white">{t("map.workingHours")}</h3>
               </div>
 
-              <div className="mt-4 overflow-hidden rounded-[22px] border border-[#d39a43]/22 bg-white/76 shadow-[0_12px_38px_rgba(69,36,53,0.07)] dark:border-white/10 dark:bg-white/[0.055]">
+              <div className="vizit-map-mobile-hours mt-4 overflow-hidden rounded-2xl border border-[#245171] bg-[#0b2133] shadow-[0_12px_38px_rgba(0,0,0,0.16)]">
                 {workingHoursRows.length ? workingHoursRows.map((row, index) => (
-                  <div key={`${row.days}-${row.hours}-${index}`} className="flex items-start justify-between gap-4 border-b border-[#eadfdb] px-4 py-3.5 last:border-b-0 dark:border-white/8">
-                    <span className="min-w-0 text-sm font-bold text-[#4f3d52] dark:text-[#e5dce4]">{row.days}</span>
+                  <div key={`${row.days}-${row.hours}-${index}`} className="vizit-map-mobile-hours-row flex items-start justify-between gap-4 border-b border-[#173b57] px-4 py-3.5 last:border-b-0">
+                    <span className="min-w-0 text-sm font-bold text-[#d9eaf7]">{row.days}</span>
                     <span className="shrink-0 text-right">
-                      <strong className={cn("block text-sm", row.isClosed ? "text-[#9b5261] dark:text-[#f2a9b8]" : "text-[#6d2a63] dark:text-[#f1cf90]")}>{row.isClosed ? t("map.closed") : row.hours}</strong>
-                      {row.breakHours && !row.isClosed ? <small className="mt-1 block text-[11px] font-semibold text-[#8a7a8d] dark:text-[#bfb2bd]">{t("map.break")} {row.breakHours}</small> : null}
+                      <strong className={cn("block text-sm", row.isClosed ? "text-[#f2a9b8]" : "text-[#84c1f2]")}>{row.isClosed ? t("map.closed") : row.hours}</strong>
+                      {row.breakHours && !row.isClosed ? <small className="mt-1 block text-[11px] font-semibold text-[#7895ac]">{t("map.break")} {row.breakHours}</small> : null}
                     </span>
                   </div>
                 )) : fallbackHours ? (
-                  <div className="flex items-center justify-center px-4 py-5 text-base font-black text-[#6d2a63] dark:text-[#f1cf90]">{fallbackHours}</div>
+                  <div className="flex items-center justify-center px-4 py-5 text-base font-black text-[#84c1f2]">{fallbackHours}</div>
                 ) : (
-                  <p className="px-4 py-5 text-center text-sm font-semibold leading-6 text-[#776a7a] dark:text-[#c6bbc4]">{t("map.hoursNotProvided")}</p>
+                  <p className="px-4 py-5 text-center text-sm font-semibold leading-6 text-[#a9c2d6]">{t("map.hoursNotProvided")}</p>
                 )}
               </div>
             </section>
@@ -1143,12 +1143,12 @@ function MobileMapBusinessSheet({
           </div>
         </div>
 
-        <div className="shrink-0 border-t border-[#d39a43]/20 bg-[#fffaf5]/96 px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 shadow-[0_-16px_38px_rgba(43,13,53,0.08)] backdrop-blur-xl dark:border-white/10 dark:bg-[#160e19]/96 sm:px-6">
+        <div className="vizit-map-mobile-footer shrink-0 border-t border-[#173b57] bg-[#071624]/96 px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 shadow-[0_-16px_38px_rgba(0,0,0,0.22)] backdrop-blur-xl sm:px-6">
           <div className="mx-auto grid max-w-xl grid-cols-2 gap-2.5">
             <Link
               to={pin.bookingUrl}
               onClick={onClose}
-              className="inline-flex min-h-14 min-w-0 items-center justify-center gap-2 rounded-[18px] bg-gradient-to-r from-[#2b0d35] to-[#6d2a63] px-3 text-sm font-black text-white shadow-[0_14px_32px_rgba(75,22,75,0.22)] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d39a43] focus-visible:ring-offset-2 dark:from-[#f0c979] dark:to-[#d9a54f] dark:text-[#28142b]"
+              className="vizit-map-mobile-primary inline-flex min-h-14 min-w-0 items-center justify-center gap-2 rounded-xl bg-[#378add] px-3 text-sm font-black text-white shadow-[0_14px_32px_rgba(55,138,221,0.24)] transition hover:bg-[#2578c8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#84c1f2] focus-visible:ring-offset-2"
               aria-label={`${t("business.card.book")} — ${pin.name}`}
             >
               <span className="truncate">{t("business.card.book")}</span><ArrowRight className="h-5 w-5 shrink-0" aria-hidden="true" />
@@ -1156,7 +1156,7 @@ function MobileMapBusinessSheet({
             <Link
               to={`/businesses/${pin.slug}`}
               onClick={onClose}
-              className="inline-flex min-h-14 min-w-0 items-center justify-center rounded-[18px] border border-[#6d2a63]/24 bg-white/80 px-3 text-sm font-black text-[#4b164b] transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6d2a63] focus-visible:ring-offset-2 dark:border-white/14 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/[0.1]"
+              className="vizit-map-mobile-secondary inline-flex min-h-14 min-w-0 items-center justify-center rounded-xl border border-[#315a77] bg-[#0b2133] px-3 text-sm font-black text-white transition hover:bg-[#123653] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#84c1f2] focus-visible:ring-offset-2"
               aria-label={`${t("business.card.view")} — ${pin.name}`}
             >
               <span className="truncate">{t("business.card.view")}</span>
@@ -1203,14 +1203,14 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
             <p className="mt-1 truncate text-[11px] font-semibold text-[#8a7182] dark:text-[#d7c8d4]">{categoryName}</p>
           </div>
           <div className="vizit-business-mobile-meta mt-auto flex min-w-0 items-center gap-3 pt-2 text-[10px] font-semibold text-[#786675] dark:text-[#cdbfca]">
-            <span className="inline-flex min-w-0 items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 shrink-0 text-[#d39a43]" /><b className="text-[#442044] dark:text-white">{item.services_count ?? 0}</b> {t("business.card.services")}</span>
-            <span className="inline-flex min-w-0 items-center gap-1.5"><Users className="h-3.5 w-3.5 shrink-0 text-[#6d2a63] dark:text-[#e6bd76]" /><b className="text-[#442044] dark:text-white">{item.staff_count ?? 0}</b> {t("business.card.staff")}</span>
+            <span className="inline-flex min-w-0 items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 shrink-0 text-[#378add]" /><b className="text-[#071624] dark:text-white">{item.services_count ?? 0}</b> {t("business.card.services")}</span>
+            <span className="inline-flex min-w-0 items-center gap-1.5"><Users className="h-3.5 w-3.5 shrink-0 text-[#378add] dark:text-[#84c1f2]" /><b className="text-[#071624] dark:text-white">{item.staff_count ?? 0}</b> {t("business.card.staff")}</span>
           </div>
           <div className="vizit-business-mobile-actions mt-2 grid grid-cols-2 gap-1.5">
-            <Link to={bookingUrl} className="inline-flex min-w-0 items-center justify-center gap-1 rounded-[10px] bg-gradient-to-r from-[#2b0d35] to-[#6d2a63] px-2 py-1.5 text-[10px] font-black text-white shadow-sm" aria-label={`${t("business.card.book")} — ${item.name}`}>
+            <Link to={bookingUrl} className="inline-flex min-w-0 items-center justify-center gap-1 rounded-[10px] bg-[#378add] px-2 py-1.5 text-[10px] font-black text-white shadow-sm" aria-label={`${t("business.card.book")} — ${item.name}`}>
               <span className="truncate">{t("business.card.book")}</span><ArrowRight className="h-3 w-3 shrink-0" />
             </Link>
-            <Link to={`/businesses/${item.slug}`} className="inline-flex min-w-0 items-center justify-center rounded-[10px] border border-[#d39a43]/25 bg-[#fff8ef] px-2 py-1.5 text-[10px] font-bold text-[#4c394f] dark:border-[#e8c77f]/15 dark:bg-white/[0.06] dark:text-[#fff8f2]">
+            <Link to={`/businesses/${item.slug}`} className="inline-flex min-w-0 items-center justify-center rounded-[10px] border border-[#84c1f2] bg-white px-2 py-1.5 text-[10px] font-bold text-[#2578c8] dark:border-[#245171] dark:bg-[#0b2133] dark:text-[#b9dcfa]">
               <span className="truncate">{t("business.card.view")}</span>
             </Link>
           </div>
@@ -1402,7 +1402,7 @@ export default function Index() {
 
 
   return (
-    <div className="vizit-public-page vizit-home-page min-h-screen overflow-x-clip bg-[#faf8fc] text-[#241736] transition-colors dark:bg-[#090712] dark:text-white">
+    <div className="vizit-public-page vizit-home-page min-h-screen w-full max-w-full overflow-x-hidden bg-[#faf8fc] text-[#241736] transition-colors dark:bg-[#090712] dark:text-white">
       <Seo title={t("seo.homeTitle")} description={t("seo.homeDescription")} image="/og-default.svg" />
       <LandingNavbar />
 
@@ -1411,13 +1411,13 @@ export default function Index() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_10%,rgba(91,47,168,0.11),transparent_29%),radial-gradient(circle_at_84%_18%,rgba(30,158,146,0.10),transparent_28%),linear-gradient(180deg,#faf8fc_0%,#ffffff_64%,#faf8fc_100%)] dark:bg-[radial-gradient(circle_at_16%_10%,rgba(169,128,243,0.19),transparent_28%),radial-gradient(circle_at_84%_18%,rgba(88,208,196,0.11),transparent_28%),linear-gradient(180deg,#090712_0%,#151020_62%,#090712_100%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(91,47,168,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(91,47,168,0.035)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(circle_at_top,black,transparent_76%)] dark:opacity-50" />
 
-          <motion.div variants={stagger} initial="hidden" animate="visible" className="vizit-hero-grid relative mx-auto grid max-w-[1160px] gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-center xl:gap-12">
-            <div className="vizit-hero-copy max-w-[650px] py-7 text-center lg:py-14 lg:text-left">
+          <motion.div variants={stagger} initial="hidden" animate="visible" className="vizit-hero-grid relative mx-auto grid w-full min-w-0 max-w-[1160px] gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-center xl:gap-12">
+            <div className="vizit-hero-copy w-full min-w-0 max-w-[650px] py-7 text-center lg:py-14 lg:text-left">
               <motion.div variants={fadeUp} className="vizit-hero-badge mx-auto inline-flex items-center gap-2 rounded-full border border-[#1e9e92]/25 bg-[#1e9e92]/[0.08] px-4 py-2 text-[12px] font-semibold text-[#167d74] shadow-sm backdrop-blur-2xl dark:border-[#58d0c4]/25 dark:bg-[#58d0c4]/10 dark:text-[#8be3da] dark:shadow-[0_16px_50px_rgba(0,0,0,0.22)] lg:mx-0">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#1e9e92] dark:bg-[#58d0c4]" /> {t("hero.badge")}
               </motion.div>
 
-              <motion.h1 variants={fadeUp} className="vizit-display mt-7 text-[clamp(2.25rem,10vw,3.25rem)] leading-[1.12] text-[#241736] dark:text-white sm:mt-8 sm:text-[58px] lg:text-[62px]">
+              <motion.h1 variants={fadeUp} className="vizit-display mt-7 break-words text-[clamp(2.25rem,10vw,3.25rem)] leading-[1.12] text-[#241736] dark:text-white sm:mt-8 sm:text-[58px] lg:text-[62px]">
                 {t("hero.title1")} <span className="text-[#5b2fa8] dark:text-[#b898f4]">{t("hero.title2")}</span>{t("hero.titlePunctuation")}
               </motion.h1>
 

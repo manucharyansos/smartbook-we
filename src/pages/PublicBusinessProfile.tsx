@@ -23,6 +23,7 @@ import {
     fetchPublicBusiness,
     fetchPublicServices,
     fetchPublicStaff,
+    type PublicBusiness,
     type PublicService,
     type PublicStaff,
 } from "../lib/publicApi";
@@ -59,6 +60,28 @@ const EMPTY_STAFF: PublicStaff[] = [];
 
 function businessTypeLabel(type: "beauty" | "dental" | undefined, locale: Locale) {
     return type === "dental" ? copy[locale].dental : copy[locale].beauty;
+}
+
+function businessCategoryLabel(
+    business: Pick<PublicBusiness, "business_type" | "vertical" | "category" | "custom_category_name">,
+    locale: Locale,
+) {
+    const localizedName = locale === "hy"
+        ? business.category?.name_hy
+        : locale === "ru"
+            ? business.category?.name_ru
+            : business.category?.name_en;
+
+    const explicitName = business.custom_category_name || localizedName || business.category?.name;
+    if (explicitName) return explicitName;
+
+    const vertical = String(business.vertical ?? "").toLowerCase();
+    if (["healthcare", "medical", "clinic", "dental", "doctor", "health"].includes(vertical)) {
+        return { hy: "Բժշկական ծառայություններ", ru: "Медицинские услуги", en: "Healthcare services" }[locale];
+    }
+    if (["services", "service", "beauty", "salon"].includes(vertical)) return copy[locale].services;
+
+    return businessTypeLabel(business.business_type, locale);
 }
 
 function formatWorkHours(start: string | null | undefined, end: string | null | undefined, locale: Locale) {
@@ -172,6 +195,8 @@ export default function PublicBusinessProfile() {
         );
     }
 
+    const categoryLabel = businessCategoryLabel(business, locale);
+
     return (
         <div className="vizit-public-detail-page min-h-screen bg-[linear-gradient(180deg,#faf8fc_0%,#ffffff_22%,#f5f0fa_100%)] text-slate-900 transition-colors dark:bg-[linear-gradient(180deg,#090712_0%,#151020_48%,#090712_100%)] dark:text-white">
             <Seo
@@ -190,35 +215,35 @@ export default function PublicBusinessProfile() {
                             initial={{ opacity: 0, y: 18 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.35 }}
-                            className="relative overflow-hidden rounded-[38px] border border-white/70 bg-white/85 shadow-[0_24px_90px_rgba(15,23,42,0.08)] backdrop-blur-xl"
+                            className="vizit-business-profile-shell relative overflow-hidden rounded-[38px] border border-white/70 bg-white/85 shadow-[0_24px_90px_rgba(15,23,42,0.08)] backdrop-blur-xl"
                         >
-                            <div className="vizit-business-profile-backdrop absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(231,193,169,0.30),transparent_29%),radial-gradient(circle_at_bottom_left,rgba(244,220,190,0.36),transparent_29%),linear-gradient(135deg,#fffaf5_0%,#fbf3eb_58%,#fffdf9_100%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(139,76,125,0.16),transparent_31%),linear-gradient(135deg,#221d22_0%,#1c181c_58%,#171417_100%)]" />
+                            <div className="vizit-business-profile-backdrop absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(88,165,232,0.24),transparent_31%),linear-gradient(145deg,#071624_0%,#0b2133_58%,#15558e_100%)]" />
 
                             <div className="vizit-business-profile-hero relative grid gap-4 p-3 sm:p-4 lg:grid-cols-[minmax(300px,0.82fr)_minmax(0,1.18fr)] lg:gap-6">
                                 <div className="vizit-business-profile-cover relative min-h-[230px] overflow-hidden rounded-[28px] border border-white/70 bg-[linear-gradient(145deg,#e9cfc3,#f7e9dd_52%,#d8c0d0)] shadow-[0_18px_52px_rgba(72,35,49,0.13)] sm:min-h-[300px] lg:min-h-full">
                                     {business.cover_url ? (
                                         <img src={business.cover_url} alt={business.name} className="absolute inset-0 h-full w-full object-cover" />
                                     ) : (
-                                        <div className="absolute inset-0 grid place-items-center bg-[radial-gradient(circle_at_80%_10%,rgba(255,255,255,.45),transparent_30%),radial-gradient(circle_at_12%_100%,rgba(109,42,99,.20),transparent_34%),linear-gradient(145deg,#e8c8ba,#f7e9de_58%,#d7becf)]">
-                                            <div className="grid h-28 w-28 place-items-center overflow-hidden rounded-[32px] border border-white/60 bg-white/35 text-[#4a2146] shadow-[0_24px_70px_rgba(72,35,49,.16)] backdrop-blur-xl">
+                                        <div className="vizit-business-profile-fallback absolute inset-0 grid place-items-center bg-[radial-gradient(circle_at_80%_10%,rgba(255,255,255,.45),transparent_30%),radial-gradient(circle_at_12%_100%,rgba(109,42,99,.20),transparent_34%),linear-gradient(145deg,#e8c8ba,#f7e9de_58%,#d7becf)]">
+                                            <div className="vizit-business-profile-fallback-logo grid h-28 w-28 place-items-center overflow-hidden rounded-2xl border border-[#315a77] bg-[#0e2940]/90 text-[#d9eaf7] shadow-[0_24px_70px_rgba(0,0,0,.22)] backdrop-blur-xl">
                                                 {business.logo_url ? <img src={business.logo_url} alt={business.name} className="h-full w-full object-cover" /> : <Building2 className="h-11 w-11" />}
                                             </div>
                                         </div>
                                     )}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-[#2b0d35]/70 via-transparent to-white/10" />
-                                    <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/88 px-3 py-2 text-xs font-bold text-[#4a2146] shadow-sm backdrop-blur-xl">
+                                    <div className="vizit-business-profile-cover-overlay absolute inset-0 bg-gradient-to-t from-[#071624]/80 via-transparent to-white/10" />
+                                    <div className="vizit-business-profile-category absolute left-4 top-4 inline-flex items-center gap-2 rounded-xl border border-white/20 bg-[#071624]/75 px-3 py-2 text-xs font-bold text-white shadow-sm backdrop-blur-xl">
                                         {business.business_type === "dental" ? <Stethoscope className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
-                                        {businessTypeLabel(business.business_type, locale)}
+                                        {categoryLabel}
                                     </div>
-                                    <div className="absolute inset-x-4 bottom-4 flex items-center justify-between gap-3 rounded-2xl border border-white/25 bg-[#2b0d35]/72 px-4 py-3 text-white backdrop-blur-xl">
-                                        <span className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold"><MapPin className="h-4 w-4 shrink-0 text-[#edc77f]" /><span className="truncate">{business.address || text.onlineVia}</span></span>
-                                        <CheckCircle2 className="h-5 w-5 shrink-0 text-[#edc77f]" aria-hidden="true" />
+                                    <div className="vizit-business-profile-address absolute inset-x-4 bottom-4 flex items-center justify-between gap-3 rounded-xl border border-white/20 bg-[#071624]/78 px-4 py-3 text-white backdrop-blur-xl">
+                                        <span className="inline-flex min-w-0 items-center gap-2 text-sm font-semibold"><MapPin className="h-4 w-4 shrink-0 text-[#84c1f2]" /><span className="truncate">{business.address || text.onlineVia}</span></span>
+                                        <CheckCircle2 className="h-5 w-5 shrink-0 text-[#84c1f2]" aria-hidden="true" />
                                     </div>
                                 </div>
 
                                 <div className="vizit-business-profile-summary min-w-0 px-2 py-3 sm:px-4 sm:py-5 lg:px-3 lg:py-8">
                                     <div className="flex items-start gap-4">
-                                        <div className="h-16 w-16 shrink-0 overflow-hidden rounded-[22px] border border-white/70 bg-white/90 shadow-md">
+                                        <div className="vizit-business-profile-logo h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-[#315a77] bg-[#0e2940] text-white shadow-md">
                                             {business.logo_url ? (
                                                 <img src={business.logo_url} alt={business.name} className="h-full w-full object-cover" />
                                             ) : (
@@ -236,10 +261,10 @@ export default function PublicBusinessProfile() {
                                         </div>
                                     </div>
 
-                                    <div className="mt-7 flex flex-wrap items-center gap-2.5">
+                                    <div className="vizit-business-profile-actions mt-7 flex flex-wrap items-center gap-2.5">
                                         <Link
                                             to={`/book/${business.slug}?source=website`}
-                                            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#5b214f] to-[#7b2f68] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(91,33,79,0.24)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_38px_rgba(91,33,79,0.28)] sm:w-auto"
+                                            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#378add] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(55,138,221,0.24)] transition hover:-translate-y-0.5 hover:bg-[#2578c8] hover:shadow-[0_18px_38px_rgba(55,138,221,0.28)] sm:w-auto"
                                         >
                                             <CalendarDays className="h-4 w-4" /> {text.bookNow}<ArrowRight className="h-4 w-4" />
                                         </Link>
@@ -264,16 +289,16 @@ export default function PublicBusinessProfile() {
                                             </a>
                                         ) : null}
                                         {messengerUrl ? (
-                                            <a aria-label="Messenger" href={messengerUrl} target="_blank" rel="noopener noreferrer" className="grid h-12 w-12 place-items-center rounded-2xl border border-slate-200/90 bg-white/80 text-violet-600 transition hover:-translate-y-0.5 hover:bg-white dark:border-white/15 dark:bg-white/5">
+                                            <a aria-label="Messenger" href={messengerUrl} target="_blank" rel="noopener noreferrer" className="grid h-12 w-12 place-items-center rounded-xl border border-slate-200/90 bg-white/80 text-[#378add] transition hover:-translate-y-0.5 hover:bg-white dark:border-white/15 dark:bg-white/5">
                                                 <MessageCircleMore className="h-5 w-5" />
                                             </a>
                                         ) : null}
                                     </div>
 
-                                    <div className="mt-7 grid grid-cols-2 gap-3 xl:grid-cols-4">
-                                        <div className="rounded-2xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+                                    <div className="vizit-business-profile-stats mt-7 grid grid-cols-2 gap-3 xl:grid-cols-4">
+                                        <div className="vizit-business-profile-stat rounded-2xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
                                             <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                                                <Clock3 className="h-4 w-4 text-violet-500" />
+                                                <Clock3 className="h-4 w-4 text-[#378add]" />
                                                 {text.workingHours}
                                             </div>
                                             <div className="mt-2 text-sm font-semibold text-slate-900 dark:text-white">
@@ -281,9 +306,9 @@ export default function PublicBusinessProfile() {
                                             </div>
                                         </div>
 
-                                        <div className="rounded-2xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+                                        <div className="vizit-business-profile-stat rounded-2xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
                                             <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                                                <Users className="h-4 w-4 text-violet-500" />
+                                                <Users className="h-4 w-4 text-[#378add]" />
                                                 {text.team}
                                             </div>
                                             <div className="mt-2 text-sm font-semibold text-slate-900 dark:text-white">
@@ -291,9 +316,9 @@ export default function PublicBusinessProfile() {
                                             </div>
                                         </div>
 
-                                        <div className="rounded-2xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+                                        <div className="vizit-business-profile-stat rounded-2xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
                                             <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                                                <Sparkles className="h-4 w-4 text-violet-500" />
+                                                <Sparkles className="h-4 w-4 text-[#378add]" />
                                                 {text.services}
                                             </div>
                                             <div className="mt-2 text-sm font-semibold text-slate-900 dark:text-white">
@@ -301,9 +326,9 @@ export default function PublicBusinessProfile() {
                                             </div>
                                         </div>
 
-                                        <div className="rounded-2xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+                                        <div className="vizit-business-profile-stat rounded-2xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
                                             <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                                                <CalendarDays className="h-4 w-4 text-violet-500" />
+                                                <CalendarDays className="h-4 w-4 text-[#378add]" />
                                                 {text.booking}
                                             </div>
                                             <div className="mt-2 text-sm font-semibold text-emerald-700 dark:text-emerald-300">
@@ -316,13 +341,13 @@ export default function PublicBusinessProfile() {
                                 <div className="vizit-business-profile-contact relative grid gap-3 rounded-[26px] border border-white/70 bg-white/65 p-3 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/5 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-3">
                                     {business.address ? (
                                         <div className="flex items-start gap-3 rounded-2xl bg-white/75 px-4 py-3 text-sm text-slate-600 dark:bg-white/5 dark:text-slate-300">
-                                            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+                                            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#378add]" />
                                             <span>{business.address}</span>
                                         </div>
                                     ) : null}
                                     {business.phone ? (
                                         <a href={`tel:${business.phone}`} className="flex items-start gap-3 rounded-2xl bg-white/75 px-4 py-3 text-sm text-slate-600 transition hover:bg-white dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10">
-                                            <Phone className="mt-0.5 h-4 w-4 shrink-0 text-orange-500" />
+                                            <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#378add]" />
                                             <span>{business.phone}</span>
                                         </a>
                                     ) : null}
@@ -357,11 +382,11 @@ export default function PublicBusinessProfile() {
                                 initial={{ opacity: 0, y: 16 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.35, delay: 0.05 }}
-                                className="scroll-mt-24 rounded-[32px] border border-white/70 bg-white/88 p-5 shadow-sm dark:border-white/10 dark:bg-white/5 sm:p-7"
+                                className="vizit-profile-section vizit-profile-services-section scroll-mt-24 rounded-[32px] border border-white/70 bg-white/88 p-5 shadow-sm dark:border-white/10 dark:bg-white/5 sm:p-7"
                             >
                                 <div>
                                     <div>
-                                        <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-medium text-violet-700">
+                                        <div className="vizit-profile-section-badge inline-flex items-center gap-2 rounded-xl border border-[#84c1f2] bg-[#e5f2fd] px-4 py-2 text-sm font-medium text-[#2578c8]">
                                             <Sparkles className="h-4 w-4" />
                                             {text.services}
                                         </div>
@@ -380,7 +405,7 @@ export default function PublicBusinessProfile() {
                                         {topServices.map((service) => (
                                             <div
                                                 key={service.id}
-                                                className="vizit-profile-service-card rounded-[24px] border border-slate-100 bg-slate-50/70 p-4 transition hover:-translate-y-0.5 hover:border-violet-100 hover:bg-violet-50/40 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10 sm:p-5"
+                                                className="vizit-profile-service-card rounded-xl border border-slate-100 bg-slate-50/70 p-4 transition hover:-translate-y-0.5 hover:border-[#84c1f2] hover:bg-[#e5f2fd]/40 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10 sm:p-5"
                                             >
                                                 {service.image_url && <div className="vizit-profile-service-image mb-4 h-32 overflow-hidden rounded-2xl"><img src={service.image_url} alt={service.name} className="h-full w-full object-cover" /></div>}
                                                 <div className="flex items-start justify-between gap-4">
@@ -411,9 +436,9 @@ export default function PublicBusinessProfile() {
                                 initial={{ opacity: 0, y: 16 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.35, delay: 0.08 }}
-                                className="rounded-[32px] border border-white/70 bg-white/88 p-5 shadow-sm dark:border-white/10 dark:bg-white/5 sm:p-7"
+                                className="vizit-profile-section vizit-profile-team-section rounded-[32px] border border-white/70 bg-white/88 p-5 shadow-sm dark:border-white/10 dark:bg-white/5 sm:p-7"
                             >
-                                <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-medium text-orange-700">
+                                <div className="vizit-profile-section-badge inline-flex items-center gap-2 rounded-xl border border-[#84c1f2] bg-[#e5f2fd] px-4 py-2 text-sm font-medium text-[#2578c8]">
                                     <Users className="h-4 w-4" />
                                     {text.specialists}
                                 </div>
@@ -427,19 +452,19 @@ export default function PublicBusinessProfile() {
                                         {text.noStaff}
                                     </div>
                                 ) : (
-                                    <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                                    <div className="vizit-profile-staff-grid mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                                         {topStaff.map((person) => (
                                             <div
                                                 key={person.id}
-                                                className="rounded-[26px] border border-slate-100 bg-slate-50/70 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-violet-100 hover:bg-white dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
+                                                className="vizit-profile-staff-card rounded-xl border border-slate-100 bg-slate-50/70 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#84c1f2] hover:bg-white dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
                                             >
-                                                <div className="flex items-start justify-between gap-3">
-                                                    <div className="flex items-center gap-3">
+                                                <div className="vizit-profile-staff-head flex items-start justify-between gap-3">
+                                                    <div className="flex min-w-0 items-center gap-3">
                                                         <div className="h-12 w-12 overflow-hidden rounded-2xl bg-white shadow-sm">
                                                             {person.avatar_url ? <img src={person.avatar_url} alt={person.name} className="h-full w-full object-cover" /> : <div className="grid h-full w-full place-items-center"><Users className="h-5 w-5 text-slate-500" /></div>}
                                                         </div>
-                                                        <div>
-                                                            <div className="font-semibold text-slate-900 dark:text-white">
+                                                        <div className="min-w-0">
+                                                            <div className="break-words font-semibold text-slate-900 dark:text-white">
                                                                 {person.name}
                                                             </div>
                                                             <div className="text-sm text-slate-500">
@@ -448,17 +473,25 @@ export default function PublicBusinessProfile() {
                                                         </div>
                                                     </div>
 
-                                                    <div className={person.is_bookable ? "rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-medium text-emerald-700" : "rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-medium text-slate-500"}>
+                                                    <div className={person.is_bookable ? "vizit-profile-staff-availability rounded-xl border border-[#245171] bg-[#123653] px-3 py-1.5 text-[11px] font-semibold text-[#b9dcfa]" : "vizit-profile-staff-availability rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-medium text-slate-500"}>
                                                         {person.is_bookable ? text.onlineBooking : text.publicProfile}
                                                     </div>
                                                 </div>
 
                                                 {person.bio ? <div className="mt-4 text-sm leading-6 text-slate-500">{person.bio}</div> : <div className="mt-4 text-sm leading-6 text-slate-500">{text.bioFallback}</div>}
 
-                                                <div className="mt-4 flex flex-wrap gap-2">
-                                                    <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600">{publicRoleLabel(person.role, locale)}</span>
-                                                    {person.is_bookable ? <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">{text.available}</span> : null}
+                                                <div className="vizit-profile-staff-tags mt-4 flex flex-wrap gap-2">
+                                                    <span className="rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600">{publicRoleLabel(person.role, locale)}</span>
                                                 </div>
+
+                                                {person.is_bookable ? (
+                                                    <Link
+                                                        to={`/book/${business.slug}?staff_id=${person.id}&source=business_profile`}
+                                                        className="vizit-profile-staff-book mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#378add] px-4 text-sm font-semibold text-white transition hover:bg-[#2578c8]"
+                                                    >
+                                                        {text.bookSpecialist}<ArrowRight className="h-4 w-4 shrink-0" />
+                                                    </Link>
+                                                ) : null}
 
                                             </div>
                                         ))}
@@ -472,9 +505,9 @@ export default function PublicBusinessProfile() {
                             initial={{ opacity: 0, y: 16 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.35, delay: 0.12 }}
-                            className="overflow-hidden rounded-[32px] border border-white/70 bg-[linear-gradient(135deg,rgba(255,255,255,.92),rgba(249,238,244,.86))] p-5 shadow-sm dark:border-white/10 dark:bg-[linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.03))] sm:p-7"
+                            className="vizit-profile-section vizit-profile-why-section overflow-hidden rounded-[32px] border border-white/70 bg-[linear-gradient(135deg,rgba(255,255,255,.92),rgba(249,238,244,.86))] p-5 shadow-sm dark:border-white/10 dark:bg-[linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.03))] sm:p-7"
                         >
-                            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7b2f68] dark:text-[#e8b8d8]">Vizit</div>
+                            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[#2578c8] dark:text-[#84c1f2]">Vizit</div>
                             <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">{text.why}</h2>
                             <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                                 {text.whyItems.map((item) => (

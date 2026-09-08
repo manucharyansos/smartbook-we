@@ -1,306 +1,822 @@
-/* Vizit unified navy-tech system — final visual authority. */
+/*
+ * Vizit web design system
+ * One visual authority for public, booking, auth and workspace surfaces.
+ */
+
 :root {
-  --vizit-navy: #071624;
-  --vizit-navy-2: #0b2133;
-  --vizit-surface: #ffffff;
-  --vizit-surface-soft: #eaf2f8;
-  --vizit-blue: #378add;
-  --vizit-blue-deep: #15558e;
-  --vizit-blue-soft: #ddeffc;
-  --vizit-text: #071624;
-  --vizit-muted: #58758d;
-  --vizit-line: #cfe0ec;
-  --vizit-shadow: 0 18px 55px rgba(7, 22, 36, .10);
-  --bb-bg: #f5f9fc;
-  --bb-bg-soft: #edf5fa;
-  --bb-surface: rgba(255, 255, 255, .96);
-  --bb-surface-strong: #fff;
-  --bb-border: #cfe0ec;
-  --bb-border-strong: #b9d1e1;
-  --bb-text: #071624;
-  --bb-text-muted: #58758d;
-  --bb-primary: #378add;
-  --bb-primary-strong: #15558e;
-  --bb-primary-soft: #ddeffc;
-  --bb-shadow: var(--vizit-shadow);
-  --vizit-ref-page: #f5f9fc;
-  --vizit-ref-page-alt: #eaf2f8;
-  --vizit-ref-surface: #fff;
-  --vizit-ref-surface-soft: #edf5fa;
-  --vizit-ref-plum: #237cc5;
-  --vizit-ref-plum-deep: #15558e;
-  --vizit-ref-plum-soft: #378add;
-  --vizit-ref-gold: #378add;
-  --vizit-ref-gold-deep: #15558e;
-  --vizit-ref-peach: #cde4f7;
-  --vizit-ref-sage: #dcecf7;
-  --vizit-ref-ink: #071624;
-  --vizit-ref-muted: #58758d;
-  --vizit-ref-line: #cfe0ec;
-  --vizit-ref-line-strong: #b9d1e1;
-  --vizit-ref-shadow: var(--vizit-shadow);
-  --vizit-ref-shadow-large: 0 28px 80px rgba(7, 22, 36, .14);
+  color-scheme: light;
+  --vz-navy-950: #071624;
+  --vz-navy-900: #0b2133;
+  --vz-navy-850: #0e2940;
+  --vz-navy-800: #123653;
+  --vz-blue-600: #2578c8;
+  --vz-blue-500: #378add;
+  --vz-blue-400: #58a5e8;
+  --vz-blue-300: #84c1f2;
+  --vz-page: #f5f8fb;
+  --vz-page-alt: #edf3f8;
+  --vz-surface: #ffffff;
+  --vz-surface-2: #f7fafc;
+  --vz-text: #071624;
+  --vz-muted: #587189;
+  --vz-subtle: #7c92a5;
+  --vz-line: #d8e3ec;
+  --vz-line-strong: #c4d4e1;
+  --vz-focus: rgba(55, 138, 221, 0.28);
+  --vz-shadow-sm: 0 6px 18px rgba(7, 22, 36, 0.06);
+  --vz-shadow: 0 16px 42px rgba(7, 22, 36, 0.09);
+  --vz-shadow-lg: 0 30px 80px rgba(7, 22, 36, 0.13);
+
+  --bb-bg: var(--vz-page);
+  --bb-bg-soft: var(--vz-page-alt);
+  --bb-surface: var(--vz-surface);
+  --bb-surface-strong: var(--vz-surface);
+  --bb-border: var(--vz-line);
+  --bb-border-strong: var(--vz-line-strong);
+  --bb-text: var(--vz-text);
+  --bb-text-muted: var(--vz-muted);
+  --bb-primary: var(--vz-blue-500);
+  --bb-primary-strong: var(--vz-blue-600);
+  --bb-primary-soft: #e5f2fd;
+  --bb-shadow: var(--vz-shadow);
+  --bb-shadow-soft: var(--vz-shadow-sm);
+
+  --vizit-ink: var(--vz-text);
+  --vizit-plum: var(--vz-blue-500);
+  --vizit-plum-deep: var(--vz-blue-600);
+  --vizit-teal: var(--vz-blue-500);
+  --vizit-gold: var(--vz-blue-400);
+  --vizit-public-bg: var(--vz-page);
+  --vizit-public-surface: var(--vz-surface);
+  --vizit-public-muted: var(--vz-muted);
+  --vizit-public-line: var(--vz-line);
 }
 
 html.dark {
-  --vizit-surface: #0b2133;
-  --vizit-surface-soft: #0e2940;
-  --vizit-text: #f3f8fd;
-  --vizit-muted: #8aa5bb;
-  --vizit-line: #173b57;
-  --vizit-shadow: 0 22px 65px rgba(0, 0, 0, .28);
-  --bb-bg: #071624;
-  --bb-bg-soft: #091c2c;
-  --bb-surface: rgba(11, 33, 51, .96);
-  --bb-surface-strong: #0e2940;
-  --bb-border: #173b57;
-  --bb-border-strong: #245171;
-  --bb-text: #f3f8fd;
-  --bb-text-muted: #8aa5bb;
-  --bb-primary: #378add;
-  --bb-primary-strong: #58a5e8;
+  color-scheme: dark;
+  --vz-page: #071624;
+  --vz-page-alt: #091c2c;
+  --vz-surface: #0b2133;
+  --vz-surface-2: #0e2940;
+  --vz-text: #f4f8fc;
+  --vz-muted: #a7bed1;
+  --vz-subtle: #7895ac;
+  --vz-line: #173b57;
+  --vz-line-strong: #245171;
+  --vz-focus: rgba(88, 165, 232, 0.35);
+  --vz-shadow-sm: 0 8px 22px rgba(0, 0, 0, 0.18);
+  --vz-shadow: 0 18px 46px rgba(0, 0, 0, 0.25);
+  --vz-shadow-lg: 0 32px 90px rgba(0, 0, 0, 0.34);
   --bb-primary-soft: #123653;
-  --vizit-ref-page: #071624;
-  --vizit-ref-page-alt: #091c2c;
-  --vizit-ref-surface: #0b2133;
-  --vizit-ref-surface-soft: #0e2940;
-  --vizit-ref-plum: #378add;
-  --vizit-ref-plum-deep: #7dbcf4;
-  --vizit-ref-plum-soft: #58a5e8;
-  --vizit-ref-gold: #378add;
-  --vizit-ref-gold-deep: #7dbcf4;
-  --vizit-ref-peach: #123653;
-  --vizit-ref-sage: #102d45;
-  --vizit-ref-ink: #f3f8fd;
-  --vizit-ref-muted: #8aa5bb;
-  --vizit-ref-line: #173b57;
-  --vizit-ref-line-strong: #245171;
 }
 
-body { background: var(--bb-bg) !important; color: var(--bb-text); }
-::selection { background: rgba(55, 138, 221, .3); }
-
-/* Shared brand and navigation */
-.vizit-brand-mark { color: var(--vizit-blue) !important; }
-.vizit-brand-text { color: var(--vizit-text) !important; font-weight: 700 !important; letter-spacing: -.04em !important; }
-.vizit-header-shell,
-.vizit-landing-header,
-.vizit-public-chrome {
-  border-color: var(--vizit-line) !important;
-  background: color-mix(in srgb, var(--vizit-surface) 92%, transparent) !important;
-  box-shadow: 0 8px 30px rgba(7, 22, 36, .06) !important;
-  backdrop-filter: blur(18px) !important;
+html { scroll-behavior: smooth; }
+body {
+  background: var(--vz-page) !important;
+  color: var(--vz-text);
+  font-family: "Rubik", "Noto Sans Armenian", ui-sans-serif, system-ui, sans-serif;
 }
-.vizit-nav-link,
-.vizit-mobile-nav-link { color: var(--vizit-muted) !important; }
-.vizit-nav-link:hover,
-.vizit-mobile-nav-link:hover { color: var(--vizit-blue) !important; background: var(--vizit-blue-soft) !important; }
+button, input, select, textarea { font: inherit; }
+::selection { background: rgba(55, 138, 221, 0.3); }
+
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid var(--vz-focus);
+  outline-offset: 2px;
+}
+
+/* Typography */
+.vizit-display,
+.vizit-public-page h1,
+.vizit-public-page h2,
+.vizit-booking-page h1,
+.vizit-booking-page h2,
+.vizit-admin-shell h1,
+.vizit-admin-shell h2 {
+  font-family: "Rubik", "Noto Sans Armenian", ui-sans-serif, system-ui, sans-serif !important;
+  letter-spacing: -0.035em !important;
+  text-wrap: balance;
+}
+
+/* Brand */
+.vizit-brand { min-width: 0; }
+.vizit-brand-mark { width: 38px; height: 38px; }
+.vizit-brand-mark svg { display: block; width: 100%; height: 100%; }
+.vizit-brand-text {
+  color: var(--vz-text) !important;
+  font-size: 22px;
+  font-weight: 700 !important;
+  letter-spacing: -0.04em;
+}
+
+/* Public header */
+.vizit-landing-header { background: transparent !important; box-shadow: none !important; }
+.vizit-landing-header .vizit-header-shell {
+  border: 1px solid color-mix(in srgb, var(--vz-line) 86%, transparent) !important;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--vz-surface) 90%, transparent) !important;
+  box-shadow: var(--vz-shadow-sm) !important;
+  backdrop-filter: blur(18px) saturate(125%);
+}
+.vizit-landing-header .vizit-header-shell.is-scrolled { box-shadow: var(--vz-shadow) !important; }
+.vizit-header-row {
+  display: flex;
+  min-height: 62px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 10px 8px 16px;
+}
+.vizit-header-brand { display: inline-flex; align-items: center; }
+.vizit-desktop-nav,
+.vizit-header-actions { display: none !important; }
+.vizit-mobile-header-actions { display: flex; }
+.vizit-nav-link {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  border-radius: 10px;
+  padding: 0 11px;
+  color: var(--vz-muted) !important;
+  font-size: 13px;
+  font-weight: 600;
+  transition: 160ms ease;
+}
+.vizit-nav-link:hover { background: var(--vz-page-alt); color: var(--vz-blue-500) !important; }
 .vizit-header-control,
-.vizit-public-chrome-control,
+.vizit-header-control > button,
 .vizit-menu-button,
-.vizit-theme-toggle,
-.vizit-language-button {
-  border-color: var(--vizit-line) !important;
-  background: var(--vizit-surface-soft) !important;
-  color: var(--vizit-text) !important;
+.vizit-public-chrome-control,
+.vizit-language-button,
+.vizit-theme-toggle {
+  border-color: var(--vz-line) !important;
+  background: var(--vz-surface-2) !important;
+  color: var(--vz-text) !important;
+  box-shadow: none !important;
+}
+.vizit-menu-button {
+  display: inline-flex !important;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--vz-line);
   border-radius: 10px !important;
 }
 .vizit-header-login,
 .vizit-primary-action,
 .vizit-search-submit {
-  border: 1px solid rgba(255,255,255,.12) !important;
-  background: var(--vizit-blue) !important;
-  color: #fff !important;
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--vz-blue-500) !important;
   border-radius: 10px !important;
-  box-shadow: 0 12px 30px rgba(55,138,221,.22) !important;
+  background: var(--vz-blue-500) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 24px rgba(55, 138, 221, 0.22) !important;
+  font-size: 13px;
+  font-weight: 700;
 }
-
-/* Public home */
-.vizit-home-page,
-.vizit-public-page,
-.vizit-business-page,
-.vizit-booking-page,
-.vizit-public-detail-page {
-  background: var(--bb-bg) !important;
-  color: var(--vizit-text) !important;
-}
-.vizit-hero-section,
-.vizit-business-hero,
-.vizit-booking-hero,
-.vizit-business-profile-backdrop {
-  background:
-    radial-gradient(circle at 84% 8%, rgba(55,138,221,.22), transparent 32rem),
-    linear-gradient(145deg, #071624 0%, #0b2133 58%, #0e2940 100%) !important;
-  color: #f3f8fd !important;
-}
-.vizit-hero-section h1,
-.vizit-business-hero h1,
-.vizit-booking-hero h1 { color: #f3f8fd !important; -webkit-text-fill-color: #f3f8fd !important; }
-.vizit-hero-section p,
-.vizit-business-hero p,
-.vizit-booking-hero p { color: #a9c7e2 !important; }
-.vizit-hero-badge,
-.vizit-business-final-badge,
-.vizit-booking-hero-badge {
-  border-color: rgba(125,188,244,.24) !important;
-  background: rgba(55,138,221,.12) !important;
-  color: #b9dcfa !important;
-}
-.vizit-search-panel,
-.vizit-floating-card,
-.vizit-business-final-card {
-  border: 1px solid var(--vizit-line) !important;
-  background: var(--vizit-surface) !important;
-  color: var(--vizit-text) !important;
+.vizit-header-login { padding: 0 15px; }
+.vizit-primary-action { padding: 0 18px; }
+.vizit-header-login:hover,
+.vizit-primary-action:hover,
+.vizit-search-submit:hover { background: var(--vz-blue-600) !important; }
+.vizit-mobile-menu {
+  border: 1px solid var(--vz-line) !important;
   border-radius: 16px !important;
-  box-shadow: var(--vizit-shadow) !important;
+  background: var(--vz-surface) !important;
+  box-shadow: var(--vz-shadow-lg) !important;
 }
+.vizit-mobile-nav-link,
+.vizit-mobile-login {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  color: var(--vz-text) !important;
+  font-size: 14px;
+  font-weight: 600;
+}
+.vizit-mobile-nav-link:hover { background: var(--vz-page-alt); color: var(--vz-blue-500) !important; }
+.vizit-mobile-login,
+.vizit-mobile-theme { border: 1px solid var(--vz-line) !important; background: var(--vz-surface-2) !important; }
+.vizit-language-menu {
+  border-color: var(--vz-line) !important;
+  background: var(--vz-surface) !important;
+  color: var(--vz-text) !important;
+}
+.vizit-language-option { color: var(--vz-text) !important; }
+.vizit-language-option:hover,
+.vizit-language-option.is-active { background: var(--vz-page-alt) !important; color: var(--vz-blue-500) !important; }
+
+/* Public pages foundation */
+.vizit-public-page,
+.vizit-home-page,
+.vizit-business-page,
+.vizit-public-detail-page,
+.vizit-booking-page {
+  min-height: 100vh;
+  background: var(--vz-page) !important;
+  color: var(--vz-text) !important;
+}
+.vizit-home-page main > section,
+.vizit-business-page main > section { position: relative; }
+
+/* Home hero */
+#top.vizit-hero-section {
+  min-height: 680px;
+  padding: 120px 24px 58px !important;
+  background:
+    radial-gradient(circle at 82% 8%, rgba(55, 138, 221, 0.25), transparent 33rem),
+    linear-gradient(145deg, #071624 0%, #0b2133 60%, #0e2940 100%) !important;
+  color: #f4f8fc !important;
+}
+#top.vizit-hero-section > div.absolute { opacity: 0 !important; }
+.vizit-hero-grid { max-width: 1240px !important; }
+.vizit-hero-copy { position: relative; z-index: 2; max-width: 630px !important; }
+.vizit-hero-badge,
+.vizit-business-page main [class*="border-[#1e9e92]"] {
+  border-color: rgba(132, 193, 242, 0.24) !important;
+  background: rgba(55, 138, 221, 0.12) !important;
+  color: #b9dcfa !important;
+  box-shadow: none !important;
+}
+.vizit-hero-badge > span:first-child { background: var(--vz-blue-400) !important; }
+#top h1 {
+  max-width: 660px;
+  margin-top: 24px !important;
+  color: #f4f8fc !important;
+  font-size: clamp(46px, 5vw, 70px) !important;
+  font-weight: 700 !important;
+  line-height: 1.03 !important;
+}
+#top h1 span { color: var(--vz-blue-300) !important; -webkit-text-fill-color: var(--vz-blue-300) !important; }
+#top .vizit-hero-copy > p { color: #a9c2d6 !important; font-size: 16px !important; line-height: 1.75 !important; }
+.vizit-search-panel {
+  width: 100%;
+  max-width: 700px !important;
+  margin-top: 26px !important;
+  padding: 7px !important;
+  border: 1px solid #214865 !important;
+  border-radius: 14px !important;
+  background: rgba(7, 22, 36, 0.78) !important;
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.23) !important;
+  backdrop-filter: blur(18px);
+}
+.vizit-search-panel > div { gap: 4px !important; }
 .vizit-search-field,
 .vizit-location-button {
-  border-color: var(--vizit-line) !important;
-  background: var(--vizit-surface-soft) !important;
-  color: var(--vizit-text) !important;
+  border-color: #214865 !important;
   border-radius: 10px !important;
+  background: #0b2133 !important;
+  color: #f4f8fc !important;
 }
-.vizit-hero-chips button,
-.vizit-business-category-pill {
-  border-color: var(--vizit-line) !important;
-  background: var(--vizit-surface-soft) !important;
-  color: var(--vizit-muted) !important;
+.vizit-search-panel :is(input, span) { color: #d7e6f2 !important; }
+.vizit-search-panel input::placeholder { color: #7693aa !important; }
+.vizit-search-panel svg { color: var(--vz-blue-400) !important; }
+.vizit-search-submit { min-width: 112px; }
+.vizit-hero-chips button {
+  border-color: #214865 !important;
+  background: rgba(14, 41, 64, 0.8) !important;
+  color: #a9c2d6 !important;
 }
+.vizit-hero-chips button:hover { border-color: var(--vz-blue-400) !important; color: #fff !important; }
+.vizit-hero-proof { color: #9db7ca !important; }
+.vizit-hero-proof svg { color: var(--vz-blue-400) !important; }
+
+/* Hero product preview */
+.vizit-hero-showcase {
+  position: relative;
+  display: flex;
+  min-height: 560px;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+.vizit-phone-frame {
+  position: relative;
+  z-index: 2;
+  width: min(370px, 84%);
+  padding: 8px;
+  border: 1px solid #315a77;
+  border-radius: 36px;
+  background: #020a11;
+  box-shadow: 0 34px 76px rgba(0, 0, 0, 0.35);
+  transform: rotate(1deg);
+}
+.vizit-phone-speaker {
+  position: absolute;
+  z-index: 4;
+  top: 17px;
+  left: 50%;
+  width: 88px;
+  height: 22px;
+  border-radius: 999px;
+  background: #02080d;
+  transform: translateX(-50%);
+}
+.vizit-phone-screen {
+  position: relative;
+  overflow: hidden;
+  min-height: 540px;
+  padding: 39px 14px 67px;
+  border-radius: 29px;
+  background: #071624;
+  color: #f4f8fc;
+}
+.vizit-phone-header { display: grid; grid-template-columns: 28px 1fr 28px; align-items: center; gap: 8px; padding: 0 2px 14px; }
+.vizit-phone-header > svg { width: 18px; color: #8aa8be; }
+.vizit-phone-header .vizit-brand { justify-self: center; gap: 5px; }
+.vizit-phone-header .vizit-brand-mark { width: 23px; height: 23px; }
+.vizit-phone-header .vizit-brand-text { color: #fff !important; font-size: 16px; }
+.vizit-phone-bell { position: relative; display: grid; justify-self: end; place-items: center; }
+.vizit-phone-bell svg { width: 18px; height: 18px; color: #8aa8be; }
+.vizit-phone-bell i { position: absolute; top: -2px; right: -1px; width: 6px; height: 6px; border-radius: 50%; background: var(--vz-blue-400); }
+.vizit-phone-search,
+.vizit-phone-location {
+  display: flex;
+  min-height: 43px;
+  align-items: center;
+  gap: 9px;
+  padding: 0 12px;
+  border: 1px solid #173b57;
+  border-radius: 11px;
+  background: #0b2133;
+  color: #8daabe;
+  font-size: 10px;
+}
+.vizit-phone-location { min-height: 38px; margin-top: 7px; }
+.vizit-phone-search svg,
+.vizit-phone-location svg { width: 15px; height: 15px; flex: 0 0 auto; color: var(--vz-blue-400); }
+.vizit-phone-location span { flex: 1; }
+.vizit-phone-categories { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; }
+.vizit-phone-category { min-width: 0; padding: 7px 3px; border: 1px solid #173b57; border-radius: 11px; background: #0b2133; text-align: center; }
+.vizit-phone-category-icon { display: grid; width: 34px; height: 34px; place-items: center; margin: 0 auto; border-radius: 9px; background: #123653 !important; color: var(--vz-blue-300); }
+.vizit-phone-category-icon svg { width: 18px; height: 18px; }
+.vizit-phone-category > span:last-child { display: block; overflow: hidden; margin-top: 5px; color: #a9c2d6; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.vizit-phone-section-head { display: flex; align-items: center; justify-content: space-between; margin-top: 15px; color: #e6f0f8; font-size: 11px; }
+.vizit-phone-section-head span { display: inline-flex; align-items: center; gap: 4px; color: var(--vz-blue-300); font-size: 8px; }
+.vizit-phone-section-head svg { width: 11px; }
+.vizit-phone-businesses { display: grid; gap: 7px; margin-top: 9px; }
+.vizit-phone-business { display: grid; grid-template-columns: 43px minmax(0, 1fr) auto; align-items: center; gap: 9px; padding: 7px; border: 1px solid #173b57; border-radius: 11px; background: #0b2133; }
+.vizit-phone-business-cover { display: grid; width: 43px; height: 43px; place-items: center; border-radius: 9px; background: #123653 !important; color: var(--vz-blue-300); }
+.vizit-phone-business-cover svg { width: 18px; }
+.vizit-phone-business-copy { min-width: 0; }
+.vizit-phone-business-copy strong,
+.vizit-phone-business-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vizit-phone-business-copy strong { color: #f4f8fc; font-size: 10px; }
+.vizit-phone-business-copy small { margin-top: 2px; color: #7895ac; font-size: 7px; }
+.vizit-phone-business-copy > span { display: flex; align-items: center; gap: 2px; margin-top: 3px; color: #b9dcfa; font-size: 7px; }
+.vizit-phone-business-copy > span svg { width: 8px; height: 8px; fill: currentColor; }
+.vizit-phone-business-place { color: #7895ac; font-size: 7px; }
+.vizit-phone-dock { position: absolute; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: repeat(5, 1fr); padding: 8px 7px 10px; border-top: 1px solid #173b57; background: rgba(11, 33, 51, 0.96); }
+.vizit-phone-dock > span { display: grid; place-items: center; gap: 2px; color: #68869c; }
+.vizit-phone-dock > span.is-active { color: var(--vz-blue-400); }
+.vizit-phone-dock svg { width: 14px; height: 14px; }
+.vizit-phone-dock small { max-width: 52px; overflow: hidden; font-size: 6px; text-overflow: ellipsis; white-space: nowrap; }
+.vizit-floating-card { position: absolute; z-index: 4; display: flex; align-items: center; gap: 9px; min-width: 150px; padding: 10px 12px; border: 1px solid #245171 !important; border-radius: 12px !important; background: rgba(11, 33, 51, 0.95) !important; color: #f4f8fc !important; box-shadow: 0 18px 44px rgba(0, 0, 0, 0.25) !important; backdrop-filter: blur(14px); }
+.vizit-floating-card svg { width: 20px; color: var(--vz-blue-400); }
+.vizit-floating-card span { display: grid; }
+.vizit-floating-card small { color: #7895ac; font-size: 8px; }
+.vizit-floating-card strong { margin-top: 1px; font-size: 13px; }
+.vizit-floating-card-time { top: 21%; left: -2%; }
+.vizit-floating-card-place { right: -2%; bottom: 22%; }
+
+/* Home sections */
 .vizit-categories-section,
-.vizit-businesses-section,
 .vizit-how-section,
 .vizit-map-section,
-.vizit-plans-section { background: var(--bb-bg) !important; color: var(--vizit-text) !important; }
-.vizit-business-directory-card,
-.vizit-business-workflow-card,
-.vizit-plans-grid > div,
-.vizit-profile-service-card,
-.vizit-business-profile-contact > div {
-  border-color: var(--vizit-line) !important;
-  background: var(--vizit-surface) !important;
-  color: var(--vizit-text) !important;
-  border-radius: 14px !important;
-  box-shadow: var(--vizit-shadow) !important;
+.vizit-businesses-section,
+.vizit-plans-section,
+.vizit-business-cta {
+  background: var(--vz-page) !important;
+  color: var(--vz-text) !important;
 }
+.vizit-home-page main section h2 { color: var(--vz-text) !important; font-size: clamp(29px, 4vw, 46px) !important; font-weight: 700 !important; line-height: 1.12 !important; }
+.vizit-categories-section { padding: 42px 24px 56px !important; }
+.vizit-categories-section > div,
+.vizit-how-section > div,
+.vizit-map-panel,
+.vizit-plans-grid > div {
+  border-color: var(--vz-line) !important;
+  background: var(--vz-surface) !important;
+  color: var(--vz-text) !important;
+  box-shadow: var(--vz-shadow-sm) !important;
+}
+.vizit-categories-section > div { border-radius: 18px !important; }
+.vizit-category-slider button {
+  min-height: 116px !important;
+  border-color: var(--vz-line) !important;
+  border-radius: 14px !important;
+  background: var(--vz-surface-2) !important;
+  box-shadow: none !important;
+}
+.vizit-category-slider button:hover { border-color: var(--vz-blue-400) !important; transform: translateY(-2px); }
+.vizit-category-slider button > span:first-child { background: #e5f2fd !important; color: var(--vz-blue-600) !important; }
+html.dark .vizit-category-slider button > span:first-child { background: #123653 !important; color: var(--vz-blue-300) !important; }
+.vizit-category-slider button > span:last-child { color: var(--vz-text) !important; }
+.vizit-how-section { padding: 64px 24px !important; }
+.vizit-how-section > div { max-width: 1200px !important; border: 1px solid var(--vz-line) !important; border-radius: 18px !important; padding: 34px !important; }
+.vizit-how-section article,
+.vizit-how-section [class*="rounded-"] { border-color: var(--vz-line) !important; background: var(--vz-surface-2) !important; color: var(--vz-text) !important; box-shadow: none !important; }
+.vizit-how-section p { color: var(--vz-muted) !important; }
+.vizit-how-section svg { color: var(--vz-blue-500) !important; }
+.vizit-map-section { padding: 64px 24px !important; }
+.vizit-map-layout { gap: 20px !important; }
+.vizit-yandex-map-shell { overflow: hidden; border-color: var(--vz-line) !important; border-radius: 18px !important; box-shadow: var(--vz-shadow) !important; }
+.vizit-map-panel { border: 1px solid var(--vz-line) !important; border-radius: 18px !important; padding: 16px !important; }
+.vizit-map-panel-heading,
+.vizit-map-business-name { color: var(--vz-text) !important; }
+.vizit-map-panel-eyebrow,
+.vizit-map-business-category { color: var(--vz-blue-500) !important; }
+.vizit-map-business-card,
+.vizit-map-panel-empty { border-color: var(--vz-line) !important; background: var(--vz-surface-2) !important; border-radius: 14px !important; }
+.vizit-map-business-card.is-active { border-color: var(--vz-blue-500) !important; }
+.vizit-map-business-address { color: var(--vz-muted) !important; }
+.vizit-map-business-book,
 .vizit-business-actions > a:first-child,
-.vizit-business-mobile-actions > a:first-child,
-.vizit-business-final-primary,
-.vizit-map-business-book { background: var(--vizit-blue) !important; color: #fff !important; border-color: var(--vizit-blue) !important; }
+.vizit-business-mobile-actions > a:first-child { border-color: var(--vz-blue-500) !important; background: var(--vz-blue-500) !important; color: #fff !important; }
+.vizit-map-business-view,
 .vizit-business-actions > a:last-child,
-.vizit-business-mobile-actions > a:last-child,
-.vizit-business-final-secondary,
-.vizit-map-business-view { background: var(--vizit-surface-soft) !important; color: var(--vizit-blue) !important; border-color: var(--vizit-line) !important; }
+.vizit-business-mobile-actions > a:last-child { border-color: var(--vz-line) !important; background: var(--vz-surface) !important; color: var(--vz-blue-500) !important; }
 .vizit-yandex-marker--service,
 .vizit-yandex-marker--healthcare,
-.vizit-yandex-marker--active { background: var(--vizit-blue) !important; }
-.vizit-yandex-user-marker { background: #7dbcf4 !important; box-shadow: 0 0 0 12px rgba(55,138,221,.2), 0 8px 18px rgba(7,22,36,.28) !important; }
-.vizit-public-footer-compact,
-.vizit-footer { border-color: var(--vizit-line) !important; background: var(--vizit-navy) !important; color: #a9c7e2 !important; }
+.vizit-yandex-marker--active { background: var(--vz-blue-500) !important; }
+.vizit-yandex-user-marker { background: var(--vz-blue-300) !important; box-shadow: 0 0 0 10px rgba(55, 138, 221, 0.2), 0 8px 18px rgba(7, 22, 36, 0.3) !important; }
+.vizit-businesses-section { padding: 68px 24px !important; }
+.vizit-business-directory-card {
+  border-color: var(--vz-line) !important;
+  border-radius: 16px !important;
+  background: var(--vz-surface) !important;
+  color: var(--vz-text) !important;
+  box-shadow: var(--vz-shadow-sm) !important;
+}
+.vizit-business-directory-card:hover { border-color: var(--vz-blue-400) !important; box-shadow: var(--vz-shadow) !important; }
+.vizit-business-card-media { background: var(--vz-navy-900) !important; }
+.vizit-business-cover-fallback { background: linear-gradient(145deg, #0b2133, #15558e) !important; }
+.vizit-business-cover-orb { background: rgba(88, 165, 232, 0.16) !important; }
+.vizit-business-category-pill { border-color: rgba(255,255,255,.18) !important; background: rgba(7,22,36,.7) !important; color: #fff !important; }
+.vizit-business-description,
+.vizit-business-stats,
+.vizit-business-mobile-meta { color: var(--vz-muted) !important; }
+.vizit-business-mobile-title { color: var(--vz-text) !important; }
+.vizit-business-stats > div { border-color: var(--vz-line) !important; background: var(--vz-surface-2) !important; }
+.vizit-plans-section { padding: 68px 24px !important; }
+.vizit-plans-grid > div { border: 1px solid var(--vz-line) !important; border-radius: 16px !important; }
+.vizit-plans-grid h3,
+.vizit-plans-grid [class*="text-3xl"] { color: var(--vz-text) !important; }
+.vizit-plans-grid p { color: var(--vz-muted) !important; }
+.vizit-business-cta { padding: 0 24px 76px !important; }
+.vizit-business-cta > div {
+  border: 1px solid #214d70 !important;
+  border-radius: 18px !important;
+  background: linear-gradient(135deg, #071624, #0e2940) !important;
+  color: #f4f8fc !important;
+  box-shadow: var(--vz-shadow-lg) !important;
+}
+.vizit-business-cta h2 { color: #fff !important; }
+.vizit-business-cta p { color: #a9c2d6 !important; }
+.vizit-business-cta a { border-radius: 10px !important; }
+.vizit-mobile-dock { display: none !important; }
 
-/* Business profile and booking flow */
-.vizit-business-profile-summary,
-.vizit-booking-page main > div,
+/* Business marketing page */
+.vizit-business-hero,
+#workflow,
+.vizit-business-final-card {
+  background: linear-gradient(145deg, #071624, #0b2133 62%, #0e2940) !important;
+  color: #f4f8fc !important;
+}
+.vizit-business-hero h1,
+.vizit-business-hero h1 span,
+#workflow h2,
+.vizit-business-final-card h2 { color: #f4f8fc !important; -webkit-text-fill-color: #f4f8fc !important; }
+.vizit-business-hero p,
+#workflow p,
+.vizit-business-final-card p { color: #a9c2d6 !important; }
+.vizit-business-page main > section:not(.vizit-business-hero):not(#workflow) { background: var(--vz-page) !important; color: var(--vz-text) !important; }
+.vizit-business-page main article,
+.vizit-business-page main > section > div[class*="rounded-"] {
+  border-color: var(--vz-line) !important;
+  background: var(--vz-surface) !important;
+  color: var(--vz-text) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--vz-shadow-sm) !important;
+}
+.vizit-business-page main h2,
+.vizit-business-page main h3 { color: var(--vz-text) !important; }
+.vizit-business-page main p { color: var(--vz-muted) !important; }
+#workflow .vizit-business-workflow-card { border-color: #245171 !important; background: #0e2940 !important; color: #fff !important; }
+#workflow .vizit-business-workflow-card h3 { color: #fff !important; }
+#workflow .vizit-business-workflow-card p { color: #a9c2d6 !important; }
+.vizit-business-final-card { border-color: #245171 !important; background: linear-gradient(145deg, #071624, #15558e) !important; }
+.vizit-business-final-primary { background: #fff !important; color: #15558e !important; }
+.vizit-business-final-secondary { border-color: rgba(255,255,255,.24) !important; background: rgba(255,255,255,.07) !important; color: #fff !important; }
+
+/* Public business profile and booking */
+.vizit-public-chrome {
+  border-color: var(--vz-line) !important;
+  background: color-mix(in srgb, var(--vz-surface) 92%, transparent) !important;
+  color: var(--vz-text) !important;
+}
+.vizit-public-detail-page,
+.vizit-booking-page { background: var(--vz-page) !important; }
+.vizit-business-profile-backdrop,
+.vizit-booking-hero {
+  border-color: #245171 !important;
+  border-radius: 18px !important;
+  background: linear-gradient(145deg, #071624, #0b2133 62%, #15558e) !important;
+  color: #f4f8fc !important;
+  box-shadow: var(--vz-shadow) !important;
+}
+.vizit-business-profile-cover { border-color: #315a77 !important; border-radius: 14px !important; background: #0e2940 !important; }
+.vizit-business-profile-summary h1,
+.vizit-booking-hero h1 { color: #fff !important; }
+.vizit-business-profile-summary p,
+.vizit-booking-hero p { color: #bad0e1 !important; }
+.vizit-booking-hero-badge,
+.vizit-booking-hero-stat { border: 1px solid #245171 !important; background: rgba(55, 138, 221, 0.12) !important; color: #d9eaf7 !important; }
+.vizit-public-detail-page main > section,
+.vizit-public-detail-page main [class*="rounded-[32px]"],
+.vizit-booking-page main > div > div > section,
+.vizit-booking-page main > div > section {
+  border-color: var(--vz-line) !important;
+  background-color: var(--vz-surface) !important;
+  color: var(--vz-text) !important;
+  box-shadow: var(--vz-shadow-sm) !important;
+}
+.vizit-business-profile-contact,
+.vizit-business-profile-contact > div,
+.vizit-profile-service-card,
 .vizit-booking-mode-card,
 .vizit-smart-slot {
-  border-color: var(--vizit-line) !important;
-  background: var(--vizit-surface) !important;
-  color: var(--vizit-text) !important;
-  box-shadow: var(--vizit-shadow) !important;
+  border-color: var(--vz-line) !important;
+  background: var(--vz-surface-2) !important;
+  color: var(--vz-text) !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
 }
 .vizit-booking-mode-card.is-active,
-.vizit-smart-slot.is-active {
-  border-color: var(--vizit-blue) !important;
-  background: var(--vizit-blue-soft) !important;
-}
+.vizit-smart-slot.is-active { border-color: var(--vz-blue-500) !important; background: #e5f2fd !important; }
 html.dark .vizit-booking-mode-card.is-active,
 html.dark .vizit-smart-slot.is-active { background: #123653 !important; }
-:is(.vizit-booking-page,.vizit-public-detail-page) :is(input,select,textarea) {
-  border-color: var(--vizit-line) !important;
-  background: var(--vizit-surface-soft) !important;
-  color: var(--vizit-text) !important;
+.vizit-booking-mode-title,
+.vizit-smart-slot-title { color: var(--vz-text) !important; }
+.vizit-booking-mode-description,
+.vizit-smart-slot-reason { color: var(--vz-muted) !important; }
+:is(.vizit-public-detail-page, .vizit-booking-page) :is(input, select, textarea) {
+  border-color: var(--vz-line) !important;
   border-radius: 10px !important;
+  background: var(--vz-surface-2) !important;
+  color: var(--vz-text) !important;
+}
+:is(.vizit-public-detail-page, .vizit-booking-page) :is(button, a)[class*="bg-violet"],
+:is(.vizit-public-detail-page, .vizit-booking-page) :is(button, a)[class*="bg-fuchsia"],
+:is(.vizit-public-detail-page, .vizit-booking-page) :is(button, a)[class*="from-violet"],
+:is(.vizit-public-detail-page, .vizit-booking-page) :is(button, a)[class*="from-fuchsia"],
+:is(.vizit-public-detail-page, .vizit-booking-page) :is(button, a)[class*="from-[#5b214f]"] {
+  border-color: var(--vz-blue-500) !important;
+  background: var(--vz-blue-500) !important;
+  color: #fff !important;
 }
 
 /* Authentication and onboarding */
 .vizit-auth-shell,
-.vizit-onboarding-page { background: var(--bb-bg) !important; color: var(--vizit-text) !important; }
+.vizit-onboarding-page { background: var(--vz-page) !important; color: var(--vz-text) !important; }
 .vizit-auth-decoration,
-.vizit-onboarding-rail {
-  background:
-    radial-gradient(circle at 20% 15%, rgba(55,138,221,.25), transparent 22rem),
-    linear-gradient(145deg, #071624, #0b2133) !important;
-}
+.vizit-onboarding-rail { background: linear-gradient(145deg, #071624, #0b2133 62%, #15558e) !important; }
 .vizit-auth-shell form,
 .vizit-onboarding-card {
-  border-color: var(--vizit-line) !important;
-  background: var(--vizit-surface) !important;
-  color: var(--vizit-text) !important;
+  border-color: var(--vz-line) !important;
   border-radius: 16px !important;
-  box-shadow: var(--vizit-shadow) !important;
+  background: var(--vz-surface) !important;
+  color: var(--vz-text) !important;
+  box-shadow: var(--vz-shadow) !important;
 }
-.vizit-registration-type-option { border-color: var(--vizit-line) !important; background: var(--vizit-surface-soft) !important; }
-.vizit-registration-type-option[aria-checked="true"] { border-color: var(--vizit-blue) !important; background: var(--vizit-blue-soft) !important; }
+.vizit-auth-shell :is(input, select, textarea),
+.vizit-onboarding-page :is(input, select, textarea) { border-color: var(--vz-line) !important; background: var(--vz-surface-2) !important; color: var(--vz-text) !important; }
+.vizit-registration-classifier,
+.vizit-registration-type-option { border-color: var(--vz-line) !important; background: var(--vz-surface-2) !important; color: var(--vz-text) !important; }
+.vizit-registration-type-option[aria-checked="true"] { border-color: var(--vz-blue-500) !important; background: #e5f2fd !important; }
 
 /* Business workspace */
 .vizit-admin-shell {
-  --admin-bg: #f5f9fc;
-  --admin-surface: rgba(255,255,255,.97);
-  --admin-surface-soft: #eaf2f8;
-  --admin-border: #cfe0ec;
-  --admin-text: #071624;
-  --admin-muted: #58758d;
+  --admin-bg: var(--vz-page);
+  --admin-surface: var(--vz-surface);
+  --admin-surface-2: var(--vz-surface-2);
+  --admin-border: var(--vz-line);
+  --admin-text: var(--vz-text);
+  --admin-muted: var(--vz-muted);
   background: var(--admin-bg) !important;
   color: var(--admin-text) !important;
 }
-html.dark .vizit-admin-shell {
-  --admin-bg: #071624;
-  --admin-surface: rgba(11,33,51,.98);
-  --admin-surface-soft: #0e2940;
-  --admin-border: #173b57;
-  --admin-text: #f3f8fd;
-  --admin-muted: #8aa5bb;
-}
-.vizit-admin-sidebar,
-.vizit-admin-drawer,
 .vizit-admin-header,
-.vizit-admin-bottom-nav { border-color: var(--admin-border) !important; background: var(--admin-surface) !important; }
+.vizit-admin-sidebar > div > div,
+.vizit-admin-drawer,
+.vizit-admin-bottom-nav {
+  border-color: var(--admin-border) !important;
+  background: color-mix(in srgb, var(--admin-surface) 96%, transparent) !important;
+  color: var(--admin-text) !important;
+}
+.vizit-admin-sidebar > div > div { border-radius: 16px !important; box-shadow: var(--vz-shadow-sm) !important; }
 .vizit-admin-nav-link,
 .vizit-admin-drawer-link,
-.vizit-admin-bottom-link { color: var(--admin-muted) !important; border-radius: 10px !important; }
+.vizit-admin-bottom-link,
+.vizit-admin-bottom-more { color: var(--admin-muted) !important; border-radius: 10px !important; }
 .vizit-admin-nav-link:hover,
-.vizit-admin-drawer-link:hover,
-.vizit-admin-nav-link[aria-current="page"],
-.vizit-admin-bottom-link[aria-current="page"] { background: var(--admin-surface-soft) !important; color: var(--vizit-blue) !important; }
-.vizit-admin-nav-active-bg { background: var(--vizit-blue) !important; }
-.vizit-dashboard-hero {
-  border-color: #174a70 !important;
-  background: linear-gradient(135deg, #071624, #0e2940) !important;
-  color: #f3f8fd !important;
-  border-radius: 16px !important;
+.vizit-admin-drawer-link:hover { background: var(--admin-surface-2) !important; color: var(--admin-text) !important; }
+.vizit-admin-nav-active-bg,
+.vizit-admin-drawer-link.is-active { background: var(--vz-blue-500) !important; }
+.vizit-admin-bottom-link.is-active { color: var(--vz-blue-500) !important; }
+.vizit-admin-bottom-link.is-active .vizit-admin-bottom-icon { background: #e5f2fd !important; }
+html.dark .vizit-admin-bottom-link.is-active .vizit-admin-bottom-icon { background: #123653 !important; }
+.vizit-dashboard-hero { border-color: #245171 !important; border-radius: 16px !important; background: linear-gradient(135deg, #071624, #0e2940) !important; color: #f4f8fc !important; }
+.vizit-dashboard-metric,
+.vizit-dashboard-panel,
+.vizit-admin-shell main :is([class~="bg-white"], [class*="bg-white/"], [class~="bg-slate-50"]) {
+  border-color: var(--admin-border) !important;
+  background-color: var(--admin-surface) !important;
+  color: var(--admin-text) !important;
 }
 .vizit-dashboard-metric,
-.vizit-dashboard-panel {
-  border-color: var(--admin-border) !important;
-  background: var(--admin-surface) !important;
-  color: var(--admin-text) !important;
-  border-radius: 14px !important;
-  box-shadow: 0 14px 38px rgba(7,22,36,.08) !important;
-}
-.vizit-workspace-badge { border-color: rgba(55,138,221,.3) !important; background: rgba(55,138,221,.12) !important; color: #7dbcf4 !important; }
+.vizit-dashboard-panel { border-radius: 14px !important; box-shadow: var(--vz-shadow-sm) !important; }
+.vizit-admin-shell main :is(input, select, textarea) { border-color: var(--admin-border) !important; background: var(--admin-surface-2) !important; color: var(--admin-text) !important; }
+.vizit-workspace-badge { border-color: var(--admin-border) !important; background: var(--admin-surface-2) !important; color: var(--vz-blue-500) !important; }
 
-/* Final utility normalization inside Vizit surfaces. */
-:is(.vizit-public-page,.vizit-booking-page,.vizit-public-detail-page,.vizit-auth-shell,.vizit-onboarding-page,.vizit-admin-shell)
-  :is(.text-violet-500,.text-violet-600,.text-violet-700,.text-indigo-500,.text-indigo-600,.text-fuchsia-600) { color: var(--vizit-blue) !important; }
-:is(.vizit-public-page,.vizit-booking-page,.vizit-public-detail-page,.vizit-auth-shell,.vizit-onboarding-page,.vizit-admin-shell)
-  :is(.bg-violet-600,.bg-violet-700,.bg-indigo-600,.bg-fuchsia-600) { background-color: var(--vizit-blue) !important; }
-:is(.vizit-public-page,.vizit-booking-page,.vizit-public-detail-page,.vizit-auth-shell,.vizit-onboarding-page,.vizit-admin-shell)
-  :is(.border-violet-200,.border-violet-300,.border-indigo-200) { border-color: var(--vizit-line) !important; }
+/* Normalize the old violet utility palette inside Vizit-owned screens. */
+:is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page, .vizit-admin-shell)
+  :is(.text-violet-500, .text-violet-600, .text-violet-700, .text-indigo-500, .text-indigo-600, .text-fuchsia-600) { color: var(--vz-blue-500) !important; }
+:is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page, .vizit-admin-shell)
+  :is(.bg-violet-50, .bg-indigo-50, .bg-fuchsia-50) { background-color: #e5f2fd !important; }
+html.dark :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page, .vizit-admin-shell)
+  :is(.bg-violet-50, .bg-indigo-50, .bg-fuchsia-50) { background-color: #123653 !important; }
+:is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page, .vizit-admin-shell)
+  :is(.border-violet-200, .border-violet-300, .border-indigo-200, .border-fuchsia-200) { border-color: var(--vz-line) !important; }
+
+/* Remove the last inline traces of the previous cream / plum theme. */
+:is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page)
+  :is([class*="border-[#d39a43]"], [class*="border-[#e8c77f]"], [class*="border-[#e8e2f0]"], [class*="border-[#312641]"]) {
+  border-color: var(--vz-line) !important;
+}
+:is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page)
+  :is([class*="bg-[#fff2df]"], [class*="bg-[#fff8ef]"], [class*="bg-[#fffaf5]"], [class*="bg-[#faf8fc]"], [class*="bg-[#f1edf7]"]) {
+  background-color: var(--vz-surface-2) !important;
+}
+:is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page)
+  :is([class*="text-[#98641f]"], [class*="text-[#c88e37]"], [class*="text-[#6d2a63]"], [class*="text-[#5b2fa8]"], [class*="text-[#3e1f78]"]) {
+  color: var(--vz-blue-500) !important;
+}
+:is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page)
+  :is(button, a)[class*="from-[#2b0d35]"],
+:is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page)
+  :is(button, a)[class*="from-[#5b214f]"] {
+  border-color: var(--vz-blue-500) !important;
+  background: var(--vz-blue-500) !important;
+  color: #fff !important;
+}
+
+html.dark :is(.vizit-booking-page, .vizit-public-detail-page) :is(
+  [class~="bg-white"], [class~="bg-white/70"], [class~="bg-white/75"],
+  [class~="bg-white/80"], [class~="bg-white/85"], [class~="bg-white/88"],
+  [class~="bg-white/90"], [class~="bg-slate-50"], [class~="bg-slate-50/70"],
+  [class~="bg-slate-50/80"], [class~="bg-slate-100"]
+) { background-color: var(--vz-surface) !important; }
+html.dark :is(.vizit-booking-page, .vizit-public-detail-page) :is(
+  [class~="text-slate-900"], [class~="text-slate-950"], [class~="text-slate-800"]
+) { color: var(--vz-text) !important; }
+html.dark :is(.vizit-booking-page, .vizit-public-detail-page) :is(
+  [class~="text-slate-400"], [class~="text-slate-500"], [class~="text-slate-600"], [class~="text-slate-700"]
+) { color: var(--vz-muted) !important; }
+html.dark :is(.vizit-booking-page, .vizit-public-detail-page) :is(
+  [class~="border-slate-100"], [class~="border-slate-200"], [class~="border-white/60"], [class~="border-white/70"]
+) { border-color: var(--vz-line) !important; }
+html.dark :is(.vizit-booking-page, .vizit-public-detail-page) :where(input, select, textarea) {
+  border-color: var(--vz-line) !important;
+  background-color: var(--vz-surface-2) !important;
+  color: var(--vz-text) !important;
+}
+
+html.dark .vizit-admin-shell { background: var(--vz-page) !important; }
+html.dark .vizit-admin-header,
+html.dark .vizit-admin-sidebar > div > div,
+html.dark .vizit-admin-shell nav[class*="fixed"] {
+  border-color: var(--admin-border) !important;
+  background-color: color-mix(in srgb, var(--admin-surface) 96%, transparent) !important;
+}
+html.dark .vizit-admin-content .admin-page > :first-child:not(.vizit-preserve-dark) {
+  background-color: var(--admin-surface) !important;
+  background-image: none !important;
+}
+html.dark .vizit-admin-content :where(input, select, textarea) {
+  border-color: var(--admin-border) !important;
+  background-color: var(--admin-surface-2) !important;
+  color: var(--admin-text) !important;
+}
+
+/* Footer */
+.vizit-footer,
+.vizit-public-footer-compact {
+  border-color: #173b57 !important;
+  background: #071624 !important;
+  color: #a9c2d6 !important;
+}
+.vizit-footer::before,
+.vizit-footer::after,
+.vizit-footer > span { display: none !important; }
+.vizit-footer h2,
+.vizit-footer h3,
+.vizit-footer [class*="font-bold"],
+.vizit-footer .vizit-brand-text { color: #f4f8fc !important; }
+.vizit-footer p,
+.vizit-footer a,
+.vizit-footer span { color: #a9c2d6 !important; }
+.vizit-footer a:hover { color: #fff !important; }
+.vizit-footer [class*="border-[#d39a43]"] { border-color: #173b57 !important; }
+.vizit-footer [class*="bg-[#fffaf5]"] { background: #0b2133 !important; }
+.vizit-footer-cta { border-color: #245171 !important; border-radius: 18px !important; background: linear-gradient(135deg, #0b2133, #15558e) !important; box-shadow: var(--vz-shadow) !important; }
+.vizit-scroll-top-button { border-color: var(--vz-blue-500) !important; background: var(--vz-blue-500) !important; color: #fff !important; }
+
+@media (min-width: 1120px) {
+  .vizit-desktop-nav,
+  .vizit-header-actions { display: flex !important; }
+  .vizit-menu-button,
+  .vizit-mobile-header-actions { display: none !important; }
+  .vizit-hero-grid { grid-template-columns: minmax(0, .96fr) minmax(500px, 1.04fr) !important; align-items: center; gap: 34px !important; }
+  .vizit-hero-copy { padding: 28px 0 54px !important; text-align: left !important; }
+  .vizit-hero-copy > * { margin-left: 0 !important; margin-right: 0 !important; }
+}
+
+@media (max-width: 1119px) {
+  .vizit-hero-grid { max-width: 760px !important; }
+  .vizit-hero-copy { margin: 0 auto; text-align: center !important; }
+  .vizit-hero-copy > * { margin-left: auto !important; margin-right: auto !important; }
+  .vizit-hero-showcase { display: none !important; }
+}
 
 @media (max-width: 767px) {
-  .vizit-hero-section { padding-top: 2.5rem !important; }
-  .vizit-search-panel { border-radius: 14px !important; }
-  .vizit-mobile-menu { border-color: var(--vizit-line) !important; background: var(--vizit-surface) !important; }
-  .vizit-admin-content { padding-bottom: 6.5rem !important; }
+  html { scroll-padding-top: 76px; }
+  .vizit-public-page { padding-bottom: 0 !important; }
+  .vizit-landing-header > div { padding: 8px 9px 0 !important; }
+  .vizit-landing-header .vizit-header-shell { border-radius: 13px; }
+  .vizit-header-row { min-height: 52px; padding: 5px 6px 5px 11px; }
+  .vizit-header-brand .vizit-brand-mark { width: 31px; height: 31px; }
+  .vizit-header-brand .vizit-brand-text { font-size: 19px; }
+  .vizit-mobile-header-language .vizit-language-button { min-width: 66px; height: 40px; border-radius: 10px !important; }
+
+  #top.vizit-hero-section { min-height: 0; padding: 94px 18px 42px !important; }
+  #top h1 { margin-top: 19px !important; font-size: clamp(34px, 10.2vw, 43px) !important; line-height: 1.08 !important; }
+  #top .vizit-hero-copy > p { margin-top: 16px !important; font-size: 14px !important; line-height: 1.65 !important; }
+  .vizit-search-panel { margin-top: 21px !important; padding: 6px !important; }
+  .vizit-search-field,
+  .vizit-location-button { min-height: 52px !important; }
+  .vizit-search-submit { width: 100%; height: 48px !important; }
+  .vizit-hero-chips { margin-top: 14px !important; flex-wrap: nowrap !important; justify-content: flex-start !important; overflow-x: auto; padding-bottom: 3px; scrollbar-width: none; }
+  .vizit-hero-chips::-webkit-scrollbar { display: none; }
+  .vizit-hero-chips button { flex: 0 0 auto; }
+  .vizit-hero-proof { margin-top: 16px !important; grid-template-columns: 1fr !important; gap: 3px !important; }
+
+  .vizit-categories-section { padding: 30px 0 38px !important; }
+  .vizit-categories-section > div { border-right: 0 !important; border-left: 0 !important; border-radius: 0 !important; padding: 22px 18px !important; }
+  .vizit-category-slider { display: flex !important; margin-right: -18px !important; margin-left: -18px !important; padding-right: 18px !important; padding-left: 18px !important; }
+  .vizit-category-slider button { width: 44vw !important; max-width: 160px !important; min-height: 108px !important; }
+  .vizit-how-section { padding: 38px 0 !important; }
+  .vizit-how-section > div { border-right: 0 !important; border-left: 0 !important; border-radius: 0 !important; padding: 26px 18px !important; }
+  .vizit-home-page main section h2 { font-size: 28px !important; }
+  .vizit-map-section { padding: 42px 16px !important; }
+  .vizit-yandex-map-shell { min-height: 360px !important; border-radius: 14px !important; }
+  .vizit-map-panel { border-radius: 14px !important; }
+  .vizit-businesses-section { padding: 46px 16px !important; }
+  .vizit-business-slider { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 12px !important; overflow: visible !important; padding: 0 !important; }
+  .vizit-business-directory-card { width: 100% !important; max-width: none !important; min-height: 156px; grid-template-columns: 112px minmax(0, 1fr) !important; scroll-snap-align: none !important; }
+  .vizit-business-card-media { height: 100% !important; min-height: 156px; }
+  .vizit-plans-section { padding: 46px 16px !important; }
+  .vizit-plans-grid { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; overflow: visible !important; padding: 0 !important; }
+  .vizit-plans-grid > div { width: 100% !important; min-width: 0 !important; max-width: none !important; }
+  .vizit-business-cta { padding: 0 16px 50px !important; }
+  .vizit-business-cta > div { border-radius: 16px !important; padding: 25px 20px !important; }
+  .vizit-footer > div.relative { padding-right: 18px !important; padding-bottom: 24px !important; padding-left: 18px !important; }
+  .vizit-footer-cta { border-radius: 16px !important; }
+
+  .vizit-business-hero { padding-top: 108px !important; padding-bottom: 58px !important; }
+  .vizit-business-hero h1 { font-size: 38px !important; line-height: 1.08 !important; }
+  .vizit-business-page main > section { padding-top: 52px; padding-bottom: 52px; }
+  .vizit-business-page main article { border-radius: 14px !important; }
+
+  .vizit-business-profile-backdrop,
+  .vizit-booking-hero { border-radius: 14px !important; }
+  .vizit-business-profile-cover { min-height: 210px !important; }
+  .vizit-business-profile-summary h1 { font-size: 28px !important; }
+  .vizit-public-detail-page main,
+  .vizit-booking-page main { padding-right: 14px !important; padding-left: 14px !important; }
+
+  .vizit-admin-content { padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important; }
+  .vizit-admin-bottom-nav { padding-bottom: env(safe-area-inset-bottom, 0px); box-shadow: 0 -8px 24px rgba(7,22,36,.09); }
+}
+
+@media (max-width: 390px) {
+  .vizit-mobile-header-language .vizit-language-code { display: none; }
+  .vizit-mobile-header-language .vizit-language-button { min-width: 46px; }
+  .vizit-business-directory-card { grid-template-columns: 98px minmax(0, 1fr) !important; }
 }

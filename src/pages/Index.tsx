@@ -1270,31 +1270,6 @@ function HomePlansSection() {
   );
 }
 
-function MobileDock() {
-  const { t } = useLanguage();
-  const items = [
-    { href: "#top", label: t("nav.home"), Icon: Home },
-    { href: "#categories", label: t("nav.services"), Icon: Grid3X3 },
-    { href: "#businesses", label: t("nav.businesses"), Icon: Heart },
-    { href: "#map", label: t("nav.map"), Icon: MapPin },
-  ];
-
-  return (
-    <nav className="vizit-mobile-dock" aria-label={t("footer.navigation")}>
-      {items.map(({ href, label, Icon }, index) => (
-        <a key={href} href={href} className={index === 0 ? "is-active" : undefined}>
-          <Icon aria-hidden="true" />
-          <span>{label}</span>
-        </a>
-      ))}
-      <Link to="/login">
-        <UserRound aria-hidden="true" />
-        <span>{t("nav.login")}</span>
-      </Link>
-    </nav>
-  );
-}
-
 export default function Index() {
   const { t, locale } = useLanguage();
   const [search, setSearch] = useState("");
@@ -1690,7 +1665,6 @@ export default function Index() {
         </section>
       </main>
 
-      <MobileDock />
       <Footer showCta={false} />
     </div>
   );

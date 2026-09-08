@@ -16,21 +16,11 @@ export default function VizitLogo({
   return (
     <span className={cn("vizit-brand inline-flex items-center gap-2.5", className)}>
       <span className={cn("vizit-brand-mark inline-grid shrink-0 place-items-center", markClassName)} aria-hidden="true">
-        <svg viewBox="0 0 48 48" fill="none">
-          <path
-            d="M13 10.5h22a7 7 0 0 1 7 7V35a7 7 0 0 1-7 7H13a7 7 0 0 1-7-7V17.5a7 7 0 0 1 7-7Z"
-            stroke="currentColor"
-            strokeWidth="3.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M6.8 20h34.4M16 6v8M32 6v8m-15 17 4.3 4.3L32 24.5"
-            stroke="currentColor"
-            strokeWidth="3.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+        <svg viewBox="0 0 64 64" fill="none">
+          <rect x="2" y="2" width="60" height="60" rx="16" fill="#378ADD" />
+          <path d="M18 23.5h28v22a5.5 5.5 0 0 1-5.5 5.5h-17a5.5 5.5 0 0 1-5.5-5.5v-22Z" stroke="white" strokeWidth="4" strokeLinejoin="round" />
+          <path d="M18 30h28M24 17v10M40 17v10" stroke="white" strokeWidth="4" strokeLinecap="round" />
+          <path d="m24.5 39 6.2 6.2L41 34" stroke="white" strokeWidth="4.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </span>
       {showText ? <span className={cn("vizit-brand-text", textClassName)}>Vizit</span> : null}

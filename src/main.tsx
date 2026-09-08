@@ -35,6 +35,7 @@ import "./premium-reference-pass.css";
 import "./premium-business-cards.css";
 import "./business-landing.css";
 import "./theme-contrast.css";
+import "./vizit-navy-system.css";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AppErrorBoundary } from "./components/AppErrorBoundary";

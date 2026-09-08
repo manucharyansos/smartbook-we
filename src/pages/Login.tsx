@@ -63,7 +63,7 @@ export default function Login() {
             footer={
                 <div className="text-center text-sm text-slate-500">
                     {text.noAccount}{" "}
-                    <Link to="/register" className="font-medium text-violet-700 hover:text-violet-600">
+                    <Link to="/register" className="font-medium text-[#2578c8] hover:text-[#378add]">
                         {text.register}
                     </Link>
                 </div>
@@ -97,7 +97,7 @@ export default function Login() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="owner@mail.com"
-                            className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                            className="h-14 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[#84c1f2] focus:ring-4 focus:ring-[#378add]/15"
                             required
                         />
                     </div>
@@ -108,7 +108,7 @@ export default function Login() {
                         <label htmlFor="business-login-password" className="block text-sm font-medium text-slate-700">{text.password}</label>
                         <Link
                             to="/forgot-password"
-                            className="text-xs font-medium text-slate-500 transition hover:text-violet-700"
+                            className="text-xs font-medium text-slate-500 transition hover:text-[#2578c8]"
                         >
                             {text.forgot}
                         </Link>
@@ -124,7 +124,7 @@ export default function Login() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="••••••••"
-                            className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-12 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                            className="h-14 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-12 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[#84c1f2] focus:ring-4 focus:ring-[#378add]/15"
                             required
                         />
                         <button
@@ -132,7 +132,7 @@ export default function Login() {
                             onClick={() => setShowPassword((s) => !s)}
                             aria-label={showPassword ? text.hide : text.show}
                             aria-pressed={showPassword}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-violet-700"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-[#2578c8]"
                         >
                             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </button>
@@ -144,7 +144,7 @@ export default function Login() {
                     type="submit"
                     disabled={loading}
                     className={cn(
-                        "inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-violet-600 px-5 text-sm font-medium text-white transition hover:bg-violet-700",
+                        "inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#378add] px-5 text-sm font-medium text-white shadow-[0_12px_26px_rgba(55,138,221,0.22)] transition hover:bg-[#2578c8]",
                         loading && "cursor-not-allowed opacity-70"
                     )}
                 >

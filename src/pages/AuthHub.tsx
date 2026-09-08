@@ -25,7 +25,7 @@ export default function AuthHub({ mode }: Props) {
       footer={
         <div className="text-center text-sm text-slate-500">
           {isRegister ? "Արդեն ունե՞ս հաշիվ" : "Առաջին անգամ ե՞ս այստեղ"}{" "}
-          <Link to={isRegister ? "/login" : "/register"} className="font-medium text-violet-700 hover:text-violet-600">
+          <Link to={isRegister ? "/login" : "/register"} className="font-medium text-[#2578c8] hover:text-[#378add]">
             {isRegister ? "Մուտքի ընտրություն" : "Գրանցման ընտրություն"}
           </Link>
         </div>
@@ -33,9 +33,9 @@ export default function AuthHub({ mode }: Props) {
     >
       <motion.div variants={staggerContainer(0.08)} initial="hidden" animate="show" className="space-y-5">
         <motion.div variants={fadeUp} className="grid gap-4 lg:grid-cols-2">
-          <motion.div variants={scaleIn} {...hoverLift} className="rounded-[28px] border border-violet-100 bg-gradient-to-br from-violet-50 via-fuchsia-50 to-white p-5 shadow-sm">
+          <motion.div variants={scaleIn} {...hoverLift} className="vizit-auth-choice-card vizit-auth-choice-business rounded-2xl border p-5 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-violet-600 text-white">
+              <div className="grid h-12 w-12 place-items-center rounded-xl bg-[#378add] text-white">
                 <BriefcaseBusiness className="h-5 w-5" />
               </div>
               <div>
@@ -51,7 +51,7 @@ export default function AuthHub({ mode }: Props) {
             </div>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <Link to={isRegister ? "/business/register?entry=trial" : "/business/login"} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-violet-600 px-4 py-3 text-sm font-medium text-white">
+              <Link to={isRegister ? "/business/register?entry=trial" : "/business/login"} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#378add] px-4 py-3 text-sm font-medium text-white">
                 {isRegister ? "Start trial" : "Business login"}
                 <ArrowRight className="h-4 w-4" />
               </Link>
@@ -61,13 +61,13 @@ export default function AuthHub({ mode }: Props) {
             </div>
 
             {isRegister ? (
-              <Link to="/business/register?entry=partner" className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-violet-700 hover:text-violet-600">
+              <Link to="/business/register?entry=partner" className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-[#2578c8] hover:text-[#378add]">
                 <Handshake className="h-4 w-4" /> Become partner
               </Link>
             ) : null}
           </motion.div>
 
-          <motion.div variants={scaleIn} {...hoverLift} className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
+          <motion.div variants={scaleIn} {...hoverLift} className="vizit-auth-choice-card rounded-2xl border p-5 shadow-sm">
             <div className="flex items-center gap-3">
               <div className="grid h-12 w-12 place-items-center rounded-2xl bg-slate-900 text-white">
                 <UserRound className="h-5 w-5" />
@@ -96,9 +96,9 @@ export default function AuthHub({ mode }: Props) {
           </motion.div>
         </motion.div>
 
-        <motion.div variants={fadeUp} className="rounded-[26px] border border-slate-200 bg-slate-50/80 p-4 text-sm leading-7 text-slate-600">
+        <motion.div variants={fadeUp} className="vizit-auth-choice-note rounded-2xl border p-4 text-sm leading-7">
           <div className="flex items-start gap-3">
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-white text-violet-600 shadow-sm">
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white text-[#378add] shadow-sm">
               <CalendarHeart className="h-5 w-5" />
             </div>
             <div>

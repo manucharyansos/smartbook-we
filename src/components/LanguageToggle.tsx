@@ -72,9 +72,9 @@ export default function LanguageToggle({ className, compact = false }: { classNa
           {open ? (
             <div role="menu" aria-label={{ hy: "Ընտրել լեզուն", ru: "Выбрать язык", en: "Choose language" }[locale]} className="vizit-language-menu absolute right-0 top-[calc(100%+8px)] z-[120] grid min-w-[172px] gap-1 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-white/10 dark:bg-slate-950">
               {options.map((option) => (
-                <button key={option.value} role="menuitemradio" aria-checked={option.value === locale} type="button" onClick={() => { setLocale(option.value); setOpen(false); }} className={cn("vizit-language-option flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-bold text-slate-700 dark:text-white", option.value === locale ? "is-active bg-[#f8eee4] text-[#5b2156] dark:bg-white/10 dark:text-[#f0cf8d]" : "hover:bg-slate-100 dark:hover:bg-white/10")}>
+                <button key={option.value} role="menuitemradio" aria-checked={option.value === locale} type="button" onClick={() => { setLocale(option.value); setOpen(false); }} className={cn("vizit-language-option flex items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-bold text-slate-700 dark:text-white", option.value === locale ? "is-active bg-[#e5f2fd] text-[#2578c8] dark:bg-[#123653] dark:text-[#84c1f2]" : "hover:bg-slate-100 dark:hover:bg-white/10")}>
                   <FlagIcon locale={option.value} />
-                  <span className="min-w-7 text-xs font-extrabold tracking-[0.08em] text-[#a66f28] dark:text-[#f0cf8d]" aria-hidden="true">{option.short}</span>
+                  <span className="min-w-7 text-xs font-extrabold tracking-[0.08em] text-[#2578c8] dark:text-[#84c1f2]" aria-hidden="true">{option.short}</span>
                   {option.label}
                 </button>
               ))}
@@ -84,7 +84,7 @@ export default function LanguageToggle({ className, compact = false }: { classNa
       ) : (
         <div className="grid w-full grid-cols-3 gap-2 rounded-2xl border border-slate-200 bg-white/70 p-2 dark:border-white/10 dark:bg-white/[0.04]">
           {options.map((option) => (
-            <button key={option.value} type="button" onClick={() => setLocale(option.value)} aria-label={option.label} className={cn("flex h-14 min-w-0 items-center justify-center gap-2 rounded-xl border leading-none transition", option.value === locale ? "border-[#d39a43]/60 bg-[#f8eee4] text-[#5b2156] shadow-sm dark:border-[#e5bd74]/40 dark:bg-white/10 dark:text-white" : "border-transparent hover:bg-slate-100 dark:hover:bg-white/10")}>
+            <button key={option.value} type="button" onClick={() => setLocale(option.value)} aria-label={option.label} className={cn("flex h-14 min-w-0 items-center justify-center gap-2 rounded-xl border leading-none transition", option.value === locale ? "border-[#84c1f2] bg-[#e5f2fd] text-[#2578c8] shadow-sm dark:border-[#245171] dark:bg-[#123653] dark:text-[#84c1f2]" : "border-transparent hover:bg-slate-100 dark:hover:bg-white/10")}>
               <FlagIcon locale={option.value} />
               <span className="text-xs font-extrabold tracking-[0.08em]" aria-hidden="true">{option.short}</span>
             </button>

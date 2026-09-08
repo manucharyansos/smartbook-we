@@ -420,7 +420,7 @@ export default function Register() {
             footer={
                 <div className="text-center text-sm text-slate-500">
                     {text.hasAccount}{" "}
-                    <Link to="/login" className="font-medium text-violet-700 hover:text-violet-600">
+                    <Link to="/login" className="font-medium text-[#2578c8] hover:text-[#378add]">
                         {text.login}
                     </Link>
                 </div>
@@ -496,16 +496,16 @@ export default function Register() {
                                         role="radio"
                                         aria-checked={active}
                                         className={cn(
-                                            "vizit-registration-type-option flex items-center gap-3 rounded-[22px] border p-4 text-left transition",
+                                            "vizit-registration-type-option flex items-center gap-3 rounded-xl border p-4 text-left transition",
                                             active
-                                                ? "border-violet-300 bg-violet-50 shadow-sm"
-                                                : "border-slate-200 bg-white hover:border-violet-200 hover:bg-violet-50/60"
+                                                ? "border-[#84c1f2] bg-[#e5f2fd] shadow-sm"
+                                                : "border-slate-200 bg-white hover:border-[#c4d4e1] hover:bg-[#e5f2fd]"
                                         )}
                                     >
                                         <div
                                             className={cn(
                                                 "grid h-11 w-11 place-items-center rounded-2xl",
-                                                active ? "bg-violet-600 text-white" : "bg-slate-100 text-slate-500"
+                                                active ? "bg-[#378add] text-white" : "bg-slate-100 text-slate-500"
                                             )}
                                         >
                                             <Icon className="h-5 w-5" />
@@ -520,7 +520,7 @@ export default function Register() {
                                             </div>
                                         </div>
 
-                                        {active ? <Check className="h-4 w-4 text-violet-600" /> : null}
+                                        {active ? <Check className="h-4 w-4 text-[#378add]" /> : null}
                                     </button>
                                 );
                             })}
@@ -543,7 +543,7 @@ export default function Register() {
                                     setErrorCode(null);
                                 }}
                                 aria-busy={categoriesQuery.isLoading}
-                                className="h-14 w-full appearance-none rounded-2xl border border-slate-200 bg-white px-4 pr-11 text-base text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100 sm:h-12 sm:text-sm"
+                                className="h-14 w-full appearance-none rounded-2xl border border-slate-200 bg-white px-4 pr-11 text-base text-slate-900 outline-none transition focus:border-[#84c1f2] focus:ring-4 focus:ring-[#378add]/15 sm:h-12 sm:text-sm"
                                 required
                             >
                                 <option value="">{categoryText.categoryPlaceholder}</option>
@@ -570,7 +570,7 @@ export default function Register() {
                                 onChange={(event) => setCustomCategoryName(event.target.value)}
                                 placeholder={categoryText.customPlaceholder}
                                 maxLength={120}
-                                className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100 sm:h-12 sm:text-sm"
+                                className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-900 outline-none transition focus:border-[#84c1f2] focus:ring-4 focus:ring-[#378add]/15 sm:h-12 sm:text-sm"
                                 required
                             />
                         </div>
@@ -584,7 +584,7 @@ export default function Register() {
                                 className={cn(
                                     "grid h-10 w-10 place-items-center rounded-full text-sm font-semibold transition",
                                     currentStep >= step
-                                        ? "bg-violet-600 text-white shadow-md"
+                                        ? "bg-[#378add] text-white shadow-md"
                                         : "bg-slate-100 text-slate-600"
                                 )}
                             >
@@ -595,7 +595,7 @@ export default function Register() {
                                 <div
                                     className={cn(
                                         "h-[2px] w-10 rounded-full transition sm:w-14",
-                                        currentStep >= 2 ? "bg-violet-500" : "bg-slate-200"
+                                        currentStep >= 2 ? "bg-[#e5f2fd]0" : "bg-slate-200"
                                     )}
                                 />
                             ) : null}
@@ -615,10 +615,10 @@ export default function Register() {
                         >
                             <motion.div
                                 variants={fadeUp}
-                                className="rounded-[24px] border border-violet-100 bg-violet-50/60 p-4"
+                                className="rounded-xl border border-[#d8e3ec] bg-[#e5f2fd] p-4"
                             >
                                 <div className="flex items-start gap-3">
-                                    <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white text-violet-600 shadow-sm">
+                                    <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white text-[#378add] shadow-sm">
                                         <CurrentIcon className="h-5 w-5" />
                                     </div>
 
@@ -649,7 +649,7 @@ export default function Register() {
                                         placeholder={
                                             business_type === "services" ? categoryText.servicesPlaceholder : categoryText.healthcarePlaceholder
                                         }
-                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[#84c1f2] focus:ring-4 focus:ring-[#378add]/15"
                                         required
                                     />
                                 </div>
@@ -670,7 +670,7 @@ export default function Register() {
                                         value={business_phone}
                                         onChange={(e) => setBusinessPhone(e.target.value)}
                                         placeholder="+374 77 123456"
-                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[#84c1f2] focus:ring-4 focus:ring-[#378add]/15"
                                         required
                                     />
                                 </div>
@@ -690,7 +690,7 @@ export default function Register() {
                                         value={business_address}
                                         onChange={(e) => setBusinessAddress(e.target.value)}
                                         placeholder={text.addressPlaceholder}
-                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[#84c1f2] focus:ring-4 focus:ring-[#378add]/15"
                                         required
                                     />
                                 </div>
@@ -719,7 +719,7 @@ export default function Register() {
                                 variants={fadeUp}
                                 type="button"
                                 onClick={nextStep}
-                                className="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-violet-600 px-5 text-sm font-medium text-white transition hover:bg-violet-700"
+                                className="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-[#378add] px-5 text-sm font-medium text-white transition hover:bg-[#2578c8]"
                             >
                                 {text.continue}
                             </motion.button>
@@ -765,7 +765,7 @@ export default function Register() {
                                         value={owner_name}
                                         onChange={(e) => setOwnerName(e.target.value)}
                                         placeholder={text.ownerPlaceholder}
-                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[#84c1f2] focus:ring-4 focus:ring-[#378add]/15"
                                         required
                                     />
                                 </div>
@@ -786,7 +786,7 @@ export default function Register() {
                                         value={owner_email}
                                         onChange={(e) => setOwnerEmail(e.target.value)}
                                         placeholder="owner@example.com"
-                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[#84c1f2] focus:ring-4 focus:ring-[#378add]/15"
                                         required
                                     />
                                 </div>
@@ -810,7 +810,7 @@ export default function Register() {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         placeholder="••••••••"
-                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-12 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-12 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[#84c1f2] focus:ring-4 focus:ring-[#378add]/15"
                                         required
                                     />
                                     <button
@@ -818,7 +818,7 @@ export default function Register() {
                                         onClick={() => setShowPassword((s) => !s)}
                                         aria-label={showPassword ? text.hide : text.show}
                                         aria-pressed={showPassword}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-violet-700"
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-[#2578c8]"
                                     >
                                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                     </button>
@@ -875,7 +875,7 @@ export default function Register() {
                                         value={password_confirmation}
                                         onChange={(e) => setPasswordConfirmation(e.target.value)}
                                         placeholder="••••••••"
-                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-12 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-12 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[#84c1f2] focus:ring-4 focus:ring-[#378add]/15"
                                         required
                                     />
                                     <button
@@ -883,7 +883,7 @@ export default function Register() {
                                         onClick={() => setShowConfirmPassword((s) => !s)}
                                         aria-label={showConfirmPassword ? text.hide : text.show}
                                         aria-pressed={showConfirmPassword}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-violet-700"
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-[#2578c8]"
                                     >
                                         {showConfirmPassword ? (
                                             <EyeOff className="h-4 w-4" />
@@ -900,7 +900,7 @@ export default function Register() {
                                 className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs leading-6 text-slate-500"
                             >
                                 <div className="flex items-start gap-2">
-                                    <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-violet-600" />
+                                    <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#378add]" />
                                     <div>{text.socialNote}</div>
                                 </div>
                             </motion.div>
@@ -909,7 +909,7 @@ export default function Register() {
                                 <button
                                     type="button"
                                     onClick={prevStep}
-                                    className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-medium text-slate-700 transition hover:border-violet-200 hover:bg-violet-50"
+                                    className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-medium text-slate-700 transition hover:border-[#c4d4e1] hover:bg-[#e5f2fd]"
                                 >
                                     {text.back}
                                 </button>
@@ -918,7 +918,7 @@ export default function Register() {
                                     type="submit"
                                     disabled={loading}
                                     className={cn(
-                                        "inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-violet-600 px-5 text-sm font-medium text-white transition hover:bg-violet-700",
+                                        "inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#378add] px-5 text-sm font-medium text-white transition hover:bg-[#2578c8]",
                                         loading && "cursor-not-allowed opacity-70"
                                     )}
                                 >

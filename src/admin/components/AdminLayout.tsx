@@ -61,7 +61,7 @@ export default function AdminLayout() {
   };
 
   return (
-    <motion.div variants={pageTransition} initial="hidden" animate="show" className="min-h-screen bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_25%,#faf5ff_100%)]">
+    <motion.div variants={pageTransition} initial="hidden" animate="show" className="vizit-superadmin-shell min-h-screen">
       <AdminSidebar
         expanded={sidebarExpanded}
         mobileOpen={mobileSidebarOpen}

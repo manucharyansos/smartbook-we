@@ -737,7 +737,7 @@ export default function Billing() {
       <SectionCard className="overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(55,138,221,0.14),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(132,193,242,0.10),transparent_35%),white] p-8">
         <div className="flex flex-col gap-5 sm:gap-8 xl:flex-row xl:items-center xl:justify-between">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#c4d4e1] bg-[#e5f2fd] px-4 py-2 text-sm font-medium text-[#2578c8]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#c4d4e1] bg-[var(--vz-accent-soft)] px-4 py-2 text-sm font-medium text-[var(--vz-brand-text)]">
               <Sparkles className="h-4 w-4" /> {copy.heroBadge}
             </div>
             <h1 className="mt-6 text-4xl font-semibold leading-tight tracking-tight text-slate-950 md:text-5xl">{copy.title}</h1>
@@ -758,7 +758,7 @@ export default function Billing() {
                 <div className="text-sm font-medium text-slate-500">{copy.currentPlan}</div>
                 <div className="mt-2 text-2xl font-semibold text-slate-950">{currentPlanName ?? copy.awaitingActivation}</div>
               </div>
-              <div className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-r from-[#2578c8] to-[#378add] text-white shadow-lg"><Landmark className="h-6 w-6" /></div>
+              <div className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-r from-[var(--vz-primary-hover)] to-[var(--vz-primary)] text-white shadow-lg"><Landmark className="h-6 w-6" /></div>
             </div>
 
             <div className="mt-4 grid gap-3 grid-cols-2 xl:grid-cols-5">
@@ -798,7 +798,7 @@ export default function Billing() {
                 {pricing?.has_override ? <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">{copy.customTermsActive}</span> : null}
               </div>
               <div className="mt-3 text-sm text-slate-600">{copy.yearlyValue} {formatMoney(pricing?.effective_yearly_price ?? subscription?.plan?.yearly_price, subscription?.plan?.currency ?? pricing?.currency ?? "AMD", locale)}</div>
-              {pricing?.override?.note ? <div className="mt-3 rounded-xl bg-[#e5f2fd] px-4 py-3 text-sm text-[#2578c8]">{pricing.override.note}</div> : null}
+              {pricing?.override?.note ? <div className="mt-3 rounded-xl bg-[var(--vz-accent-soft)] px-4 py-3 text-sm text-[var(--vz-brand-text)]">{pricing.override.note}</div> : null}
             </div>
           </div>
         </div>
@@ -816,7 +816,7 @@ export default function Billing() {
 
           <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1">
             <button type="button" onClick={() => setBillingCycle("monthly")} className={cn("rounded-[10px] px-4 py-2.5 text-sm font-medium transition", billingCycle === "monthly" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600")}>{copy.monthly}</button>
-            <button type="button" onClick={() => setBillingCycle("yearly")} className={cn("rounded-[10px] px-4 py-2.5 text-sm font-medium transition", billingCycle === "yearly" ? "bg-[#378add] text-white" : "text-slate-600")}>{copy.yearly}</button>
+            <button type="button" onClick={() => setBillingCycle("yearly")} className={cn("rounded-[10px] px-4 py-2.5 text-sm font-medium transition", billingCycle === "yearly" ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)]" : "text-slate-600")}>{copy.yearly}</button>
           </div>
         </div>
 
@@ -840,14 +840,14 @@ export default function Billing() {
             const isRenewal = !hasUsableSubscription && currentPlanCode === plan.code;
             const isBusy = requestMut.isPending && selectedPlan === plan.code;
             return (
-              <motion.div key={plan.id} whileHover={{ y: -4 }} className={cn("relative rounded-2xl border p-6 pt-14 shadow-sm", isCurrent ? "border-[#378add] bg-[#378add] text-white shadow-[0_24px_60px_rgba(55,138,221,0.22)]" : plan.isIndividualOffer ? "border-emerald-200 bg-emerald-50/40" : "border-slate-200 bg-white")}>
+              <motion.div key={plan.id} whileHover={{ y: -4 }} className={cn("vizit-billing-plan relative rounded-2xl border p-6 pt-14 shadow-sm", isCurrent && "is-current", isCurrent ? "border-[var(--vz-primary)] bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-[0_24px_60px_rgba(55,138,221,0.22)]" : plan.isIndividualOffer ? "border-emerald-200 bg-emerald-50/40" : "border-slate-200 bg-white")}>
                 {billingCycle === "yearly" ? <div className={cn("absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-semibold", isCurrent ? "bg-white/15 text-white" : plan.isIndividualOffer ? "border border-emerald-200 bg-white text-emerald-700" : "bg-emerald-50 text-emerald-700")}>{plan.isIndividualOffer ? copy.individualPlan : copy.twoMonthsFree}</div> : null}
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="text-xl font-semibold">{plan.name}</div>
                     <div className={cn("mt-1 text-sm", isCurrent ? "text-white/70" : plan.isIndividualOffer ? "text-emerald-700" : "text-slate-500")}>{plan.isIndividualOffer ? plan.description : copy.activeStaff(plan.staff_limit ?? 0)}</div>
                   </div>
-                  {isCurrent ? <span className={cn("rounded-full px-3 py-1 text-xs font-semibold", isCurrent ? "bg-white/15 text-white" : "bg-[#e5f2fd] text-[#2578c8]")}><BadgeCheck className="mr-1 inline h-3.5 w-3.5" /> {copy.active}</span> : null}
+                  {isCurrent ? <span className={cn("rounded-full px-3 py-1 text-xs font-semibold", isCurrent ? "bg-white/15 text-white" : "bg-[var(--vz-accent-soft)] text-[var(--vz-brand-text)]")}><BadgeCheck className="mr-1 inline h-3.5 w-3.5" /> {copy.active}</span> : null}
                 </div>
 
                 <div className="mt-6 flex items-end gap-2">
@@ -869,9 +869,9 @@ export default function Billing() {
                   <div className={cn("flex items-center gap-2 text-sm", isCurrent ? "text-white/90" : "text-slate-700")}><Check className="h-4 w-4 text-emerald-500" /> {copy.featureOwners}</div>
                 </div>
 
-                {plan.note ? <div className={cn("mt-4 rounded-xl px-4 py-3 text-sm", isCurrent ? "bg-white/10 text-white/85" : plan.isIndividualOffer ? "border border-emerald-200 bg-white text-emerald-800" : "bg-[#e5f2fd] text-[#2578c8]")}>{plan.note}</div> : null}
+                {plan.note ? <div className={cn("mt-4 rounded-xl px-4 py-3 text-sm", isCurrent ? "bg-white/10 text-white/85" : plan.isIndividualOffer ? "border border-emerald-200 bg-white text-emerald-800" : "bg-[var(--vz-accent-soft)] text-[var(--vz-brand-text)]")}>{plan.note}</div> : null}
 
-                <Button className={cn("mt-6 w-full", isCurrent ? "bg-white text-[#2578c8] hover:bg-white/90" : "")} loading={isBusy} disabled={isCurrent || requestMut.isPending || billingQ.data?.reason === "business_suspended"} onClick={() => { setSelectedPlan(plan.code); requestMut.mutate({ planCode: plan.code, cycle: billingCycle }); }}>
+                <Button className={cn("mt-6 w-full", isCurrent ? "bg-white text-[var(--vz-brand-text)] hover:bg-white/90" : "")} loading={isBusy} disabled={isCurrent || requestMut.isPending || billingQ.data?.reason === "business_suspended"} onClick={() => { setSelectedPlan(plan.code); requestMut.mutate({ planCode: plan.code, cycle: billingCycle }); }}>
                   {isCurrent ? <BadgeCheck className="h-4 w-4" /> : plan.isIndividualOffer ? <Handshake className="h-4 w-4" /> : <Crown className="h-4 w-4" />}
                   {isCurrent ? copy.currentPlanButton : isRenewal ? copy.restorePlan : plan.isIndividualOffer ? copy.createCustomInvoice : billingCycle === "yearly" ? copy.createYearlyInvoice : copy.createMonthlyInvoice}
                 </Button>
@@ -885,16 +885,16 @@ export default function Billing() {
         <div className="border-b border-[#d8e3ec] bg-[radial-gradient(circle_at_top_right,rgba(55,138,221,0.12),transparent_38%),linear-gradient(135deg,#f7fafc,#ffffff)] px-6 py-7 sm:px-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#c4d4e1] bg-white/80 px-3 py-1.5 text-xs font-semibold text-[#2578c8]">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#c4d4e1] bg-white/80 px-3 py-1.5 text-xs font-semibold text-[var(--vz-brand-text)]">
                 <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" /> {copy.securePayment}
               </div>
-              <h2 className="mt-4 text-2xl font-semibold text-[#071624]">{copy.choosePayment}</h2>
+              <h2 className="mt-4 text-2xl font-semibold text-[var(--vz-text)]">{copy.choosePayment}</h2>
               <p className="mt-2 text-sm leading-7 text-slate-600">
                 {copy.paymentIntro}
               </p>
             </div>
             <div className="rounded-xl border border-[#d8e3ec] bg-white/85 px-4 py-3 text-sm text-slate-600 shadow-sm">
-              {copy.selected} <span className="font-semibold text-[#071624]">{selectedPayment.label}</span>
+              {copy.selected} <span className="font-semibold text-[var(--vz-text)]">{selectedPayment.label}</span>
             </div>
           </div>
         </div>
@@ -917,12 +917,12 @@ export default function Billing() {
                   onClick={() => setSelectedPaymentMethod(method.value)}
                   className={cn(
                     "group relative min-h-[164px] rounded-2xl border p-4 text-left transition duration-200",
-                    "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#378add]/25",
+                    "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--vz-primary)]/25",
                     isSelected && isAvailable
-                      ? "border-[#378add] bg-[#e5f2fd] shadow-[0_14px_36px_rgba(55,138,221,0.14)]"
+                      ? "border-[var(--vz-primary)] bg-[var(--vz-accent-soft)] shadow-[0_14px_36px_rgba(55,138,221,0.14)]"
                       : "border-slate-200 bg-white",
                     isAvailable
-                      ? "cursor-pointer hover:-translate-y-0.5 hover:border-[#84c1f2] hover:shadow-md"
+                      ? "cursor-pointer hover:-translate-y-0.5 hover:border-[var(--vz-line-strong)] hover:shadow-md"
                       : "cursor-not-allowed bg-slate-50/80 opacity-70",
                   )}
                 >
@@ -944,7 +944,7 @@ export default function Billing() {
                     {isAvailable ? (isTest ? copy.testEnvironment : copy.connected) : isCard ? copy.bankAwaiting : copy.soon}
                   </span>
                   {isSelected && isAvailable ? (
-                    <span className="absolute right-3 top-3 grid h-6 w-6 place-items-center rounded-full bg-[#378add] text-white">
+                    <span className="absolute right-3 top-3 grid h-6 w-6 place-items-center rounded-full bg-[var(--vz-primary)] text-[var(--vz-on-primary)]">
                       <Check className="h-3.5 w-3.5" aria-hidden="true" />
                     </span>
                   ) : null}
@@ -953,8 +953,8 @@ export default function Billing() {
             })}
           </div>
 
-          <div className="mt-5 flex gap-3 rounded-xl border border-[#d8e3ec] bg-[#f7fafc] px-4 py-3 text-sm leading-6 text-[#587189]" role="note">
-            <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#378add]" aria-hidden="true" />
+          <div className="mt-5 flex gap-3 rounded-xl border border-[#d8e3ec] bg-[#f7fafc] px-4 py-3 text-sm leading-6 text-[var(--vz-muted)]" role="note">
+            <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--vz-brand-text)]" aria-hidden="true" />
             <p>{copy.paymentSafetyNote}</p>
           </div>
         </div>
@@ -962,7 +962,7 @@ export default function Billing() {
 
       <div className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
         <SectionCard className="space-y-4 p-6">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-700"><Landmark className="h-4 w-4 text-[#378add]" /> {copy.latestInvoice}</div>
+          <div className="flex items-center gap-2 text-sm font-semibold text-slate-700"><Landmark className="h-4 w-4 text-[var(--vz-brand-text)]" /> {copy.latestInvoice}</div>
           {invoicesQ.isLoading ? (
             <div className="flex items-center justify-center gap-2 py-12 text-sm text-slate-600"><Loader2 className="h-4 w-4 animate-spin" /> {copy.invoicesLoading}</div>
           ) : invoicesQ.isError ? (
@@ -976,7 +976,7 @@ export default function Billing() {
                   <div className="text-xs uppercase tracking-wide text-slate-400">{copy.invoice}</div>
                   <div className="mt-2 text-lg font-semibold text-slate-950">#{latestInvoice.id} · {latestInvoice.plan?.name ?? copy.planFallback}</div>
                   <div className="mt-1 text-sm text-slate-600">{formatMoney(latestInvoice.amount, latestInvoice.currency, locale)} · {cycleLabel((latestInvoice.billing_cycle as BillingCycle | undefined) ?? "monthly", locale)}</div>
-                  {latestInvoice.meta?.pricing_override_id ? <div className="mt-2 text-sm text-[#2578c8]">{copy.customApplied}</div> : null}
+                  {latestInvoice.meta?.pricing_override_id ? <div className="mt-2 text-sm text-[var(--vz-brand-text)]">{copy.customApplied}</div> : null}
                   {latestInvoice.meta?.discount_amount ? <div className="mt-2 text-sm text-emerald-700">{copy.discount} {formatMoney(latestInvoice.meta.discount_amount, latestInvoice.currency, locale)}</div> : null}
                 </div>
                 <div className="rounded-3xl border border-slate-200 bg-white p-4">
@@ -1010,7 +1010,7 @@ export default function Billing() {
         </SectionCard>
 
         <SectionCard className="space-y-4 p-6">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-700"><ArrowRight className="h-4 w-4 text-[#378add]" /> {copy.transactionTimeline}</div>
+          <div className="flex items-center gap-2 text-sm font-semibold text-slate-700"><ArrowRight className="h-4 w-4 text-[var(--vz-brand-text)]" /> {copy.transactionTimeline}</div>
           {currentTransaction ? (
             <div className="space-y-3">
               <div className="rounded-2xl border border-slate-200 p-4">

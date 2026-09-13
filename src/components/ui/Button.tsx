@@ -8,23 +8,21 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export function Button({ className, variant = "primary", size = "md", loading = false, children, ...props }: Props) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.97]";
+    "vizit-button inline-flex items-center justify-center gap-2 rounded-2xl font-semibold transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.99]";
   const variants = {
-    primary:
-      "bg-gradient-to-r from-[#2578c8] to-[#378add] text-white shadow-[0_12px_24px_rgba(55,138,221,0.22)] hover:shadow-[0_16px_30px_rgba(55,138,221,0.28)] hover:brightness-105",
-    secondary:
-      "border border-slate-200 bg-white text-slate-700 hover:border-[#84c1f2] hover:bg-[#e5f2fd] hover:text-[#2578c8]",
-    ghost: "text-slate-700 hover:bg-slate-100",
-    danger: "border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100",
+    primary: "vizit-button--primary",
+    secondary: "vizit-button--secondary",
+    ghost: "vizit-button--ghost",
+    danger: "vizit-button--danger",
   };
   const sizes = {
-    sm: "h-10 min-h-[40px] px-3 text-sm",
-    md: "h-11 min-h-[44px] px-4 text-sm",
-    lg: "h-12 min-h-[48px] px-5 text-sm",
+    sm: "min-h-11 px-3 py-2 text-sm",
+    md: "min-h-12 px-4 py-2.5 text-sm",
+    lg: "min-h-[52px] px-5 py-3 text-sm",
   };
 
   return (
-    <button className={cn(base, variants[variant], sizes[size], className)} disabled={loading || props.disabled} {...props}>
+    <button className={cn(base, variants[variant], sizes[size], className)} {...props} aria-busy={loading || undefined} disabled={loading || props.disabled}>
       {children}
     </button>
   );

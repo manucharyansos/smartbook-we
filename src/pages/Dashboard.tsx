@@ -94,7 +94,7 @@ function MetricCard({ title, value, subtitle, icon }: { title: string; value: st
   return (
     <motion.div variants={card} initial="initial" animate="animate" transition={cardTransition} className="h-full">
       <Card className="vizit-dashboard-metric h-full rounded-[24px] border border-[#d39a43]/20 bg-[#fffdf9]/95 p-4 shadow-[0_14px_36px_rgba(70,34,49,0.07)] dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90 sm:p-5">
-        <div className="flex min-h-[132px] flex-col">
+        <div className="flex min-h-[108px] flex-col">
           <div className="flex items-start justify-between gap-3">
             <span className="text-[13px] font-semibold leading-5 text-[#746777] dark:text-[#cbbdca]">{title}</span>
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl border border-[#d39a43]/20 bg-[#f8eee4] text-[#6d2a63] dark:bg-white/10 dark:text-[#efcb87]">{icon}</span>

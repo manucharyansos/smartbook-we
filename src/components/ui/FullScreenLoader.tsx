@@ -9,25 +9,25 @@ export function FullScreenLoader({
     subtitle?: string;
 }) {
     return (
-        <div className="grid min-h-screen place-items-center bg-[#f5f8fb] px-6 dark:bg-[#071624]">
+        <div className="grid min-h-screen place-items-center bg-[#f5f8fb] px-6 dark:bg-[var(--vz-page)]">
             <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="w-full max-w-sm rounded-2xl border border-[#d8e3ec] bg-white p-8 text-center shadow-[0_18px_48px_rgba(7,22,36,0.09)] dark:border-[#173b57] dark:bg-[#0b2133]"
+                className="w-full max-w-sm rounded-2xl border border-[#d8e3ec] bg-white p-8 text-center shadow-[0_18px_48px_rgba(7,22,36,0.09)] dark:border-[#173b57] dark:bg-[var(--vz-surface)]"
             >
-                <div className="mx-auto grid h-14 w-14 place-items-center rounded-xl bg-gradient-to-br from-[#2578c8] to-[#378add] text-white shadow-[0_12px_28px_rgba(55,138,221,0.24)]">
+                <div className="mx-auto grid h-14 w-14 place-items-center rounded-xl bg-gradient-to-br from-[var(--vz-primary-hover)] to-[var(--vz-primary)] text-white shadow-[0_12px_28px_rgba(55,138,221,0.24)]">
                     <CalendarDays className="h-7 w-7" />
                 </div>
 
-                <div className="mt-2 text-lg font-semibold tracking-tight text-[#071624] dark:text-white">Vizit</div>
+                <div className="mt-2 text-lg font-semibold tracking-tight text-[var(--vz-text)] dark:text-white">Vizit</div>
 
                 <div className="mt-5 flex items-center justify-center gap-2">
                     <div className="flex gap-1.5">
                         {[0, 1, 2].map((i) => (
                             <motion.div
                                 key={i}
-                                className="h-2 w-2 rounded-full bg-[#378add]"
+                                className="h-2 w-2 rounded-full bg-[var(--vz-primary)]"
                                 animate={{ scale: [1, 1.4, 1], opacity: [0.5, 1, 0.5] }}
                                 transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.18 }}
                             />

@@ -1,32 +1,52 @@
-/*
- * Vizit web design system
- * One visual authority for public, booking, auth and workspace surfaces.
+/* Vizit web: the same semantic palette as vizit-mobile/src/constants/vizit-theme.ts.
+ * Shared by desktop, mobile web, booking, auth and both workspaces.
+ * Keep brand emphasis separate from action colors so both themes stay readable.
  */
-
-:root {
+:root,
+html.dark {
   color-scheme: light;
-  --vz-navy-950: #071624;
-  --vz-navy-900: #0b2133;
-  --vz-navy-850: #0e2940;
-  --vz-navy-800: #123653;
-  --vz-blue-600: #2578c8;
-  --vz-blue-500: #378add;
-  --vz-blue-400: #58a5e8;
-  --vz-blue-300: #84c1f2;
-  --vz-page: #f5f8fb;
-  --vz-page-alt: #edf3f8;
-  --vz-surface: #ffffff;
-  --vz-surface-2: #f7fafc;
-  --vz-text: #071624;
-  --vz-muted: #587189;
-  --vz-subtle: #7c92a5;
-  --vz-line: #d8e3ec;
-  --vz-line-strong: #c4d4e1;
-  --vz-focus: rgba(55, 138, 221, 0.28);
-  --vz-shadow-sm: 0 6px 18px rgba(7, 22, 36, 0.06);
-  --vz-shadow: 0 16px 42px rgba(7, 22, 36, 0.09);
-  --vz-shadow-lg: 0 30px 80px rgba(7, 22, 36, 0.13);
-
+  --vz-page: #FAF9F5;
+  --vz-page-alt: #F1EEE5;
+  --vz-surface: #FFFFFF;
+  --vz-surface-2: #F1EEE5;
+  --vz-surface-pressed: #ECE8DD;
+  --vz-text: #1C1B18;
+  --vz-text-secondary: #5C574C;
+  --vz-muted: #6B675E;
+  --vz-subtle: #6D6A61;
+  --vz-line: #E8E4D9;
+  --vz-line-strong: #D9D4C5;
+  --vz-divider: #EEEAE0;
+  --vz-primary: #1F6D5A;
+  --vz-primary-hover: #175945;
+  --vz-on-primary: #FFFFFF;
+  --vz-brand-text: #1F6D5A;
+  --vz-accent: #C9A15A;
+  --vz-accent-text: #8A6A2E;
+  --vz-accent-soft: #F6ECDA;
+  --vz-accent-subtle: #FAF4E9;
+  --vz-accent-rgb: 201 161 90;
+  --vz-success: #347651;
+  --vz-success-soft: #E7F3EA;
+  --vz-warning: #94671F;
+  --vz-warning-soft: #FBF0DC;
+  --vz-danger: #B3433F;
+  --vz-danger-soft: #FBEAE8;
+  --vz-info: #4C6FA5;
+  --vz-info-soft: #EAEFF6;
+  --vz-cover: #1F6D5A;
+  --vz-cover-deep: #154A3D;
+  --vz-cover-text: #FFFFFF;
+  --vz-cover-muted: #D7E8DF;
+  --vz-shadow-rgb: 28 27 24;
+  --vz-focus: rgb(31 109 90 / .32);
+  --vz-shadow-sm: 0 7px 18px rgb(var(--vz-shadow-rgb) / .055);
+  --vz-shadow: 0 14px 38px rgb(var(--vz-shadow-rgb) / .075);
+  --vz-shadow-lg: 0 24px 60px rgb(var(--vz-shadow-rgb) / .14);
+  --vz-radius-sm: 12px;
+  --vz-radius-md: 16px;
+  --vz-radius-lg: 22px;
+  --vz-radius-xl: 28px;
   --bb-bg: var(--vz-page);
   --bb-bg-soft: var(--vz-page-alt);
   --bb-surface: var(--vz-surface);
@@ -35,39 +55,61 @@
   --bb-border-strong: var(--vz-line-strong);
   --bb-text: var(--vz-text);
   --bb-text-muted: var(--vz-muted);
-  --bb-primary: var(--vz-blue-500);
-  --bb-primary-strong: var(--vz-blue-600);
-  --bb-primary-soft: #e5f2fd;
+  --bb-primary: var(--vz-primary);
+  --bb-primary-strong: var(--vz-primary-hover);
+  --bb-primary-soft: var(--vz-accent-soft);
   --bb-shadow: var(--vz-shadow);
   --bb-shadow-soft: var(--vz-shadow-sm);
-
   --vizit-ink: var(--vz-text);
-  --vizit-plum: var(--vz-blue-500);
-  --vizit-plum-deep: var(--vz-blue-600);
-  --vizit-teal: var(--vz-blue-500);
-  --vizit-gold: var(--vz-blue-400);
+  --vizit-plum: var(--vz-primary);
+  --vizit-plum-deep: var(--vz-primary-hover);
+  --vizit-teal: var(--vz-brand-text);
+  --vizit-gold: var(--vz-accent);
   --vizit-public-bg: var(--vz-page);
   --vizit-public-surface: var(--vz-surface);
   --vizit-public-muted: var(--vz-muted);
   --vizit-public-line: var(--vz-line);
 }
-
 html.dark {
   color-scheme: dark;
-  --vz-page: #071624;
-  --vz-page-alt: #091c2c;
-  --vz-surface: #0b2133;
-  --vz-surface-2: #0e2940;
-  --vz-text: #f4f8fc;
-  --vz-muted: #a7bed1;
-  --vz-subtle: #7895ac;
-  --vz-line: #173b57;
-  --vz-line-strong: #245171;
-  --vz-focus: rgba(88, 165, 232, 0.35);
-  --vz-shadow-sm: 0 8px 22px rgba(0, 0, 0, 0.18);
-  --vz-shadow: 0 18px 46px rgba(0, 0, 0, 0.25);
-  --vz-shadow-lg: 0 32px 90px rgba(0, 0, 0, 0.34);
-  --bb-primary-soft: #123653;
+  --vz-page: #18191A;
+  --vz-page-alt: #202123;
+  --vz-surface: #242527;
+  --vz-surface-2: #2B2C2F;
+  --vz-surface-pressed: #323335;
+  --vz-text: #F2F0EA;
+  --vz-text-secondary: #C7C3B8;
+  --vz-muted: #9C988D;
+  --vz-subtle: #9C9992;
+  --vz-line: #333335;
+  --vz-line-strong: #3F4042;
+  --vz-divider: #2C2D2F;
+  --vz-primary: #EFE9DC;
+  --vz-primary-hover: #DCD5C4;
+  --vz-on-primary: #1C1B18;
+  --vz-brand-text: #6BC7A4;
+  --vz-accent: #49B08D;
+  --vz-accent-text: #6BC7A4;
+  --vz-accent-soft: rgb(73 176 141 / .16);
+  --vz-accent-subtle: rgb(73 176 141 / .08);
+  --vz-accent-rgb: 73 176 141;
+  --vz-success: #5FBE95;
+  --vz-success-soft: rgb(95 190 149 / .16);
+  --vz-warning: #D7AD5E;
+  --vz-warning-soft: rgb(215 173 94 / .16);
+  --vz-danger: #E28783;
+  --vz-danger-soft: rgb(226 135 131 / .16);
+  --vz-info: #7FA3D1;
+  --vz-info-soft: rgb(127 163 209 / .16);
+  --vz-cover: #303B37;
+  --vz-cover-deep: #202925;
+  --vz-cover-text: #F2F0EA;
+  --vz-cover-muted: #C7C3B8;
+  --vz-shadow-rgb: 0 0 0;
+  --vz-focus: rgb(107 199 164 / .4);
+  --vz-shadow-sm: 0 7px 18px rgb(0 0 0 / .14);
+  --vz-shadow: 0 14px 38px rgb(0 0 0 / .2);
+  --vz-shadow-lg: 0 24px 60px rgb(0 0 0 / .3);
 }
 
 html { scroll-behavior: smooth; }
@@ -77,7 +119,7 @@ body {
   font-family: "Rubik", "Noto Sans Armenian", ui-sans-serif, system-ui, sans-serif;
 }
 button, input, select, textarea { font: inherit; }
-::selection { background: rgba(55, 138, 221, 0.3); }
+::selection { background: rgb(var(--vz-accent-rgb) / 0.3); }
 
 :where(a, button, input, select, textarea):focus-visible {
   outline: 3px solid var(--vz-focus);
@@ -112,7 +154,7 @@ button, input, select, textarea { font: inherit; }
 .vizit-landing-header { background: transparent !important; box-shadow: none !important; }
 .vizit-landing-header .vizit-header-shell {
   border: 1px solid color-mix(in srgb, var(--vz-line) 86%, transparent) !important;
-  border-radius: 16px;
+  border-radius: 22px;
   background: color-mix(in srgb, var(--vz-surface) 90%, transparent) !important;
   box-shadow: var(--vz-shadow-sm) !important;
   backdrop-filter: blur(18px) saturate(125%);
@@ -134,14 +176,14 @@ button, input, select, textarea { font: inherit; }
   display: inline-flex;
   min-height: 40px;
   align-items: center;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 0 11px;
   color: var(--vz-muted) !important;
   font-size: 13px;
   font-weight: 600;
   transition: 160ms ease;
 }
-.vizit-nav-link:hover { background: var(--vz-page-alt); color: var(--vz-blue-500) !important; }
+.vizit-nav-link:hover { background: var(--vz-page-alt); color: var(--vz-accent-text) !important; }
 .vizit-header-control,
 .vizit-header-control > button,
 .vizit-menu-button,
@@ -160,7 +202,7 @@ button, input, select, textarea { font: inherit; }
   align-items: center;
   justify-content: center;
   border: 1px solid var(--vz-line);
-  border-radius: 10px !important;
+  border-radius: 12px !important;
 }
 .vizit-header-login,
 .vizit-primary-action,
@@ -170,11 +212,11 @@ button, input, select, textarea { font: inherit; }
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 1px solid var(--vz-blue-500) !important;
-  border-radius: 10px !important;
-  background: var(--vz-blue-500) !important;
-  color: #fff !important;
-  box-shadow: 0 10px 24px rgba(55, 138, 221, 0.22) !important;
+  border: 1px solid var(--vz-primary) !important;
+  border-radius: 12px !important;
+  background: var(--vz-primary) !important;
+  color: var(--vz-on-primary) !important;
+  box-shadow: 0 10px 24px rgb(var(--vz-accent-rgb) / 0.22) !important;
   font-size: 13px;
   font-weight: 700;
 }
@@ -182,10 +224,10 @@ button, input, select, textarea { font: inherit; }
 .vizit-primary-action { padding: 0 18px; }
 .vizit-header-login:hover,
 .vizit-primary-action:hover,
-.vizit-search-submit:hover { background: var(--vz-blue-600) !important; }
+.vizit-search-submit:hover { background: var(--vz-primary-hover) !important; }
 .vizit-mobile-menu {
   border: 1px solid var(--vz-line) !important;
-  border-radius: 16px !important;
+  border-radius: 22px !important;
   background: var(--vz-surface) !important;
   box-shadow: var(--vz-shadow-lg) !important;
 }
@@ -195,12 +237,12 @@ button, input, select, textarea { font: inherit; }
   min-height: 46px;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
+  border-radius: 12px;
   color: var(--vz-text) !important;
   font-size: 14px;
   font-weight: 600;
 }
-.vizit-mobile-nav-link:hover { background: var(--vz-page-alt); color: var(--vz-blue-500) !important; }
+.vizit-mobile-nav-link:hover { background: var(--vz-page-alt); color: var(--vz-accent-text) !important; }
 .vizit-mobile-login,
 .vizit-mobile-theme { border: 1px solid var(--vz-line) !important; background: var(--vz-surface-2) !important; }
 .vizit-language-menu {
@@ -210,7 +252,7 @@ button, input, select, textarea { font: inherit; }
 }
 .vizit-language-option { color: var(--vz-text) !important; }
 .vizit-language-option:hover,
-.vizit-language-option.is-active { background: var(--vz-page-alt) !important; color: var(--vz-blue-500) !important; }
+.vizit-language-option.is-active { background: var(--vz-page-alt) !important; color: var(--vz-accent-text) !important; }
 
 /* Public pages foundation */
 .vizit-public-page,
@@ -227,65 +269,66 @@ button, input, select, textarea { font: inherit; }
 
 /* Home hero */
 #top.vizit-hero-section {
-  min-height: 680px;
+  min-height: 640px !important;
   padding: 120px 24px 58px !important;
   background:
-    radial-gradient(circle at 82% 8%, rgba(55, 138, 221, 0.25), transparent 33rem),
-    linear-gradient(145deg, #071624 0%, #0b2133 60%, #0e2940 100%) !important;
-  color: #f4f8fc !important;
+    radial-gradient(ellipse at 85% 15%, var(--vz-accent-soft), transparent 45%), var(--vz-page) !important;
+  color: var(--vz-text) !important;
 }
 #top.vizit-hero-section > div.absolute { opacity: 0 !important; }
 .vizit-hero-grid { max-width: 1240px !important; }
 .vizit-hero-copy { position: relative; z-index: 2; max-width: 630px !important; }
 .vizit-hero-badge,
 .vizit-business-page main [class*="border-[#1e9e92]"] {
-  border-color: rgba(132, 193, 242, 0.24) !important;
-  background: rgba(55, 138, 221, 0.12) !important;
-  color: #b9dcfa !important;
+  border-color: rgb(var(--vz-accent-rgb) / 0.24) !important;
+  background: rgb(var(--vz-accent-rgb) / 0.12) !important;
+  color: var(--vz-accent-text) !important;
   box-shadow: none !important;
 }
-.vizit-hero-badge > span:first-child { background: var(--vz-blue-400) !important; }
+.vizit-hero-badge > span:first-child { background: var(--vz-accent) !important; }
 #top h1 {
   max-width: 660px;
   margin-top: 24px !important;
-  color: #f4f8fc !important;
-  font-size: clamp(44px, 4.6vw, 64px) !important;
+  color: var(--vz-text) !important;
+  font-size: clamp(38px, 4.2vw, 60px) !important;
   font-weight: 700 !important;
-  line-height: 1.03 !important;
+  line-height: 1.12 !important;
 }
-#top h1 span { color: var(--vz-blue-300) !important; -webkit-text-fill-color: var(--vz-blue-300) !important; }
-#top .vizit-hero-copy > p { color: #a9c2d6 !important; font-size: 16px !important; line-height: 1.75 !important; }
+#top h1 span { color: var(--vz-brand-text) !important; -webkit-text-fill-color: var(--vz-brand-text) !important; }
+#top .vizit-hero-copy > p { color: var(--vz-muted) !important; font-size: 16px !important; line-height: 1.75 !important; }
 .vizit-search-panel {
   width: 100%;
   max-width: 700px !important;
   margin-top: 26px !important;
-  padding: 7px !important;
-  border: 1px solid #214865 !important;
-  border-radius: 14px !important;
-  background: rgba(7, 22, 36, 0.78) !important;
-  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.23) !important;
+  padding: 8px !important;
+  border: 1px solid var(--vz-line) !important;
+  border-radius: 22px !important;
+  background: var(--vz-surface) !important;
+  box-shadow: var(--vz-shadow) !important;
   backdrop-filter: blur(18px);
+  border-color: var(--vz-line) !important;
 }
 .vizit-search-panel > div { gap: 4px !important; }
 .vizit-search-field,
 .vizit-location-button {
-  border-color: #214865 !important;
-  border-radius: 10px !important;
-  background: #0b2133 !important;
-  color: #f4f8fc !important;
+  border-color: var(--vz-line) !important;
+  border-radius: 12px !important;
+  background: var(--vz-surface) !important;
+  color: var(--vz-text) !important;
 }
-.vizit-search-panel :is(input, span) { color: #d7e6f2 !important; }
-.vizit-search-panel input::placeholder { color: #7693aa !important; }
-.vizit-search-panel svg { color: var(--vz-blue-400) !important; }
+.vizit-search-panel :is(input, .vizit-location-button span) { color: var(--vz-text-secondary) !important; }
+.vizit-search-panel input::placeholder { color: var(--vz-subtle) !important; }
+.vizit-search-panel svg { color: var(--vz-accent-text) !important; }
+.vizit-search-panel .vizit-search-submit :is(svg, span) { color: var(--vz-on-primary) !important; }
 .vizit-search-submit { min-width: 112px; }
 .vizit-hero-chips button {
-  border-color: #214865 !important;
-  background: rgba(14, 41, 64, 0.8) !important;
-  color: #a9c2d6 !important;
+  border-color: var(--vz-line) !important;
+  background: color-mix(in srgb, var(--vz-surface) 80%, transparent) !important;
+  color: var(--vz-muted) !important;
 }
-.vizit-hero-chips button:hover { border-color: var(--vz-blue-400) !important; color: #fff !important; }
-.vizit-hero-proof { color: #9db7ca !important; }
-.vizit-hero-proof svg { color: var(--vz-blue-400) !important; }
+.vizit-hero-chips button:hover { border-color: var(--vz-accent) !important; color: var(--vz-text) !important; }
+.vizit-hero-proof { color: var(--vz-muted) !important; }
+.vizit-hero-proof svg { color: var(--vz-accent-text) !important; }
 
 /* Hero product preview */
 .vizit-hero-showcase {
@@ -301,7 +344,7 @@ button, input, select, textarea { font: inherit; }
   z-index: 2;
   width: min(370px, 84%);
   padding: 8px;
-  border: 1px solid #315a77;
+  border: 1px solid var(--vz-line-strong);
   border-radius: 36px;
   background: #020a11;
   box-shadow: 0 34px 76px rgba(0, 0, 0, 0.35);
@@ -324,17 +367,17 @@ button, input, select, textarea { font: inherit; }
   min-height: 540px;
   padding: 39px 14px 67px;
   border-radius: 29px;
-  background: #071624;
-  color: #f4f8fc;
+  background: var(--vz-page);
+  color: var(--vz-text);
 }
 .vizit-phone-header { display: grid; grid-template-columns: 28px 1fr 28px; align-items: center; gap: 8px; padding: 0 2px 14px; }
-.vizit-phone-header > svg { width: 18px; color: #8aa8be; }
+.vizit-phone-header > svg { width: 18px; color: var(--vz-subtle); }
 .vizit-phone-header .vizit-brand { justify-self: center; gap: 5px; }
 .vizit-phone-header .vizit-brand-mark { width: 23px; height: 23px; }
-.vizit-phone-header .vizit-brand-text { color: #fff !important; font-size: 16px; }
+.vizit-phone-header .vizit-brand-text { color: var(--vz-text) !important; font-size: 16px; }
 .vizit-phone-bell { position: relative; display: grid; justify-self: end; place-items: center; }
-.vizit-phone-bell svg { width: 18px; height: 18px; color: #8aa8be; }
-.vizit-phone-bell i { position: absolute; top: -2px; right: -1px; width: 6px; height: 6px; border-radius: 50%; background: var(--vz-blue-400); }
+.vizit-phone-bell svg { width: 18px; height: 18px; color: var(--vz-subtle); }
+.vizit-phone-bell i { position: absolute; top: -2px; right: -1px; width: 6px; height: 6px; border-radius: 50%; background: var(--vz-accent); }
 .vizit-phone-search,
 .vizit-phone-location {
   display: flex;
@@ -342,45 +385,45 @@ button, input, select, textarea { font: inherit; }
   align-items: center;
   gap: 9px;
   padding: 0 12px;
-  border: 1px solid #173b57;
-  border-radius: 11px;
-  background: #0b2133;
-  color: #8daabe;
+  border: 1px solid var(--vz-line);
+  border-radius: 12px;
+  background: var(--vz-surface);
+  color: var(--vz-muted);
   font-size: 10px;
 }
 .vizit-phone-location { min-height: 38px; margin-top: 7px; }
 .vizit-phone-search svg,
-.vizit-phone-location svg { width: 15px; height: 15px; flex: 0 0 auto; color: var(--vz-blue-400); }
+.vizit-phone-location svg { width: 15px; height: 15px; flex: 0 0 auto; color: var(--vz-accent-text); }
 .vizit-phone-location span { flex: 1; }
 .vizit-phone-categories { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; }
-.vizit-phone-category { min-width: 0; padding: 7px 3px; border: 1px solid #173b57; border-radius: 11px; background: #0b2133; text-align: center; }
-.vizit-phone-category-icon { display: grid; width: 34px; height: 34px; place-items: center; margin: 0 auto; border-radius: 9px; background: #123653 !important; color: var(--vz-blue-300); }
+.vizit-phone-category { min-width: 0; padding: 7px 3px; border: 1px solid var(--vz-line); border-radius: 12px; background: var(--vz-surface); text-align: center; }
+.vizit-phone-category-icon { display: grid; width: 34px; height: 34px; place-items: center; margin: 0 auto; border-radius: 9px; background: var(--vz-accent-soft) !important; color: var(--vz-accent-text); }
 .vizit-phone-category-icon svg { width: 18px; height: 18px; }
-.vizit-phone-category > span:last-child { display: block; overflow: hidden; margin-top: 5px; color: #a9c2d6; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
-.vizit-phone-section-head { display: flex; align-items: center; justify-content: space-between; margin-top: 15px; color: #e6f0f8; font-size: 11px; }
-.vizit-phone-section-head span { display: inline-flex; align-items: center; gap: 4px; color: var(--vz-blue-300); font-size: 8px; }
+.vizit-phone-category > span:last-child { display: block; overflow: hidden; margin-top: 5px; color: var(--vz-muted); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.vizit-phone-section-head { display: flex; align-items: center; justify-content: space-between; margin-top: 15px; color: var(--vz-text); font-size: 11px; }
+.vizit-phone-section-head span { display: inline-flex; align-items: center; gap: 4px; color: var(--vz-accent-text); font-size: 8px; }
 .vizit-phone-section-head svg { width: 11px; }
 .vizit-phone-businesses { display: grid; gap: 7px; margin-top: 9px; }
-.vizit-phone-business { display: grid; grid-template-columns: 43px minmax(0, 1fr) auto; align-items: center; gap: 9px; padding: 7px; border: 1px solid #173b57; border-radius: 11px; background: #0b2133; }
-.vizit-phone-business-cover { display: grid; width: 43px; height: 43px; place-items: center; border-radius: 9px; background: #123653 !important; color: var(--vz-blue-300); }
+.vizit-phone-business { display: grid; grid-template-columns: 43px minmax(0, 1fr) auto; align-items: center; gap: 9px; padding: 7px; border: 1px solid var(--vz-line); border-radius: 12px; background: var(--vz-surface); }
+.vizit-phone-business-cover { display: grid; width: 43px; height: 43px; place-items: center; border-radius: 9px; background: var(--vz-accent-soft) !important; color: var(--vz-accent-text); }
 .vizit-phone-business-cover svg { width: 18px; }
 .vizit-phone-business-copy { min-width: 0; }
 .vizit-phone-business-copy strong,
 .vizit-phone-business-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.vizit-phone-business-copy strong { color: #f4f8fc; font-size: 10px; }
-.vizit-phone-business-copy small { margin-top: 2px; color: #7895ac; font-size: 7px; }
-.vizit-phone-business-copy > span { display: flex; align-items: center; gap: 2px; margin-top: 3px; color: #b9dcfa; font-size: 7px; }
+.vizit-phone-business-copy strong { color: var(--vz-text); font-size: 10px; }
+.vizit-phone-business-copy small { margin-top: 2px; color: var(--vz-subtle); font-size: 7px; }
+.vizit-phone-business-copy > span { display: flex; align-items: center; gap: 2px; margin-top: 3px; color: var(--vz-accent-text); font-size: 7px; }
 .vizit-phone-business-copy > span svg { width: 8px; height: 8px; fill: currentColor; }
-.vizit-phone-business-place { color: #7895ac; font-size: 7px; }
-.vizit-phone-dock { position: absolute; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: repeat(5, 1fr); padding: 8px 7px 10px; border-top: 1px solid #173b57; background: rgba(11, 33, 51, 0.96); }
-.vizit-phone-dock > span { display: grid; place-items: center; gap: 2px; color: #68869c; }
-.vizit-phone-dock > span.is-active { color: var(--vz-blue-400); }
+.vizit-phone-business-place { color: var(--vz-subtle); font-size: 7px; }
+.vizit-phone-dock { position: absolute; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: repeat(5, 1fr); padding: 8px 7px 10px; border-top: 1px solid var(--vz-line); background: color-mix(in srgb, var(--vz-surface) 96%, transparent); }
+.vizit-phone-dock > span { display: grid; place-items: center; gap: 2px; color: var(--vz-subtle); }
+.vizit-phone-dock > span.is-active { color: var(--vz-accent-text); }
 .vizit-phone-dock svg { width: 14px; height: 14px; }
 .vizit-phone-dock small { max-width: 52px; overflow: hidden; font-size: 6px; text-overflow: ellipsis; white-space: nowrap; }
-.vizit-floating-card { position: absolute; z-index: 4; display: flex; align-items: center; gap: 9px; min-width: 150px; padding: 10px 12px; border: 1px solid #245171 !important; border-radius: 12px !important; background: rgba(11, 33, 51, 0.95) !important; color: #f4f8fc !important; box-shadow: 0 18px 44px rgba(0, 0, 0, 0.25) !important; backdrop-filter: blur(14px); }
-.vizit-floating-card svg { width: 20px; color: var(--vz-blue-400); }
+.vizit-floating-card { position: absolute; z-index: 4; display: flex; align-items: center; gap: 9px; min-width: 150px; padding: 10px 12px; border: 1px solid var(--vz-line) !important; border-radius: 16px !important; background: color-mix(in srgb, var(--vz-surface) 95%, transparent) !important; color: var(--vz-text) !important; box-shadow: 0 18px 44px rgba(0, 0, 0, 0.25) !important; backdrop-filter: blur(14px); }
+.vizit-floating-card svg { width: 20px; color: var(--vz-accent-text); }
 .vizit-floating-card span { display: grid; }
-.vizit-floating-card small { color: #7895ac; font-size: 8px; }
+.vizit-floating-card small { color: var(--vz-subtle); font-size: 8px; }
 .vizit-floating-card strong { margin-top: 1px; font-size: 13px; }
 .vizit-floating-card-time { top: 21%; left: -2%; }
 .vizit-floating-card-place { right: -2%; bottom: 22%; }
@@ -406,136 +449,137 @@ button, input, select, textarea { font: inherit; }
   color: var(--vz-text) !important;
   box-shadow: var(--vz-shadow-sm) !important;
 }
-.vizit-categories-section > div { border-radius: 18px !important; }
+.vizit-categories-section > div { border-radius: 22px !important; }
 .vizit-category-slider button {
   min-height: 116px !important;
   border-color: var(--vz-line) !important;
-  border-radius: 14px !important;
+  border-radius: 16px !important;
   background: var(--vz-surface-2) !important;
   box-shadow: none !important;
 }
-.vizit-category-slider button:hover { border-color: var(--vz-blue-400) !important; transform: translateY(-2px); }
-.vizit-category-slider button > span:first-child { background: #e5f2fd !important; color: var(--vz-blue-600) !important; }
-html.dark .vizit-category-slider button > span:first-child { background: #123653 !important; color: var(--vz-blue-300) !important; }
+.vizit-category-slider button:hover { border-color: var(--vz-accent) !important; transform: translateY(-2px); }
+.vizit-category-slider button > span:first-child { background: var(--vz-accent-soft) !important; color: var(--vz-primary-hover) !important; }
+html.dark .vizit-category-slider button > span:first-child { background: var(--vz-accent-soft) !important; color: var(--vz-accent-text) !important; }
 .vizit-category-slider button > span:last-child { color: var(--vz-text) !important; }
 .vizit-how-section { padding: 64px 24px !important; }
-.vizit-how-section > div { max-width: 1200px !important; border: 1px solid var(--vz-line) !important; border-radius: 18px !important; padding: 34px !important; }
+.vizit-how-section > div { max-width: 1200px !important; border: 1px solid var(--vz-line) !important; border-radius: 22px !important; padding: 34px !important; }
 .vizit-how-section article,
 .vizit-how-section [class*="rounded-"] { border-color: var(--vz-line) !important; background: var(--vz-surface-2) !important; color: var(--vz-text) !important; box-shadow: none !important; }
 .vizit-how-section p { color: var(--vz-muted) !important; }
-.vizit-how-section svg { color: var(--vz-blue-500) !important; }
+.vizit-how-section svg { color: var(--vz-accent-text) !important; }
 .vizit-map-section { padding: 64px 24px !important; }
 .vizit-map-layout { gap: 20px !important; }
-.vizit-yandex-map-shell { overflow: hidden; border-color: var(--vz-line) !important; border-radius: 18px !important; box-shadow: var(--vz-shadow) !important; }
-.vizit-map-panel { border: 1px solid var(--vz-line) !important; border-radius: 18px !important; padding: 16px !important; }
+.vizit-yandex-map-shell { overflow: hidden; border-color: var(--vz-line) !important; border-radius: 22px !important; box-shadow: var(--vz-shadow) !important; }
+.vizit-map-panel { border: 1px solid var(--vz-line) !important; border-radius: 22px !important; padding: 16px !important; }
 .vizit-map-panel-heading,
 .vizit-map-business-name { color: var(--vz-text) !important; }
 .vizit-map-panel-eyebrow,
-.vizit-map-business-category { color: var(--vz-blue-500) !important; }
+.vizit-map-business-category { color: var(--vz-accent-text) !important; }
 .vizit-map-business-card,
-.vizit-map-panel-empty { border-color: var(--vz-line) !important; background: var(--vz-surface-2) !important; border-radius: 14px !important; }
-.vizit-map-business-card.is-active { border-color: var(--vz-blue-500) !important; }
+.vizit-map-panel-empty { border-color: var(--vz-line) !important; background: var(--vz-surface-2) !important; border-radius: 16px !important; }
+.vizit-map-business-card.is-active { border-color: var(--vz-primary) !important; }
 .vizit-map-business-address { color: var(--vz-muted) !important; }
 .vizit-map-business-book,
 .vizit-business-actions > a:first-child,
-.vizit-business-mobile-actions > a:first-child { border-color: var(--vz-blue-500) !important; background: var(--vz-blue-500) !important; color: #fff !important; }
+.vizit-business-mobile-actions > a:first-child { border-color: var(--vz-primary) !important; background: var(--vz-primary) !important; color: var(--vz-on-primary) !important; }
 .vizit-map-business-view,
 .vizit-business-actions > a:last-child,
-.vizit-business-mobile-actions > a:last-child { border-color: var(--vz-line) !important; background: var(--vz-surface) !important; color: var(--vz-blue-500) !important; }
+.vizit-business-mobile-actions > a:last-child { border-color: var(--vz-line) !important; background: var(--vz-surface) !important; color: var(--vz-accent-text) !important; }
 .vizit-yandex-marker--service,
 .vizit-yandex-marker--healthcare,
-.vizit-yandex-marker--active { background: var(--vz-blue-500) !important; }
-.vizit-yandex-user-marker { background: var(--vz-blue-300) !important; box-shadow: 0 0 0 10px rgba(55, 138, 221, 0.2), 0 8px 18px rgba(7, 22, 36, 0.3) !important; }
+.vizit-yandex-marker--active { background: var(--vz-primary) !important; color: var(--vz-on-primary) !important; }
+.vizit-yandex-user-marker { background: var(--vz-accent-text) !important; box-shadow: 0 0 0 10px rgb(var(--vz-accent-rgb) / 0.2), 0 8px 18px rgb(var(--vz-shadow-rgb) / 0.3) !important; }
 .vizit-businesses-section { padding: 68px 24px !important; }
 .vizit-business-directory-card {
   border-color: var(--vz-line) !important;
-  border-radius: 16px !important;
+  border-radius: 22px !important;
   background: var(--vz-surface) !important;
   color: var(--vz-text) !important;
   box-shadow: var(--vz-shadow-sm) !important;
 }
-.vizit-business-directory-card:hover { border-color: var(--vz-blue-400) !important; box-shadow: var(--vz-shadow) !important; }
-.vizit-business-card-media { background: var(--vz-navy-900) !important; }
-.vizit-business-cover-fallback { background: linear-gradient(145deg, #0b2133 0%, #123653 56%, #2578c8 145%) !important; }
-.vizit-business-cover-orb { background: rgba(88, 165, 232, 0.22) !important; }
-.vizit-business-category-pill { border-color: rgba(255,255,255,.18) !important; background: rgba(7,22,36,.7) !important; color: #fff !important; }
+.vizit-business-directory-card:hover { border-color: var(--vz-accent) !important; box-shadow: var(--vz-shadow) !important; }
+.vizit-business-card-media { background: var(--vz-cover) !important; }
+.vizit-business-cover-fallback { background: linear-gradient(145deg, var(--vz-cover-deep), var(--vz-cover)) !important; }
+.vizit-business-cover-orb { background: rgb(var(--vz-accent-rgb) / 0.22) !important; }
+.vizit-business-category-pill { border-color: rgba(255,255,255,.18) !important; background: color-mix(in srgb, var(--vz-surface) 70%, transparent) !important; color: var(--vz-text) !important; }
 .vizit-business-description,
 .vizit-business-stats,
 .vizit-business-mobile-meta { color: var(--vz-muted) !important; }
 .vizit-business-mobile-title { color: var(--vz-text) !important; }
 .vizit-business-stats > div { border-color: var(--vz-line) !important; background: var(--vz-surface-2) !important; }
 .vizit-plans-section { padding: 68px 24px !important; }
-.vizit-plans-grid > div { border: 1px solid var(--vz-line) !important; border-radius: 16px !important; }
+.vizit-plans-grid > div { border: 1px solid var(--vz-line) !important; border-radius: 22px !important; }
 .vizit-plans-grid h3,
 .vizit-plans-grid [class*="text-3xl"] { color: var(--vz-text) !important; }
 .vizit-plans-grid p { color: var(--vz-muted) !important; }
 .vizit-business-cta { padding: 0 24px 76px !important; }
 .vizit-business-cta > div {
-  border: 1px solid #214d70 !important;
-  border-radius: 18px !important;
-  background: linear-gradient(135deg, #071624, #0e2940) !important;
-  color: #f4f8fc !important;
-  box-shadow: var(--vz-shadow-lg) !important;
+  border: 1px solid var(--vz-line-strong) !important;
+  border-radius: 22px !important;
+  background: var(--vz-primary) !important;
+  color: var(--vz-on-primary) !important;
+  box-shadow: var(--vz-shadow-sm) !important;
+  border-color: var(--vz-primary) !important;
 }
-.vizit-business-cta h2 { color: #fff !important; }
-.vizit-business-cta p { color: #a9c2d6 !important; }
-.vizit-business-cta a { border-radius: 10px !important; }
+.vizit-business-cta h2 { color: var(--vz-on-primary) !important; }
+.vizit-business-cta p { color: var(--vz-on-primary) !important; }
+.vizit-business-cta a { border-radius: 12px !important; }
 .vizit-mobile-dock { display: none !important; }
 
 /* Business marketing page */
 .vizit-business-hero,
 #workflow,
 .vizit-business-final-card {
-  background: linear-gradient(145deg, #071624, #0b2133 62%, #0e2940) !important;
-  color: #f4f8fc !important;
+  background: var(--vz-page-alt) !important;
+  color: var(--vz-text) !important;
 }
 .vizit-business-hero h1,
 .vizit-business-hero h1 span,
 #workflow h2,
-.vizit-business-final-card h2 { color: #f4f8fc !important; -webkit-text-fill-color: #f4f8fc !important; }
+.vizit-business-final-card h2 { color: var(--vz-text) !important; -webkit-text-fill-color: var(--vz-text) !important; }
 .vizit-business-hero p,
 #workflow p,
-.vizit-business-final-card p { color: #a9c2d6 !important; }
+.vizit-business-final-card p { color: var(--vz-muted) !important; }
 .vizit-business-page main > section:not(.vizit-business-hero):not(#workflow) { background: var(--vz-page) !important; color: var(--vz-text) !important; }
 .vizit-business-page main article,
 .vizit-business-page main > section > div[class*="rounded-"] {
   border-color: var(--vz-line) !important;
   background: var(--vz-surface) !important;
   color: var(--vz-text) !important;
-  border-radius: 16px !important;
+  border-radius: 22px !important;
   box-shadow: var(--vz-shadow-sm) !important;
 }
 .vizit-business-page main h2,
 .vizit-business-page main h3 { color: var(--vz-text) !important; }
 .vizit-business-page main p { color: var(--vz-muted) !important; }
-#workflow .vizit-business-workflow-card { border-color: #245171 !important; background: #0e2940 !important; color: #fff !important; }
-#workflow .vizit-business-workflow-card h3 { color: #fff !important; }
-#workflow .vizit-business-workflow-card p { color: #a9c2d6 !important; }
-.vizit-business-final-card { border-color: #245171 !important; background: linear-gradient(145deg, #071624, #15558e) !important; }
-.vizit-business-final-primary { background: #fff !important; color: #15558e !important; }
-.vizit-business-final-secondary { border-color: rgba(255,255,255,.24) !important; background: rgba(255,255,255,.07) !important; color: #fff !important; }
+#workflow .vizit-business-workflow-card { border-color: var(--vz-line) !important; background: var(--vz-surface-2) !important; color: var(--vz-text) !important; }
+#workflow .vizit-business-workflow-card h3 { color: var(--vz-text) !important; }
+#workflow .vizit-business-workflow-card p { color: var(--vz-muted) !important; }
+.vizit-business-final-card { border-color: var(--vz-line) !important; background: var(--vz-surface) !important; }
+.vizit-business-final-primary { background: var(--vz-primary) !important; color: var(--vz-on-primary) !important; }
+.vizit-business-final-secondary { border-color: var(--vz-line) !important; background: var(--vz-surface-2) !important; color: var(--vz-text) !important; }
 
 /* Client cabinet */
 .vizit-client-page { background: var(--vz-page) !important; color: var(--vz-text) !important; }
 .vizit-client-page > div > div:first-child {
-  border-color: #245171 !important;
-  border-radius: 18px !important;
-  background: linear-gradient(145deg, #071624, #0b2133 62%, #15558e) !important;
-  color: #f4f8fc !important;
+  border-color: var(--vz-primary) !important;
+  border-radius: 22px !important;
+  background: var(--vz-primary) !important;
+  color: var(--vz-on-primary) !important;
   box-shadow: var(--vz-shadow) !important;
 }
-.vizit-client-page > div > div:first-child h1 { color: #fff !important; }
-.vizit-client-page > div > div:first-child p { color: #a9c2d6 !important; }
+.vizit-client-page > div > div:first-child h1 { color: var(--vz-on-primary) !important; }
+.vizit-client-page > div > div:first-child p { color: var(--vz-on-primary) !important; }
 .vizit-client-page > div > div:first-child > div > div:first-child > div:first-child {
-  border-color: #245171 !important;
-  background: rgba(55, 138, 221, 0.12) !important;
-  color: #b9dcfa !important;
+  border-color: var(--vz-line) !important;
+  background: rgb(var(--vz-accent-rgb) / 0.12) !important;
+  color: var(--vz-accent-text) !important;
 }
-.vizit-client-page > div > div:first-child :is(a, button) { border-radius: 10px !important; }
-.vizit-client-page > div > div:first-child button { background: var(--vz-blue-500) !important; }
+.vizit-client-page > div > div:first-child :is(a, button) { border-radius: 12px !important; }
+.vizit-client-page > div > div:first-child button { background: var(--vz-primary) !important; color: var(--vz-on-primary) !important; }
 .vizit-client-page section {
   border-color: var(--vz-line) !important;
-  border-radius: 16px !important;
+  border-radius: 22px !important;
   background: var(--vz-surface) !important;
   color: var(--vz-text) !important;
   box-shadow: var(--vz-shadow-sm) !important;
@@ -557,19 +601,19 @@ html.dark .vizit-client-page :is(.text-slate-400, .text-slate-500, .text-slate-6
 .vizit-booking-page { background: var(--vz-page) !important; }
 .vizit-business-profile-backdrop,
 .vizit-booking-hero {
-  border-color: #245171 !important;
-  border-radius: 18px !important;
-  background: linear-gradient(145deg, #071624, #0b2133 62%, #15558e) !important;
-  color: #f4f8fc !important;
+  border-color: var(--vz-line) !important;
+  border-radius: 22px !important;
+  background: var(--vz-surface) !important;
+  color: var(--vz-text) !important;
   box-shadow: var(--vz-shadow) !important;
 }
-.vizit-business-profile-cover { border-color: #315a77 !important; border-radius: 14px !important; background: #0e2940 !important; }
+.vizit-business-profile-cover { border-color: var(--vz-line-strong) !important; border-radius: 16px !important; background: var(--vz-surface-2) !important; }
 .vizit-business-profile-summary h1,
-.vizit-booking-hero h1 { color: #fff !important; }
+.vizit-booking-hero h1 { color: var(--vz-text) !important; }
 .vizit-business-profile-summary p,
-.vizit-booking-hero p { color: #bad0e1 !important; }
+.vizit-booking-hero p { color: var(--vz-muted) !important; }
 .vizit-booking-hero-badge,
-.vizit-booking-hero-stat { border: 1px solid #245171 !important; background: rgba(55, 138, 221, 0.12) !important; color: #d9eaf7 !important; }
+.vizit-booking-hero-stat { border: 1px solid var(--vz-line) !important; background: rgb(var(--vz-accent-rgb) / 0.12) !important; color: var(--vz-text-secondary) !important; }
 .vizit-public-detail-page main > section,
 .vizit-public-detail-page main [class*="rounded-[32px]"],
 .vizit-booking-page main > div > div > section,
@@ -587,14 +631,14 @@ html.dark .vizit-client-page :is(.text-slate-400, .text-slate-500, .text-slate-6
   border-color: var(--vz-line) !important;
   background: var(--vz-surface-2) !important;
   color: var(--vz-text) !important;
-  border-radius: 12px !important;
+  border-radius: 16px !important;
   box-shadow: none !important;
 }
 .vizit-profile-service-image {
   width: 100% !important;
   min-width: 100% !important;
   border: 1px solid var(--vz-line);
-  background: linear-gradient(145deg, #0b2133, #15558e) !important;
+  background: linear-gradient(145deg, var(--vz-surface), var(--vz-primary)) !important;
 }
 .vizit-profile-service-image > img {
   display: block !important;
@@ -604,16 +648,16 @@ html.dark .vizit-client-page :is(.text-slate-400, .text-slate-500, .text-slate-6
   object-fit: cover !important;
 }
 .vizit-booking-mode-card.is-active,
-.vizit-smart-slot.is-active { border-color: var(--vz-blue-500) !important; background: #e5f2fd !important; }
+.vizit-smart-slot.is-active { border-color: var(--vz-primary) !important; background: var(--vz-accent-soft) !important; }
 html.dark .vizit-booking-mode-card.is-active,
-html.dark .vizit-smart-slot.is-active { background: #123653 !important; }
+html.dark .vizit-smart-slot.is-active { background: var(--vz-accent-soft) !important; }
 .vizit-booking-mode-title,
 .vizit-smart-slot-title { color: var(--vz-text) !important; }
 .vizit-booking-mode-description,
 .vizit-smart-slot-reason { color: var(--vz-muted) !important; }
 :is(.vizit-public-detail-page, .vizit-booking-page) :is(input, select, textarea) {
   border-color: var(--vz-line) !important;
-  border-radius: 10px !important;
+  border-radius: 12px !important;
   background: var(--vz-surface-2) !important;
   color: var(--vz-text) !important;
 }
@@ -622,62 +666,62 @@ html.dark .vizit-smart-slot.is-active { background: #123653 !important; }
 :is(.vizit-public-detail-page, .vizit-booking-page) :is(button, a)[class*="from-violet"],
 :is(.vizit-public-detail-page, .vizit-booking-page) :is(button, a)[class*="from-fuchsia"],
 :is(.vizit-public-detail-page, .vizit-booking-page) :is(button, a)[class*="from-[#5b214f]"] {
-  border-color: var(--vz-blue-500) !important;
-  background: var(--vz-blue-500) !important;
-  color: #fff !important;
+  border-color: var(--vz-primary) !important;
+  background: var(--vz-primary) !important;
+  color: var(--vz-on-primary) !important;
 }
 
 /* Authentication and onboarding */
 .vizit-auth-shell {
-  background: #071624 !important;
-  color: #f4f8fc !important;
+  background: var(--vz-page) !important;
+  color: var(--vz-text) !important;
 }
 .vizit-onboarding-page { background: var(--vz-page) !important; color: var(--vz-text) !important; }
 .vizit-auth-backdrop {
   background:
-    radial-gradient(circle at 12% 4%, rgba(55, 138, 221, 0.24), transparent 30rem),
-    radial-gradient(circle at 92% 86%, rgba(88, 165, 232, 0.13), transparent 28rem),
-    linear-gradient(145deg, #071624, #0b2133 62%, #0e2940) !important;
+    radial-gradient(ellipse at 5% 0%, var(--vz-accent-soft), transparent 40%), radial-gradient(ellipse at 100% 100%, var(--vz-accent-subtle), transparent 45%), var(--vz-page) !important;
 }
-.vizit-auth-glow { pointer-events: none; background: rgba(55, 138, 221, 0.18) !important; }
-.vizit-auth-glow-right { background: rgba(88, 165, 232, 0.11) !important; }
-.vizit-onboarding-rail { background: linear-gradient(145deg, #071624, #0b2133 62%, #15558e) !important; }
+.vizit-auth-glow { pointer-events: none; background: rgb(var(--vz-accent-rgb) / 0.18) !important; }
+.vizit-auth-glow-right { background: rgb(var(--vz-accent-rgb) / 0.11) !important; }
+.vizit-onboarding-rail { background: linear-gradient(145deg, var(--vz-page), var(--vz-surface) 62%, var(--vz-primary)) !important; }
 .vizit-auth-back-link,
 .vizit-auth-language-control {
-  border-color: rgba(132, 193, 242, 0.2) !important;
-  background: rgba(11, 33, 51, 0.88) !important;
-  color: #d9eaf7 !important;
+  border-color: rgb(var(--vz-accent-rgb) / 0.2) !important;
+  background: color-mix(in srgb, var(--vz-surface) 88%, transparent) !important;
+  color: var(--vz-text-secondary) !important;
 }
 .vizit-auth-language-control > .vizit-language-root > .vizit-language-button,
 .vizit-auth-language-control > .vizit-theme-toggle {
   border-color: transparent !important;
   background-color: transparent !important;
-  color: #d9eaf7 !important;
+  color: var(--vz-text-secondary) !important;
 }
-.vizit-auth-aside { color: #f4f8fc !important; }
+.vizit-auth-aside { color: var(--vz-text) !important; }
 .vizit-auth-badge {
-  border-color: #245171 !important;
-  background: rgba(55, 138, 221, 0.12) !important;
-  color: #b9dcfa !important;
+  border-color: var(--vz-line) !important;
+  background: rgb(var(--vz-accent-rgb) / 0.12) !important;
+  color: var(--vz-accent-text) !important;
 }
-.vizit-auth-side-title { color: #f4f8fc !important; }
-.vizit-auth-side-copy { color: #a9c2d6 !important; }
+.vizit-auth-side-title { color: var(--vz-text) !important; }
+.vizit-auth-side-copy { color: var(--vz-muted) !important; }
 .vizit-auth-feature {
-  border-color: #173b57 !important;
-  background: rgba(11, 33, 51, 0.78) !important;
-  color: #c6d9e8 !important;
+  border-color: var(--vz-line) !important;
+  background: transparent !important;
+  color: var(--vz-text-secondary) !important;
+  box-shadow: none !important;
 }
-.vizit-auth-feature-icon { background: #123653 !important; color: #84c1f2 !important; }
+.vizit-auth-feature-icon { background: var(--vz-accent-soft) !important; color: var(--vz-accent-text) !important; }
 .vizit-auth-card {
-  border-color: rgba(132, 193, 242, 0.28) !important;
-  background: rgba(255, 255, 255, 0.98) !important;
-  color: #071624 !important;
-  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28) !important;
+  border-color: var(--vz-line) !important;
+  background: var(--vz-surface) !important;
+  color: var(--vz-text) !important;
+  box-shadow: var(--vz-shadow) !important;
+  border-radius: 28px !important;
 }
-.vizit-auth-card-title { color: #071624 !important; }
+.vizit-auth-card-title { color: var(--vz-text) !important; }
 .vizit-auth-card-subtitle,
 .vizit-auth-card-tagline,
-.vizit-auth-footer { color: #587189 !important; }
+.vizit-auth-footer { color: var(--vz-muted) !important; }
 .vizit-auth-card form {
   border: 0 !important;
   border-radius: 0 !important;
@@ -686,20 +730,20 @@ html.dark .vizit-smart-slot.is-active { background: #123653 !important; }
   box-shadow: none !important;
 }
 html.dark .vizit-auth-card {
-  border-color: #245171 !important;
-  background: rgba(11, 33, 51, 0.98) !important;
-  color: #f4f8fc !important;
+  border-color: var(--vz-line) !important;
+  background: var(--vz-surface) !important;
+  color: var(--vz-text) !important;
 }
 html.dark .vizit-auth-card-title,
 html.dark .vizit-auth-card .vizit-brand-text,
-html.dark .vizit-auth-card :is(.text-slate-800, .text-slate-900, .text-slate-950) { color: #f4f8fc !important; }
+html.dark .vizit-auth-card :is(.text-slate-800, .text-slate-900, .text-slate-950) { color: var(--vz-text) !important; }
 html.dark .vizit-auth-card-subtitle,
 html.dark .vizit-auth-card-tagline,
 html.dark .vizit-auth-card .vizit-auth-footer,
-html.dark .vizit-auth-card :is(.text-slate-400, .text-slate-500, .text-slate-600, .text-slate-700) { color: #a7bed1 !important; }
+html.dark .vizit-auth-card :is(.text-slate-400, .text-slate-500, .text-slate-600, .text-slate-700) { color: var(--vz-muted) !important; }
 html.dark .vizit-auth-card :is(.bg-white, [class*="bg-white/"], .bg-slate-50, .bg-slate-100) {
-  border-color: #173b57 !important;
-  background-color: #0e2940 !important;
+  border-color: var(--vz-line) !important;
+  background-color: var(--vz-surface-2) !important;
 }
 .vizit-auth-choice-card,
 .vizit-auth-choice-note {
@@ -707,12 +751,12 @@ html.dark .vizit-auth-card :is(.bg-white, [class*="bg-white/"], .bg-slate-50, .b
   background: var(--vz-surface-2) !important;
   color: var(--vz-text) !important;
 }
-.vizit-auth-choice-business { background: linear-gradient(145deg, #e5f2fd, #fff) !important; }
+.vizit-auth-choice-business { background: linear-gradient(145deg, var(--vz-accent-soft), var(--vz-surface)) !important; }
 .vizit-auth-choice-note { color: var(--vz-muted) !important; }
-html.dark .vizit-auth-choice-business { background: linear-gradient(145deg, #123653, #0e2940) !important; }
+html.dark .vizit-auth-choice-business { background: linear-gradient(145deg, var(--vz-accent-soft), var(--vz-surface-2)) !important; }
 .vizit-onboarding-card {
   border-color: var(--vz-line) !important;
-  border-radius: 16px !important;
+  border-radius: 22px !important;
   background: var(--vz-surface) !important;
   color: var(--vz-text) !important;
   box-shadow: var(--vz-shadow) !important;
@@ -720,26 +764,26 @@ html.dark .vizit-auth-choice-business { background: linear-gradient(145deg, #123
 .vizit-auth-shell :is(input, select, textarea),
 .vizit-onboarding-page :is(input, select, textarea) {
   border-color: var(--vz-line) !important;
-  border-radius: 10px !important;
+  border-radius: 12px !important;
   background: var(--vz-surface-2) !important;
   color: var(--vz-text) !important;
 }
 .vizit-auth-card :is(button[type="submit"], .vizit-social-provider-button),
-.vizit-auth-card a[class*="bg-"] { border-radius: 10px !important; }
+.vizit-auth-card a[class*="bg-"] { border-radius: 12px !important; }
 .vizit-auth-card [class*="from-violet-50"] {
   border-color: var(--vz-line) !important;
-  background-color: #edf6fd !important;
-  background-image: linear-gradient(145deg, #edf6fd, #fff) !important;
+  background-color: var(--vz-accent-subtle) !important;
+  background-image: linear-gradient(145deg, var(--vz-accent-subtle), var(--vz-surface)) !important;
 }
 html.dark .vizit-auth-card [class*="from-violet-50"] {
-  background-color: #0e2940 !important;
-  background-image: linear-gradient(145deg, #0e2940, #0b2133) !important;
+  background-color: var(--vz-surface-2) !important;
+  background-image: linear-gradient(145deg, var(--vz-surface-2), var(--vz-surface)) !important;
 }
 .vizit-registration-classifier,
 .vizit-registration-type-option { border-color: var(--vz-line) !important; background: var(--vz-surface-2) !important; color: var(--vz-text) !important; }
-.vizit-registration-type-option { border-radius: 12px !important; }
-.vizit-registration-type-option[aria-checked="true"] { border-color: var(--vz-blue-500) !important; background: #e5f2fd !important; }
-html.dark .vizit-registration-type-option[aria-checked="true"] { background: #123653 !important; }
+.vizit-registration-type-option { border-radius: 16px !important; }
+.vizit-registration-type-option[aria-checked="true"] { border-color: var(--vz-primary) !important; background: var(--vz-accent-soft) !important; }
+html.dark .vizit-registration-type-option[aria-checked="true"] { background: var(--vz-accent-soft) !important; }
 
 /* Business workspace */
 .vizit-admin-shell {
@@ -760,19 +804,19 @@ html.dark .vizit-registration-type-option[aria-checked="true"] { background: #12
   background: color-mix(in srgb, var(--admin-surface) 96%, transparent) !important;
   color: var(--admin-text) !important;
 }
-.vizit-admin-sidebar > div > div { border-radius: 16px !important; box-shadow: var(--vz-shadow-sm) !important; }
+.vizit-admin-sidebar > div > div { border-radius: 22px !important; box-shadow: var(--vz-shadow-sm) !important; }
 .vizit-admin-nav-link,
 .vizit-admin-drawer-link,
 .vizit-admin-bottom-link,
-.vizit-admin-bottom-more { color: var(--admin-muted) !important; border-radius: 10px !important; }
+.vizit-admin-bottom-more { color: var(--admin-muted) !important; border-radius: 12px !important; }
 .vizit-admin-nav-link:hover,
 .vizit-admin-drawer-link:hover { background: var(--admin-surface-2) !important; color: var(--admin-text) !important; }
 .vizit-admin-nav-active-bg,
-.vizit-admin-drawer-link.is-active { background: var(--vz-blue-500) !important; }
-.vizit-admin-bottom-link.is-active { color: var(--vz-blue-500) !important; }
-.vizit-admin-bottom-link.is-active .vizit-admin-bottom-icon { background: #e5f2fd !important; }
-html.dark .vizit-admin-bottom-link.is-active .vizit-admin-bottom-icon { background: #123653 !important; }
-.vizit-dashboard-hero { border-color: #245171 !important; border-radius: 16px !important; background: linear-gradient(135deg, #071624, #0e2940) !important; color: #f4f8fc !important; }
+.vizit-admin-drawer-link.is-active { background: var(--vz-primary) !important; color: var(--vz-on-primary) !important; }
+.vizit-admin-bottom-link.is-active { color: var(--vz-accent-text) !important; }
+.vizit-admin-bottom-link.is-active .vizit-admin-bottom-icon { background: var(--vz-accent-soft) !important; }
+html.dark .vizit-admin-bottom-link.is-active .vizit-admin-bottom-icon { background: var(--vz-accent-soft) !important; }
+.vizit-dashboard-hero { border-color: var(--vz-primary) !important; border-radius: 22px !important; background: var(--vz-primary) !important; color: var(--vz-on-primary) !important; box-shadow: none !important; }
 .vizit-dashboard-metric,
 .vizit-dashboard-panel,
 .vizit-admin-shell main :is([class~="bg-white"], [class*="bg-white/"], [class~="bg-slate-50"]) {
@@ -781,9 +825,9 @@ html.dark .vizit-admin-bottom-link.is-active .vizit-admin-bottom-icon { backgrou
   color: var(--admin-text) !important;
 }
 .vizit-dashboard-metric,
-.vizit-dashboard-panel { border-radius: 14px !important; box-shadow: var(--vz-shadow-sm) !important; }
+.vizit-dashboard-panel { border-radius: 16px !important; box-shadow: var(--vz-shadow-sm) !important; }
 .vizit-admin-shell main :is(input, select, textarea) { border-color: var(--admin-border) !important; background: var(--admin-surface-2) !important; color: var(--admin-text) !important; }
-.vizit-workspace-badge { border-color: var(--admin-border) !important; background: var(--admin-surface-2) !important; color: var(--vz-blue-500) !important; }
+.vizit-workspace-badge { border-color: var(--admin-border) !important; background: var(--admin-surface-2) !important; color: var(--vz-accent-text) !important; }
 .vizit-admin-shell main .bb-surface { box-shadow: var(--vz-shadow-sm) !important; }
 .vizit-admin-shell main :is(h1, h2, h3, h4) { color: var(--admin-text); }
 html.dark .vizit-admin-shell main :is(.text-slate-800, .text-slate-900, .text-slate-950) { color: var(--admin-text) !important; }
@@ -804,35 +848,35 @@ html.dark .vizit-admin-shell main :is(.text-slate-400, .text-slate-500, .text-sl
 .vizit-admin-shell :is(
   [class*="text-[#6d2a63]"], [class*="text-[#5b2fa8]"], [class*="text-[#3e1f78]"],
   [class*="text-[#d39a43]"], [class*="text-[#e7bc6b]"], [class*="text-[#efcb87]"], [class*="text-[#b77a20]"]
-) { color: var(--vz-blue-500) !important; }
+) { color: var(--vz-accent-text) !important; }
 .vizit-admin-shell :is(
   [class*="text-[#756777]"], [class*="text-[#746777]"], [class*="text-[#665764]"],
   [class*="text-[#6b6178]"], [class*="text-[#cbbdca]"], [class*="text-[#b7adc5]"]
 ) { color: var(--admin-muted) !important; }
 .vizit-admin-shell [class*="from-[#2b0d35]"]:not([class*="bg-clip-text"]),
 .vizit-admin-shell [class*="from-[#6d2a63]"]:not([class*="bg-clip-text"]) {
-  border-color: var(--vz-blue-500) !important;
-  background-image: linear-gradient(135deg, var(--vz-blue-600), var(--vz-blue-500)) !important;
-  color: #fff !important;
+  border-color: var(--vz-primary) !important;
+  background-image: linear-gradient(135deg, var(--vz-primary-hover), var(--vz-primary)) !important;
+  color: var(--vz-on-primary) !important;
 }
 
 /* Normalize the old violet utility palette inside Vizit-owned screens. */
 :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page, .vizit-admin-shell)
-  :is(.text-violet-400, .text-violet-500, .text-violet-600, .text-violet-700, .text-violet-800, .text-indigo-500, .text-indigo-600, .text-indigo-700, .text-fuchsia-600, .text-fuchsia-700) { color: var(--vz-blue-500) !important; }
+  :is(.text-violet-400, .text-violet-500, .text-violet-600, .text-violet-700, .text-violet-800, .text-indigo-500, .text-indigo-600, .text-indigo-700, .text-fuchsia-600, .text-fuchsia-700) { color: var(--vz-accent-text) !important; }
 html.dark :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page, .vizit-admin-shell)
-  :is([class*="dark:text-violet-"], [class*="dark:text-indigo-"], [class*="dark:text-fuchsia-"]) { color: var(--vz-blue-300) !important; }
+  :is([class*="dark:text-violet-"], [class*="dark:text-indigo-"], [class*="dark:text-fuchsia-"]) { color: var(--vz-accent-text) !important; }
 :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page, .vizit-admin-shell)
-  :is(.bg-violet-50, .bg-violet-100, .bg-indigo-50, .bg-indigo-100, .bg-fuchsia-50, .bg-fuchsia-100, [class*="bg-violet-50/"], [class*="bg-indigo-50/"], [class*="bg-fuchsia-50/"]) { background-color: #e5f2fd !important; }
+  :is(.bg-violet-50, .bg-violet-100, .bg-indigo-50, .bg-indigo-100, .bg-fuchsia-50, .bg-fuchsia-100, [class*="bg-violet-50/"], [class*="bg-indigo-50/"], [class*="bg-fuchsia-50/"]) { background-color: var(--vz-accent-soft) !important; }
 html.dark :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page, .vizit-admin-shell)
-  :is(.bg-violet-50, .bg-violet-100, .bg-indigo-50, .bg-indigo-100, .bg-fuchsia-50, .bg-fuchsia-100, [class*="bg-violet-50/"], [class*="bg-indigo-50/"], [class*="bg-fuchsia-50/"]) { background-color: #123653 !important; }
+  :is(.bg-violet-50, .bg-violet-100, .bg-indigo-50, .bg-indigo-100, .bg-fuchsia-50, .bg-fuchsia-100, [class*="bg-violet-50/"], [class*="bg-indigo-50/"], [class*="bg-fuchsia-50/"]) { background-color: var(--vz-accent-soft) !important; }
 html.dark :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page, .vizit-admin-shell)
-  :is([class*="dark:bg-violet-"], [class*="dark:bg-indigo-"], [class*="dark:bg-fuchsia-"]) { background-color: #123653 !important; }
+  :is([class*="dark:bg-violet-"], [class*="dark:bg-indigo-"], [class*="dark:bg-fuchsia-"]) { background-color: var(--vz-accent-soft) !important; }
 :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page, .vizit-admin-shell)
   :is(.border-violet-100, .border-violet-200, .border-violet-300, .border-violet-400, .border-indigo-100, .border-indigo-200, .border-fuchsia-100, .border-fuchsia-200) { border-color: var(--vz-line) !important; }
 :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page, .vizit-admin-shell)
   :is(.bg-violet-500, .bg-violet-600, .bg-violet-700, .bg-indigo-500, .bg-indigo-600, .bg-fuchsia-500, .bg-fuchsia-600) {
-  background-color: var(--vz-blue-500) !important;
-  color: #fff !important;
+  background-color: var(--vz-primary) !important;
+  color: var(--vz-on-primary) !important;
 }
 .vizit-admin-shell [class*="from-violet-600"]:not([class*="bg-clip-text"]),
 .vizit-admin-shell [class*="from-indigo-600"]:not([class*="bg-clip-text"]),
@@ -843,9 +887,9 @@ html.dark :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page
 .vizit-onboarding-page [class*="from-violet-600"]:not([class*="bg-clip-text"]),
 .vizit-onboarding-page [class*="from-indigo-600"]:not([class*="bg-clip-text"]),
 .vizit-onboarding-page [class*="from-fuchsia-600"]:not([class*="bg-clip-text"]) {
-  background-color: var(--vz-blue-500) !important;
-  background-image: linear-gradient(135deg, var(--vz-blue-600), var(--vz-blue-500)) !important;
-  color: #fff !important;
+  background-color: var(--vz-primary) !important;
+  background-image: linear-gradient(135deg, var(--vz-primary-hover), var(--vz-primary)) !important;
+  color: var(--vz-on-primary) !important;
 }
 :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page, .vizit-admin-shell)
   :is(button, a, [role="button"], [role="radio"], .vizit-admin-nav-active-bg)[class*="from-violet-500"],
@@ -857,24 +901,24 @@ html.dark :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page
   :is(button, a, [role="button"], [role="radio"], .vizit-admin-nav-active-bg)[class*="from-fuchsia-500"],
 :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page, .vizit-admin-shell)
   :is(button, a, [role="button"], [role="radio"], .vizit-admin-nav-active-bg)[class*="from-fuchsia-600"] {
-  border-color: var(--vz-blue-500) !important;
-  background-color: var(--vz-blue-500) !important;
-  background-image: linear-gradient(135deg, var(--vz-blue-600), var(--vz-blue-500)) !important;
-  color: #fff !important;
-  box-shadow: 0 12px 28px rgba(55, 138, 221, 0.22) !important;
+  border-color: var(--vz-primary) !important;
+  background-color: var(--vz-primary) !important;
+  background-image: linear-gradient(135deg, var(--vz-primary-hover), var(--vz-primary)) !important;
+  color: var(--vz-on-primary) !important;
+  box-shadow: 0 12px 28px rgb(var(--vz-accent-rgb) / 0.22) !important;
 }
 .vizit-admin-shell .font-serif { font-family: "Rubik", "Noto Sans Armenian", ui-sans-serif, system-ui, sans-serif !important; }
 .vizit-admin-content .admin-page > :first-child[class*="bg-[radial-gradient"]:not(.vizit-dashboard-hero):not(.vizit-preserve-dark) {
   border-color: var(--admin-border) !important;
   background-color: var(--admin-surface) !important;
-  background-image: radial-gradient(circle at top right, rgba(55, 138, 221, 0.12), transparent 38%) !important;
+  background-image: radial-gradient(circle at top right, rgb(var(--vz-accent-rgb) / 0.12), transparent 38%) !important;
 }
 .vizit-onboarding-rail-head {
-  border-color: #245171 !important;
-  background: linear-gradient(135deg, #0b2133, #15558e) !important;
+  border-color: var(--vz-line) !important;
+  background: linear-gradient(135deg, var(--vz-surface), var(--vz-primary)) !important;
 }
 
-/* Remove the last inline traces of the previous cream / plum theme. */
+/* Compatibility for feature screens that still use legacy color utilities. */
 :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page)
   :is(
     [class*="border-[#d39a43]"], [class*="border-[#e8c77f]"], [class*="border-[#e7bc6b]"],
@@ -898,7 +942,7 @@ html.dark :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page
     [class*="text-[#6d2a63]"], [class*="text-[#5b2fa8]"], [class*="text-[#3e1f78]"],
     [class*="text-[#1e9e92]"], [class*="text-[#167d74]"], [class*="text-[#efcb87]"]
   ) {
-  color: var(--vz-blue-500) !important;
+  color: var(--vz-accent-text) !important;
 }
 :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page)
   :is(
@@ -915,9 +959,9 @@ html.dark :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page
   :is(button, a)[class*="from-[#2b0d35]"],
 :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-auth-shell, .vizit-onboarding-page)
   :is(button, a)[class*="from-[#5b214f]"] {
-  border-color: var(--vz-blue-500) !important;
-  background: var(--vz-blue-500) !important;
-  color: #fff !important;
+  border-color: var(--vz-primary) !important;
+  background: var(--vz-primary) !important;
+  color: var(--vz-on-primary) !important;
 }
 
 html.dark :is(.vizit-booking-page, .vizit-public-detail-page) :is(
@@ -950,7 +994,7 @@ html.dark .vizit-admin-shell nav[class*="fixed"] {
 }
 html.dark .vizit-admin-content .admin-page > :first-child[class*="bg-[radial-gradient"]:not(.vizit-dashboard-hero):not(.vizit-preserve-dark) {
   background-color: var(--admin-surface) !important;
-  background-image: radial-gradient(circle at top right, rgba(55, 138, 221, 0.1), transparent 38%) !important;
+  background-image: radial-gradient(circle at top right, rgb(var(--vz-accent-rgb) / 0.1), transparent 38%) !important;
 }
 html.dark .vizit-admin-content :where(input, select, textarea) {
   border-color: var(--admin-border) !important;
@@ -961,9 +1005,9 @@ html.dark .vizit-admin-content :where(input, select, textarea) {
 /* Footer */
 .vizit-footer,
 .vizit-public-footer-compact {
-  border-color: #173b57 !important;
-  background: #071624 !important;
-  color: #a9c2d6 !important;
+  border-color: var(--vz-line) !important;
+  background: var(--vz-page-alt) !important;
+  color: var(--vz-muted) !important;
 }
 .vizit-footer::before,
 .vizit-footer::after,
@@ -971,15 +1015,15 @@ html.dark .vizit-admin-content :where(input, select, textarea) {
 .vizit-footer h2,
 .vizit-footer h3,
 .vizit-footer [class*="font-bold"],
-.vizit-footer .vizit-brand-text { color: #f4f8fc !important; }
+.vizit-footer .vizit-brand-text { color: var(--vz-text) !important; }
 .vizit-footer p,
 .vizit-footer a,
-.vizit-footer span { color: #a9c2d6 !important; }
-.vizit-footer a:hover { color: #fff !important; }
-.vizit-footer [class*="border-[#d39a43]"] { border-color: #173b57 !important; }
-.vizit-footer [class*="bg-[#fffaf5]"] { background: #0b2133 !important; }
-.vizit-footer-cta { border-color: #245171 !important; border-radius: 18px !important; background: linear-gradient(135deg, #0b2133, #15558e) !important; box-shadow: var(--vz-shadow) !important; }
-.vizit-scroll-top-button { border-color: var(--vz-blue-500) !important; background: var(--vz-blue-500) !important; color: #fff !important; }
+.vizit-footer span { color: var(--vz-muted) !important; }
+.vizit-footer a:hover { color: var(--vz-text) !important; }
+.vizit-footer [class*="border-[#d39a43]"] { border-color: var(--vz-line) !important; }
+.vizit-footer [class*="bg-[#fffaf5]"] { background: var(--vz-surface) !important; }
+.vizit-footer-cta { border-color: var(--vz-line) !important; border-radius: 22px !important; background: var(--vz-surface) !important; box-shadow: var(--vz-shadow-sm) !important; }
+.vizit-scroll-top-button { border-color: var(--vz-primary) !important; background: var(--vz-primary) !important; color: var(--vz-on-primary) !important; }
 
 @media (min-width: 1120px) {
   .vizit-desktop-nav,
@@ -1002,17 +1046,17 @@ html.dark .vizit-admin-content :where(input, select, textarea) {
   html { scroll-padding-top: 76px; }
   .vizit-public-page { padding-bottom: 0 !important; }
   .vizit-auth-layout { padding-right: 10px !important; padding-left: 10px !important; }
-  .vizit-auth-card { border-radius: 14px !important; padding: 18px 16px !important; }
+  .vizit-auth-card { border-radius: 16px !important; padding: 18px 16px !important; }
   .vizit-auth-card-title { margin-top: 18px !important; font-size: 25px !important; }
   .vizit-auth-card-subtitle { margin-top: 8px !important; }
   .vizit-auth-card-content > div:nth-child(2) { margin-top: 24px !important; }
   .vizit-auth-footer { margin-top: 24px !important; }
   .vizit-landing-header > div { padding: 8px 9px 0 !important; }
-  .vizit-landing-header .vizit-header-shell { border-radius: 13px; }
+  .vizit-landing-header .vizit-header-shell { border-radius: 16px; }
   .vizit-header-row { min-height: 52px; padding: 5px 6px 5px 11px; }
   .vizit-header-brand .vizit-brand-mark { width: 31px; height: 31px; }
   .vizit-header-brand .vizit-brand-text { font-size: 19px; }
-  .vizit-mobile-header-language .vizit-language-button { min-width: 66px; height: 40px; border-radius: 10px !important; }
+  .vizit-mobile-header-language .vizit-language-button { min-width: 66px; height: 40px; border-radius: 12px !important; }
 
   #top.vizit-hero-section { min-height: 0; padding: 94px 18px 42px !important; }
   #top h1 { margin-top: 19px !important; font-size: clamp(34px, 10.2vw, 43px) !important; line-height: 1.08 !important; }
@@ -1034,8 +1078,8 @@ html.dark .vizit-admin-content :where(input, select, textarea) {
   .vizit-how-section > div { border-right: 0 !important; border-left: 0 !important; border-radius: 0 !important; padding: 26px 18px !important; }
   .vizit-home-page main section h2 { font-size: 28px !important; }
   .vizit-map-section { padding: 42px 16px !important; }
-  .vizit-yandex-map-shell { min-height: 360px !important; border-radius: 14px !important; }
-  .vizit-map-panel { border-radius: 14px !important; }
+  .vizit-yandex-map-shell { min-height: 360px !important; border-radius: 16px !important; }
+  .vizit-map-panel { border-radius: 16px !important; }
   .vizit-businesses-section { padding: 46px 16px !important; }
   .vizit-business-slider { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 12px !important; overflow: visible !important; padding: 0 !important; }
   .vizit-business-directory-card { width: 100% !important; max-width: none !important; min-height: 156px; grid-template-columns: 112px minmax(0, 1fr) !important; scroll-snap-align: none !important; }
@@ -1044,24 +1088,24 @@ html.dark .vizit-admin-content :where(input, select, textarea) {
   .vizit-plans-grid { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; overflow: visible !important; padding: 0 !important; }
   .vizit-plans-grid > div { width: 100% !important; min-width: 0 !important; max-width: none !important; }
   .vizit-business-cta { padding: 0 16px 50px !important; }
-  .vizit-business-cta > div { border-radius: 16px !important; padding: 25px 20px !important; }
+  .vizit-business-cta > div { border-radius: 22px !important; padding: 25px 20px !important; }
   .vizit-footer > div.relative { padding-right: 18px !important; padding-bottom: 24px !important; padding-left: 18px !important; }
-  .vizit-footer-cta { border-radius: 16px !important; }
+  .vizit-footer-cta { border-radius: 22px !important; }
 
   .vizit-business-hero { padding-top: 108px !important; padding-bottom: 58px !important; }
   .vizit-business-hero h1 { font-size: 38px !important; line-height: 1.08 !important; }
   .vizit-business-page main > section { padding-top: 52px; padding-bottom: 52px; }
-  .vizit-business-page main article { border-radius: 14px !important; }
+  .vizit-business-page main article { border-radius: 16px !important; }
 
   .vizit-business-profile-backdrop,
-  .vizit-booking-hero { border-radius: 14px !important; }
+  .vizit-booking-hero { border-radius: 16px !important; }
   .vizit-business-profile-cover { min-height: 210px !important; }
   .vizit-business-profile-summary h1 { font-size: 28px !important; }
   .vizit-public-detail-page main,
   .vizit-booking-page main { padding-right: 14px !important; padding-left: 14px !important; }
 
   .vizit-admin-content { padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important; }
-  .vizit-admin-bottom-nav { padding-bottom: env(safe-area-inset-bottom, 0px); box-shadow: 0 -8px 24px rgba(7,22,36,.09); }
+  .vizit-admin-bottom-nav { padding-bottom: env(safe-area-inset-bottom, 0px); box-shadow: 0 -8px 24px rgb(var(--vz-shadow-rgb) / .09); }
 }
 
 @media (max-width: 390px) {
@@ -1137,8 +1181,8 @@ body,
   height: 126px;
   overflow: hidden;
   border: 0 !important;
-  border-radius: 10px;
-  background: var(--vz-navy-900) !important;
+  border-radius: 12px;
+  background: var(--vz-cover) !important;
 }
 .vizit-public-page #map .vizit-map-business-media-button > .vizit-business-card-media {
   width: 100% !important;
@@ -1227,24 +1271,24 @@ body,
   white-space: nowrap;
 }
 
-/* Full-screen map details use the same navy product language in both themes. */
+/* Full-screen map details use the same mobile product language in both themes. */
 .vizit-map-mobile-modal,
 .vizit-map-mobile-sheet,
 .vizit-map-mobile-content,
-.vizit-map-mobile-footer { background-color: #071624 !important; color: #f4f8fc !important; }
+.vizit-map-mobile-footer { background-color: var(--vz-page) !important; color: var(--vz-text) !important; }
 .vizit-map-mobile-hero,
 .vizit-map-mobile-cover-fallback {
-  background-color: #0b2133 !important;
-  background-image: radial-gradient(circle at 82% 8%, rgba(88,165,232,.3), transparent 38%), linear-gradient(145deg, #071624, #0b2133 58%, #15558e) !important;
+  background-color: var(--vz-cover) !important;
+  background-image: linear-gradient(145deg, var(--vz-cover-deep), var(--vz-cover)) !important;
 }
 .vizit-map-mobile-category,
-.vizit-map-mobile-close { border-color: #315a77 !important; background: rgba(7,22,36,.84) !important; color: #fff !important; }
-.vizit-map-mobile-hours { border-color: #245171 !important; background: #0b2133 !important; }
-.vizit-map-mobile-hours-row { border-color: #173b57 !important; }
-.vizit-map-mobile-primary { border-color: var(--vz-blue-500) !important; background: var(--vz-blue-500) !important; color: #fff !important; }
-.vizit-map-mobile-secondary { border-color: #315a77 !important; background: #0b2133 !important; color: #fff !important; }
+.vizit-map-mobile-close { border-color: var(--vz-line-strong) !important; background: color-mix(in srgb, var(--vz-surface) 84%, transparent) !important; color: var(--vz-text) !important; }
+.vizit-map-mobile-hours { border-color: var(--vz-line) !important; background: var(--vz-surface) !important; }
+.vizit-map-mobile-hours-row { border-color: var(--vz-line) !important; }
+.vizit-map-mobile-primary { border-color: var(--vz-primary) !important; background: var(--vz-primary) !important; color: var(--vz-on-primary) !important; }
+.vizit-map-mobile-secondary { border-color: var(--vz-line-strong) !important; background: var(--vz-surface) !important; color: var(--vz-text) !important; }
 
-/* Public business profile: compact cards and a true navy fallback cover. */
+/* Public business profile: compact cards and a brand-colored fallback cover. */
 .vizit-public-detail-page main > section {
   border: 0 !important;
   background: transparent !important;
@@ -1257,39 +1301,39 @@ body,
   color: var(--vz-text) !important;
 }
 .vizit-business-profile-fallback {
-  background-color: #0b2133 !important;
-  background-image: radial-gradient(circle at 82% 8%, rgba(88,165,232,.28), transparent 38%), linear-gradient(145deg, #071624, #0b2133 58%, #15558e) !important;
+  background-color: var(--vz-cover) !important;
+  background-image: linear-gradient(145deg, var(--vz-cover-deep), var(--vz-cover)) !important;
 }
 .vizit-public-detail-page main .vizit-business-profile-fallback-logo,
 .vizit-public-detail-page main .vizit-business-profile-logo {
-  border-color: #315a77 !important;
-  border-radius: 14px !important;
-  background: #0e2940 !important;
-  color: #d9eaf7 !important;
+  border-color: var(--vz-line-strong) !important;
+  border-radius: 16px !important;
+  background: var(--vz-surface-2) !important;
+  color: var(--vz-text-secondary) !important;
 }
 .vizit-business-profile-category,
 .vizit-business-profile-address {
-  border-color: rgba(132,193,242,.22) !important;
-  border-radius: 10px !important;
-  background: rgba(7,22,36,.82) !important;
-  color: #f4f8fc !important;
+  border-color: rgb(var(--vz-accent-rgb) / .22) !important;
+  border-radius: 12px !important;
+  background: color-mix(in srgb, var(--vz-surface) 82%, transparent) !important;
+  color: var(--vz-text) !important;
 }
 .vizit-business-profile-summary,
-.vizit-business-profile-summary :is(h1, h2) { color: #f4f8fc !important; }
-.vizit-business-profile-summary p { color: #bad0e1 !important; }
+.vizit-business-profile-summary :is(h1, h2) { color: var(--vz-text) !important; }
+.vizit-business-profile-summary p { color: var(--vz-muted) !important; }
 .vizit-business-profile-stat {
-  border-color: #245171 !important;
-  border-radius: 10px !important;
-  background: rgba(14,41,64,.88) !important;
-  color: #f4f8fc !important;
+  border-color: var(--vz-line) !important;
+  border-radius: 12px !important;
+  background: color-mix(in srgb, var(--vz-surface) 88%, transparent) !important;
+  color: var(--vz-text) !important;
   box-shadow: none !important;
 }
-.vizit-business-profile-stat :is(.text-slate-900, .text-slate-950) { color: #f4f8fc !important; }
-.vizit-business-profile-stat :is(.text-slate-400, .text-slate-500, .text-slate-600) { color: #9db7ca !important; }
-.vizit-business-profile-stat svg { color: var(--vz-blue-400) !important; }
+.vizit-business-profile-stat :is(.text-slate-900, .text-slate-950) { color: var(--vz-text) !important; }
+.vizit-business-profile-stat :is(.text-slate-400, .text-slate-500, .text-slate-600) { color: var(--vz-muted) !important; }
+.vizit-business-profile-stat svg { color: var(--vz-accent-text) !important; }
 .vizit-public-detail-page main .vizit-profile-section {
   border-color: var(--vz-line) !important;
-  border-radius: 16px !important;
+  border-radius: 22px !important;
   background: var(--vz-surface) !important;
   color: var(--vz-text) !important;
   box-shadow: var(--vz-shadow-sm) !important;
@@ -1298,12 +1342,12 @@ body,
   border-color: var(--vz-line) !important;
   border-radius: 9px !important;
   background: var(--vz-surface-2) !important;
-  color: var(--vz-blue-500) !important;
+  color: var(--vz-accent-text) !important;
 }
 .vizit-profile-staff-card {
   min-width: 0;
   border-color: var(--vz-line) !important;
-  border-radius: 12px !important;
+  border-radius: 16px !important;
   background: var(--vz-surface-2) !important;
   color: var(--vz-text) !important;
   box-shadow: none !important;
@@ -1312,9 +1356,9 @@ body,
 .vizit-profile-staff-availability {
   max-width: 124px;
   flex: none;
-  border-color: #245171 !important;
-  background: #123653 !important;
-  color: #b9dcfa !important;
+  border-color: var(--vz-line) !important;
+  background: var(--vz-accent-soft) !important;
+  color: var(--vz-accent-text) !important;
   text-align: center;
 }
 .vizit-profile-staff-tags span {
@@ -1322,9 +1366,9 @@ body,
   background: var(--vz-surface) !important;
   color: var(--vz-muted) !important;
 }
-.vizit-profile-staff-book { border-color: var(--vz-blue-500) !important; background: var(--vz-blue-500) !important; color: #fff !important; }
+.vizit-profile-staff-book { border-color: var(--vz-primary) !important; background: var(--vz-primary) !important; color: var(--vz-on-primary) !important; }
 .vizit-public-detail-page main .vizit-profile-why-section { background-image: none !important; }
-.vizit-profile-why-section > div:first-child { color: var(--vz-blue-500) !important; }
+.vizit-profile-why-section > div:first-child { color: var(--vz-accent-text) !important; }
 
 @media (max-width: 1023px) {
   .vizit-public-page #map .vizit-map-panel { display: none !important; }
@@ -1376,19 +1420,19 @@ body,
   .vizit-public-detail-page main,
   .vizit-booking-page main { padding-right: 0 !important; padding-left: 0 !important; }
   .vizit-public-detail-page main > section { padding-right: 12px !important; padding-left: 12px !important; }
-  .vizit-business-profile-shell { border-radius: 14px !important; }
+  .vizit-business-profile-shell { border-radius: 16px !important; }
   .vizit-business-profile-hero { gap: 8px !important; padding: 8px !important; }
-  .vizit-business-profile-cover { min-height: 230px !important; border-radius: 11px !important; }
+  .vizit-business-profile-cover { min-height: 230px !important; border-radius: 12px !important; }
   .vizit-business-profile-category { left: 12px !important; top: 12px !important; max-width: calc(100% - 24px); }
   .vizit-business-profile-address { right: 12px !important; bottom: 12px !important; left: 12px !important; }
   .vizit-business-profile-summary { padding: 14px 8px 8px !important; }
   .vizit-business-profile-summary > div:first-child { gap: 11px !important; }
   .vizit-business-profile-summary h1 { font-size: 27px !important; overflow-wrap: anywhere; }
   .vizit-business-profile-actions { margin-top: 20px !important; }
-  .vizit-business-profile-actions > :is(a, button) { border-radius: 10px !important; }
+  .vizit-business-profile-actions > :is(a, button) { border-radius: 12px !important; }
   .vizit-business-profile-stats { margin-top: 18px !important; gap: 8px !important; }
   .vizit-business-profile-stat { padding: 12px !important; }
-  .vizit-business-profile-contact { border-radius: 11px !important; padding: 8px !important; }
+  .vizit-business-profile-contact { border-radius: 12px !important; padding: 8px !important; }
   .vizit-profile-section { padding: 18px 16px !important; }
   .vizit-profile-section h2 { overflow-wrap: anywhere; }
   .vizit-profile-staff-grid { gap: 12px !important; }
@@ -1400,7 +1444,7 @@ body,
   .vizit-map-mobile-content > div { padding: 20px 18px 28px !important; }
   .vizit-map-mobile-footer { padding-right: 12px !important; padding-left: 12px !important; }
   .vizit-map-mobile-footer > div { gap: 8px !important; }
-  .vizit-map-mobile-footer a { min-height: 52px !important; border-radius: 10px !important; }
+  .vizit-map-mobile-footer a { min-height: 52px !important; border-radius: 12px !important; }
 }
 
 @media (max-width: 390px) {
@@ -1409,3 +1453,173 @@ body,
   .vizit-profile-staff-head { flex-direction: column; }
   .vizit-profile-staff-availability { max-width: 100%; align-self: flex-start; }
 }
+
+/* Shared controls and reading surfaces, matching the native component roles. */
+.vizit-surface {
+  border: 1px solid var(--vz-line);
+  border-radius: var(--vz-radius-lg);
+  background: var(--vz-surface);
+  color: var(--vz-text);
+  box-shadow: var(--vz-shadow-sm);
+}
+.vizit-button { border: 1px solid transparent; line-height: 1.4; text-align: center; }
+.vizit-button--primary { background: var(--vz-primary); color: var(--vz-on-primary); border-color: var(--vz-primary); }
+.vizit-button--primary:hover:not(:disabled) { background: var(--vz-primary-hover); border-color: var(--vz-primary-hover); }
+.vizit-button--secondary { background: var(--vz-surface); color: var(--vz-text); border-color: var(--vz-line-strong); }
+.vizit-button--secondary:hover:not(:disabled) { background: var(--vz-surface-pressed); }
+.vizit-button--ghost { color: var(--vz-accent-text); }
+.vizit-button--ghost:hover:not(:disabled) { background: var(--vz-accent-subtle); }
+.vizit-button--danger { background: var(--vz-danger-soft); color: var(--vz-danger); border-color: var(--vz-danger); }
+.vizit-button:focus-visible { outline-color: var(--vz-focus); }
+.vizit-auth-card button[type="submit"],
+.vizit-primary-action,
+.vizit-search-submit { min-height: 52px; background: var(--vz-primary) !important; color: var(--vz-on-primary) !important; box-shadow: none !important; font-weight: 600; }
+.vizit-search-submit svg { color: var(--vz-on-primary) !important; }
+.vizit-auth-shell :is(input, select, textarea), .bb-input {
+  min-height: 52px;
+  border-radius: var(--vz-radius-md) !important;
+  border-color: var(--vz-line-strong) !important;
+  background: var(--vz-surface) !important;
+  color: var(--vz-text) !important;
+  font-size: 1rem;
+}
+.vizit-auth-shell :is(input, select, textarea)::placeholder,
+.bb-input::placeholder { color: var(--vz-subtle); opacity: 1; }
+.vizit-auth-shell :is(input, select, textarea):focus,
+.bb-input:focus { border-color: var(--vz-accent) !important; box-shadow: 0 0 0 3px var(--vz-accent-soft) !important; }
+.vizit-auth-layout { gap: 48px; }
+.vizit-auth-side-title { font-size: clamp(36px, 3.5vw, 48px); letter-spacing: -.025em; }
+.vizit-auth-feature { padding: 14px 0; border-width: 0 0 1px; border-radius: 0; }
+.vizit-auth-card-title { line-height: 1.3; letter-spacing: -.025em; }
+.vizit-auth-card :is(label, .text-slate-700) { color: var(--vz-text-secondary); }
+.vizit-auth-back-link { min-width: 44px; min-height: 44px; justify-content: center; }
+.vizit-auth-back-link a { min-height: 30px; }
+.vizit-auth-glow { opacity: .3; }
+.vizit-brand-mark { border-radius: var(--vz-radius-md); }
+
+/* Preserve a quiet, consistent hierarchy on every screen. */
+:is(.vizit-public-page, .vizit-client-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-admin-shell, .vizit-auth-shell, .vizit-onboarding-page, .vizit-superadmin-shell) :is(.text-slate-500, .text-slate-600, .text-gray-500, .text-gray-600) { color: var(--vz-muted); }
+:is(.vizit-public-page, .vizit-client-page, .vizit-public-detail-page, .vizit-booking-page, .vizit-admin-shell, .vizit-auth-shell, .vizit-onboarding-page, .vizit-superadmin-shell) :is(.text-slate-900, .text-slate-950, .text-gray-900, [class*="text-[#321c37]"]) { color: var(--vz-text); }
+.vizit-admin-shell :is([class*="text-[#8a7888]"], [class*="text-[#786675]"]) { color: var(--vz-muted) !important; }
+.vizit-admin-shell main :is(.font-black, .font-extrabold) { font-weight: 700; }
+.vizit-home-page main section h2 { font-size: clamp(28px, 3.1vw, 40px) !important; line-height: 1.25 !important; letter-spacing: -.025em !important; }
+.vizit-hero-badge { font-size: 12px; font-weight: 600; }
+.vizit-hero-proof { font-size: 13px; }
+.vizit-hero-chips button { min-height: 40px; }
+.vizit-category-slider button > span:first-child { border-radius: var(--vz-radius-md); }
+.vizit-business-directory-card { overflow: hidden; }
+.vizit-business-directory-card:hover { transform: translateY(-2px); }
+.vizit-search-panel, .vizit-phone-frame, .vizit-floating-card { box-shadow: var(--vz-shadow) !important; }
+.vizit-phone-screen { background: var(--vz-page); }
+.vizit-phone-frame { background: var(--vz-line-strong); border-color: var(--vz-line-strong); transform: rotate(1deg); }
+.vizit-floating-card { border-color: var(--vz-line) !important; background: var(--vz-surface) !important; }
+.vizit-floating-card svg, .vizit-phone-business-copy > span { color: var(--vz-accent-text); }
+.vizit-phone-dock { background: var(--vz-surface); }
+.vizit-phone-dock > span.is-active { color: var(--vz-accent-text); }
+.vizit-header-login { color: var(--vz-on-primary) !important; box-shadow: none !important; }
+.vizit-header-login:hover { color: var(--vz-on-primary) !important; }
+.vizit-business-cta > div :is(a, button) { background: var(--vz-surface) !important; color: var(--vz-text) !important; border-color: var(--vz-line) !important; min-height: 48px; }
+.vizit-business-cta > div p { opacity: .85; }
+
+/* Business navigation follows the native accent selection state. */
+.vizit-admin-shell { background-image: none; }
+.vizit-admin-shell .vizit-admin-nav-link.is-active,
+.vizit-admin-shell .vizit-admin-drawer-link.is-active { color: var(--vz-accent-text) !important; background: var(--vz-accent-soft) !important; box-shadow: none !important; }
+.vizit-admin-shell .vizit-admin-nav-link.is-active :is(span, svg),
+.vizit-admin-shell .vizit-admin-drawer-link.is-active :is(span, svg) { color: var(--vz-accent-text) !important; }
+.vizit-admin-shell .vizit-admin-nav-link .vizit-admin-nav-active-bg { background: var(--vz-accent-soft) !important; background-image: none !important; box-shadow: none !important; }
+.vizit-admin-nav-link, .vizit-admin-drawer-link { min-height: 48px; }
+.vizit-admin-bottom-link.is-active { color: var(--vz-accent-text) !important; }
+.vizit-admin-bottom-icon { border-radius: var(--vz-radius-sm); }
+.vizit-admin-shell .vizit-dashboard-hero :is(h1, p, span, svg) { color: var(--vz-on-primary) !important; }
+.vizit-admin-shell .vizit-dashboard-hero h1 { font-size: clamp(28px, 3vw, 36px); line-height: 1.2; }
+.vizit-admin-shell .vizit-dashboard-hero p { opacity: .85; }
+.vizit-admin-shell .vizit-dashboard-hero a { background: var(--vz-surface) !important; background-image: none !important; color: var(--vz-text) !important; border-color: var(--vz-line) !important; box-shadow: none !important; }
+.vizit-admin-shell .vizit-dashboard-hero a svg { color: var(--vz-text) !important; }
+.vizit-admin-shell .vizit-dashboard-hero [class*="rounded-full"] { background: transparent !important; border-color: currentColor !important; }
+.vizit-dashboard-metric strong { font-family: inherit; font-weight: 600; font-variant-numeric: tabular-nums; }
+.vizit-dashboard-metric > div > div > span:last-child { background: var(--vz-accent-subtle) !important; color: var(--vz-accent-text) !important; border-color: var(--vz-line) !important; }
+.vizit-client-page > div > div:first-child :is(a, button) { background: var(--vz-surface) !important; color: var(--vz-text) !important; border-color: var(--vz-line) !important; }
+
+/* Cover overlays stay readable over business photographs. */
+.vizit-business-category-pill, .vizit-business-profile-category, .vizit-business-profile-address,
+.vizit-map-mobile-category, .vizit-map-mobile-close { background: rgb(28 27 24 / .7) !important; border-color: rgb(255 255 255 / .2) !important; color: #FFFFFF !important; }
+.vizit-business-cover-fallback, .vizit-business-profile-fallback, .vizit-map-mobile-cover-fallback { color: var(--vz-cover-text); }
+.vizit-business-cover-fallback :is(svg, span, strong, p),
+.vizit-business-profile-fallback :is(svg, span, strong, p),
+.vizit-map-mobile-cover-fallback :is(svg, span, strong, p) { color: var(--vz-cover-text); }
+.vizit-map-mobile-content :is(h1,h2,h3) { color: var(--vz-text) !important; }
+.vizit-map-mobile-content :is(p, .text-slate-300, .text-slate-400) { color: var(--vz-muted) !important; }
+.vizit-map-mobile-secondary { color: var(--vz-text) !important; }
+.vizit-map-mobile-footer { border-color: var(--vz-line) !important; }
+.vizit-yandex-marker--service { background: var(--vz-cover) !important; color: var(--vz-cover-text) !important; }
+.vizit-yandex-marker--healthcare { background: var(--vz-info) !important; color: var(--vz-page) !important; }
+.vizit-yandex-marker--active { background: var(--vz-primary) !important; color: var(--vz-on-primary) !important; }
+.vizit-yandex-user-marker { background: var(--vz-brand-text) !important; }
+
+/* Calendar chrome uses the same surfaces; booking status colors remain distinct. */
+.calendar-shell .fc {
+  --fc-border-color: var(--vz-line);
+  --fc-page-bg-color: var(--vz-surface);
+  --fc-neutral-bg-color: var(--vz-surface-2);
+  --fc-neutral-text-color: var(--vz-muted);
+  --fc-today-bg-color: var(--vz-accent-subtle);
+  --fc-highlight-color: var(--vz-accent-soft);
+  --fc-now-indicator-color: var(--vz-accent-text);
+  color: var(--vz-text);
+}
+.calendar-shell .fc :is(.fc-col-header-cell,.fc-timegrid-axis,.fc-timegrid-slot-label) { background: var(--vz-surface); }
+.calendar-shell .fc :is(.fc-col-header-cell-cushion,.fc-timegrid-axis-cushion,.fc-timegrid-slot-label-cushion) { color: var(--vz-muted); }
+.calendar-shell .fc .fc-highlight { background: var(--vz-accent-soft); }
+.calendar-shell .fc .fc-timegrid-slot-lane:hover { background: var(--vz-accent-subtle); }
+.calendar-shell .fc .fc-timegrid-now-indicator-line { border-color: var(--vz-accent-text); }
+.calendar-shell .fc .fc-timegrid-now-indicator-arrow { border-color: var(--vz-accent-text); }
+
+.vizit-superadmin-shell { background: var(--vz-page); color: var(--vz-text); }
+.vizit-superadmin-shell header, .vizit-superadmin-sidebar { background: var(--vz-surface); border-color: var(--vz-line); color: var(--vz-text); }
+.vizit-superadmin-sidebar :is(.text-white, [class*="text-white/"]) { color: var(--vz-muted); }
+.vizit-superadmin-shell :is(.bg-white, [class*="bg-white/"], .bg-slate-50) { background-color: var(--vz-surface); border-color: var(--vz-line); }
+.vizit-superadmin-shell :is([class*="from-violet-"], [class*="from-fuchsia-"], .bg-violet-50) { background: var(--vz-accent-soft); color: var(--vz-accent-text); box-shadow: none; }
+.vizit-superadmin-shell :is(.text-violet-600,.text-violet-700,.text-fuchsia-600) { color: var(--vz-accent-text); }
+
+@media (max-width: 767px) {
+  .vizit-auth-layout { padding: 86px 20px 32px !important; }
+  .vizit-auth-card { border-radius: 22px !important; padding: 24px 20px !important; }
+  .vizit-auth-card-title { font-size: 28px !important; line-height: 1.25 !important; }
+  #top.vizit-hero-section { min-height: 0 !important; padding: 104px 20px 32px !important; }
+  #top .vizit-hero-copy { text-align: left !important; }
+  #top .vizit-hero-copy > * { margin-left: 0 !important; margin-right: 0 !important; }
+  #top h1 { font-size: clamp(30px, 8vw, 38px) !important; line-height: 1.16 !important; }
+  #top .vizit-hero-copy > p { font-size: 16px !important; line-height: 1.6 !important; }
+  .vizit-search-panel { border-radius: 22px !important; padding: 10px !important; }
+  .vizit-search-panel > div { gap: 8px !important; }
+  .vizit-search-field, .vizit-location-button, .vizit-search-submit { min-height: 52px !important; border-radius: 14px !important; }
+  .vizit-search-panel :is(input, button) { font-size: 16px !important; }
+  .vizit-category-slider button { min-height: 104px !important; border-radius: 18px !important; }
+  .vizit-business-directory-card { border-radius: 22px !important; }
+  .vizit-business-mobile-title { font-size: 16px !important; line-height: 1.4 !important; }
+  .vizit-business-mobile-actions > a { min-height: 44px; padding: 8px 5px; font-size: 12px; white-space: normal; text-align: center; }
+  .vizit-map-mobile-footer a { font-size: 14px !important; line-height: 1.4; white-space: normal; text-align: center; }
+  .vizit-admin-drawer :is(button, a) { min-height: 44px; }
+  .vizit-admin-bottom-link, .vizit-admin-bottom-more { min-height: 52px; }
+  .vizit-admin-shell .vizit-dashboard-hero { padding: 20px !important; }
+  .vizit-admin-shell .vizit-dashboard-hero > div:last-child { gap: 20px; }
+  .vizit-admin-shell .vizit-dashboard-hero p { line-height: 1.65; }
+  .vizit-dashboard-metric { padding: 14px !important; }
+  .vizit-dashboard-metric strong { font-size: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .vizit-business-directory-card { transform: none !important; transition: none !important; }
+}
+
+/* Selected plans are highlighted surfaces, with readable labels in both themes. */
+.vizit-admin-shell .vizit-billing-plan.is-current {
+  border-color: var(--vz-accent) !important;
+  background: var(--vz-accent-subtle) !important;
+  color: var(--vz-text) !important;
+  box-shadow: var(--vz-shadow-sm) !important;
+}
+.vizit-admin-shell .vizit-billing-plan.is-current :is([class*="text-white"], [class*="text-[var(--vz-on-primary)]"]) { color: var(--vz-text-secondary) !important; }
+.vizit-admin-shell .vizit-billing-plan.is-current .vizit-button { background: var(--vz-primary) !important; color: var(--vz-on-primary) !important; }
+.vizit-client-page > div > div:first-child > div > div:first-child > div:first-child { border-color: color-mix(in srgb, var(--vz-on-primary) 25%, transparent) !important; color: var(--vz-on-primary) !important; }

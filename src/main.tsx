@@ -23,7 +23,7 @@ import "@fontsource/noto-serif-armenian/latin-700.css";
 
 import App from "./App";
 import "./index.css";
-import "./vizit-navy-system.css";
+import "./vizit-design-system.css";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AppErrorBoundary } from "./components/AppErrorBoundary";

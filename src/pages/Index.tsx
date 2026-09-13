@@ -627,10 +627,10 @@ function InteractiveBusinessMap({
           onClick={() => setMobileInteractionEnabled((enabled) => !enabled)}
           aria-pressed={mobileInteractionEnabled}
           className={cn(
-            "absolute bottom-3 left-1/2 z-30 inline-flex min-h-11 -translate-x-1/2 items-center justify-center gap-2 rounded-xl border px-4 text-xs font-black shadow-[0_16px_44px_rgba(7,22,36,0.24)] backdrop-blur-xl transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#84c1f2] focus-visible:ring-offset-2",
+            "absolute bottom-3 left-1/2 z-30 inline-flex min-h-11 -translate-x-1/2 items-center justify-center gap-2 rounded-xl border px-4 text-xs font-black shadow-[0_16px_44px_rgba(7,22,36,0.24)] backdrop-blur-xl transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vz-line-strong)] focus-visible:ring-offset-2",
             mobileInteractionEnabled
-              ? "border-[#378add]/40 bg-[#15558e] text-white"
-              : "border-[#315a77] bg-[#0b2133]/95 text-[#d9eaf7]",
+              ? "border-[var(--vz-primary)]/40 bg-[#15558e] text-white"
+              : "border-[#315a77] bg-[var(--vz-surface)]/95 text-[#d9eaf7]",
           )}
         >
           <Hand className="h-4 w-4" aria-hidden="true" />
@@ -652,7 +652,7 @@ function InteractiveBusinessMap({
 }
 
 function SectionBadge({ children }: { children: ReactNode }) {
-  return <div className="inline-flex items-center gap-2 rounded-xl border border-[#84c1f2]/50 bg-[#e5f2fd] px-4 py-2 text-xs font-semibold text-[#2578c8] shadow-sm backdrop-blur-2xl dark:border-[#245171] dark:bg-[#123653] dark:text-[#b9dcfa] dark:shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:text-sm">{children}</div>;
+  return <div className="inline-flex items-center gap-2 rounded-xl border border-[var(--vz-line-strong)]/50 bg-[var(--vz-accent-soft)] px-4 py-2 text-xs font-semibold text-[var(--vz-brand-text)] shadow-sm backdrop-blur-2xl dark:border-[#245171] dark:bg-[var(--vz-accent-soft)] dark:text-[#b9dcfa] dark:shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:text-sm">{children}</div>;
 }
 
 function SearchPanel({
@@ -980,12 +980,12 @@ function MobileMapBusinessSheet({
     : null;
   const visualVariant = stableBusinessHash(`${item.slug}:${item.name}`) % 6;
   const heroTone = [
-    "from-[#071624] via-[#0b2133] to-[#15558e]",
-    "from-[#071624] via-[#102b42] to-[#2578c8]",
-    "from-[#071624] via-[#123653] to-[#1d6fb2]",
-    "from-[#071624] via-[#0e2940] to-[#378add]",
-    "from-[#071624] via-[#15558e] to-[#58a5e8]",
-    "from-[#071624] via-[#173b57] to-[#245171]",
+    "from-[var(--vz-page)] via-[#0b2133] to-[#15558e]",
+    "from-[var(--vz-page)] via-[#102b42] to-[var(--vz-primary-hover)]",
+    "from-[var(--vz-page)] via-[#123653] to-[#1d6fb2]",
+    "from-[var(--vz-page)] via-[#0e2940] to-[var(--vz-primary)]",
+    "from-[var(--vz-page)] via-[#15558e] to-[#58a5e8]",
+    "from-[var(--vz-page)] via-[#173b57] to-[#245171]",
   ][visualVariant];
   const categoryName = pin.categoryName
     || getCategoryName(item.category, locale)
@@ -1035,7 +1035,7 @@ function MobileMapBusinessSheet({
 
   return createPortal(
     <motion.div
-      className="vizit-map-mobile-modal fixed inset-0 z-[300] bg-[#071624] text-white lg:hidden"
+      className="vizit-map-mobile-modal fixed inset-0 z-[300] bg-[var(--vz-page)] text-white lg:hidden"
       data-map-business-modal="true"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -1052,7 +1052,7 @@ function MobileMapBusinessSheet({
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
         transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
-        className="vizit-map-mobile-sheet relative flex h-[100dvh] w-full flex-col overflow-hidden bg-[#071624]"
+        className="vizit-map-mobile-sheet relative flex h-[100dvh] w-full flex-col overflow-hidden bg-[var(--vz-page)]"
       >
         <div className={cn("vizit-map-mobile-hero relative h-[30dvh] min-h-[215px] max-h-[330px] shrink-0 overflow-hidden bg-gradient-to-br", heroTone)}>
           {coverUrl ? (
@@ -1083,14 +1083,14 @@ function MobileMapBusinessSheet({
               )}
             </div>
           )}
-          <div className="vizit-map-mobile-hero-overlay pointer-events-none absolute inset-0 bg-gradient-to-t from-[#071624]/90 via-transparent to-black/20" />
+          <div className="vizit-map-mobile-hero-overlay pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--vz-page)]/90 via-transparent to-black/20" />
           <div className="absolute inset-x-5 bottom-4 min-w-0 text-white drop-shadow-lg">
-            <span className="vizit-map-mobile-category inline-flex max-w-full items-center gap-2 rounded-xl border border-white/20 bg-[#071624]/75 px-3.5 py-2 text-xs font-bold shadow-xl backdrop-blur-xl">
-              <Icon className="h-4 w-4 shrink-0 text-[#84c1f2]" aria-hidden="true" />
+            <span className="vizit-map-mobile-category inline-flex max-w-full items-center gap-2 rounded-xl border border-white/20 bg-[var(--vz-page)]/75 px-3.5 py-2 text-xs font-bold shadow-xl backdrop-blur-xl">
+              <Icon className="h-4 w-4 shrink-0 text-[var(--vz-brand-text)]" aria-hidden="true" />
               <span className="truncate">{categoryName}</span>
             </span>
             <span className="vizit-map-mobile-location mt-2 flex max-w-full items-start gap-2 text-xs font-bold leading-5 text-white/95">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#84c1f2]" aria-hidden="true" />
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[var(--vz-brand-text)]" aria-hidden="true" />
               <span className="line-clamp-2">{pin.locationName ? `${pin.locationName} · ` : ""}{pin.address || item.address || t("business.card.noAddress")}</span>
             </span>
           </div>
@@ -1099,7 +1099,7 @@ function MobileMapBusinessSheet({
             type="button"
             onClick={onClose}
             style={{ top: "max(16px, env(safe-area-inset-top))" }}
-            className="vizit-map-mobile-close absolute right-4 grid h-12 w-12 place-items-center rounded-xl border border-white/25 bg-[#0b2133]/90 text-white shadow-[0_12px_34px_rgba(0,0,0,0.24)] backdrop-blur-xl transition hover:bg-[#123653] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#84c1f2] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+            className="vizit-map-mobile-close absolute right-4 grid h-12 w-12 place-items-center rounded-xl border border-white/25 bg-[var(--vz-surface)]/90 text-white shadow-[0_12px_34px_rgba(0,0,0,0.24)] backdrop-blur-xl transition hover:bg-[var(--vz-accent-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vz-line-strong)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
             aria-label={t("map.closeDetails")}
           >
             <X className="h-6 w-6" aria-hidden="true" />
@@ -1111,31 +1111,31 @@ function MobileMapBusinessSheet({
             <h2 id={titleId} className="break-words text-[32px] font-bold leading-[1.08] tracking-[-0.035em] text-white">
               {pin.name}
             </h2>
-            <p id={descriptionId} className="mt-4 text-[15px] font-medium leading-7 text-[#a9c2d6]">
+            <p id={descriptionId} className="mt-4 text-[15px] font-medium leading-7 text-[var(--vz-muted)]">
               {description}
             </p>
 
             <section className="mt-6" aria-labelledby={hoursTitleId}>
               <div className="flex items-center gap-3">
-                <span className="vizit-map-mobile-hours-icon grid h-10 w-10 place-items-center rounded-xl bg-[#123653] text-[#84c1f2]">
+                <span className="vizit-map-mobile-hours-icon grid h-10 w-10 place-items-center rounded-xl bg-[var(--vz-accent-soft)] text-[var(--vz-brand-text)]">
                   <Clock3 className="h-5 w-5" aria-hidden="true" />
                 </span>
                 <h3 id={hoursTitleId} className="text-base font-black text-white">{t("map.workingHours")}</h3>
               </div>
 
-              <div className="vizit-map-mobile-hours mt-4 overflow-hidden rounded-2xl border border-[#245171] bg-[#0b2133] shadow-[0_12px_38px_rgba(0,0,0,0.16)]">
+              <div className="vizit-map-mobile-hours mt-4 overflow-hidden rounded-2xl border border-[#245171] bg-[var(--vz-surface)] shadow-[0_12px_38px_rgba(0,0,0,0.16)]">
                 {workingHoursRows.length ? workingHoursRows.map((row, index) => (
                   <div key={`${row.days}-${row.hours}-${index}`} className="vizit-map-mobile-hours-row flex items-start justify-between gap-4 border-b border-[#173b57] px-4 py-3.5 last:border-b-0">
                     <span className="min-w-0 text-sm font-bold text-[#d9eaf7]">{row.days}</span>
                     <span className="shrink-0 text-right">
-                      <strong className={cn("block text-sm", row.isClosed ? "text-[#f2a9b8]" : "text-[#84c1f2]")}>{row.isClosed ? t("map.closed") : row.hours}</strong>
+                      <strong className={cn("block text-sm", row.isClosed ? "text-[#f2a9b8]" : "text-[var(--vz-brand-text)]")}>{row.isClosed ? t("map.closed") : row.hours}</strong>
                       {row.breakHours && !row.isClosed ? <small className="mt-1 block text-[11px] font-semibold text-[#7895ac]">{t("map.break")} {row.breakHours}</small> : null}
                     </span>
                   </div>
                 )) : fallbackHours ? (
-                  <div className="flex items-center justify-center px-4 py-5 text-base font-black text-[#84c1f2]">{fallbackHours}</div>
+                  <div className="flex items-center justify-center px-4 py-5 text-base font-black text-[var(--vz-brand-text)]">{fallbackHours}</div>
                 ) : (
-                  <p className="px-4 py-5 text-center text-sm font-semibold leading-6 text-[#a9c2d6]">{t("map.hoursNotProvided")}</p>
+                  <p className="px-4 py-5 text-center text-sm font-semibold leading-6 text-[var(--vz-muted)]">{t("map.hoursNotProvided")}</p>
                 )}
               </div>
             </section>
@@ -1143,12 +1143,12 @@ function MobileMapBusinessSheet({
           </div>
         </div>
 
-        <div className="vizit-map-mobile-footer shrink-0 border-t border-[#173b57] bg-[#071624]/96 px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 shadow-[0_-16px_38px_rgba(0,0,0,0.22)] backdrop-blur-xl sm:px-6">
+        <div className="vizit-map-mobile-footer shrink-0 border-t border-[#173b57] bg-[var(--vz-page)]/96 px-4 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 shadow-[0_-16px_38px_rgba(0,0,0,0.22)] backdrop-blur-xl sm:px-6">
           <div className="mx-auto grid max-w-xl grid-cols-2 gap-2.5">
             <Link
               to={pin.bookingUrl}
               onClick={onClose}
-              className="vizit-map-mobile-primary inline-flex min-h-14 min-w-0 items-center justify-center gap-2 rounded-xl bg-[#378add] px-3 text-sm font-black text-white shadow-[0_14px_32px_rgba(55,138,221,0.24)] transition hover:bg-[#2578c8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#84c1f2] focus-visible:ring-offset-2"
+              className="vizit-map-mobile-primary inline-flex min-h-14 min-w-0 items-center justify-center gap-2 rounded-xl bg-[var(--vz-primary)] px-3 text-sm font-black text-[var(--vz-on-primary)] shadow-[0_14px_32px_rgba(55,138,221,0.24)] transition hover:bg-[var(--vz-primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vz-line-strong)] focus-visible:ring-offset-2"
               aria-label={`${t("business.card.book")} — ${pin.name}`}
             >
               <span className="truncate">{t("business.card.book")}</span><ArrowRight className="h-5 w-5 shrink-0" aria-hidden="true" />
@@ -1156,7 +1156,7 @@ function MobileMapBusinessSheet({
             <Link
               to={`/businesses/${pin.slug}`}
               onClick={onClose}
-              className="vizit-map-mobile-secondary inline-flex min-h-14 min-w-0 items-center justify-center rounded-xl border border-[#315a77] bg-[#0b2133] px-3 text-sm font-black text-white transition hover:bg-[#123653] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#84c1f2] focus-visible:ring-offset-2"
+              className="vizit-map-mobile-secondary inline-flex min-h-14 min-w-0 items-center justify-center rounded-xl border border-[#315a77] bg-[var(--vz-surface)] px-3 text-sm font-black text-white transition hover:bg-[var(--vz-accent-soft)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vz-line-strong)] focus-visible:ring-offset-2"
               aria-label={`${t("business.card.view")} — ${pin.name}`}
             >
               <span className="truncate">{t("business.card.view")}</span>
@@ -1203,14 +1203,14 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
             <p className="mt-1 truncate text-[11px] font-semibold text-[#8a7182] dark:text-[#d7c8d4]">{categoryName}</p>
           </div>
           <div className="vizit-business-mobile-meta mt-auto flex min-w-0 items-center gap-3 pt-2 text-[10px] font-semibold text-[#786675] dark:text-[#cdbfca]">
-            <span className="inline-flex min-w-0 items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 shrink-0 text-[#378add]" /><b className="text-[#071624] dark:text-white">{item.services_count ?? 0}</b> {t("business.card.services")}</span>
-            <span className="inline-flex min-w-0 items-center gap-1.5"><Users className="h-3.5 w-3.5 shrink-0 text-[#378add] dark:text-[#84c1f2]" /><b className="text-[#071624] dark:text-white">{item.staff_count ?? 0}</b> {t("business.card.staff")}</span>
+            <span className="inline-flex min-w-0 items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 shrink-0 text-[var(--vz-brand-text)]" /><b className="text-[var(--vz-text)] dark:text-white">{item.services_count ?? 0}</b> {t("business.card.services")}</span>
+            <span className="inline-flex min-w-0 items-center gap-1.5"><Users className="h-3.5 w-3.5 shrink-0 text-[var(--vz-brand-text)] dark:text-[var(--vz-brand-text)]" /><b className="text-[var(--vz-text)] dark:text-white">{item.staff_count ?? 0}</b> {t("business.card.staff")}</span>
           </div>
           <div className="vizit-business-mobile-actions mt-2 grid grid-cols-2 gap-1.5">
-            <Link to={bookingUrl} className="inline-flex min-w-0 items-center justify-center gap-1 rounded-[10px] bg-[#378add] px-2 py-1.5 text-[10px] font-black text-white shadow-sm" aria-label={`${t("business.card.book")} — ${item.name}`}>
+            <Link to={bookingUrl} className="inline-flex min-w-0 items-center justify-center gap-1 rounded-[10px] bg-[var(--vz-primary)] px-2 py-1.5 text-[10px] font-black text-[var(--vz-on-primary)] shadow-sm" aria-label={`${t("business.card.book")} — ${item.name}`}>
               <span className="truncate">{t("business.card.book")}</span><ArrowRight className="h-3 w-3 shrink-0" />
             </Link>
-            <Link to={`/businesses/${item.slug}`} className="inline-flex min-w-0 items-center justify-center rounded-[10px] border border-[#84c1f2] bg-white px-2 py-1.5 text-[10px] font-bold text-[#2578c8] dark:border-[#245171] dark:bg-[#0b2133] dark:text-[#b9dcfa]">
+            <Link to={`/businesses/${item.slug}`} className="inline-flex min-w-0 items-center justify-center rounded-[10px] border border-[var(--vz-line-strong)] bg-white px-2 py-1.5 text-[10px] font-bold text-[var(--vz-brand-text)] dark:border-[#245171] dark:bg-[var(--vz-surface)] dark:text-[#b9dcfa]">
               <span className="truncate">{t("business.card.view")}</span>
             </Link>
           </div>

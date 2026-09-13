@@ -76,9 +76,9 @@ export default function AuthShell({
 
                     <motion.div variants={fadeUp} className="mt-8 max-w-xl">
                         <Link to="/" className="inline-flex items-center gap-3">
-                            <VizitLogo markClassName="!h-14 !w-14" textClassName="!text-2xl !text-white" />
+                            <VizitLogo markClassName="!h-14 !w-14" textClassName="!text-2xl" />
                             <div>
-                                <div className="text-sm text-[#a9c2d6]">
+                                <div className="text-sm text-[var(--vz-muted)]">
                                     {text.tagline}
                                 </div>
                             </div>
@@ -115,7 +115,7 @@ export default function AuthShell({
                 <motion.div variants={scaleIn} className="relative mx-auto w-full max-w-[780px] min-w-0 lg:mx-0 lg:justify-self-end">
                     <div className="vizit-auth-card rounded-2xl border p-4 shadow-2xl backdrop-blur-xl sm:p-7 xl:p-9">
                             <div className="vizit-auth-card-content">
-                                <motion.div variants={fadeUp} className="text-center">
+                                <motion.div variants={fadeUp} className="text-left">
                                     <Link to="/" className="inline-flex max-w-full items-center gap-3 lg:hidden">
                                         <VizitLogo markClassName="!h-12 !w-12" textClassName="!text-lg" />
                                         <div className="text-left">

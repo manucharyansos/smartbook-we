@@ -47,7 +47,7 @@ export default function AdminSidebar({ expanded, mobileOpen, onToggleExpanded, o
         animate={{ width: expanded ? 280 : 96 }}
         transition={{ duration: 0.24 }}
         className={cn(
-          'fixed left-0 top-0 z-50 h-full border-r border-white/10 bg-[linear-gradient(180deg,#0f172a_0%,#111827_40%,#1e1b4b_100%)] text-white shadow-2xl transition-transform lg:z-40',
+          'vizit-superadmin-sidebar fixed left-0 top-0 z-50 h-full border-r transition-transform lg:z-40',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         )}
       >

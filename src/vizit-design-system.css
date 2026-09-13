@@ -790,6 +790,7 @@ html.dark .vizit-registration-type-option[aria-checked="true"] { background: var
   --admin-bg: var(--vz-page);
   --admin-surface: var(--vz-surface);
   --admin-surface-2: var(--vz-surface-2);
+  --admin-surface-soft: var(--vz-surface-2);
   --admin-border: var(--vz-line);
   --admin-text: var(--vz-text);
   --admin-muted: var(--vz-muted);

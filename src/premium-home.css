@@ -319,3 +319,102 @@ html.dark .vizit-home-page #categories button>span:first-child{background:linear
 @media(max-width:390px){
   .vizit-home-page #categories button{width:52vw!important}
 }
+
+
+/* ---------- PREMIUM SERVICES CAROUSEL ---------- */
+.vizit-home-page #categories>div{
+  overflow:hidden;
+}
+.vizit-home-page #categories .vizit-category-head{
+  margin-bottom:24px!important;
+}
+.vizit-home-page #categories .vizit-category-arrow,
+.vizit-home-page #categories .vizit-category-all{
+  border-color:rgba(211,154,67,.28)!important;
+  background:#fffaf5!important;
+  color:var(--vz-plum)!important;
+}
+.vizit-home-page #categories .vizit-category-arrow:hover,
+.vizit-home-page #categories .vizit-category-all:hover{
+  border-color:rgba(211,154,67,.58)!important;
+  background:#f7eadc!important;
+  transform:translateY(-1px);
+}
+.vizit-home-page #categories .vizit-category-slider{
+  display:flex!important;
+  grid-template-columns:none!important;
+  overflow-x:auto!important;
+  scroll-behavior:smooth;
+  scroll-snap-type:x mandatory;
+  overscroll-behavior-inline:contain;
+}
+.vizit-home-page #categories .vizit-category-card{
+  position:relative;
+  min-height:176px!important;
+  text-align:left!important;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(211,154,67,.16),transparent 42%),
+    linear-gradient(145deg,#fffdf9,#fbf1e7)!important;
+}
+.vizit-home-page #categories .vizit-category-card::after{
+  content:"";
+  position:absolute;
+  width:110px;height:110px;
+  right:-42px;bottom:-46px;
+  border:1px solid rgba(109,42,99,.10);
+  border-radius:50%;
+}
+.vizit-home-page #categories .vizit-category-card>span:first-child{
+  margin-left:0!important;
+}
+.vizit-home-page #categories .vizit-category-card>span:last-child{
+  position:relative;
+  z-index:1;
+  margin-top:24px!important;
+  font-size:16px!important;
+  line-height:1.45!important;
+}
+
+/* Pricing badge contrast: prevent white-on-white / washed-out text. */
+.vizit-home-page #plans .vizit-plans-grid>div>div:first-child{
+  background:#f3e2cd!important;
+  color:#4b164b!important;
+  border:1px solid rgba(211,154,67,.30)!important;
+  opacity:1!important;
+  -webkit-text-fill-color:#4b164b!important;
+}
+html.dark .vizit-home-page #plans .vizit-plans-grid>div>div:first-child{
+  background:rgba(237,201,130,.16)!important;
+  color:#f5ddb0!important;
+  border-color:rgba(237,201,130,.30)!important;
+  -webkit-text-fill-color:#f5ddb0!important;
+}
+html.dark .vizit-home-page #categories .vizit-category-arrow,
+html.dark .vizit-home-page #categories .vizit-category-all{
+  border-color:rgba(231,188,107,.22)!important;
+  background:rgba(255,255,255,.055)!important;
+  color:#fff7ef!important;
+}
+html.dark .vizit-home-page #categories .vizit-category-card{
+  background:
+    radial-gradient(circle at 100% 0%,rgba(211,154,67,.12),transparent 44%),
+    linear-gradient(145deg,rgba(55,31,54,.96),rgba(34,21,37,.96))!important;
+}
+
+@media(max-width:767px){
+  .vizit-home-page #categories .vizit-category-head>div:last-child{
+    width:100%;
+  }
+  .vizit-home-page #categories .vizit-category-arrow{
+    display:none!important;
+  }
+  .vizit-home-page #categories .vizit-category-all{
+    margin-left:auto;
+  }
+  .vizit-home-page #categories .vizit-category-card{
+    width:76vw!important;
+    max-width:300px!important;
+    min-height:164px!important;
+  }
+}

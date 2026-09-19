@@ -14,6 +14,7 @@ import {
   CalendarDays,
   Camera,
   Car,
+  ChevronLeft,
   ChevronRight,
   CirclePlus,
   Clock3,
@@ -1458,21 +1459,28 @@ export default function Index() {
 
         <section id="categories" className="vizit-categories-section relative scroll-mt-24 bg-[#faf8fc] px-5 pb-8 transition-colors dark:bg-[#090712] sm:px-8">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.18 }} className="mx-auto max-w-[1320px] rounded-[26px] border border-[#e8e2f0] bg-white p-5 text-[#241736] shadow-[0_30px_100px_rgba(62,31,120,0.10)] dark:border-[#312641] dark:bg-[#151020] dark:text-white dark:shadow-[0_30px_100px_rgba(0,0,0,0.30)] sm:rounded-[30px] sm:p-7">
-            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <h2 className="vizit-display text-2xl sm:text-3xl">{t("categories.title")}</h2>
-              <button type="button" onClick={resetFilters} className="inline-flex items-center gap-2 rounded-full px-2 text-sm font-semibold text-[#5b2fa8] transition hover:text-[#3e1f78] dark:text-[#b898f4] dark:hover:text-[#d8c6fa]">{t("categories.all")} <ArrowRight className="h-4 w-4" /></button>
+            <div className="vizit-category-head mb-5 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <SectionBadge><Sparkles className="h-4 w-4" /> {t("businesses.services")}</SectionBadge>
+                <h2 className="vizit-display mt-4 text-2xl sm:text-4xl">{t("categories.title")}</h2>
+              </div>
+              <div className="flex items-center gap-2">
+                <button type="button" aria-label="Previous categories" onClick={() => document.getElementById("vizit-category-track")?.scrollBy({ left: -420, behavior: "smooth" })} className="vizit-category-arrow grid h-11 w-11 place-items-center rounded-full border transition"><ChevronLeft className="h-5 w-5" /></button>
+                <button type="button" aria-label="Next categories" onClick={() => document.getElementById("vizit-category-track")?.scrollBy({ left: 420, behavior: "smooth" })} className="vizit-category-arrow grid h-11 w-11 place-items-center rounded-full border transition"><ChevronRight className="h-5 w-5" /></button>
+                <button type="button" onClick={resetFilters} className="vizit-category-all inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition">{t("categories.all")} <ArrowRight className="h-4 w-4" /></button>
+              </div>
             </div>
 
             {(businessesQ.isLoading || categoriesQ.isLoading) ? (
-              <div className="vizit-category-slider -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4 xl:grid-cols-7">{Array.from({ length: 7 }).map((_, index) => <div key={index} className="min-h-[138px] w-[76vw] max-w-[280px] shrink-0 snap-start animate-pulse rounded-[20px] border border-slate-100 bg-slate-100 sm:w-auto sm:max-w-none" />)}</div>
+              <div id="vizit-category-track" className="vizit-category-slider -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:px-0">{Array.from({ length: 7 }).map((_, index) => <div key={index} className="min-h-[138px] w-[76vw] max-w-[280px] shrink-0 snap-start animate-pulse rounded-[20px] border border-slate-100 bg-slate-100 sm:w-auto sm:max-w-none" />)}</div>
             ) : categories.length ? (
-              <div className="vizit-category-slider -mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4 xl:grid-cols-7">
+              <div id="vizit-category-track" className="vizit-category-slider -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:px-0">
                 {categories.map((category) => {
                   const { Icon, tone } = getCategoryPresentation(category);
                   const label = getCategoryName(category, locale) ?? t("category.fallback");
                   const active = selectedCategorySlug === category.slug;
                   return (
-                    <button key={category.slug ?? label} type="button" onClick={() => selectCategory(category)} className={cn("group min-h-[132px] w-[68vw] max-w-[250px] shrink-0 snap-start rounded-[20px] border p-4 text-center shadow-[0_12px_34px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:border-violet-200 dark:shadow-black/20 sm:w-auto sm:max-w-none", active ? "border-violet-300 bg-violet-50 dark:border-violet-400/50 dark:bg-violet-500/15" : "border-slate-100 bg-white dark:border-white/10 dark:bg-white/[0.06] dark:hover:bg-white/[0.10]")}>
+                    <button key={category.slug ?? label} type="button" onClick={() => selectCategory(category)} className={cn("vizit-category-card group min-h-[172px] w-[76vw] max-w-[320px] shrink-0 snap-start rounded-[24px] border p-5 text-left shadow-[0_12px_34px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:border-violet-200 dark:shadow-black/20 sm:w-[290px] sm:max-w-[290px] lg:w-[310px] lg:max-w-[310px]", active ? "border-violet-300 bg-violet-50 dark:border-violet-400/50 dark:bg-violet-500/15" : "border-slate-100 bg-white dark:border-white/10 dark:bg-white/[0.06] dark:hover:bg-white/[0.10]")}>
                       <span className={cn("mx-auto grid h-[58px] w-[58px] place-items-center rounded-[18px] bg-gradient-to-br", tone)}><Icon className="h-8 w-8" /></span>
                       <span className="mt-4 block text-[13px] font-black leading-5 text-slate-950 dark:text-white">{label}</span>
                     </button>

@@ -1,25 +1,37 @@
-import { useEffect } from "react";
-import { useLocation, useNavigationType } from "react-router-dom";
+import { useEffect, useLayoutEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 export function ScrollToTop() {
   const location = useLocation();
-  const navigationType = useNavigationType();
 
   useEffect(() => {
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+
+    return () => {
+      window.history.scrollRestoration = previousScrollRestoration;
+    };
+  }, []);
+
+  useLayoutEffect(() => {
     if (location.hash) return;
-    // Let the browser restore the previous position on back/forward navigation.
-    if (navigationType === "POP") return;
 
-    // Force immediate scroll — before AnimatePresence renders new page
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
+    const scrollToPageTop = () => {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
 
-    if (document.scrollingElement) {
-      document.scrollingElement.scrollTop = 0;
-    }
+      if (document.scrollingElement) {
+        document.scrollingElement.scrollTop = 0;
+      }
 
-    window.scrollTo(0, 0);
-  }, [location.hash, location.pathname, navigationType]);
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    };
+
+    scrollToPageTop();
+    const animationFrame = window.requestAnimationFrame(scrollToPageTop);
+
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [location.hash, location.key]);
 
   return null;
 }

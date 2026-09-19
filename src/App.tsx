@@ -73,39 +73,40 @@ export default function App() {
     const mockBankEnabled = String(import.meta.env.VITE_ENABLE_MOCK_BANK ?? import.meta.env.DEV).toLowerCase() === "true";
 
     return (
-        <Suspense fallback={<AppRouteLoader />}>
+        <>
             <ScrollToTop />
             <ScrollToTopButton />
             <RouteSeo />
-            <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/business" element={<BusinessLanding />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/business/login" element={<Navigate to="/login" replace />} />
-                <Route path="/client/login" element={<ClientLogin />} />
-                <Route path="/auth/social/callback" element={<SocialAuthCallback />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/business/register" element={<Navigate to="/register" replace />} />
-                <Route path="/client/register" element={<ClientRegister />} />
-                <Route path="/businesses/:slug" element={<PublicBusinessProfile />} />
-                <Route path="/payment-return" element={<PaymentReturn />} />
-                {mockBankEnabled ? <Route path="/mock-bank/idbank" element={<MockBankIdBank />} /> : null}
-                <Route path="/book/:slug" element={<PublicBooking />} />
-                <Route path="/marketing/unsubscribe" element={<MarketingUnsubscribe />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/pricing" element={<Pricing />} />
-                <Route path="/features" element={<Navigate to="/business" replace />} />
-                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/cookies" element={<Cookies />} />
-                <Route path="/support" element={<Support />} />
-                <Route path="/faq" element={<Faq />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/press" element={<Press />} />
-                <Route path="/careers" element={<Careers />} />
+            <Suspense fallback={<AppRouteLoader />}>
+                <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/business" element={<BusinessLanding />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/business/login" element={<Navigate to="/login" replace />} />
+                    <Route path="/client/login" element={<ClientLogin />} />
+                    <Route path="/auth/social/callback" element={<SocialAuthCallback />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/business/register" element={<Navigate to="/register" replace />} />
+                    <Route path="/client/register" element={<ClientRegister />} />
+                    <Route path="/businesses/:slug" element={<PublicBusinessProfile />} />
+                    <Route path="/payment-return" element={<PaymentReturn />} />
+                    {mockBankEnabled ? <Route path="/mock-bank/idbank" element={<MockBankIdBank />} /> : null}
+                    <Route path="/book/:slug" element={<PublicBooking />} />
+                    <Route path="/marketing/unsubscribe" element={<MarketingUnsubscribe />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/pricing" element={<Pricing />} />
+                    <Route path="/features" element={<Navigate to="/business" replace />} />
+                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                    <Route path="/terms" element={<Terms />} />
+                    <Route path="/cookies" element={<Cookies />} />
+                    <Route path="/support" element={<Support />} />
+                    <Route path="/faq" element={<Faq />} />
+                    <Route path="/blog" element={<Blog />} />
+                    <Route path="/press" element={<Press />} />
+                    <Route path="/careers" element={<Careers />} />
 
                 <Route path="/admin/login" element={<AdminLogin />} />
                 <Route element={<ProtectedAdminRoute />}>
@@ -150,8 +151,9 @@ export default function App() {
                     </Route>
                 </Route>
 
-                <Route path="*" element={<NotFound />} />
-            </Routes>
-        </Suspense>
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+            </Suspense>
+        </>
     );
 }

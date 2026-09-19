@@ -516,13 +516,13 @@ html.dark .vizit-category-slider button > span:first-child { background: var(--v
 .vizit-business-cta > div {
   border: 1px solid var(--vz-line-strong) !important;
   border-radius: 22px !important;
-  background: var(--vz-primary) !important;
-  color: var(--vz-on-primary) !important;
+  background: linear-gradient(135deg, var(--vz-cover-deep), var(--vz-cover)) !important;
+  color: var(--vz-cover-text) !important;
   box-shadow: var(--vz-shadow-sm) !important;
-  border-color: var(--vz-primary) !important;
+  border-color: color-mix(in srgb, var(--vz-cover-text) 14%, transparent) !important;
 }
-.vizit-business-cta h2 { color: var(--vz-on-primary) !important; }
-.vizit-business-cta p { color: var(--vz-on-primary) !important; }
+.vizit-business-cta h2 { color: var(--vz-cover-text) !important; }
+.vizit-business-cta p { color: var(--vz-cover-muted) !important; }
 .vizit-business-cta a { border-radius: 12px !important; }
 .vizit-mobile-dock { display: none !important; }
 
@@ -1624,3 +1624,88 @@ body,
 .vizit-admin-shell .vizit-billing-plan.is-current :is([class*="text-white"], [class*="text-[var(--vz-on-primary)]"]) { color: var(--vz-text-secondary) !important; }
 .vizit-admin-shell .vizit-billing-plan.is-current .vizit-button { background: var(--vz-primary) !important; color: var(--vz-on-primary) !important; }
 .vizit-client-page > div > div:first-child > div > div:first-child > div:first-child { border-color: color-mix(in srgb, var(--vz-on-primary) 25%, transparent) !important; color: var(--vz-on-primary) !important; }
+
+/* Interactive labels and preview surfaces must keep their contrast when the
+ * global palette swaps in dark mode. Semantic classes avoid utility-color
+ * collisions such as white text being applied to an active white segment. */
+.vizit-section-badge {
+  border-color: color-mix(in srgb, var(--vz-accent) 38%, var(--vz-line)) !important;
+  background: var(--vz-accent-soft) !important;
+  color: var(--vz-accent-text) !important;
+}
+.vizit-segmented-control {
+  border-color: var(--vz-line-strong) !important;
+  background: var(--vz-surface-2) !important;
+}
+.vizit-segmented-option {
+  background: transparent !important;
+  color: var(--vz-text-secondary) !important;
+}
+.vizit-segmented-option:hover {
+  background: var(--vz-surface-pressed) !important;
+  color: var(--vz-text) !important;
+}
+.vizit-segmented-option.is-active,
+.vizit-segmented-option[aria-pressed="true"] {
+  background: var(--vz-primary) !important;
+  color: var(--vz-on-primary) !important;
+  box-shadow: var(--vz-shadow-sm) !important;
+}
+.vizit-filter-chip {
+  border-color: var(--vz-line-strong) !important;
+  background: var(--vz-surface-2) !important;
+  color: var(--vz-text-secondary) !important;
+}
+.vizit-filter-chip:hover {
+  border-color: var(--vz-accent) !important;
+  background: var(--vz-surface-pressed) !important;
+  color: var(--vz-text) !important;
+}
+.vizit-filter-chip.is-active,
+.vizit-filter-chip[aria-pressed="true"] {
+  border-color: var(--vz-primary) !important;
+  background: var(--vz-primary) !important;
+  color: var(--vz-on-primary) !important;
+}
+.vizit-business-empty-icon {
+  background: var(--vz-accent-soft) !important;
+  color: var(--vz-accent-text) !important;
+}
+.vizit-business-cta .vizit-section-badge {
+  border-color: color-mix(in srgb, var(--vz-cover-text) 28%, transparent) !important;
+  background: color-mix(in srgb, var(--vz-cover-text) 10%, transparent) !important;
+  color: var(--vz-cover-text) !important;
+}
+.vizit-business-preview {
+  border-color: var(--vz-line-strong) !important;
+  background: var(--vz-surface) !important;
+  color: var(--vz-text) !important;
+  box-shadow: var(--vz-shadow-lg) !important;
+}
+.vizit-business-preview-kicker,
+.vizit-business-preview-label,
+.vizit-business-preview-meta { color: var(--vz-text-secondary) !important; }
+.vizit-business-preview-title,
+.vizit-business-preview-count,
+.vizit-business-preview-service { color: var(--vz-text) !important; }
+.vizit-business-preview-icon {
+  background: var(--vz-primary) !important;
+  color: var(--vz-on-primary) !important;
+}
+.vizit-business-preview-panel {
+  border-color: var(--vz-line) !important;
+  background: var(--vz-surface-2) !important;
+}
+.vizit-business-preview-calendar {
+  background: var(--vz-accent-soft) !important;
+  color: var(--vz-accent-text) !important;
+}
+.vizit-business-preview-event {
+  border-color: var(--vz-line-strong) !important;
+  background: var(--vz-surface) !important;
+}
+.vizit-business-preview-time { color: var(--vz-brand-text) !important; }
+.vizit-business-preview-status {
+  background: var(--vz-success-soft) !important;
+  color: var(--vz-success) !important;
+}

@@ -136,13 +136,14 @@ export default function Pricing() {
               </p>
             </div>
 
-            <div className="inline-flex items-center rounded-2xl border border-slate-200 bg-slate-50 p-1 dark:border-white/10 dark:bg-white/[0.06]">
+            <div className="vizit-segmented-control inline-flex items-center rounded-2xl border p-1">
               <button
                 type="button"
                 onClick={() => setBillingCycle("monthly")}
+                aria-pressed={billingCycle === "monthly"}
                 className={cn(
-                  "rounded-[14px] px-4 py-2.5 text-sm font-medium transition",
-                  billingCycle === "monthly" ? "bg-white text-slate-950 shadow-sm dark:bg-white dark:text-slate-950" : "text-slate-600 dark:text-slate-300"
+                  "vizit-segmented-option rounded-[14px] px-4 py-2.5 text-sm font-medium transition",
+                  billingCycle === "monthly" && "is-active"
                 )}
               >
                 {text.monthly}
@@ -150,9 +151,10 @@ export default function Pricing() {
               <button
                 type="button"
                 onClick={() => setBillingCycle("yearly")}
+                aria-pressed={billingCycle === "yearly"}
                 className={cn(
-                  "rounded-[14px] px-4 py-2.5 text-sm font-medium transition",
-                  billingCycle === "yearly" ? "bg-violet-600 text-white" : "text-slate-600 dark:text-slate-300"
+                  "vizit-segmented-option rounded-[14px] px-4 py-2.5 text-sm font-medium transition",
+                  billingCycle === "yearly" && "is-active"
                 )}
               >
                 {text.yearly}

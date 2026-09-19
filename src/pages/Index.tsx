@@ -652,7 +652,7 @@ function InteractiveBusinessMap({
 }
 
 function SectionBadge({ children }: { children: ReactNode }) {
-  return <div className="inline-flex items-center gap-2 rounded-xl border border-[var(--vz-line-strong)]/50 bg-[var(--vz-accent-soft)] px-4 py-2 text-xs font-semibold text-[var(--vz-brand-text)] shadow-sm backdrop-blur-2xl dark:border-[#245171] dark:bg-[var(--vz-accent-soft)] dark:text-[#b9dcfa] dark:shadow-[0_18px_60px_rgba(0,0,0,0.18)] sm:text-sm">{children}</div>;
+  return <div className="vizit-section-badge inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold shadow-sm backdrop-blur-2xl sm:text-sm">{children}</div>;
 }
 
 function SearchPanel({
@@ -1594,14 +1594,25 @@ export default function Index() {
                 <SectionBadge><Star className="h-4 w-4" /> {t("businesses.badge")}</SectionBadge>
                 <h2 className="mt-5 max-w-3xl break-words text-[28px] font-black leading-[1.12] tracking-[-0.04em] text-slate-950 dark:text-white sm:text-5xl sm:leading-none">{t("businesses.title")}</h2>
               </div>
-              <div className="min-w-0 max-w-full overflow-hidden rounded-[18px] border border-slate-200 bg-slate-50 p-1 backdrop-blur-xl dark:border-white/12 dark:bg-white/[0.07]">
+              <div className="vizit-segmented-control min-w-0 max-w-full overflow-hidden rounded-[18px] border p-1 backdrop-blur-xl">
                 <div className="flex max-w-full gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   {[
                     { key: "all", label: t("businesses.all") },
                     { key: "services", label: t("businesses.services") },
                     { key: "healthcare", label: t("businesses.healthcare") },
                   ].map((item) => (
-                    <button key={item.key} type="button" onClick={() => { setFilter(item.key as BusinessFilter); setSelectedCategorySlug(null); }} className={cn("whitespace-nowrap rounded-[14px] px-4 py-2.5 text-sm font-black transition", filter === item.key && !selectedCategorySlug ? "bg-white text-slate-950 shadow-sm dark:bg-white dark:text-slate-950" : "text-slate-600 hover:bg-white hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/[0.08] dark:hover:text-white")}>{item.label}</button>
+                    <button
+                      key={item.key}
+                      type="button"
+                      onClick={() => { setFilter(item.key as BusinessFilter); setSelectedCategorySlug(null); }}
+                      aria-pressed={filter === item.key && !selectedCategorySlug}
+                      className={cn(
+                        "vizit-segmented-option whitespace-nowrap rounded-[14px] px-4 py-2.5 text-sm font-black transition",
+                        filter === item.key && !selectedCategorySlug && "is-active",
+                      )}
+                    >
+                      {item.label}
+                    </button>
                   ))}
                 </div>
               </div>
@@ -1617,11 +1628,10 @@ export default function Index() {
                       key={`business-filter-${category.slug ?? category.id ?? label}`}
                       type="button"
                       onClick={() => selectCategory(category)}
+                      aria-pressed={active}
                       className={cn(
-                        "whitespace-nowrap rounded-full border px-4 py-2.5 text-sm font-bold transition",
-                        active
-                          ? "border-violet-600 bg-violet-600 text-white dark:border-white dark:bg-white dark:text-slate-950"
-                          : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 dark:border-white/15 dark:bg-white/[0.08] dark:text-slate-200 dark:hover:bg-white/[0.14] dark:hover:text-white",
+                        "vizit-filter-chip whitespace-nowrap rounded-full border px-4 py-2.5 text-sm font-bold transition",
+                        active && "is-active",
                       )}
                     >
                       {label}
@@ -1637,7 +1647,7 @@ export default function Index() {
               <div className="rounded-[24px] border border-rose-300/20 bg-rose-500/10 p-6 text-rose-100">{t("status.errorBusinesses")}</div>
             ) : !filteredBusinesses.length ? (
               <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-10 text-center backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.07]">
-                <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-white text-slate-950"><Building2 className="h-7 w-7" /></div>
+                <div className="vizit-business-empty-icon mx-auto grid h-16 w-16 place-items-center rounded-2xl"><Building2 className="h-7 w-7" /></div>
                 <h3 className="mt-5 text-2xl font-black text-slate-950 dark:text-white">{t("businesses.empty.title")}</h3>
               </div>
             ) : (
@@ -1649,7 +1659,7 @@ export default function Index() {
         <HomePlansSection />
 
         <section className="vizit-business-cta bg-white px-5 pb-20 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8">
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="mx-auto max-w-[1320px] overflow-hidden rounded-[34px] border border-violet-200 bg-[radial-gradient(circle_at_20%_0%,rgba(34,211,238,0.12),transparent_30%),radial-gradient(circle_at_86%_8%,rgba(236,72,153,0.12),transparent_32%),rgba(248,250,252,0.96)] p-8 shadow-[0_34px_120px_rgba(15,23,42,0.10)] backdrop-blur-2xl dark:border-white/12 dark:bg-[radial-gradient(circle_at_20%_0%,rgba(34,211,238,0.18),transparent_30%),radial-gradient(circle_at_86%_8%,rgba(236,72,153,0.20),transparent_32%),rgba(255,255,255,0.07)] dark:shadow-[0_34px_120px_rgba(0,0,0,0.28)] sm:p-10 lg:p-12">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="vizit-business-cta-card mx-auto max-w-[1320px] overflow-hidden rounded-[34px] border p-8 backdrop-blur-2xl sm:p-10 lg:p-12">
             <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
               <div>
                 <SectionBadge><BadgeCheck className="h-4 w-4" /> {t("cta.badge")}</SectionBadge>

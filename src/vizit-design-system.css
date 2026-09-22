@@ -512,6 +512,14 @@ html.dark .vizit-category-slider button > span:first-child { background: var(--v
 .vizit-plans-grid h3,
 .vizit-plans-grid [class*="text-3xl"] { color: var(--vz-text) !important; }
 .vizit-plans-grid p { color: var(--vz-muted) !important; }
+.vizit-plans-grid > div > div:first-child {
+  background: var(--vz-accent-soft) !important;
+  color: var(--vz-primary-hover) !important;
+  border: 1px solid var(--vz-line) !important;
+}
+html.dark .vizit-plans-grid > div > div:first-child {
+  color: var(--vz-accent-text) !important;
+}
 .vizit-business-cta { padding: 0 24px 76px !important; }
 .vizit-business-cta > div {
   border: 1px solid var(--vz-line-strong) !important;

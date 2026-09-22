@@ -1312,7 +1312,11 @@ export default function Index() {
 
   const allBusinesses = useMemo(() => businessesQ.data ?? [], [businessesQ.data]);
   const businessesById = useMemo(() => new Map(allBusinesses.map((business) => [business.id, business])), [allBusinesses]);
-  const categories = useMemo(() => mergeCategories(mergeCategories(categoriesQ.data ?? [], defaultPublicCategories), deriveCategories(allBusinesses)), [allBusinesses, categoriesQ.data]);
+  const allCategories = useMemo(() => mergeCategories(mergeCategories(categoriesQ.data ?? [], defaultPublicCategories), deriveCategories(allBusinesses)), [allBusinesses, categoriesQ.data]);
+  const categories = useMemo(
+    () => (filter === "all" ? allCategories : allCategories.filter((category) => normalizeVertical(category.vertical ?? category.slug) === filter)),
+    [allCategories, filter],
+  );
   const filteredBusinesses = useMemo(() => {
     const matching = allBusinesses.filter((business) => matchesFilter(business, filter) && matchesCategory(business, selectedCategorySlug) && matchesSearch(business, search));
     return userLocation
@@ -1339,14 +1343,14 @@ export default function Index() {
     ? businessesById.get(mobileMapPin.businessId) ?? directoryBusinessFromPin(mobileMapPin)
     : null;
   const mobileMapBusiness = mobileMapBusinessQ.data ?? mobileMapBusinessFallback;
-  const popularChips = categories.slice(0, 5);
+  const popularChips = allCategories.slice(0, 5);
 
   const stats = useMemo(() => ({
     total: allBusinesses.length,
     services: allBusinesses.reduce((sum, item) => sum + Number(item.services_count ?? 0), 0),
     staff: allBusinesses.reduce((sum, item) => sum + Number(item.staff_count ?? 0), 0),
-    categories: categories.length,
-  }), [allBusinesses, categories.length]);
+    categories: allCategories.length,
+  }), [allBusinesses, allCategories.length]);
 
   const businessStat = (value: number) => businessesQ.isLoading ? "..." : businessesQ.isError ? "—" : value;
   const categoryStat = businessesQ.isLoading || categoriesQ.isLoading ? "..." : businessesQ.isError ? "—" : stats.categories;

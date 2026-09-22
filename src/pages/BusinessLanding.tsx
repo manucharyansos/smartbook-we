@@ -7,15 +7,15 @@ import {
   CalendarDays,
   Check,
   Clock3,
-  Globe2,
   HeartPulse,
   LayoutDashboard,
   MapPinned,
-  ShieldCheck,
+  Settings2,
+  Share2,
   Sparkles,
   Stethoscope,
+  UserPlus,
   Users2,
-  WalletCards,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -63,11 +63,9 @@ const copy = {
     ],
     channelsBadge: "Թափանցիկ կապի ալիքներ",
     channelsTitle: "Միայն այն խոստումները, որոնք իսկապես աշխատում են",
-    channelsText: "Vizit-ը հստակ բաժանում է գործող ալիքներն ու provider-ի միացում պահանջող հնարավորությունները։",
+    channelsText: "Vizit-ը հստակ ներկայացնում է այն ալիքները, որոնք արդեն գործում են։",
     active: "Գործող",
     activeItems: ["Էլ. փոստով հաստատումներ", "Telegram ծանուցումներ բիզնեսին", "Հանրային ամրագրման կառավարում"],
-    configured: "Provider-ի միացումից հետո",
-    configuredItems: ["SMS և WhatsApp հաղորդագրություններ", "Իրական վճարային gateway", "Լրացուցիչ ավտոմատացումներ"],
     finalBadge: "Պատրա՞ստ եք սկսել",
     finalTitle: "Ձեր բիզնեսի հաջորդ ամրագրումը կարող է գալ Vizit-ից",
     finalText: "Ստեղծեք հաշիվը, կարգավորեք աշխատանքային էջը և փորձեք ամբողջ հոսքը մինչև հրապարակելը։",
@@ -82,7 +80,7 @@ const copy = {
       ["Онлайн-запись", "Публичная страница, выбор услуг и специалистов и доступное время."], ["Календарь и команда", "Рабочие часы, перерывы, выходные, роли и личная доступность специалистов."], ["База клиентов", "История визитов, заметки, группы, повторная запись и кабинет клиента."], ["Карта и marketplace", "Адреса, категории, поиск и точки бизнеса на карте Yandex."], ["Аналитика", "Записи, доход, источники, загрузка команды и показатели неявок."],
     ],
     workflowBadge: "Простой запуск", workflowTitle: "Три шага до первой записи", workflow: [["Создайте аккаунт", "Выберите направление и тариф и начните 14-дневный пробный период."], ["Настройте бизнес", "Добавьте услуги, специалистов, адрес и рабочее время."], ["Поделитесь ссылкой", "Опубликуйте страницу в marketplace или добавьте ссылку в соцсети."]],
-    channelsBadge: "Прозрачные каналы связи", channelsTitle: "Обещаем только то, что действительно работает", channelsText: "Vizit чётко разделяет действующие каналы и возможности, которым требуется подключение провайдера.", active: "Работает", activeItems: ["Подтверждения по электронной почте", "Telegram-уведомления бизнесу", "Управление публичной записью"], configured: "После подключения провайдера", configuredItems: ["SMS и WhatsApp", "Реальный платёжный шлюз", "Дополнительные автоматизации"], finalBadge: "Готовы начать?", finalTitle: "Следующая запись вашего бизнеса может прийти через Vizit", finalText: "Создайте аккаунт, настройте рабочую страницу и проверьте весь процесс перед публикацией.",
+    channelsBadge: "Прозрачные каналы связи", channelsTitle: "Обещаем только то, что действительно работает", channelsText: "Vizit чётко показывает, какие каналы уже работают.", active: "Работает", activeItems: ["Подтверждения по электронной почте", "Telegram-уведомления бизнесу", "Управление публичной записью"], finalBadge: "Готовы начать?", finalTitle: "Следующая запись вашего бизнеса может прийти через Vizit", finalText: "Создайте аккаунт, настройте рабочую страницу и проверьте весь процесс перед публикацией.",
   },
   en: {
     badge: "Vizit for business", titleLead: "Bookings, staff and clients —", titleAccent: "in one system", intro: "Vizit is a workspace for service and healthcare businesses, from public online booking to calendars, staff and client history.", primary: "Start 14 days free", secondary: "View pricing", proofs: ["No payment card", "Հայերեն · Русский · English", "Mobile and desktop"], preview: "Sample business workspace", today: "Today's bookings", schedule: [["10:00", "Consultation", "Anna"], ["11:30", "Service", "Maria"], ["14:00", "Follow-up visit", "David"]], confirmed: "Confirmed",
@@ -94,11 +92,12 @@ const copy = {
       ["Online booking", "A public page with services, specialists and available times."], ["Calendar and staff", "Working hours, breaks, closed days, roles and individual availability."], ["Client database", "Visit history, notes, groups, repeat bookings and a client cabinet."], ["Map and marketplace", "Locations, categories, search and Yandex map markers."], ["Analytics", "Bookings, revenue, sources, staff utilization and no-show visibility."],
     ],
     workflowBadge: "Simple launch", workflowTitle: "Three steps to the first booking", workflow: [["Create your account", "Choose a vertical and plan and begin the 14-day trial."], ["Set up the business", "Add services, staff, a location and working hours."], ["Share the link", "Publish in the marketplace or add the booking link to social channels."]],
-    channelsBadge: "Transparent communication channels", channelsTitle: "Only promises that work in practice", channelsText: "Vizit clearly separates active channels from capabilities that require a provider connection.", active: "Active", activeItems: ["Email confirmations", "Telegram alerts for businesses", "Public booking management"], configured: "After provider setup", configuredItems: ["SMS and WhatsApp", "Live payment gateway", "Additional automations"], finalBadge: "Ready to begin?", finalTitle: "Your next appointment can come through Vizit", finalText: "Create an account, set up the workspace and test the full flow before publishing.",
+    channelsBadge: "Transparent communication channels", channelsTitle: "Only promises that work in practice", channelsText: "Vizit clearly shows which channels are already active.", active: "Active", activeItems: ["Email confirmations", "Telegram alerts for businesses", "Public booking management"], finalBadge: "Ready to begin?", finalTitle: "Your next appointment can come through Vizit", finalText: "Create an account, set up the workspace and test the full flow before publishing.",
   },
 } as const;
 
-const featureIcons = [CalendarDays, Users2, LayoutDashboard, MapPinned, BarChart3, WalletCards];
+const featureIcons = [CalendarDays, Users2, LayoutDashboard, MapPinned, BarChart3];
+const workflowIcons = [UserPlus, Settings2, Share2];
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return <div className="inline-flex items-center gap-2 rounded-full border border-[#1e9e92]/25 bg-[#1e9e92]/[0.08] px-4 py-2 text-xs font-semibold text-[#167d74] dark:border-[#58d0c4]/25 dark:bg-[#58d0c4]/10 dark:text-[#8be3da] sm:text-sm"><Sparkles className="h-4 w-4" />{children}</div>;
@@ -171,12 +170,12 @@ export default function BusinessLanding() {
         </section>
 
         <section id="workflow" className="scroll-mt-24 bg-[#2b0d35] px-4 py-20 text-white sm:px-6 lg:px-8 lg:py-24">
-          <div className="mx-auto max-w-[1120px]"><div className="text-center"><div className="inline-flex items-center gap-2 rounded-full border border-[#f4d99f]/25 bg-[#f4d99f]/10 px-4 py-2 text-sm font-semibold text-[#f4d99f]"><BadgeCheck className="h-4 w-4" />{text.workflowBadge}</div><h2 className="vizit-display mt-5 text-3xl font-bold tracking-[-0.035em] sm:text-5xl">{text.workflowTitle}</h2></div><div className="mt-12 grid gap-5 md:grid-cols-3">{text.workflow.map(([title, description], index) => <motion.article key={title} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="vizit-business-workflow-card rounded-[28px] border border-white/12 p-6"><div className="grid h-11 w-11 place-items-center rounded-2xl bg-[#f4d99f] text-lg font-black text-[#2b0d35]">{index + 1}</div><h3 className="mt-5 text-xl font-bold">{title}</h3><p className="mt-3 text-sm leading-7 text-white/62">{description}</p></motion.article>)}</div></div>
+          <div className="mx-auto max-w-[1120px]"><div className="text-center"><div className="inline-flex items-center gap-2 rounded-full border border-[#f4d99f]/25 bg-[#f4d99f]/10 px-4 py-2 text-sm font-semibold text-[#f4d99f]"><BadgeCheck className="h-4 w-4" />{text.workflowBadge}</div><h2 className="vizit-display mt-5 text-3xl font-bold tracking-[-0.035em] sm:text-5xl">{text.workflowTitle}</h2></div><div className="mt-12 grid gap-5 md:grid-cols-3">{text.workflow.map(([title, description], index) => { const StepIcon = workflowIcons[index]; return <motion.article key={title} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="vizit-business-workflow-card rounded-[28px] border border-white/12 p-6"><div className="flex items-center gap-3"><div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[#f4d99f] text-lg font-black text-[#2b0d35]">{index + 1}</div><div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-[#f4d99f]/25 bg-white/5 text-[#f4d99f]"><StepIcon className="h-5 w-5" /></div></div><h3 className="mt-5 text-xl font-bold">{title}</h3><p className="mt-3 text-sm leading-7 text-white/62">{description}</p></motion.article>; })}</div></div>
         </section>
 
         <section className="px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
           <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.18 }} className="mx-auto max-w-[1120px] overflow-hidden rounded-[36px] border border-[#d39a43]/22 bg-white p-6 shadow-[0_30px_100px_rgba(75,36,52,0.10)] dark:border-white/10 dark:bg-white/[0.05] sm:p-9 lg:p-12">
-            <div className="grid gap-9 lg:grid-cols-[0.9fr_1.1fr] lg:items-center"><div><Eyebrow>{text.channelsBadge}</Eyebrow><h2 className="vizit-display mt-5 text-3xl font-bold tracking-[-0.035em] text-[#2b0d35] dark:text-white sm:text-4xl">{text.channelsTitle}</h2><p className="mt-4 text-sm leading-7 text-[#756777] dark:text-white/60">{text.channelsText}</p></div><div className="grid gap-4 sm:grid-cols-2"><div className="rounded-[26px] border border-emerald-200 bg-emerald-50/70 p-5 dark:border-emerald-400/15 dark:bg-emerald-400/[0.07]"><div className="flex items-center gap-2 font-bold text-emerald-800 dark:text-emerald-200"><BellRing className="h-5 w-5" />{text.active}</div><div className="mt-4 space-y-3">{text.activeItems.map((item) => <div key={item} className="flex gap-2 text-sm leading-6 text-emerald-900/75 dark:text-emerald-100/70"><Check className="mt-1 h-4 w-4 shrink-0" />{item}</div>)}</div></div><div className="rounded-[26px] border border-amber-200 bg-amber-50/70 p-5 dark:border-amber-400/15 dark:bg-amber-400/[0.07]"><div className="flex items-center gap-2 font-bold text-amber-900 dark:text-amber-200"><ShieldCheck className="h-5 w-5" />{text.configured}</div><div className="mt-4 space-y-3">{text.configuredItems.map((item) => <div key={item} className="flex gap-2 text-sm leading-6 text-amber-900/70 dark:text-amber-100/65"><Globe2 className="mt-1 h-4 w-4 shrink-0" />{item}</div>)}</div></div></div></div>
+            <div className="grid gap-9 lg:grid-cols-[1fr_0.85fr] lg:items-center"><div><Eyebrow>{text.channelsBadge}</Eyebrow><h2 className="vizit-display mt-5 text-3xl font-bold tracking-[-0.035em] text-[#2b0d35] dark:text-white sm:text-4xl">{text.channelsTitle}</h2><p className="mt-4 text-sm leading-7 text-[#756777] dark:text-white/60">{text.channelsText}</p></div><div className="rounded-[26px] border border-emerald-200 bg-emerald-50/70 p-5 dark:border-emerald-400/15 dark:bg-emerald-400/[0.07]"><div className="flex items-center gap-2 font-bold text-emerald-800 dark:text-emerald-200"><BellRing className="h-5 w-5" />{text.active}</div><div className="mt-4 space-y-3">{text.activeItems.map((item) => <div key={item} className="flex gap-2 text-sm leading-6 text-emerald-900/75 dark:text-emerald-100/70"><Check className="mt-1 h-4 w-4 shrink-0" />{item}</div>)}</div></div></div>
           </motion.div>
         </section>
 

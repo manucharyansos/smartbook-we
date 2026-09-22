@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Crosshair, LocateFixed, MapPin, RotateCcw } from "lucide-react";
+import { Check, Crosshair, LocateFixed, MapPin, RotateCcw } from "lucide-react";
 
 import YandexMap, { type MapCoordinates } from "../maps/YandexMap";
 import { useLanguage, type Locale } from "../../contexts/LanguageContext";
@@ -16,6 +16,7 @@ export type LocationMapPickerLabels = {
   locating: string;
   useCurrentLocation: string;
   clear: string;
+  confirm: string;
 };
 
 const defaultLabels: Record<Locale, LocationMapPickerLabels> = {
@@ -29,6 +30,7 @@ const defaultLabels: Record<Locale, LocationMapPickerLabels> = {
     locating: "Որոշվում է…",
     useCurrentLocation: "Իմ տեղադրությունը",
     clear: "Մաքրել",
+    confirm: "Հաստատել այս կետը",
   },
   ru: {
     dragHint: "Перетащите карту и установите маркер у входа",
@@ -40,6 +42,7 @@ const defaultLabels: Record<Locale, LocationMapPickerLabels> = {
     locating: "Определяем…",
     useCurrentLocation: "Моё местоположение",
     clear: "Очистить",
+    confirm: "Подтвердить эту точку",
   },
   en: {
     dragHint: "Drag the map and place the marker at the entrance",
@@ -51,6 +54,7 @@ const defaultLabels: Record<Locale, LocationMapPickerLabels> = {
     locating: "Locating…",
     useCurrentLocation: "My location",
     clear: "Clear",
+    confirm: "Confirm this point",
   },
 };
 
@@ -155,6 +159,11 @@ export function LocationMapPicker({
             : text.emptyCoordinates}
         </div>
         <div className="flex flex-wrap gap-2">
+          {!hasCoordinates ? (
+            <button type="button" disabled={disabled} onClick={() => commitCenter(center, zoom)} className="inline-flex items-center gap-2 rounded-xl border border-violet-300 bg-violet-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-violet-700 disabled:opacity-50">
+              <Check className="h-4 w-4" /> {text.confirm}
+            </button>
+          ) : null}
           <button type="button" disabled={disabled || locating} onClick={useCurrentLocation} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-violet-300 hover:text-violet-700 disabled:opacity-50 dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-200">
             <LocateFixed className="h-4 w-4" /> {locating ? text.locating : text.useCurrentLocation}
           </button>

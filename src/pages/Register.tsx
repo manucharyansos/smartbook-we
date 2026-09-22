@@ -159,6 +159,7 @@ const locationCopy = {
             locating: "Որոշվում է…",
             useCurrentLocation: "Իմ տեղադրությունը",
             clear: "Մաքրել",
+            confirm: "Հաստատել այս կետը",
         },
     },
     ru: {
@@ -175,6 +176,7 @@ const locationCopy = {
             locating: "Определяем…",
             useCurrentLocation: "Моё местоположение",
             clear: "Очистить",
+            confirm: "Подтвердить эту точку",
         },
     },
     en: {
@@ -191,6 +193,7 @@ const locationCopy = {
             locating: "Locating…",
             useCurrentLocation: "My location",
             clear: "Clear",
+            confirm: "Confirm this point",
         },
     },
 } as const;

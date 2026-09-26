@@ -32,9 +32,9 @@ const routeMeta: Record<string, MetaCopy> = {
     en: { title: "Contact the Vizit team", description: "Message or call the Vizit team about onboarding, partnerships or support." },
   },
   "/support": {
-    hy: { title: "Vizit աջակցություն", description: "Ստացեք օգնություն Vizit-ի կարգավորումների, վճարումների և ամրագրման հոսքերի վերաբերյալ։" },
-    ru: { title: "Поддержка Vizit", description: "Получите помощь с настройками, оплатой и процессом бронирования Vizit." },
-    en: { title: "Vizit support", description: "Get help with Vizit setup, payments and booking flows." },
+    hy: { title: "Vizit աջակցություն", description: "Ստացեք օգնություն Vizit-ի կարգավորումների, պլանների և ամրագրման հոսքերի վերաբերյալ։" },
+    ru: { title: "Поддержка Vizit", description: "Получите помощь с настройками, тарифами и процессом бронирования Vizit." },
+    en: { title: "Vizit support", description: "Get help with Vizit setup, plans and booking flows." },
   },
   "/faq": {
     hy: { title: "Հաճախ տրվող հարցեր | Vizit", description: "Vizit.am-ի գրանցման, ամրագրումների և պլանների մասին հարցերի պատասխաններ։" },

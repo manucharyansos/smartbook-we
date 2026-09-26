@@ -9,32 +9,32 @@ import { useLanguage } from "../contexts/LanguageContext";
 const copy = {
   hy: {
     badge: "ՀՏՀ", title: "Հաճախ տրվող հարցեր", description: "Vizit-ի կարգավորումների, հանրային ամրագրման և հասանելիությունների մասին ամենատարածված հարցերը։",
-    missing: "Չգտա՞ք պատասխանը", contactTitle: "Կապվեք թիմի հետ", contactText: "Եթե ունեք կարգավորման, հանրային ամրագրման կամ վճարումների կոնկրետ հարց, կապվեք աջակցության թիմի հետ։", support: "Աջակցության կենտրոն", contact: "Կապ մեզ հետ",
+    missing: "Չգտա՞ք պատասխանը", contactTitle: "Կապվեք թիմի հետ", contactText: "Եթե ունեք կարգավորման, պլանի կամ հանրային ամրագրման կոնկրետ հարց, կապվեք աջակցության թիմի հետ։", support: "Աջակցության կենտրոն", contact: "Կապ մեզ հետ",
     items: [
       { q: "Vizit-ը ո՞ւմ համար է նախատեսված", a: "Հարթակը նախատեսված է գեղեցկության սրահների, կլինիկաների, մասնավոր մասնագետների և ամրագրումով աշխատող այլ բիզնեսների համար։" },
       { q: "Կարո՞ղ եմ ունենալ իմ բիզնեսի ամրագրման էջը", a: "Այո։ Յուրաքանչյուր բիզնես կարող է ունենալ առանձին էջ՝ ծառայություններով, հասցեներով, թիմով և օնլայն ամրագրմամբ։" },
       { q: "Թիմի անդամների համար տարբեր դերեր կա՞ն", a: "Այո։ Սեփականատիրոջ, մենեջերի և աշխատակցի հասանելիությունները տարբեր են՝ թիմի անվտանգ կառավարման համար։" },
-      { q: "Նվերի քարտերն ու loyalty-ն հասանելի՞ են բոլոր պլաններում", a: "Որոշ հնարավորություններ կախված են ակտիվ պլանից։ Յուրաքանչյուր պլանի սահմանները նշված են գնային էջում։" },
+      { q: "Ինչպե՞ս է գործում 14-օրյա փորձաշրջանը", a: "Բիզնեսի գրանցումից հետո ընտրված պլանի փորձաշրջանը սկսվում է առանց բանկային քարտի։ Մասնագետների, ծառայությունների և հասցեների սահմանները նշված են գնային էջում։" },
     ],
   },
   ru: {
     badge: "FAQ", title: "Частые вопросы", description: "Ответы на популярные вопросы о настройке Vizit, публичной записи и доступных возможностях.",
-    missing: "Не нашли ответ?", contactTitle: "Свяжитесь с командой", contactText: "Если у вас есть конкретный вопрос о настройке, онлайн-записи или оплате, обратитесь в поддержку.", support: "Центр поддержки", contact: "Связаться с нами",
+    missing: "Не нашли ответ?", contactTitle: "Свяжитесь с командой", contactText: "Если у вас есть конкретный вопрос о настройке, тарифе или онлайн-записи, обратитесь в поддержку.", support: "Центр поддержки", contact: "Связаться с нами",
     items: [
       { q: "Для кого предназначен Vizit?", a: "Платформа создана для салонов красоты, клиник, частных специалистов и других компаний, работающих по записи." },
       { q: "Можно ли создать отдельную страницу записи?", a: "Да. У каждого бизнеса может быть публичная страница с услугами, адресами, командой и онлайн-записью." },
       { q: "Есть ли разные роли для сотрудников?", a: "Да. Права владельца, менеджера и сотрудника различаются для безопасного управления командой." },
-      { q: "Подарочные карты и программа лояльности входят во все тарифы?", a: "Некоторые возможности зависят от активного тарифа. Ограничения каждого тарифа указаны на странице цен." },
+      { q: "Как работает 14-дневный пробный период?", a: "После регистрации бизнеса пробный период выбранного тарифа начинается без банковской карты. Лимиты специалистов, услуг и адресов указаны на странице цен." },
     ],
   },
   en: {
     badge: "FAQ", title: "Frequently asked questions", description: "Answers to common questions about Vizit setup, public booking and available features.",
-    missing: "Still have a question?", contactTitle: "Talk to our team", contactText: "For specific setup, public booking or payment questions, contact the support team.", support: "Support center", contact: "Contact us",
+    missing: "Still have a question?", contactTitle: "Talk to our team", contactText: "For specific setup, plan or public booking questions, contact the support team.", support: "Support center", contact: "Contact us",
     items: [
       { q: "Who is Vizit for?", a: "Vizit is built for beauty salons, clinics, independent professionals and other appointment-based businesses." },
       { q: "Can my business have its own booking page?", a: "Yes. Each business can have a public page with services, locations, staff and online booking." },
       { q: "Are there different staff roles?", a: "Yes. Owner, manager and staff permissions are separated to keep team management secure." },
-      { q: "Are gift cards and loyalty included in every plan?", a: "Some features depend on the active plan. Each plan's limits are shown on the pricing page." },
+      { q: "How does the 14-day trial work?", a: "After business registration, the selected plan starts a trial without requiring a bank card. Staff, service and location limits are shown on the pricing page." },
     ],
   },
 };

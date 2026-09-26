@@ -56,6 +56,7 @@ export type BillingMeResponse = {
     default: "idbank" | "idbank_mock";
     mode: string;
     live_ready: boolean;
+    checkout_available: boolean;
   } | null;
   pricing?: {
     currency: string;

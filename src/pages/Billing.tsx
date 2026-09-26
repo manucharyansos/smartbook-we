@@ -7,7 +7,6 @@ import {
   Check,
   CreditCard,
   Crown,
-  ExternalLink,
   Handshake,
   Landmark,
   Loader2,
@@ -28,12 +27,13 @@ import { createCheckoutSession, getInvoicePaymentStatus, type PaymentTransaction
 import type { PublicPlan } from "@/lib/planApi";
 import { isCustomPlan, localizePlanNameForLocale } from "@/lib/planPresentation";
 import { useLanguage, type Locale } from "@/contexts/LanguageContext";
+import { LEGAL_ENTITY } from "@/config/legal";
 
 type BillingCycle = "monthly" | "yearly";
-type PaymentBrand = "arca" | "visa" | "mastercard" | "idbank" | "idram" | "telcell" | "easypay" | "fastshift" | "applepay" | "googlepay" | "transfer";
-type PaymentMethodValue = "idbank-card" | "idram" | "telcell" | "easypay" | "fastshift" | "applepay" | "googlepay" | "bank-transfer";
+type PaymentBrand = "idbank";
+type PaymentMethodValue = "idbank-card";
 
-const plannedPaymentMethods: Array<{
+const paymentMethodDefinitions: Array<{
   value: PaymentMethodValue;
   label: Record<Locale, string>;
   detail: Record<Locale, string>;
@@ -42,104 +42,16 @@ const plannedPaymentMethods: Array<{
   {
     value: "idbank-card",
     label: { hy: "Բանկային քարտ · IDBank V-POS", ru: "Банковская карта · IDBank V-POS", en: "Bank card · IDBank V-POS" },
-    detail: { hy: "Հայկական և միջազգային քարտեր", ru: "Армянские и международные карты", en: "Armenian and international cards" },
-    brands: ["arca", "visa", "mastercard", "idbank"],
-  },
-  {
-    value: "idram",
-    label: { hy: "Idram և IDBank", ru: "Idram и IDBank", en: "Idram & IDBank" },
-    detail: { hy: "Idram հավելված և IDBank էկոհամակարգ", ru: "Приложение Idram и экосистема IDBank", en: "Idram app and the IDBank ecosystem" },
-    brands: ["idram", "idbank"],
-  },
-  {
-    value: "telcell",
-    label: { hy: "Telcell Wallet", ru: "Telcell Wallet", en: "Telcell Wallet" },
-    detail: { hy: "Դրամապանակ և QR վճարում", ru: "Кошелёк и оплата по QR", en: "Wallet and QR payment" },
-    brands: ["telcell"],
-  },
-  {
-    value: "easypay",
-    label: { hy: "EasyPay · easywallet", ru: "EasyPay · easywallet", en: "EasyPay · easywallet" },
-    detail: { hy: "Դրամապանակ և վճարային համակարգ", ru: "Кошелёк и платёжная система", en: "Wallet and payment system" },
-    brands: ["easypay"],
-  },
-  {
-    value: "fastshift",
-    label: { hy: "Fast Shift", ru: "Fast Shift", en: "Fast Shift" },
-    detail: { hy: "Հավելված և օնլայն վճարում", ru: "Приложение и онлайн-оплата", en: "App and online payment" },
-    brands: ["fastshift"],
-  },
-  {
-    value: "applepay",
-    label: { hy: "Apple Pay", ru: "Apple Pay", en: "Apple Pay" },
-    detail: { hy: "Վճարում աջակցվող քարտերով", ru: "Оплата поддерживаемыми картами", en: "Payment with supported cards" },
-    brands: ["applepay"],
-  },
-  {
-    value: "googlepay",
-    label: { hy: "Google Pay", ru: "Google Pay", en: "Google Pay" },
-    detail: { hy: "Վճարում աջակցվող քարտերով", ru: "Оплата поддерживаемыми картами", en: "Payment with supported cards" },
-    brands: ["googlepay"],
-  },
-  {
-    value: "bank-transfer",
-    label: { hy: "Բանկային փոխանցում", ru: "Банковский перевод", en: "Bank transfer" },
-    detail: { hy: "Փոխանցում հաշիվ-ապրանքագրով", ru: "Перевод по выставленному счёту", en: "Transfer against an invoice" },
-    brands: ["transfer"],
+    detail: { hy: "Կակտիվանա միայն պաշտոնական merchant կապից հետո", ru: "Активируется только после официального merchant-подключения", en: "Activates only after the official merchant connection" },
+    brands: ["idbank"],
   },
 ];
 
 const paymentBrandAssets: Partial<Record<PaymentBrand, { src: string; alt: string; imageClassName?: string; badgeClassName?: string }>> = {
-  arca: {
-    src: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Arca_logo_wiki.png",
-    alt: "ArCa",
-    imageClassName: "max-h-[18px] max-w-[62px]",
-  },
-  visa: {
-    src: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Visa_Inc._logo_(2021%E2%80%93present).svg",
-    alt: "Visa",
-    imageClassName: "max-h-[17px] max-w-[58px]",
-  },
-  mastercard: {
-    src: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Mastercard_2019_logo.svg",
-    alt: "Mastercard",
-    imageClassName: "max-h-[22px] max-w-[38px]",
-  },
   idbank: {
     src: "https://idbank.am/images/m-logo.svg",
     alt: "IDBank",
     imageClassName: "max-h-[20px] max-w-[82px]",
-  },
-  idram: {
-    src: "https://www.idram.am/assets/icons/logo.svg",
-    alt: "Idram",
-    imageClassName: "max-h-[22px] max-w-[76px]",
-    badgeClassName: "border-[#243946] bg-[#243946]",
-  },
-  telcell: {
-    src: "https://telcell.am/assets/img/logo.svg",
-    alt: "Telcell",
-    imageClassName: "max-h-[18px] max-w-[88px]",
-  },
-  easypay: {
-    src: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Easypay_logo_AM.svg",
-    alt: "EasyPay",
-    imageClassName: "max-h-[21px] max-w-[82px]",
-  },
-  fastshift: {
-    src: "https://static.ucraft.net/fs/ucraft/userFiles/fastshif/images/logo.png",
-    alt: "Fast Shift",
-    imageClassName: "max-h-[22px] max-w-[92px]",
-  },
-  applepay: {
-    src: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Apple_Pay_logo.svg",
-    alt: "Apple Pay",
-    imageClassName: "max-h-[21px] max-w-[64px]",
-  },
-  googlepay: {
-    src: "https://commons.wikimedia.org/wiki/Special:Redirect/file/Google_Pay_Logo.svg",
-    alt: "Google Pay",
-    imageClassName: "max-h-[21px] max-w-[68px]",
   },
 };
 
@@ -155,8 +67,8 @@ const billingCopy = {
     createInvoiceError: "Չհաջողվեց ստեղծել վճարման հաշիվը։ Փորձիր կրկին։",
     checkoutError: "Չհաջողվեց բացել վճարման էջը։ Փորձիր կրկին։",
     businessSuspended: "Բիզնեսը կասեցված է։ Վերականգնման համար կապվիր աջակցության հետ։",
-    billingSuspended: "Վճարումները կասեցված են։ Ընտրիր գործող առաջարկը և ավարտիր վճարումը՝ աշխատանքային տարածքը վերականգնելու համար։",
-    subscriptionInactive: "Բաժանորդագրությունն ակտիվ չէ։ Ընտրիր պլանը և ավարտիր վճարումը՝ աշխատանքային տարածքը վերականգնելու համար։",
+    billingSuspended: "Վճարումները կասեցված են։ Ընտրիր գործող առաջարկը և հետևիր հասանելի ակտիվացման քայլերին, իսկ եթե օնլայն վճարումը փակ է՝ կապվիր աջակցության հետ։",
+    subscriptionInactive: "Բաժանորդագրությունն ակտիվ չէ։ Ընտրիր պլանը և հետևիր հասանելի ակտիվացման քայլերին, իսկ եթե օնլայն վճարումը փակ է՝ կապվիր աջակցության հետ։",
     heroBadge: "Վճարումներ · գնագոյացում ըստ մասնագետների",
     title: "Պլան և վճարումներ",
     intro: "Ընտրիր պլանը ըստ ակտիվ մասնագետների, ծառայությունների և հասցեների քանակի։ Սեփականատիրոջ և մենեջերի հաշիվները սահմանաչափում չեն հաշվվում, իսկ անհատական առաջարկը կերևա հենց այստեղ։",
@@ -173,7 +85,7 @@ const billingCopy = {
     locationsHint: "Մասնաճյուղերի և հասցեների սահմանաչափ",
     paymentProvider: "Վճարման ծառայություն",
     awaitingConnection: "Սպասում է միացման",
-    secureEnvironment: "Պաշտպանված վճարային միջավայր",
+    secureEnvironment: "Պաշտոնական կապի կարգավիճակ",
     effectiveMonthly: "Արդյունավետ ամսական արժեք",
     customTermsActive: "Անհատական պայմաններն ակտիվ են",
     yearlyValue: "Տարեկան արժեքը՝",
@@ -198,28 +110,29 @@ const billingCopy = {
     createCustomInvoice: "Ստեղծել հաշիվ ըստ անհատական առաջարկի",
     createYearlyInvoice: "Ստեղծել տարեկան վճարման հաշիվ",
     createMonthlyInvoice: "Ստեղծել ամսական վճարման հաշիվ",
-    securePayment: "Անվտանգ վճարում",
-    choosePayment: "Ընտրել վճարման եղանակը",
-    paymentIntro: "Ընտրիր հասանելի եղանակը։ Նոր վճարային համակարգերը կակտիվանան պայմանագրերի, API բանալիների և webhook-ների միացումից հետո։",
+    securePayment: "Վճարային կապի կարգավիճակ",
+    choosePayment: "Վճարային կապի եղանակ",
+    paymentIntro: "Այստեղ ցուցադրվում է IDBank V-POS-ի պաշտոնական կապի վիճակը։ Վճարման կոճակը կակտիվանա միայն merchant պայմանագրի, API դաշտերի և webhook-ի ամբողջական միացումից հետո։",
+    sellerLine: `Վճար ստացող՝ ${LEGAL_ENTITY.legalName} · ՀՎՀՀ ${LEGAL_ENTITY.taxId} · ${LEGAL_ENTITY.email}`,
+    autoRenewalOff: "Ավտոմատ երկարաձգումը միացված չէ․ յուրաքանչյուր նոր շրջանի համար ստեղծվում և վճարվում է նոր հաշիվ։",
     selected: "Ընտրված է՝",
     paymentMethodsAria: "Վճարման եղանակներ",
     testEnvironment: "Թեստային միջավայր",
     connected: "Միացված",
     bankAwaiting: "Սպասում է բանկի միացմանը",
-    soon: "Շուտով",
-    paymentSafetyNote: "Քարտային վճարումը բացվում է բանկի պաշտպանված էջում։ «Շուտով» նշված տարբերակները չեն ընդունի վճարում, մինչև չավարտվի համապատասխան պրովայդերի պաշտոնական տեխնիկական միացումը։",
+    paymentSafetyNote: "Միայն «Միացված» նշումով եղանակը կարող է ընդունել վճարում։ Մինչ այդ Vizit-ը քարտային տվյալներ չի հավաքում և այս էջից գումար չի գանձում։",
     latestInvoice: "Վերջին վճարման հաշիվը",
     invoicesLoading: "Բեռնում ենք վճարման հաշիվները…",
     invoicesLoadError: "Չհաջողվեց բեռնել վճարման հաշիվները։",
     noInvoiceTitle: "Վճարման հաշիվ դեռ չկա",
-    noInvoiceText: "Ընտրիր պլանը վերևից, ստեղծիր վճարման հաշիվ և հետո բացիր բանկի վճարման էջը։",
+    noInvoiceText: "Ընտրիր պլանը և ստեղծիր հաշիվ։ Բանկի վճարման կոճակը կաշխատի միայն պաշտոնական կապից հետո։",
     invoice: "Հաշիվ",
     planFallback: "Պլան",
     customApplied: "Կիրառվել է անհատական առաջարկ",
     discount: "Զեղչ՝",
     state: "Վիճակ",
     openBankPage: "Բացել բանկի վճարման էջը",
-    checkoutText: "Վճարումը բացվում է առանձին անվտանգ էջում, իսկ հաստատումից հետո պլանն ակտիվանում է ավտոմատ։",
+    checkoutText: "Պաշտոնական կապից հետո վճարումը կբացվի բանկի էջում, իսկ սերվերով հաստատված հաջող վճարումից հետո պլանը կակտիվանա։",
     providerUnavailable: "IDBank-ի իրական վճարումը դեռ միացված չէ։ Կապվիր աջակցության հետ։",
     openLiveCheckout: "Բացել IDBank վճարման էջը",
     openTestCheckout: "Բացել IDBank թեստային վճարման էջը",
@@ -245,8 +158,8 @@ const billingCopy = {
     createInvoiceError: "Не удалось создать счёт. Попробуйте ещё раз.",
     checkoutError: "Не удалось открыть страницу оплаты. Попробуйте ещё раз.",
     businessSuspended: "Бизнес приостановлен. Для восстановления обратитесь в поддержку.",
-    billingSuspended: "Платежи приостановлены. Выберите действующее предложение и завершите оплату, чтобы восстановить рабочее пространство.",
-    subscriptionInactive: "Подписка неактивна. Выберите тариф и завершите оплату, чтобы восстановить рабочее пространство.",
+    billingSuspended: "Платежи приостановлены. Выберите действующее предложение и следуйте доступным шагам активации; если онлайн-оплата закрыта, обратитесь в поддержку.",
+    subscriptionInactive: "Подписка неактивна. Выберите тариф и следуйте доступным шагам активации; если онлайн-оплата закрыта, обратитесь в поддержку.",
     heroBadge: "Платежи · цена по числу специалистов",
     title: "Тариф и платежи",
     intro: "Выберите тариф по числу активных специалистов, услуг и адресов. Владелец и менеджер не учитываются в лимите, а персональное предложение появится здесь.",
@@ -263,7 +176,7 @@ const billingCopy = {
     locationsHint: "Лимит филиалов и адресов",
     paymentProvider: "Платёжный сервис",
     awaitingConnection: "Ожидает подключения",
-    secureEnvironment: "Защищённая платёжная среда",
+    secureEnvironment: "Статус официального подключения",
     effectiveMonthly: "Эффективная стоимость в месяц",
     customTermsActive: "Персональные условия активны",
     yearlyValue: "Стоимость за год:",
@@ -288,28 +201,29 @@ const billingCopy = {
     createCustomInvoice: "Создать счёт по персональному предложению",
     createYearlyInvoice: "Создать счёт за год",
     createMonthlyInvoice: "Создать счёт за месяц",
-    securePayment: "Безопасная оплата",
-    choosePayment: "Выберите способ оплаты",
-    paymentIntro: "Выберите доступный способ. Новые платёжные системы станут активны после подключения договоров, API-ключей и webhook-уведомлений.",
+    securePayment: "Статус платёжного подключения",
+    choosePayment: "Способ платёжного подключения",
+    paymentIntro: "Здесь показан статус официального подключения IDBank V-POS. Кнопка оплаты станет доступна только после полного подключения merchant-договора, API-полей и webhook.",
+    sellerLine: `Получатель платежа: ${LEGAL_ENTITY.legalName} · ИНН ${LEGAL_ENTITY.taxId} · ${LEGAL_ENTITY.email}`,
+    autoRenewalOff: "Автоматическое продление не включено: для каждого нового периода создаётся и оплачивается новый счёт.",
     selected: "Выбрано:",
     paymentMethodsAria: "Способы оплаты",
     testEnvironment: "Тестовая среда",
     connected: "Подключено",
     bankAwaiting: "Ожидает подключения банка",
-    soon: "Скоро",
-    paymentSafetyNote: "Оплата картой открывается на защищённой странице банка. Способы с пометкой «Скоро» не принимают платежи до завершения официального технического подключения провайдера.",
+    paymentSafetyNote: "Платёж принимает только способ с отметкой «Подключено». До этого Vizit не собирает данные карты и не списывает деньги с этой страницы.",
     latestInvoice: "Последний счёт",
     invoicesLoading: "Загружаем счета…",
     invoicesLoadError: "Не удалось загрузить счета.",
     noInvoiceTitle: "Счетов пока нет",
-    noInvoiceText: "Выберите тариф выше, создайте счёт и затем откройте банковскую страницу оплаты.",
+    noInvoiceText: "Выберите тариф и создайте счёт. Кнопка оплаты в банке заработает только после официального подключения.",
     invoice: "Счёт",
     planFallback: "Тариф",
     customApplied: "Применено персональное предложение",
     discount: "Скидка:",
     state: "Статус",
     openBankPage: "Открыть банковскую страницу оплаты",
-    checkoutText: "Оплата откроется на отдельной защищённой странице, а после подтверждения тариф активируется автоматически.",
+    checkoutText: "После официального подключения оплата откроется на странице банка, а тариф активируется после подтверждённого сервером успешного платежа.",
     providerUnavailable: "Оплата через IDBank в рабочем режиме ещё не подключена. Обратитесь в поддержку.",
     openLiveCheckout: "Открыть оплату IDBank",
     openTestCheckout: "Открыть тестовую оплату IDBank",
@@ -335,8 +249,8 @@ const billingCopy = {
     createInvoiceError: "Could not create the invoice. Please try again.",
     checkoutError: "Could not open the payment page. Please try again.",
     businessSuspended: "This business is suspended. Contact support to restore it.",
-    billingSuspended: "Billing is suspended. Choose an active offer and complete payment to restore the workspace.",
-    subscriptionInactive: "Your subscription is inactive. Choose a plan and complete payment to restore the workspace.",
+    billingSuspended: "Billing is suspended. Choose an active offer and follow the available activation steps; contact support if online payment is unavailable.",
+    subscriptionInactive: "Your subscription is inactive. Choose a plan and follow the available activation steps; contact support if online payment is unavailable.",
     heroBadge: "Payments · pricing by specialist count",
     title: "Plan & payments",
     intro: "Choose a plan by active specialists, services and locations. Owner and manager accounts do not count toward the limit, and any tailored offer will appear here.",
@@ -353,7 +267,7 @@ const billingCopy = {
     locationsHint: "Location and branch limit",
     paymentProvider: "Payment service",
     awaitingConnection: "Awaiting connection",
-    secureEnvironment: "Secure payment environment",
+    secureEnvironment: "Official connection status",
     effectiveMonthly: "Effective monthly price",
     customTermsActive: "Tailored terms are active",
     yearlyValue: "Yearly price:",
@@ -378,28 +292,29 @@ const billingCopy = {
     createCustomInvoice: "Create invoice for tailored offer",
     createYearlyInvoice: "Create annual invoice",
     createMonthlyInvoice: "Create monthly invoice",
-    securePayment: "Secure payment",
-    choosePayment: "Choose a payment method",
-    paymentIntro: "Choose an available method. New payment systems will be activated after contracts, API keys and webhooks are connected.",
+    securePayment: "Payment connection status",
+    choosePayment: "Payment connection method",
+    paymentIntro: "This shows the official IDBank V-POS connection status. The payment button activates only after the merchant agreement, exact API mapping and webhook are fully connected.",
+    sellerLine: `Payment recipient: ${LEGAL_ENTITY.legalName} · Tax ID ${LEGAL_ENTITY.taxId} · ${LEGAL_ENTITY.email}`,
+    autoRenewalOff: "Automatic renewal is not enabled; each new period requires a new invoice and payment.",
     selected: "Selected:",
     paymentMethodsAria: "Payment methods",
     testEnvironment: "Test environment",
     connected: "Connected",
     bankAwaiting: "Awaiting bank connection",
-    soon: "Coming soon",
-    paymentSafetyNote: "Card payments open on the bank's protected page. Methods marked “Coming soon” cannot accept payments until the provider's official technical integration is complete.",
+    paymentSafetyNote: "Only a method marked “Connected” can accept payment. Until then, Vizit does not collect card details or charge money from this page.",
     latestInvoice: "Latest invoice",
     invoicesLoading: "Loading invoices…",
     invoicesLoadError: "Could not load invoices.",
     noInvoiceTitle: "No invoice yet",
-    noInvoiceText: "Choose a plan above, create an invoice, then open the bank's payment page.",
+    noInvoiceText: "Choose a plan and create an invoice. The bank payment button works only after the official connection.",
     invoice: "Invoice",
     planFallback: "Plan",
     customApplied: "Tailored offer applied",
     discount: "Discount:",
     state: "Status",
     openBankPage: "Open the bank payment page",
-    checkoutText: "Payment opens on a separate secure page, and the plan is activated automatically after confirmation.",
+    checkoutText: "After the official connection, payment opens on the bank page and the plan activates only after a server-confirmed successful payment.",
     providerUnavailable: "Live IDBank payments are not connected yet. Contact support.",
     openLiveCheckout: "Open IDBank payment",
     openTestCheckout: "Open IDBank test payment",
@@ -570,7 +485,7 @@ export default function Billing() {
   const [upgradeError, setUpgradeError] = useState<string | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethodValue>("idbank-card");
-  const paymentMethods = useMemo(() => plannedPaymentMethods.map((method) => ({
+  const paymentMethods = useMemo(() => paymentMethodDefinitions.map((method) => ({
     ...method,
     label: method.label[locale],
     detail: method.detail[locale],
@@ -697,8 +612,8 @@ export default function Billing() {
   const currentPlanName = currentPlanCode === "custom" && pricing?.has_override
     ? copy.individualPlan
     : subscription?.plan ? localizePlanNameForLocale(subscription.plan, locale) : null;
-  const paymentProviderUnavailable = billingQ.data?.payment_provider?.default === "idbank"
-    && billingQ.data.payment_provider.live_ready !== true;
+  const checkoutAvailable = billingQ.data?.payment_provider?.checkout_available === true;
+  const paymentProviderUnavailable = !checkoutAvailable;
   const selectedPayment = paymentMethods.find((method) => method.value === selectedPaymentMethod)
     ?? paymentMethods[0];
   const paymentInvoice = paymentStatusQ.data?.data.invoice;
@@ -746,9 +661,6 @@ export default function Billing() {
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               {billingQ.data?.is_billable ? <Link to="/app/settings"><Button variant="secondary">{copy.generalSettings}</Button></Link> : null}
-              <a href="https://idbank.am/en/business/instruments/trade-finance/v-pos-virtual-pos-terminal-0/" target="_blank" rel="noreferrer">
-                <Button>IDBank V-POS <ExternalLink className="h-4 w-4" /></Button>
-              </a>
             </div>
           </div>
 
@@ -859,7 +771,7 @@ export default function Billing() {
                   <div>{billingCycle === "yearly" ? `${copy.perMonthEffective} ~${formatMoney(plan.perMonthEffective, plan.currency, locale)}${copy.perMonth}` : `${formatMoney(plan.monthlyPrice, plan.currency, locale)} ${copy.perMonth}`}</div>
                   {billingCycle === "yearly" ? <div>{plan.isIndividualOffer ? `${copy.customYearly} ${formatMoney(plan.yearlyPrice, plan.currency, locale)}` : `${copy.savings} ${formatMoney(plan.discountAmount, plan.currency, locale)}`}</div> : null}
                   <div>{plan.locations && plan.locations > 1 ? copy.locationLimit(plan.locations) : copy.oneLocation}</div>
-                  <div>{plan.services_limit && plan.services_limit < 999 ? copy.servicesLimit(plan.services_limit) : copy.unlimitedServices}</div>
+                  <div>{plan.services_limit && plan.services_limit > 0 ? copy.servicesLimit(plan.services_limit) : copy.unlimitedServices}</div>
                   {plan.billingCyclesLimit ? <div>{copy.remainingCycles(plan.remainingBillingCycles ?? plan.billingCyclesLimit)}</div> : null}
                 </div>
 
@@ -894,7 +806,8 @@ export default function Billing() {
               </p>
             </div>
             <div className="rounded-xl border border-[#d8e3ec] bg-white/85 px-4 py-3 text-sm text-slate-600 shadow-sm">
-              {copy.selected} <span className="font-semibold text-[var(--vz-text)]">{selectedPayment.label}</span>
+              {checkoutAvailable ? copy.selected : copy.paymentProvider}{" "}
+              <span className="font-semibold text-[var(--vz-text)]">{checkoutAvailable ? selectedPayment.label : copy.awaitingConnection}</span>
             </div>
           </div>
         </div>
@@ -903,7 +816,7 @@ export default function Billing() {
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" role="radiogroup" aria-label={copy.paymentMethodsAria}>
             {paymentMethods.map((method) => {
               const isCard = method.value === "idbank-card";
-              const isAvailable = isCard && !paymentProviderUnavailable;
+              const isAvailable = isCard && checkoutAvailable;
               const isSelected = selectedPaymentMethod === method.value;
               const isTest = isCard && billingQ.data?.payment_provider?.default !== "idbank";
 
@@ -941,7 +854,7 @@ export default function Billing() {
                         : "border-slate-200 bg-white text-slate-500",
                     )}
                   >
-                    {isAvailable ? (isTest ? copy.testEnvironment : copy.connected) : isCard ? copy.bankAwaiting : copy.soon}
+                    {isAvailable ? (isTest ? copy.testEnvironment : copy.connected) : copy.bankAwaiting}
                   </span>
                   {isSelected && isAvailable ? (
                     <span className="absolute right-3 top-3 grid h-6 w-6 place-items-center rounded-full bg-[var(--vz-primary)] text-[var(--vz-on-primary)]">
@@ -955,7 +868,11 @@ export default function Billing() {
 
           <div className="mt-5 flex gap-3 rounded-xl border border-[#d8e3ec] bg-[#f7fafc] px-4 py-3 text-sm leading-6 text-[var(--vz-muted)]" role="note">
             <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--vz-brand-text)]" aria-hidden="true" />
-            <p>{copy.paymentSafetyNote}</p>
+            <div className="space-y-1">
+              <p>{copy.paymentSafetyNote}</p>
+              <p>{copy.sellerLine}</p>
+              <p>{copy.autoRenewalOff}</p>
+            </div>
           </div>
         </div>
       </SectionCard>

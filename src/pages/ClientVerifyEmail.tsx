@@ -41,6 +41,7 @@ export default function ClientVerifyEmail() {
 
   return (
     <AuthShell
+      audience="client"
       title="Email-ի հաստատում"
       subtitle="Ստուգում ենք հաստատման հղումը և հաճախորդի հաշիվը։"
       badge="Vizit հաճախորդի հաշիվ"

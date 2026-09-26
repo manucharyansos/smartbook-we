@@ -55,6 +55,7 @@ export default function ResetPassword() {
 
   return (
     <AuthShell
+      audience={isClient ? "client" : "business"}
       title={text.title}
       subtitle={text.subtitle}
       sideTitle={text.sideTitle}

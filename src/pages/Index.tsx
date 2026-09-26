@@ -742,9 +742,9 @@ function HeroTicket() {
     { label: t("categories.all"), Icon: Grid3X3, tone: "gold" },
   ];
   const previewBusinesses = [
-    { name: "Nairi Clinic", label: t("businesses.healthcare"), Icon: Hospital, rating: "4.9" },
-    { name: "Luna Beauty", label: t("businesses.services"), Icon: Sparkles, rating: "4.8" },
-    { name: "Auto Premium", label: t("businesses.services"), Icon: Car, rating: "4.7" },
+    { name: t("hero.preview.clinic"), label: t("businesses.healthcare"), Icon: Hospital },
+    { name: t("hero.preview.beauty"), label: t("businesses.services"), Icon: Sparkles },
+    { name: t("hero.preview.auto"), label: t("businesses.services"), Icon: Car },
   ];
 
   return (
@@ -767,6 +767,10 @@ function HeroTicket() {
             <span className="vizit-phone-bell"><Bell aria-hidden="true" /><i /></span>
           </div>
 
+          <div className="px-3 pb-1 pt-2 text-center text-[9px] font-bold uppercase tracking-[0.08em] text-[#786b85] dark:text-white/55">
+            {t("hero.previewLabel")}
+          </div>
+
           <div className="vizit-phone-search"><Search aria-hidden="true" /><span>{t("search.label")}</span></div>
           <div className="vizit-phone-location"><MapPin aria-hidden="true" /><span>{t("search.city")}</span><ChevronRight aria-hidden="true" /></div>
 
@@ -785,13 +789,12 @@ function HeroTicket() {
           </div>
 
           <div className="vizit-phone-businesses">
-            {previewBusinesses.map(({ name, label, Icon, rating }, index) => (
+            {previewBusinesses.map(({ name, label, Icon }, index) => (
               <div key={name} className="vizit-phone-business">
                 <span className={`vizit-phone-business-cover is-${index + 1}`}><Icon aria-hidden="true" /></span>
                 <span className="vizit-phone-business-copy">
                   <strong>{name}</strong>
                   <small>{label}</small>
-                  <span><Star aria-hidden="true" /> {rating}</span>
                 </span>
                 <span className="vizit-phone-business-place">{t("search.city")}</span>
               </div>
@@ -1520,19 +1523,21 @@ export default function Index() {
               ))}
             </div>
 
-            <motion.div variants={fadeUp} className="mt-5 grid grid-cols-2 gap-1 rounded-[18px] border border-[#e8e2f0] bg-white p-2 dark:border-[#312641] dark:bg-white/[0.055] sm:mt-7 sm:grid-cols-4 sm:gap-3 sm:rounded-[22px] sm:p-4">
-              {[
-                { value: businessStat(stats.total), label: t("stats.businesses"), Icon: Building2 },
-                { value: businessStat(stats.services), label: t("stats.services"), Icon: Sparkles },
-                { value: businessStat(stats.staff), label: t("stats.staff"), Icon: Users },
-                { value: categoryStat, label: t("stats.categories"), Icon: Star },
-              ].map(({ value, label, Icon }) => (
-                <div key={label} className="flex min-w-0 flex-col items-center justify-center gap-1.5 rounded-[14px] px-1 py-3 text-center sm:flex-row sm:gap-4 sm:rounded-[18px] sm:px-3 sm:py-4 sm:text-left xl:justify-center">
-                  <Icon className="h-5 w-5 shrink-0 text-[#1e9e92] dark:text-[#58d0c4] sm:h-7 sm:w-7" />
-                  <span className="min-w-0"><span className="vizit-display block text-xl font-bold leading-none text-[#5b2fa8] dark:text-[#b898f4] sm:text-[26px]">{value}</span><span className="mt-1.5 block text-[10px] font-medium leading-3 text-[#6b6178] dark:text-[#b7adc5] sm:mt-2 sm:text-[12px] sm:leading-4">{label}</span></span>
-                </div>
-              ))}
-            </motion.div>
+            {businessesQ.isLoading || businessesQ.isError || stats.total > 0 ? (
+              <motion.div variants={fadeUp} className="mt-5 grid grid-cols-2 gap-1 rounded-[18px] border border-[#e8e2f0] bg-white p-2 dark:border-[#312641] dark:bg-white/[0.055] sm:mt-7 sm:grid-cols-4 sm:gap-3 sm:rounded-[22px] sm:p-4">
+                {[
+                  { value: businessStat(stats.total), label: t("stats.businesses"), Icon: Building2 },
+                  { value: businessStat(stats.services), label: t("stats.services"), Icon: Sparkles },
+                  { value: businessStat(stats.staff), label: t("stats.staff"), Icon: Users },
+                  { value: categoryStat, label: t("stats.categories"), Icon: Star },
+                ].map(({ value, label, Icon }) => (
+                  <div key={label} className="flex min-w-0 flex-col items-center justify-center gap-1.5 rounded-[14px] px-1 py-3 text-center sm:flex-row sm:gap-4 sm:rounded-[18px] sm:px-3 sm:py-4 sm:text-left xl:justify-center">
+                    <Icon className="h-5 w-5 shrink-0 text-[#1e9e92] dark:text-[#58d0c4] sm:h-7 sm:w-7" />
+                    <span className="min-w-0"><span className="vizit-display block text-xl font-bold leading-none text-[#5b2fa8] dark:text-[#b898f4] sm:text-[26px]">{value}</span><span className="mt-1.5 block text-[10px] font-medium leading-3 text-[#6b6178] dark:text-[#b7adc5] sm:mt-2 sm:text-[12px] sm:leading-4">{label}</span></span>
+                  </div>
+                ))}
+              </motion.div>
+            ) : null}
           </motion.div>
         </section>
 

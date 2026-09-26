@@ -41,7 +41,7 @@ const copy = {
     solutionsTitle: "Նույն ամուր հիմքը՝ տարբեր աշխատանքային տրամաբանությամբ",
     solutionsText: "Ընտրեք ձեր ոլորտը գրանցման ժամանակ․ հետագայում կարող եք ավելացնել համապատասխան կատեգորիան, ծառայություններն ու մասնագետներին։",
     solutions: [
-      { title: "Ծառայությունների բիզնես", text: "Սրահներ, վարպետներ, ավտոսերվիս, դասընթացներ, խորհրդատվություն և այլ ժամադրություններով աշխատող ծառայություններ։", points: ["Ծառայություններ և հավելումներ", "Թիմի գրաֆիկ և հասանելիություն", "Հանրային էջ և քարտեզ"] },
+      { title: "Ծառայությունների բիզնես", text: "Սրահներ, վարպետներ, ավտոսերվիս, դասընթացներ, խորհրդատվություն և այլ ժամադրություններով աշխատող ծառայություններ։", points: ["Ծառայություններ և բազմակի ամրագրումներ", "Թիմի գրաֆիկ և հասանելիություն", "Հանրային էջ և քարտեզ"] },
       { title: "Բժշկական ուղղություն", text: "Կլինիկաներ, ատամնաբուժարաններ, մասնավոր բժիշկներ, ախտորոշում և վերականգնում։", points: ["Մասնագետներ և աշխատասենյակներ", "Այցերի ու հաճախորդների պատմություն", "Բժշկական workflow-ի առանձին միջավայր"] },
     ],
     featuresBadge: "Հիմնական հնարավորություններ",
@@ -50,7 +50,7 @@ const copy = {
     features: [
       ["Օնլայն ամրագրում", "Սեփական հանրային էջ, ծառայությունների ու մասնագետների ընտրություն և հասանելի ժամեր։"],
       ["Օրացույց և թիմ", "Աշխատաժամեր, ընդմիջումներ, փակ օրեր, դերեր և մասնագետների անհատական հասանելիություն։"],
-      ["Հաճախորդների բազա", "Այցերի պատմություն, նշումներ, խմբեր, կրկնվող ամրագրումներ և client cabinet։"],
+      ["Հաճախորդների բազա", "Այցերի պատմություն, նշումներ և հաճախորդի անձնական հաշիվ։"],
       ["Քարտեզ և marketplace", "Բիզնեսի հասցեներ, կատեգորիաներ, որոնում և Yandex քարտեզի նշիչներ։"],
       ["Վերլուծություն", "Ամրագրումներ, եկամուտ, աղբյուրներ, թիմի ծանրաբեռնվածություն և no-show դիտարկումներ։"],
     ],
@@ -61,11 +61,11 @@ const copy = {
       ["Կարգավորեք բիզնեսը", "Ավելացրեք ծառայությունները, մասնագետներին, հասցեն և աշխատանքային ժամերը։"],
       ["Կիսվեք հղումով", "Հրապարակեք էջը marketplace-ում կամ տեղադրեք ամրագրման հղումը սոցցանցերում։"],
     ],
-    channelsBadge: "Թափանցիկ կապի ալիքներ",
-    channelsTitle: "Միայն այն խոստումները, որոնք իսկապես աշխատում են",
-    channelsText: "Vizit-ը հստակ ներկայացնում է այն ալիքները, որոնք արդեն գործում են։",
-    active: "Գործող",
-    activeItems: ["Էլ. փոստով հաստատումներ", "Telegram ծանուցումներ բիզնեսին", "Հանրային ամրագրման կառավարում"],
+    channelsBadge: "Գործող հնարավորություններ",
+    channelsTitle: "Ցույց ենք տալիս միայն այն, ինչ իրականում աշխատում է",
+    channelsText: "Այս գործիքները հասանելի են հարթակի ընթացիկ տարբերակում։",
+    active: "Հասանելի է",
+    activeItems: ["Էլ. փոստով ամրագրման հաստատումներ՝ հասցեն նշելու դեպքում", "Հանրային ամրագրումների կառավարում", "Օրացույց, աշխատակիցների գրաֆիկներ և հաճախորդների բազա"],
     finalBadge: "Պատրա՞ստ եք սկսել",
     finalTitle: "Ձեր բիզնեսի հաջորդ ամրագրումը կարող է գալ Vizit-ից",
     finalText: "Ստեղծեք հաշիվը, կարգավորեք աշխատանքային էջը և փորձեք ամբողջ հոսքը մինչև հրապարակելը։",
@@ -73,26 +73,26 @@ const copy = {
   ru: {
     badge: "Vizit для бизнеса", titleLead: "Записи, команда и клиенты —", titleAccent: "в одной системе", intro: "Vizit — рабочая платформа для сервисного и медицинского бизнеса: от публичной онлайн-записи до календаря, команды и истории клиентов.", primary: "Начать 14 дней бесплатно", secondary: "Посмотреть тарифы", proofs: ["Без банковской карты", "Հայերեն · Русский · English", "На телефоне и компьютере"], preview: "Пример рабочего кабинета", today: "Записи на сегодня", schedule: [["10:00", "Консультация", "Анна"], ["11:30", "Услуга", "Мария"], ["14:00", "Повторный визит", "Давид"]], confirmed: "Подтверждено",
     solutionsBadge: "Два специализированных направления", solutionsTitle: "Единая надёжная основа с разной логикой работы", solutionsText: "Выберите направление при регистрации, затем добавьте подходящую категорию, услуги и специалистов.", solutions: [
-      { title: "Сервисный бизнес", text: "Салоны, мастера, автосервис, обучение, консультации и другие услуги по записи.", points: ["Услуги и дополнения", "График и доступность команды", "Публичная страница и карта"] },
+      { title: "Сервисный бизнес", text: "Салоны, мастера, автосервис, обучение, консультации и другие услуги по записи.", points: ["Услуги и запись на несколько услуг", "График и доступность команды", "Публичная страница и карта"] },
       { title: "Медицинское направление", text: "Клиники, стоматологии, частные врачи, диагностика и реабилитация.", points: ["Специалисты и кабинеты", "История визитов и клиентов", "Отдельная медицинская рабочая среда"] },
     ],
     featuresBadge: "Основные возможности", featuresTitle: "Всё необходимое для ежедневной работы", featuresText: "Начните с главных процессов и добавляйте инструменты по мере роста бизнеса.", features: [
-      ["Онлайн-запись", "Публичная страница, выбор услуг и специалистов и доступное время."], ["Календарь и команда", "Рабочие часы, перерывы, выходные, роли и личная доступность специалистов."], ["База клиентов", "История визитов, заметки, группы, повторная запись и кабинет клиента."], ["Карта и marketplace", "Адреса, категории, поиск и точки бизнеса на карте Yandex."], ["Аналитика", "Записи, доход, источники, загрузка команды и показатели неявок."],
+      ["Онлайн-запись", "Публичная страница, выбор услуг и специалистов и доступное время."], ["Календарь и команда", "Рабочие часы, перерывы, выходные, роли и личная доступность специалистов."], ["База клиентов", "История визитов, заметки и личный кабинет клиента."], ["Карта и marketplace", "Адреса, категории, поиск и точки бизнеса на карте Yandex."], ["Аналитика", "Записи, доход, источники, загрузка команды и показатели неявок."],
     ],
     workflowBadge: "Простой запуск", workflowTitle: "Три шага до первой записи", workflow: [["Создайте аккаунт", "Выберите направление и тариф и начните 14-дневный пробный период."], ["Настройте бизнес", "Добавьте услуги, специалистов, адрес и рабочее время."], ["Поделитесь ссылкой", "Опубликуйте страницу в marketplace или добавьте ссылку в соцсети."]],
-    channelsBadge: "Прозрачные каналы связи", channelsTitle: "Обещаем только то, что действительно работает", channelsText: "Vizit чётко показывает, какие каналы уже работают.", active: "Работает", activeItems: ["Подтверждения по электронной почте", "Telegram-уведомления бизнесу", "Управление публичной записью"], finalBadge: "Готовы начать?", finalTitle: "Следующая запись вашего бизнеса может прийти через Vizit", finalText: "Создайте аккаунт, настройте рабочую страницу и проверьте весь процесс перед публикацией.",
+    channelsBadge: "Доступные возможности", channelsTitle: "Показываем только то, что действительно работает", channelsText: "Эти инструменты доступны в текущей версии платформы.", active: "Доступно", activeItems: ["Подтверждения записи по электронной почте, если адрес указан", "Управление публичными записями", "Календарь, графики сотрудников и база клиентов"], finalBadge: "Готовы начать?", finalTitle: "Следующая запись вашего бизнеса может прийти через Vizit", finalText: "Создайте аккаунт, настройте рабочую страницу и проверьте весь процесс перед публикацией.",
   },
   en: {
     badge: "Vizit for business", titleLead: "Bookings, staff and clients —", titleAccent: "in one system", intro: "Vizit is a workspace for service and healthcare businesses, from public online booking to calendars, staff and client history.", primary: "Start 14 days free", secondary: "View pricing", proofs: ["No payment card", "Հայերեն · Русский · English", "Mobile and desktop"], preview: "Sample business workspace", today: "Today's bookings", schedule: [["10:00", "Consultation", "Anna"], ["11:30", "Service", "Maria"], ["14:00", "Follow-up visit", "David"]], confirmed: "Confirmed",
     solutionsBadge: "Two specialized verticals", solutionsTitle: "One reliable foundation with purpose-built workflows", solutionsText: "Choose your vertical during registration, then add the right category, services and specialists.", solutions: [
-      { title: "Service businesses", text: "Salons, independent professionals, auto services, courses, consulting and other appointment-based services.", points: ["Services and add-ons", "Staff schedules and availability", "Public page and map"] },
+      { title: "Service businesses", text: "Salons, independent professionals, auto services, courses, consulting and other appointment-based services.", points: ["Services and multi-service booking", "Staff schedules and availability", "Public page and map"] },
       { title: "Healthcare", text: "Clinics, dental practices, private doctors, diagnostics and rehabilitation.", points: ["Providers and rooms", "Visit and client history", "A dedicated healthcare workspace"] },
     ],
     featuresBadge: "Core capabilities", featuresTitle: "Everything needed for daily operations", featuresText: "Start with the core flows and add tools as your business grows.", features: [
-      ["Online booking", "A public page with services, specialists and available times."], ["Calendar and staff", "Working hours, breaks, closed days, roles and individual availability."], ["Client database", "Visit history, notes, groups, repeat bookings and a client cabinet."], ["Map and marketplace", "Locations, categories, search and Yandex map markers."], ["Analytics", "Bookings, revenue, sources, staff utilization and no-show visibility."],
+      ["Online booking", "A public page with services, specialists and available times."], ["Calendar and staff", "Working hours, breaks, closed days, roles and individual availability."], ["Client database", "Visit history, notes and a personal client account."], ["Map and marketplace", "Locations, categories, search and Yandex map markers."], ["Analytics", "Bookings, revenue, sources, staff utilization and no-show visibility."],
     ],
     workflowBadge: "Simple launch", workflowTitle: "Three steps to the first booking", workflow: [["Create your account", "Choose a vertical and plan and begin the 14-day trial."], ["Set up the business", "Add services, staff, a location and working hours."], ["Share the link", "Publish in the marketplace or add the booking link to social channels."]],
-    channelsBadge: "Transparent communication channels", channelsTitle: "Only promises that work in practice", channelsText: "Vizit clearly shows which channels are already active.", active: "Active", activeItems: ["Email confirmations", "Telegram alerts for businesses", "Public booking management"], finalBadge: "Ready to begin?", finalTitle: "Your next appointment can come through Vizit", finalText: "Create an account, set up the workspace and test the full flow before publishing.",
+    channelsBadge: "Available capabilities", channelsTitle: "We show only what works in practice", channelsText: "These tools are available in the current version of the platform.", active: "Available", activeItems: ["Booking confirmations by email when an address is provided", "Public booking management", "Calendar, staff schedules and client database"], finalBadge: "Ready to begin?", finalTitle: "Your next appointment can come through Vizit", finalText: "Create an account, set up the workspace and test the full flow before publishing.",
   },
 } as const;
 

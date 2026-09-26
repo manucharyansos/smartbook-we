@@ -42,6 +42,7 @@ export default function SocialAuthCallback() {
     const [params] = useSearchParams();
     const { setAuth } = useAuth();
     const { locale } = useLanguage();
+    const audience = params.get("audience") === "business" ? "business" : "client";
 
     const text = {
         hy: {
@@ -86,7 +87,6 @@ export default function SocialAuthCallback() {
         async function boot() {
             const exchangeCode = params.get("code");
             const message = params.get("message");
-            const audience = params.get("audience") === "business" ? "business" : "client";
             const provider = params.get("provider");
             const mode = params.get("mode");
 
@@ -154,10 +154,11 @@ export default function SocialAuthCallback() {
         }
 
         boot();
-    }, [navigate, params, setAuth, text.failed]);
+    }, [audience, navigate, params, setAuth, text.failed]);
 
     return (
         <AuthShell
+            audience={audience}
             title={text.title}
             subtitle={text.subtitle}
             sideTitle={text.sideTitle}

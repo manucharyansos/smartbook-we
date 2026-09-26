@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Mail, MessageCircle, Phone, Send, ShieldCheck } from "lucide-react";
 
 import LandingNavbar from "../components/LandingNavbar";
@@ -10,6 +10,7 @@ import { getErrorMessage } from "../lib/http";
 import { fadeUp, pageTransition, scaleIn, staggerContainer } from "../lib/motion";
 import { SUPPORT_EMAIL, SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY, whatsappLink } from "../lib/support";
 import { useLanguage } from "../contexts/LanguageContext";
+import { LEGAL_DOCUMENT_VERSION } from "../config/legal";
 
 const copy = {
     hy: {
@@ -18,7 +19,7 @@ const copy = {
         support: "Աջակցություն", supportText: "Կարող ենք օգնել կարգավորումների, պլանների և ամրագրման հոսքի հարցերում։", whatsapp: "Գրել WhatsApp-ով", whatsappMessage: "Բարև, աջակցության կարիք ունեմ Vizit-ի վերաբերյալ։",
         formTitle: "Ուղարկել հաղորդագրություն", formIntro: "Լրացրեք ձևը, և մենք կապ կհաստատենք։", sent: "Հաղորդագրությունը հաջողությամբ ուղարկվեց։",
         name: "Անուն", namePlaceholder: "Ձեր անունը", emailField: "Էլ. փոստ", phoneField: "Հեռախոս", message: "Հաղորդագրություն", messagePlaceholder: "Ինչպե՞ս կարող ենք օգնել...", sending: "Ուղարկվում է...", send: "Ուղարկել",
-        contactRequired: "Նշեք էլ. փոստ կամ հեռախոսահամար, որպեսզի կարողանանք պատասխանել։", sendError: "Չհաջողվեց ուղարկել հաղորդագրությունը։", customPlanMessage: "Ցանկանում եմ ստանալ անհատական պլանի առաջարկ։",
+        contactRequired: "Նշեք էլ. փոստ կամ հեռախոսահամար, որպեսզի կարողանանք պատասխանել։", privacyRequired: "Հաղորդագրությունն ուղարկելու համար հաստատեք Գաղտնիության քաղաքականությունը։", privacyPrefix: "Համաձայն եմ, որ իմ տվյալները մշակվեն հարցմանը պատասխանելու նպատակով՝ համաձայն", privacyLink: "Գաղտնիության քաղաքականության", sendError: "Չհաջողվեց ուղարկել հաղորդագրությունը։", customPlanMessage: "Ցանկանում եմ ստանալ անհատական պլանի առաջարկ։",
     },
     ru: {
         badge: "Связь с Vizit", title: "Свяжитесь с нами", intro: "Если у вас есть вопрос, предложение о сотрудничестве или вы хотите подключить Vizit к своему бизнесу, напишите нам.", contacts: "Контакты",
@@ -26,7 +27,7 @@ const copy = {
         support: "Поддержка", supportText: "Поможем с настройками, тарифами и процессом онлайн-записи.", whatsapp: "Написать в WhatsApp", whatsappMessage: "Здравствуйте! Мне нужна помощь по Vizit.",
         formTitle: "Отправить сообщение", formIntro: "Заполните форму, и мы свяжемся с вами.", sent: "Сообщение успешно отправлено.",
         name: "Имя", namePlaceholder: "Ваше имя", emailField: "Эл. почта", phoneField: "Телефон", message: "Сообщение", messagePlaceholder: "Чем мы можем помочь?", sending: "Отправляем...", send: "Отправить",
-        contactRequired: "Укажите электронную почту или телефон, чтобы мы могли ответить.", sendError: "Не удалось отправить сообщение.", customPlanMessage: "Хочу получить индивидуальное предложение по тарифу.",
+        contactRequired: "Укажите электронную почту или телефон, чтобы мы могли ответить.", privacyRequired: "Чтобы отправить сообщение, подтвердите Политику конфиденциальности.", privacyPrefix: "Я согласен(-на) на обработку моих данных для ответа на запрос согласно", privacyLink: "Политике конфиденциальности", sendError: "Не удалось отправить сообщение.", customPlanMessage: "Хочу получить индивидуальное предложение по тарифу.",
     },
     en: {
         badge: "Contact Vizit", title: "Contact us", intro: "If you have a question, partnership proposal or want to bring Vizit to your business, send us a message.", contacts: "Contact details",
@@ -34,7 +35,7 @@ const copy = {
         support: "Support", supportText: "We can help with setup, plans and booking flows.", whatsapp: "Message on WhatsApp", whatsappMessage: "Hello! I need help with Vizit.",
         formTitle: "Send a message", formIntro: "Complete the form and we will get back to you.", sent: "Your message was sent successfully.",
         name: "Name", namePlaceholder: "Your name", emailField: "Email", phoneField: "Phone", message: "Message", messagePlaceholder: "How can we help?", sending: "Sending...", send: "Send",
-        contactRequired: "Enter an email address or phone number so we can reply.", sendError: "Could not send your message.", customPlanMessage: "I would like a tailored plan proposal.",
+        contactRequired: "Enter an email address or phone number so we can reply.", privacyRequired: "Accept the Privacy Policy to send your message.", privacyPrefix: "I agree to the processing of my data to answer this request under the", privacyLink: "Privacy Policy", sendError: "Could not send your message.", customPlanMessage: "I would like a tailored plan proposal.",
     },
 };
 
@@ -52,6 +53,7 @@ export default function Contact() {
     const [sent, setSent] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [privacyAccepted, setPrivacyAccepted] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -63,12 +65,22 @@ export default function Contact() {
             return;
         }
 
+        if (!privacyAccepted) {
+            setError(text.privacyRequired);
+            return;
+        }
+
         setLoading(true);
 
         try {
-            await api.post("/contact-requests", formData);
+            await api.post("/contact-requests", {
+                ...formData,
+                privacy_accepted: true,
+                privacy_version: LEGAL_DOCUMENT_VERSION,
+            });
             setSent(true);
             setFormData({ name: "", email: "", phone: "", message: "" });
+            setPrivacyAccepted(false);
         } catch (err: unknown) {
             setError(getErrorMessage(err, text.sendError));
         } finally {
@@ -272,6 +284,30 @@ export default function Contact() {
                                                         required
                                                     />
                                                 </motion.div>
+
+                                                <motion.label
+                                                    variants={fadeUp}
+                                                    className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm leading-6 text-slate-600 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-300"
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={privacyAccepted}
+                                                        onChange={(event) => setPrivacyAccepted(event.target.checked)}
+                                                        required
+                                                        className="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 text-violet-600 focus:ring-violet-500"
+                                                    />
+                                                    <span>
+                                                        {text.privacyPrefix}{" "}
+                                                        <Link
+                                                            to="/privacy-policy"
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="font-medium text-violet-700 underline underline-offset-2 dark:text-violet-300"
+                                                        >
+                                                            {text.privacyLink}
+                                                        </Link>
+                                                    </span>
+                                                </motion.label>
 
                                                 <motion.button
                                                     variants={fadeUp}

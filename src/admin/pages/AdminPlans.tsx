@@ -283,7 +283,7 @@ export default function AdminPlans() {
                                 )}
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
                                     <Settings size={16} />
-                                    <span>{isCustomPlan(plan) ? 'Ծառայությունների սահմանափակում չկա' : `Մինչև ${plan.services_limit ?? plan.features?.services_limit ?? "—"} ծառայություն`}</span>
+                                    <span>{`Մինչև ${plan.services_limit ?? plan.features?.services_limit ?? "—"} ծառայություն`}</span>
                                 </div>
                             </div>
 

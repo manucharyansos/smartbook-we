@@ -5,7 +5,9 @@ import { motion } from "framer-motion";
 import { Eye, EyeOff, Lock, Mail, Phone, ShieldCheck, UserPlus } from "lucide-react";
 
 import AuthShell from "../components/AuthShell";
+import LegalAcceptance from "../components/auth/LegalAcceptance";
 import SocialAuthButtons from "../components/auth/SocialAuthButtons";
+import { LEGAL_DOCUMENT_VERSION } from "../config/legal";
 import { api } from "../lib/api";
 import { getErrorMessage, getValidationMessages } from "../lib/http";
 import { cn } from "../lib/cn";
@@ -14,9 +16,9 @@ import { useAuth } from "../store/auth";
 import { useLanguage } from "../contexts/LanguageContext";
 
 const copy = {
-  hy: { title: "Ստեղծել հաճախորդի հաշիվ", subtitle: "Պահեք ամրագրումների պատմությունն ու առաջիկա այցերը մեկ տեղում։", badge: "Vizit հաճախորդի հաշիվ", sideTitle: "Պարզ գրանցում, հետո՝ արագ ամրագրում", sideText: "Հաճախորդի հաշիվը հարմար է հեռախոսից օգտագործելու և այցերը կառավարելու համար։", hasAccount: "Արդեն հաճախորդի հաշիվ ունե՞ք", login: "մուտք գործել", business: "Բիզնես ե՞ք", businessRegister: "անցնել բիզնեսի գրանցմանը", contactRequired: "Նշեք գործող էլ. փոստ։", passwordShort: "Գաղտնաբառը պետք է լինի առնվազն 8 նիշ։", passwordMismatch: "Գաղտնաբառերը չեն համընկնում։", error: "Գրանցումը չհաջողվեց։", name: "Անուն", namePlaceholder: "Օրինակ՝ Անուշ", email: "Էլ. փոստ", phone: "Հեռախոս", password: "Գաղտնաբառ", passwordPlaceholder: "Առնվազն 8 նիշ", confirmPassword: "Կրկնել գաղտնաբառը", hide: "Թաքցնել գաղտնաբառը", show: "Ցույց տալ գաղտնաբառը", hideConfirm: "Թաքցնել կրկնված գաղտնաբառը", showConfirm: "Ցույց տալ կրկնված գաղտնաբառը", loading: "Ստեղծվում է հաշիվը…", submit: "Ստեղծել հաշիվ", note: "Նախկին ամրագրումները կկապվեն միայն էլ. փոստը հաստատելուց հետո և միայն նույն հաստատված հասցեով։" },
-  ru: { title: "Создать аккаунт клиента", subtitle: "Храните историю записей и предстоящие визиты в одном месте.", badge: "Аккаунт клиента Vizit", sideTitle: "Простая регистрация, затем быстрая запись", sideText: "Аккаунтом клиента удобно пользоваться с телефона и управлять визитами.", hasAccount: "Уже есть аккаунт клиента?", login: "войти", business: "Вы представляете бизнес?", businessRegister: "перейти к регистрации бизнеса", contactRequired: "Укажите действующий email.", passwordShort: "Пароль должен содержать не менее 8 символов.", passwordMismatch: "Пароли не совпадают.", error: "Не удалось зарегистрироваться.", name: "Имя", namePlaceholder: "Например, Анна", email: "Электронная почта", phone: "Телефон", password: "Пароль", passwordPlaceholder: "Не менее 8 символов", confirmPassword: "Повторите пароль", hide: "Скрыть пароль", show: "Показать пароль", hideConfirm: "Скрыть повторный пароль", showConfirm: "Показать повторный пароль", loading: "Создаём аккаунт…", submit: "Создать аккаунт", note: "Прошлые записи привязываются только после подтверждения email и только по совпадающему подтверждённому адресу." },
-  en: { title: "Create a client account", subtitle: "Keep booking history and upcoming visits in one place.", badge: "Vizit client account", sideTitle: "Simple registration, then fast booking", sideText: "The client account is easy to use on mobile and helps you manage visits.", hasAccount: "Already have a client account?", login: "sign in", business: "Are you a business?", businessRegister: "go to business registration", contactRequired: "Enter a valid email address.", passwordShort: "Password must be at least 8 characters.", passwordMismatch: "Passwords do not match.", error: "Registration failed.", name: "Name", namePlaceholder: "For example, Anna", email: "Email", phone: "Phone", password: "Password", passwordPlaceholder: "At least 8 characters", confirmPassword: "Confirm password", hide: "Hide password", show: "Show password", hideConfirm: "Hide confirmation password", showConfirm: "Show confirmation password", loading: "Creating account…", submit: "Create account", note: "Earlier bookings are linked only after email verification and only through the matching verified address." },
+  hy: { title: "Ստեղծել հաճախորդի հաշիվ", subtitle: "Պահեք ամրագրումների պատմությունն ու առաջիկա այցերը մեկ տեղում։", badge: "Vizit հաճախորդի հաշիվ", sideTitle: "Պարզ գրանցում, հետո՝ արագ ամրագրում", sideText: "Հաճախորդի հաշիվը հարմար է հեռախոսից օգտագործելու և այցերը կառավարելու համար։", hasAccount: "Արդեն հաճախորդի հաշիվ ունե՞ք", login: "մուտք գործել", business: "Բիզնես ե՞ք", businessRegister: "անցնել բիզնեսի գրանցմանը", contactRequired: "Նշեք գործող էլ. փոստ։", legalRequired: "Հաշիվ ստեղծելու համար ընդունեք Օգտագործման պայմաններն ու Գաղտնիության քաղաքականությունը։", passwordShort: "Գաղտնաբառը պետք է լինի առնվազն 8 նիշ։", passwordMismatch: "Գաղտնաբառերը չեն համընկնում։", error: "Գրանցումը չհաջողվեց։", name: "Անուն", namePlaceholder: "Օրինակ՝ Անուշ", email: "Էլ. փոստ", phone: "Հեռախոս", password: "Գաղտնաբառ", passwordPlaceholder: "Առնվազն 8 նիշ", confirmPassword: "Կրկնել գաղտնաբառը", hide: "Թաքցնել գաղտնաբառը", show: "Ցույց տալ գաղտնաբառը", hideConfirm: "Թաքցնել կրկնված գաղտնաբառը", showConfirm: "Ցույց տալ կրկնված գաղտնաբառը", loading: "Ստեղծվում է հաշիվը…", submit: "Ստեղծել հաշիվ", note: "Նախկին ամրագրումները կկապվեն միայն էլ. փոստը հաստատելուց հետո և միայն նույն հաստատված հասցեով։" },
+  ru: { title: "Создать аккаунт клиента", subtitle: "Храните историю записей и предстоящие визиты в одном месте.", badge: "Аккаунт клиента Vizit", sideTitle: "Простая регистрация, затем быстрая запись", sideText: "Аккаунтом клиента удобно пользоваться с телефона и управлять визитами.", hasAccount: "Уже есть аккаунт клиента?", login: "войти", business: "Вы представляете бизнес?", businessRegister: "перейти к регистрации бизнеса", contactRequired: "Укажите действующий email.", legalRequired: "Чтобы создать аккаунт, примите Условия использования и Политику конфиденциальности.", passwordShort: "Пароль должен содержать не менее 8 символов.", passwordMismatch: "Пароли не совпадают.", error: "Не удалось зарегистрироваться.", name: "Имя", namePlaceholder: "Например, Анна", email: "Электронная почта", phone: "Телефон", password: "Пароль", passwordPlaceholder: "Не менее 8 символов", confirmPassword: "Повторите пароль", hide: "Скрыть пароль", show: "Показать пароль", hideConfirm: "Скрыть повторный пароль", showConfirm: "Показать повторный пароль", loading: "Создаём аккаунт…", submit: "Создать аккаунт", note: "Прошлые записи привязываются только после подтверждения email и только по совпадающему подтверждённому адресу." },
+  en: { title: "Create a client account", subtitle: "Keep booking history and upcoming visits in one place.", badge: "Vizit client account", sideTitle: "Simple registration, then fast booking", sideText: "The client account is easy to use on mobile and helps you manage visits.", hasAccount: "Already have a client account?", login: "sign in", business: "Are you a business?", businessRegister: "go to business registration", contactRequired: "Enter a valid email address.", legalRequired: "Accept the Terms of Use and Privacy Policy to create an account.", passwordShort: "Password must be at least 8 characters.", passwordMismatch: "Passwords do not match.", error: "Registration failed.", name: "Name", namePlaceholder: "For example, Anna", email: "Email", phone: "Phone", password: "Password", passwordPlaceholder: "At least 8 characters", confirmPassword: "Confirm password", hide: "Hide password", show: "Show password", hideConfirm: "Hide confirmation password", showConfirm: "Show confirmation password", loading: "Creating account…", submit: "Create account", note: "Earlier bookings are linked only after email verification and only through the matching verified address." },
 } as const;
 
 export default function ClientRegister() {
@@ -33,6 +35,7 @@ export default function ClientRegister() {
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [legalAccepted, setLegalAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,6 +45,10 @@ export default function ClientRegister() {
 
     if (!email.trim()) {
       setError(text.contactRequired);
+      return;
+    }
+    if (!legalAccepted) {
+      setError(text.legalRequired);
       return;
     }
     if (password.length < 8) {
@@ -62,6 +69,9 @@ export default function ClientRegister() {
         phone: phone.trim() || null,
         password,
         password_confirmation: passwordConfirmation,
+        legal_accepted: legalAccepted,
+        terms_version: LEGAL_DOCUMENT_VERSION,
+        privacy_version: LEGAL_DOCUMENT_VERSION,
       });
       setAuth(res.data.token, res.data.user);
       queryClient.clear();
@@ -75,6 +85,7 @@ export default function ClientRegister() {
 
   return (
     <AuthShell
+      audience="client"
       title={text.title}
       subtitle={text.subtitle}
       badge={text.badge}
@@ -128,12 +139,16 @@ export default function ClientRegister() {
           </motion.div>
         </div>
 
+        <motion.div variants={fadeUp}>
+          <LegalAcceptance id="client-register-legal-acceptance" checked={legalAccepted} onChange={setLegalAccepted} />
+        </motion.div>
+
         <motion.button variants={fadeUp} type="submit" disabled={loading} className={cn("inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 px-5 text-sm font-medium text-white transition hover:bg-slate-800", loading && "cursor-not-allowed opacity-70")}>
           <UserPlus className="h-4 w-4" />
           {loading ? text.loading : text.submit}
         </motion.button>
 
-        <SocialAuthButtons mode="register" audience="client" />
+        <SocialAuthButtons mode="register" audience="client" legalAccepted={legalAccepted} />
 
         <motion.div variants={fadeUp} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs leading-6 text-slate-500">
           <div className="flex items-start gap-2">

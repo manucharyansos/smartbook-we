@@ -16,6 +16,7 @@ type AuthShellProps = {
     sideText: string;
     children: ReactNode;
     footer?: ReactNode;
+    audience?: "business" | "client";
 };
 
 export default function AuthShell({
@@ -25,15 +26,36 @@ export default function AuthShell({
                                       sideTitle,
                                       sideText,
                                       children,
-                                  footer,
+                                      footer,
+                                      audience = "business",
                                   }: AuthShellProps) {
     const { locale } = useLanguage();
     const text = {
-        hy: { home: "Գլխավոր", homeAria: "Վերադառնալ գլխավոր էջ", defaultBadge: "Vizit-ի անվտանգ մուտք", tagline: "Ամրագրման միջավայր", features: ["Հանրային ամրագրում և օրացույց", "Թիմի ու ծառայությունների կառավարում", "Մաքուր ու պրոֆեսիոնալ միջավայր"] },
-        ru: { home: "Главная", homeAria: "Вернуться на главную", defaultBadge: "Безопасный вход в Vizit", tagline: "Платформа онлайн-записи", features: ["Публичная запись и календарь", "Управление командой и услугами", "Понятное профессиональное пространство"] },
-        en: { home: "Home", homeAria: "Return home", defaultBadge: "Secure Vizit access", tagline: "Online booking platform", features: ["Public booking and calendar", "Staff and service management", "A clean professional workspace"] },
+        hy: {
+            home: "Գլխավոր", homeAria: "Վերադառնալ գլխավոր էջ", defaultBadge: "Vizit-ի անվտանգ մուտք",
+            businessTagline: "Բիզնեսի ամրագրման միջավայր",
+            clientTagline: "Հաճախորդի ամրագրման հաշիվ",
+            businessFeatures: ["Հանրային ամրագրում և օրացույց", "Թիմի ու ծառայությունների կառավարում", "Մաքուր ու պրոֆեսիոնալ միջավայր"],
+            clientFeatures: ["Առաջիկա և անցած ամրագրումները մեկ վայրում", "Ամրագրման մանրամասների անվտանգ հասանելիություն", "Էլ. փոստով հաստատում՝ հասցեն նշելու դեպքում"],
+        },
+        ru: {
+            home: "Главная", homeAria: "Вернуться на главную", defaultBadge: "Безопасный вход в Vizit",
+            businessTagline: "Платформа записи для бизнеса",
+            clientTagline: "Личный кабинет клиента",
+            businessFeatures: ["Публичная запись и календарь", "Управление командой и услугами", "Понятное профессиональное пространство"],
+            clientFeatures: ["Предстоящие и прошлые записи в одном месте", "Безопасный доступ к деталям записи", "Подтверждение по электронной почте, если адрес указан"],
+        },
+        en: {
+            home: "Home", homeAria: "Return home", defaultBadge: "Secure Vizit access",
+            businessTagline: "Business booking workspace",
+            clientTagline: "Client booking account",
+            businessFeatures: ["Public booking and calendar", "Staff and service management", "A clean professional workspace"],
+            clientFeatures: ["Upcoming and past bookings in one place", "Secure access to booking details", "Email confirmation when an address is provided"],
+        },
     }[locale];
     const resolvedBadge = badge ?? text.defaultBadge;
+    const tagline = audience === "client" ? text.clientTagline : text.businessTagline;
+    const features = audience === "client" ? text.clientFeatures : text.businessFeatures;
 
     return (
         <motion.div
@@ -79,7 +101,7 @@ export default function AuthShell({
                             <VizitLogo markClassName="!h-14 !w-14" textClassName="!text-2xl" />
                             <div>
                                 <div className="text-sm text-[var(--vz-muted)]">
-                                    {text.tagline}
+                                    {tagline}
                                 </div>
                             </div>
                         </Link>
@@ -96,7 +118,7 @@ export default function AuthShell({
                         variants={staggerContainer(0.08, 0.15)}
                         className="mt-10 grid gap-4"
                     >
-                        {text.features.map((item) => (
+                        {features.map((item) => (
                             <motion.div
                                 key={item}
                                 variants={scaleIn}
@@ -119,7 +141,7 @@ export default function AuthShell({
                                     <Link to="/" className="inline-flex max-w-full items-center gap-3 lg:hidden">
                                         <VizitLogo markClassName="!h-12 !w-12" textClassName="!text-lg" />
                                         <div className="text-left">
-                                            <div className="vizit-auth-card-tagline text-xs">{text.tagline}</div>
+                                            <div className="vizit-auth-card-tagline text-xs">{tagline}</div>
                                         </div>
                                     </Link>
 

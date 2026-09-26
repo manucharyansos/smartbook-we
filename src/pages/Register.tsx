@@ -12,7 +12,6 @@ import {
     Mail,
     MapPin,
     Phone,
-    ShieldCheck,
     Sparkles,
     Stethoscope,
     Store,
@@ -21,7 +20,9 @@ import {
 } from "lucide-react";
 
 import AuthShell from "../components/AuthShell";
+import LegalAcceptance from "../components/auth/LegalAcceptance";
 import SocialAuthButtons from "../components/auth/SocialAuthButtons";
+import { LEGAL_DOCUMENT_VERSION } from "../config/legal";
 import { LocationMapPicker } from "../components/settings/LocationMapPicker";
 import { api } from "../lib/api";
 import { getApiErrorCode, getErrorMessage, getValidationMessages } from "../lib/http";
@@ -39,9 +40,9 @@ type RegistrationCategory = PublicBusinessCategory & {
 };
 
 const copy = {
-    hy: { title: "Գրանցվել", subtitle: "Ստեղծեք ձեր Vizit բիզնես հաշիվը", sideTitle: "Սկսեք Vizit-ը ձեր բիզնեսի համար", sideText: "Գրանցվեք, լրացրեք սկզբնական կարգավորումները և պատրաստեք աշխատանքային միջավայրը։", hasAccount: "Արդեն ունե՞ք հաշիվ", login: "Մուտք գործել", beautyLabel: "Գեղեցկության սրահ", beautyShort: "Գեղեցկություն", dentalLabel: "Ատամնաբուժական կլինիկա", dentalShort: "Կլինիկա", businessNameRequired: "Նշեք բիզնեսի անունը։", phoneRequired: "Հեռախոսահամարը պարտադիր է։", addressRequired: "Հասցեն պարտադիր է։", ownerRequired: "Նշեք պատասխանատուի անունը։", emailRequired: "Նշեք էլ. փոստը։", passwordShort: "Գաղտնաբառը պետք է պարունակի առնվազն 8 նիշ։", passwordMismatch: "Գաղտնաբառերը չեն համընկնում։", registerError: "Գրանցումը չհաջողվեց։", businessLogin: "Մուտք բիզնես հաշվով", resetPassword: "Վերականգնել գաղտնաբառը", contactSupport: "Կապվել աջակցման թիմի հետ", chooseType: "Ընտրեք բիզնեսի տեսակը", basics: "Սկսենք բիզնեսի հիմնական տվյալներից։", businessName: "Բիզնեսի անուն", salonPlaceholder: "Իմ սրահը", clinicPlaceholder: "Իմ կլինիկան", phone: "Հեռախոս", address: "Հասցե", addressPlaceholder: "Երևան, Հայաստան", continue: "Շարունակել", ownerName: "Պատասխանատուի անուն", ownerPlaceholder: "Անուն Ազգանուն", email: "Էլ. փոստ", password: "Գաղտնաբառ", confirmPassword: "Կրկնել գաղտնաբառը", strength: "Ուժգնություն", weak: "թույլ", medium: "միջին", strong: "ուժեղ", show: "Ցույց տալ գաղտնաբառը", hide: "Թաքցնել գաղտնաբառը", socialNote: "Google կամ Facebook մուտքը կարող եք միացնել նաև ավելի ուշ։", back: "Վերադառնալ", creating: "Ստեղծվում է…", create: "Ստեղծել հաշիվ" },
-    ru: { title: "Регистрация", subtitle: "Создайте бизнес-аккаунт Vizit", sideTitle: "Запустите Vizit для своего бизнеса", sideText: "Зарегистрируйтесь, завершите начальную настройку и подготовьте рабочее пространство.", hasAccount: "Уже есть аккаунт?", login: "Войти", beautyLabel: "Салон красоты", beautyShort: "Красота", dentalLabel: "Стоматологическая клиника", dentalShort: "Клиника", businessNameRequired: "Укажите название бизнеса.", phoneRequired: "Номер телефона обязателен.", addressRequired: "Адрес обязателен.", ownerRequired: "Укажите имя ответственного лица.", emailRequired: "Укажите электронную почту.", passwordShort: "Пароль должен содержать не менее 8 символов.", passwordMismatch: "Пароли не совпадают.", registerError: "Не удалось зарегистрироваться.", businessLogin: "Войти в бизнес-аккаунт", resetPassword: "Восстановить пароль", contactSupport: "Связаться с поддержкой", chooseType: "Выберите тип бизнеса", basics: "Начнём с основной информации о бизнесе.", businessName: "Название бизнеса", salonPlaceholder: "Мой салон", clinicPlaceholder: "Моя клиника", phone: "Телефон", address: "Адрес", addressPlaceholder: "Ереван, Армения", continue: "Продолжить", ownerName: "Имя ответственного лица", ownerPlaceholder: "Имя Фамилия", email: "Электронная почта", password: "Пароль", confirmPassword: "Повторите пароль", strength: "Надёжность", weak: "слабый", medium: "средний", strong: "надёжный", show: "Показать пароль", hide: "Скрыть пароль", socialNote: "Вход через Google или Facebook можно подключить позже.", back: "Назад", creating: "Создание…", create: "Создать аккаунт" },
-    en: { title: "Register", subtitle: "Create your Vizit business account", sideTitle: "Start using Vizit for your business", sideText: "Register, complete the initial setup and prepare your workspace.", hasAccount: "Already have an account?", login: "Sign in", beautyLabel: "Beauty salon", beautyShort: "Beauty", dentalLabel: "Dental clinic", dentalShort: "Clinic", businessNameRequired: "Enter the business name.", phoneRequired: "Phone number is required.", addressRequired: "Address is required.", ownerRequired: "Enter the account owner's name.", emailRequired: "Enter an email address.", passwordShort: "Password must be at least 8 characters.", passwordMismatch: "Passwords do not match.", registerError: "Registration failed.", businessLogin: "Sign in to a business account", resetPassword: "Reset password", contactSupport: "Contact support", chooseType: "Choose the business type", basics: "Let's start with the essential business details.", businessName: "Business name", salonPlaceholder: "My salon", clinicPlaceholder: "My clinic", phone: "Phone", address: "Address", addressPlaceholder: "Yerevan, Armenia", continue: "Continue", ownerName: "Account owner name", ownerPlaceholder: "First and last name", email: "Email", password: "Password", confirmPassword: "Confirm password", strength: "Strength", weak: "weak", medium: "medium", strong: "strong", show: "Show password", hide: "Hide password", socialNote: "You can connect Google or Facebook sign-in later.", back: "Back", creating: "Creating…", create: "Create account" },
+    hy: { title: "Գրանցվել", subtitle: "Ստեղծեք ձեր Vizit բիզնես հաշիվը", sideTitle: "Սկսեք Vizit-ը ձեր բիզնեսի համար", sideText: "Գրանցվեք, լրացրեք սկզբնական կարգավորումները և պատրաստեք աշխատանքային միջավայրը։", hasAccount: "Արդեն ունե՞ք հաշիվ", login: "Մուտք գործել", beautyLabel: "Գեղեցկության սրահ", beautyShort: "Գեղեցկություն", dentalLabel: "Ատամնաբուժական կլինիկա", dentalShort: "Կլինիկա", businessNameRequired: "Նշեք բիզնեսի անունը։", phoneRequired: "Հեռախոսահամարը պարտադիր է։", addressRequired: "Հասցեն պարտադիր է։", ownerRequired: "Նշեք պատասխանատուի անունը։", emailRequired: "Նշեք էլ. փոստը։", legalRequired: "Հաշիվ ստեղծելու համար ընդունեք Օգտագործման պայմաններն ու Գաղտնիության քաղաքականությունը։", passwordShort: "Գաղտնաբառը պետք է պարունակի առնվազն 8 նիշ։", passwordMismatch: "Գաղտնաբառերը չեն համընկնում։", registerError: "Գրանցումը չհաջողվեց։", businessLogin: "Մուտք բիզնես հաշվով", resetPassword: "Վերականգնել գաղտնաբառը", contactSupport: "Կապվել աջակցման թիմի հետ", chooseType: "Ընտրեք բիզնեսի տեսակը", basics: "Սկսենք բիզնեսի հիմնական տվյալներից։", businessName: "Բիզնեսի անուն", salonPlaceholder: "Իմ սրահը", clinicPlaceholder: "Իմ կլինիկան", phone: "Հեռախոս", address: "Հասցե", addressPlaceholder: "Երևան, Հայաստան", continue: "Շարունակել", ownerName: "Պատասխանատուի անուն", ownerPlaceholder: "Անուն Ազգանուն", email: "Էլ. փոստ", password: "Գաղտնաբառ", confirmPassword: "Կրկնել գաղտնաբառը", strength: "Ուժգնություն", weak: "թույլ", medium: "միջին", strong: "ուժեղ", show: "Ցույց տալ գաղտնաբառը", hide: "Թաքցնել գաղտնաբառը", back: "Վերադառնալ", creating: "Ստեղծվում է…", create: "Ստեղծել հաշիվ" },
+    ru: { title: "Регистрация", subtitle: "Создайте бизнес-аккаунт Vizit", sideTitle: "Запустите Vizit для своего бизнеса", sideText: "Зарегистрируйтесь, завершите начальную настройку и подготовьте рабочее пространство.", hasAccount: "Уже есть аккаунт?", login: "Войти", beautyLabel: "Салон красоты", beautyShort: "Красота", dentalLabel: "Стоматологическая клиника", dentalShort: "Клиника", businessNameRequired: "Укажите название бизнеса.", phoneRequired: "Номер телефона обязателен.", addressRequired: "Адрес обязателен.", ownerRequired: "Укажите имя ответственного лица.", emailRequired: "Укажите электронную почту.", legalRequired: "Чтобы создать аккаунт, примите Условия использования и Политику конфиденциальности.", passwordShort: "Пароль должен содержать не менее 8 символов.", passwordMismatch: "Пароли не совпадают.", registerError: "Не удалось зарегистрироваться.", businessLogin: "Войти в бизнес-аккаунт", resetPassword: "Восстановить пароль", contactSupport: "Связаться с поддержкой", chooseType: "Выберите тип бизнеса", basics: "Начнём с основной информации о бизнесе.", businessName: "Название бизнеса", salonPlaceholder: "Мой салон", clinicPlaceholder: "Моя клиника", phone: "Телефон", address: "Адрес", addressPlaceholder: "Ереван, Армения", continue: "Продолжить", ownerName: "Имя ответственного лица", ownerPlaceholder: "Имя Фамилия", email: "Электронная почта", password: "Пароль", confirmPassword: "Повторите пароль", strength: "Надёжность", weak: "слабый", medium: "средний", strong: "надёжный", show: "Показать пароль", hide: "Скрыть пароль", back: "Назад", creating: "Создание…", create: "Создать аккаунт" },
+    en: { title: "Register", subtitle: "Create your Vizit business account", sideTitle: "Start using Vizit for your business", sideText: "Register, complete the initial setup and prepare your workspace.", hasAccount: "Already have an account?", login: "Sign in", beautyLabel: "Beauty salon", beautyShort: "Beauty", dentalLabel: "Dental clinic", dentalShort: "Clinic", businessNameRequired: "Enter the business name.", phoneRequired: "Phone number is required.", addressRequired: "Address is required.", ownerRequired: "Enter the account owner's name.", emailRequired: "Enter an email address.", legalRequired: "Accept the Terms of Use and Privacy Policy to create an account.", passwordShort: "Password must be at least 8 characters.", passwordMismatch: "Passwords do not match.", registerError: "Registration failed.", businessLogin: "Sign in to a business account", resetPassword: "Reset password", contactSupport: "Contact support", chooseType: "Choose the business type", basics: "Let's start with the essential business details.", businessName: "Business name", salonPlaceholder: "My salon", clinicPlaceholder: "My clinic", phone: "Phone", address: "Address", addressPlaceholder: "Yerevan, Armenia", continue: "Continue", ownerName: "Account owner name", ownerPlaceholder: "First and last name", email: "Email", password: "Password", confirmPassword: "Confirm password", strength: "Strength", weak: "weak", medium: "medium", strong: "strong", show: "Show password", hide: "Hide password", back: "Back", creating: "Creating…", create: "Create account" },
 } as const;
 
 const categoryCopy = {
@@ -223,6 +224,7 @@ export default function Register() {
     const [owner_email, setOwnerEmail] = useState("");
     const [password, setPassword] = useState("");
     const [password_confirmation, setPasswordConfirmation] = useState("");
+    const [legalAccepted, setLegalAccepted] = useState(false);
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -332,6 +334,11 @@ export default function Register() {
             return false;
         }
 
+        if (!legalAccepted) {
+            setError(text.legalRequired);
+            return false;
+        }
+
         setError(null);
         setErrorCode(null);
         return true;
@@ -394,6 +401,9 @@ export default function Register() {
                     email: owner_email,
                     password,
                     password_confirmation,
+                    legal_accepted: legalAccepted,
+                    terms_version: LEGAL_DOCUMENT_VERSION,
+                    privacy_version: LEGAL_DOCUMENT_VERSION,
                 },
                 {
                     headers: { "X-Device-Fingerprint": fp },
@@ -718,6 +728,14 @@ export default function Register() {
                                 />
                             </motion.div>
 
+                            <motion.div variants={fadeUp}>
+                                <LegalAcceptance
+                                    id="business-register-legal-acceptance"
+                                    checked={legalAccepted}
+                                    onChange={setLegalAccepted}
+                                />
+                            </motion.div>
+
                             <motion.button
                                 variants={fadeUp}
                                 type="button"
@@ -740,6 +758,7 @@ export default function Register() {
                                 businessCategorySlug={business_category_slug}
                                 customCategoryName={isOtherCategory ? custom_category_name : undefined}
                                 planCode={requestedPlanCode}
+                                legalAccepted={legalAccepted}
                             />
 
 
@@ -897,16 +916,6 @@ export default function Register() {
                                 </div>
                             </motion.div>
                             </div>
-
-                            <motion.div
-                                variants={fadeUp}
-                                className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs leading-6 text-slate-500"
-                            >
-                                <div className="flex items-start gap-2">
-                                    <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[var(--vz-brand-text)]" />
-                                    <div>{text.socialNote}</div>
-                                </div>
-                            </motion.div>
 
                             <motion.div variants={fadeUp} className="grid gap-3 sm:grid-cols-2">
                                 <button

@@ -658,8 +658,6 @@ export default function Clients() {
                           <input type="datetime-local" value={reminderAt} onChange={(e) => setReminderAt(e.target.value)} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" />
                           <select value={reminderChannel} onChange={(e) => setReminderChannel(e.target.value)} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
                             <option value="internal">{text.internal}</option>
-                            <option value="sms">SMS</option>
-                            <option value="whatsapp">WhatsApp</option>
                             <option value="email">Email</option>
                           </select>
                           <select value={String(reminderLeadMinutes)} onChange={(e) => setReminderLeadMinutes(Number(e.target.value) || 0)} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
@@ -674,8 +672,6 @@ export default function Clients() {
                         <div className="flex flex-wrap gap-2">
                           {[
                             { key: "internal", label: text.inApp },
-                            { key: "sms", label: "SMS" },
-                            { key: "whatsapp", label: "WhatsApp" },
                             { key: "email", label: "Email" },
                           ].map((item) => (
                             <button

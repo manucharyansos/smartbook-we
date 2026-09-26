@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/set-state-in-effect -- this form reconciles URL, location and async availability state after each external source updates */
 import { cloneElement, isValidElement, useEffect, useId, useMemo, useRef, useState, type ReactElement, type ReactNode } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
@@ -33,6 +33,7 @@ import { PublicBusinessFooter, PublicBusinessHeader } from "../components/public
 import Seo from "../components/Seo";
 import { useLanguage, type Locale } from "../contexts/LanguageContext";
 import { publicBookingCopy } from "../i18n/publicBooking";
+import { LEGAL_DOCUMENT_VERSION } from "../config/legal";
 import { getErrorMessage, getHttpStatus, getValidationMessages } from "../lib/http";
 import {
     createPublicBooking,
@@ -515,6 +516,7 @@ export default function PublicBooking() {
     const [partySize, setPartySize] = useState(1);
     const [recurrenceFrequency, setRecurrenceFrequency] = useState<"none" | "weekly" | "biweekly" | "monthly">("none");
     const [recurrenceCount, setRecurrenceCount] = useState(4);
+    const [legalAccepted, setLegalAccepted] = useState(false);
     const [marketingOptIn, setMarketingOptIn] = useState(false);
 
     const [msg, setMsg] = useState<string | null>(null);
@@ -1009,6 +1011,7 @@ export default function PublicBooking() {
         setClientPhone("");
         setClientEmail("");
         setNotes("");
+        setLegalAccepted(false);
         setMarketingOptIn(false);
     }
 
@@ -1120,6 +1123,11 @@ export default function PublicBooking() {
             setMsg(text.emailRequired);
             return false;
         }
+        if (!legalAccepted) {
+            setMsgType("error");
+            setMsg(text.legalRequired);
+            return false;
+        }
         return true;
     }
 
@@ -1145,6 +1153,9 @@ export default function PublicBooking() {
             party_size: partySize,
             notes: notes.trim() || null,
             source: bookingSource,
+            legal_accepted: true,
+            terms_version: LEGAL_DOCUMENT_VERSION,
+            privacy_version: LEGAL_DOCUMENT_VERSION,
         });
     }
 
@@ -1193,6 +1204,9 @@ export default function PublicBooking() {
                 party_size: partySize,
                 recurrence_frequency: recurrenceFrequency === "none" ? undefined : recurrenceFrequency,
                 recurrence_count: recurrenceFrequency === "none" ? 1 : recurrenceCount,
+                legal_accepted: true,
+                terms_version: LEGAL_DOCUMENT_VERSION,
+                privacy_version: LEGAL_DOCUMENT_VERSION,
                 marketing_opt_in: marketingOptIn,
             });
             return;
@@ -1230,6 +1244,9 @@ export default function PublicBooking() {
                 redeem_points: redeemPoints ? Number(redeemPoints) : undefined,
                 gift_card_code: giftCardCode.trim() || undefined,
                 gift_card_amount: giftCardAmount ? Number(giftCardAmount) : undefined,
+                legal_accepted: true,
+                terms_version: LEGAL_DOCUMENT_VERSION,
+                privacy_version: LEGAL_DOCUMENT_VERSION,
                 marketing_opt_in: marketingOptIn,
             });
             return;
@@ -1284,6 +1301,9 @@ export default function PublicBooking() {
                 notes: notes.trim() || null,
                 source: bookingSource,
                 location_id: selectedLocationId ? Number(selectedLocationId) : undefined,
+                legal_accepted: true,
+                terms_version: LEGAL_DOCUMENT_VERSION,
+                privacy_version: LEGAL_DOCUMENT_VERSION,
                 marketing_opt_in: marketingOptIn,
             });
         } catch (error: unknown) {
@@ -1300,7 +1320,10 @@ export default function PublicBooking() {
         createMultiMut.isPending ||
         createLinesMut.isPending;
 
-    const commonFieldsReady = clientName.trim().length >= 2 && clientPhone.trim().length >= 5;
+    const commonFieldsReady = clientName.trim().length >= 2
+        && clientPhone.trim().length >= 5
+        && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clientEmail.trim())
+        && legalAccepted;
     const locationReady = locations.length <= 1 || Boolean(selectedLocationId);
     const selectionReady = mode === "single"
         ? Boolean(serviceId && time && staff.length)
@@ -1973,8 +1996,32 @@ export default function PublicBooking() {
                                             onChange={(e) => setNotes(e.target.value)}
                                             placeholder={text.notesPlaceholder}
                                         />
+                                        <p className="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                                            {text.notesPrivacyHint}
+                                        </p>
                                     </Field>
                                 </div>
+
+                                <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-violet-200 bg-violet-50/70 p-4 text-sm leading-6 text-slate-800 dark:border-violet-900/60 dark:bg-violet-950/20 dark:text-slate-200">
+                                    <input
+                                        type="checkbox"
+                                        checked={legalAccepted}
+                                        onChange={(e) => setLegalAccepted(e.target.checked)}
+                                        required
+                                        className="mt-1 h-4 w-4 shrink-0 rounded border-violet-300 text-violet-600"
+                                    />
+                                    <span>
+                                        {text.legalPrefix}{" "}
+                                        <Link to="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold text-violet-700 underline underline-offset-2 dark:text-violet-300">
+                                            {text.termsLink}
+                                        </Link>{" "}
+                                        {text.legalAnd}{" "}
+                                        <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="font-semibold text-violet-700 underline underline-offset-2 dark:text-violet-300">
+                                            {text.privacyLink}
+                                        </Link>{" "}
+                                        {text.legalDataConsent}
+                                    </span>
+                                </label>
 
                                 <label className="vizit-booking-marketing-consent flex cursor-pointer items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 text-sm leading-6 text-emerald-900">
                                     <input type="checkbox" checked={marketingOptIn} onChange={(e) => setMarketingOptIn(e.target.checked)} className="mt-1 h-4 w-4 rounded border-emerald-300 text-emerald-600" />
@@ -2267,16 +2314,6 @@ function OtpVerifyPanel({
                 {text.otpHelp}
             </div>
 
-            <div className="mt-3 flex items-start gap-3 rounded-2xl border border-sky-200 bg-sky-50/90 px-4 py-4 text-sky-950">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#229ED9] text-white shadow-sm">
-                    <Send className="h-5 w-5" aria-hidden="true" />
-                </span>
-                <div className="min-w-0">
-                    <div className="text-sm font-bold">{text.telegramAfterVerificationTitle}</div>
-                    <p className="mt-1 text-xs font-medium leading-5 text-sky-800">{text.telegramAfterVerificationHelp}</p>
-                </div>
-            </div>
-
             <div className="mt-5 grid gap-3 xl:grid-cols-[1fr_auto_auto]">
                 <input
                     value={otp}
@@ -2459,33 +2496,35 @@ function ManageBookingCard({
                 </div>
             </div>
 
-            <section
-                id="customer-telegram-notifications"
-                aria-labelledby="customer-telegram-title"
-                className="mt-5 scroll-mt-24 rounded-[24px] border border-sky-200 bg-gradient-to-br from-sky-50 via-white to-cyan-50 p-4 shadow-[0_14px_38px_rgba(14,116,144,0.10)] sm:p-5"
-            >
-                <div className="flex items-start gap-3">
-                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[#229ED9] text-white shadow-[0_10px_24px_rgba(34,158,217,0.24)]">
-                        <Send className="h-5 w-5" aria-hidden="true" />
-                    </span>
-                    <div className="min-w-0">
-                        <h4 id="customer-telegram-title" className="text-base font-bold text-slate-900">{text.telegramCardTitle}</h4>
-                        <p className="mt-1 text-sm leading-6 text-slate-600">
-                            {detail.telegram_connected ? text.telegramConnectedHelp : text.telegramCardText}
-                        </p>
+            {detail.telegram_available ? (
+                <section
+                    id="customer-telegram-notifications"
+                    aria-labelledby="customer-telegram-title"
+                    className="mt-5 scroll-mt-24 rounded-[24px] border border-sky-200 bg-gradient-to-br from-sky-50 via-white to-cyan-50 p-4 shadow-[0_14px_38px_rgba(14,116,144,0.10)] sm:p-5"
+                >
+                    <div className="flex items-start gap-3">
+                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[#229ED9] text-white shadow-[0_10px_24px_rgba(34,158,217,0.24)]">
+                            <Send className="h-5 w-5" aria-hidden="true" />
+                        </span>
+                        <div className="min-w-0">
+                            <h4 id="customer-telegram-title" className="text-base font-bold text-slate-900">{text.telegramCardTitle}</h4>
+                            <p className="mt-1 text-sm leading-6 text-slate-600">
+                                {detail.telegram_connected ? text.telegramConnectedHelp : text.telegramCardText}
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <div className="mt-4">
-                    <TelegramConnectButton
-                        connected={Boolean(detail.telegram_connected)}
-                        bookingCode={bookingCode}
-                        guestToken={guestToken}
-                    />
-                </div>
-                {!detail.telegram_connected ? (
-                    <p className="mt-3 text-xs font-medium leading-5 text-sky-800">{text.telegramConnectHelp}</p>
-                ) : null}
-            </section>
+                    <div className="mt-4">
+                        <TelegramConnectButton
+                            connected={Boolean(detail.telegram_connected)}
+                            bookingCode={bookingCode}
+                            guestToken={guestToken}
+                        />
+                    </div>
+                    {!detail.telegram_connected ? (
+                        <p className="mt-3 text-xs font-medium leading-5 text-sky-800">{text.telegramConnectHelp}</p>
+                    ) : null}
+                </section>
+            ) : null}
 
             {confirmingCancel ? (
                 <div className="mt-5 rounded-3xl border border-rose-200 bg-rose-50 p-4 sm:p-5">

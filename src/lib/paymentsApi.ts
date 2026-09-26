@@ -24,7 +24,7 @@ export type PaymentTransaction = {
 export async function createCheckoutSession(input: {
   invoice_id: number;
   provider?: "idbank" | "idbank_mock";
-  payment_method?: "bank_transfer" | "idram" | "card";
+  payment_method?: "card";
 }) {
   const r = await api.post("/billing/checkout-session", input);
   return r.data as {

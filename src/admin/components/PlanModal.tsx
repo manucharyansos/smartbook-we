@@ -6,7 +6,6 @@ import { scaleIn, fadeUp, staggerContainer, hoverLift } from "@/lib/motion.ts";
 import { cn } from "@/lib/cn.ts";
 
 type BusinessType = "beauty" | "dental" | null;
-type SmsReminders = number | "unlimited" | false;
 
 export interface Plan {
     id?: number;
@@ -28,7 +27,6 @@ export interface Plan {
     features: {
         staff_limit: number;
         services_limit: number;
-        sms_reminders: SmsReminders;
         api_access: boolean;
         priority_support: boolean;
         dedicated_manager: boolean;
@@ -64,7 +62,6 @@ const emptyForm: Plan = {
     features: {
         staff_limit: 1,
         services_limit: 10,
-        sms_reminders: false as SmsReminders,
         api_access: false,
         priority_support: false,
         dedicated_manager: false,
@@ -110,7 +107,6 @@ export function PlanModal({
                     ...(plan.features ?? {}),
                     staff_limit: plan.staff_limit ?? plan.features?.staff_limit ?? plan.seats ?? 1,
                     services_limit: plan.services_limit ?? plan.features?.services_limit ?? 10,
-                    sms_reminders: plan.features?.sms_reminders ?? false,
                     api_access: !!plan.features?.api_access,
                     priority_support: !!plan.features?.priority_support,
                     dedicated_manager: !!plan.features?.dedicated_manager,
@@ -142,8 +138,6 @@ export function PlanModal({
 
                     if (type === "checkbox" && target instanceof HTMLInputElement) {
                         nextValue = target.checked;
-                    } else if (child === "sms_reminders") {
-                        nextValue = value === "false" ? false : value === "unlimited" ? "unlimited" : parseInt(value) || 0;
                     } else if (type === "number") {
                         nextValue = parseInt(value) || 0;
                     } else {
@@ -393,23 +387,6 @@ export function PlanModal({
                                                 min="1"
                                                 className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
                                             />
-                                        </div>
-
-                                        <div>
-                                            <label className="mb-2 block text-sm font-medium text-slate-700">SMS հիշեցումներ</label>
-                                            <select
-                                                name="features.sms_reminders"
-                                                value={String(formData.features.sms_reminders)}
-                                                onChange={handleChange}
-                                                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
-                                            >
-                                                <option value="false">Անջատված</option>
-                                                <option value="50">50</option>
-                                                <option value="200">200</option>
-                                                <option value="500">500</option>
-                                                <option value="1000">1000</option>
-                                                <option value="unlimited">Անսահմանափակ</option>
-                                            </select>
                                         </div>
 
                                         <div>

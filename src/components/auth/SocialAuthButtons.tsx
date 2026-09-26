@@ -5,6 +5,7 @@ import { api } from "../../lib/api";
 import { API_BASE_URL } from "../../lib/apiBase";
 import { cn } from "../../lib/cn";
 import { getDeviceFingerprint } from "../../lib/fingerprint";
+import { LEGAL_DOCUMENT_VERSION } from "../../config/legal";
 import { fadeUp } from "../../lib/motion";
 import { storePendingSocialBusinessProfile } from "../../lib/socialAuth";
 import { useLanguage } from "../../contexts/LanguageContext";
@@ -26,6 +27,7 @@ type SocialAuthButtonsProps = {
   businessCategorySlug?: string;
   customCategoryName?: string;
   planCode?: string;
+  legalAccepted?: boolean;
   className?: string;
 };
 
@@ -100,6 +102,7 @@ function getRedirectUrl(
   audience: Audience,
   businessType?: BusinessType,
   planCode?: string,
+  legalAccepted?: boolean,
 ) {
   const callbackUrl = window.location.origin + "/auth/social/callback";
   const params = new URLSearchParams({
@@ -114,6 +117,12 @@ function getRedirectUrl(
 
   if (audience === "business" && mode === "register" && planCode) {
     params.set("plan_code", planCode);
+  }
+
+  if (mode === "register" && legalAccepted) {
+    params.set("legal_accepted", "1");
+    params.set("terms_version", LEGAL_DOCUMENT_VERSION);
+    params.set("privacy_version", LEGAL_DOCUMENT_VERSION);
   }
 
   const fingerprint = getDeviceFingerprintSafe();
@@ -138,6 +147,7 @@ export default function SocialAuthButtons({
   businessCategorySlug = "",
   customCategoryName = "",
   planCode,
+  legalAccepted = false,
 }: SocialAuthButtonsProps) {
   const { locale } = useLanguage();
   const globallyEnabled = isEnvEnabled(import.meta.env.VITE_SOCIAL_AUTH_ENABLED, false);
@@ -168,6 +178,7 @@ export default function SocialAuthButtons({
       or: "կամ",
       suffix: "-ով",
       profileRequired: "Սոցիալական գրանցման համար նախ ընտրեք կատեգորիան և լրացրեք բիզնեսի տվյալներն ու քարտեզի կետը։",
+      legalRequired: "Սոցիալական գրանցումից առաջ ընդունեք Օգտագործման պայմաններն ու Գաղտնիության քաղաքականությունը։",
     },
     ru: {
       register: "Зарегистрироваться",
@@ -175,6 +186,7 @@ export default function SocialAuthButtons({
       or: "или",
       suffix: "",
       profileRequired: "Для регистрации сначала выберите категорию, затем заполните название, телефон, адрес и точку на карте.",
+      legalRequired: "Перед регистрацией примите Условия использования и Политику конфиденциальности.",
     },
     en: {
       register: "Register",
@@ -182,6 +194,7 @@ export default function SocialAuthButtons({
       or: "or",
       suffix: "",
       profileRequired: "Choose a category and enter the business name, phone number, address and map location before social registration.",
+      legalRequired: "Accept the Terms of Use and Privacy Policy before registering.",
     },
   }[locale];
   const actionText = mode === "register" ? text.register : text.login;
@@ -197,7 +210,7 @@ export default function SocialAuthButtons({
     Number.isFinite(businessLongitude);
 
   function startSocialAuth(provider: Provider) {
-    if (needsBusinessProfile && !hasBusinessProfile) return;
+    if ((needsBusinessProfile && !hasBusinessProfile) || (mode === "register" && !legalAccepted)) return;
 
     if (needsBusinessProfile) {
       storePendingSocialBusinessProfile({
@@ -213,7 +226,7 @@ export default function SocialAuthButtons({
       });
     }
 
-    window.location.assign(getRedirectUrl(provider, mode, audience, businessType, planCode));
+    window.location.assign(getRedirectUrl(provider, mode, audience, businessType, planCode, legalAccepted));
   }
 
   return (
@@ -228,7 +241,7 @@ export default function SocialAuthButtons({
       <div className={cn("grid gap-3", enabledProviders.length > 1 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1")}>
         {enabledProviders.map((provider) => {
           const item = providerMeta[provider];
-          const disabled = needsBusinessProfile && !hasBusinessProfile;
+          const disabled = (needsBusinessProfile && !hasBusinessProfile) || (mode === "register" && !legalAccepted);
 
           return (
             <button
@@ -269,6 +282,11 @@ export default function SocialAuthButtons({
       {needsBusinessProfile && !hasBusinessProfile ? (
         <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-6 text-amber-800">
           {text.profileRequired}
+        </div>
+      ) : null}
+      {mode === "register" && !legalAccepted ? (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-6 text-amber-800">
+          {text.legalRequired}
         </div>
       ) : null}
     </motion.div>

@@ -205,6 +205,7 @@ export type PublicBookingDetail = {
     client_name: string;
     client_phone: string;
     client_email?: string | null;
+    telegram_available?: boolean;
     telegram_connected?: boolean;
     notes?: string | null;
     phone_verified_at?: string | null;
@@ -568,6 +569,9 @@ export async function createPublicBooking(payload: {
     party_size?: number;
     recurrence_frequency?: "weekly" | "biweekly" | "monthly";
     recurrence_count?: number;
+    legal_accepted: boolean;
+    terms_version: string;
+    privacy_version: string;
     marketing_opt_in?: boolean;
 }): Promise<PublicBookingResponse> {
     const { slug, ...body } = payload;
@@ -590,6 +594,9 @@ export async function createPublicBookingMulti(payload: {
     redeem_points?: number;
     gift_card_code?: string;
     gift_card_amount?: number;
+    legal_accepted: boolean;
+    terms_version: string;
+    privacy_version: string;
     marketing_opt_in?: boolean;
 }): Promise<PublicBookingResponse> {
     const { slug, ...body } = payload;
@@ -614,6 +621,9 @@ export async function createPublicBookingLines(payload: {
     redeem_points?: number;
     gift_card_code?: string;
     gift_card_amount?: number;
+    legal_accepted: boolean;
+    terms_version: string;
+    privacy_version: string;
     marketing_opt_in?: boolean;
 }): Promise<PublicBookingResponse> {
     const { slug, ...body } = payload;
@@ -760,6 +770,9 @@ export async function joinPublicWaitlist(payload: {
     party_size?: number;
     notes?: string | null;
     source?: string;
+    legal_accepted: boolean;
+    terms_version: string;
+    privacy_version: string;
 }) {
     const { slug, ...body } = payload;
     const { data } = await publicApi.post(`/public/businesses/${slug}/waitlist`, body);

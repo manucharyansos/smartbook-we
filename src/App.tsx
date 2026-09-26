@@ -34,9 +34,6 @@ const Terms = lazy(() => import("./pages/Terms"));
 const Cookies = lazy(() => import("./pages/Cookies"));
 const Support = lazy(() => import("./pages/Support"));
 const Faq = lazy(() => import("./pages/Faq"));
-const Blog = lazy(() => import("./pages/Blog"));
-const Press = lazy(() => import("./pages/Press"));
-const Careers = lazy(() => import("./pages/Careers"));
 const PublicBusinessProfile = lazy(() => import("./pages/PublicBusinessProfile"));
 const PaymentReturn = lazy(() => import("./pages/PaymentReturn"));
 const MockBankIdBank = lazy(() => import("./pages/MockBankIdBank"));
@@ -104,9 +101,6 @@ export default function App() {
                     <Route path="/cookies" element={<Cookies />} />
                     <Route path="/support" element={<Support />} />
                     <Route path="/faq" element={<Faq />} />
-                    <Route path="/blog" element={<Blog />} />
-                    <Route path="/press" element={<Press />} />
-                    <Route path="/careers" element={<Careers />} />
 
                 <Route path="/admin/login" element={<AdminLogin />} />
                 <Route element={<ProtectedAdminRoute />}>

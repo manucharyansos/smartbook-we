@@ -56,6 +56,7 @@ export default function ClientLogin() {
 
   return (
     <AuthShell
+      audience="client"
       title={text.title}
       subtitle={text.subtitle}
       badge={text.badge}

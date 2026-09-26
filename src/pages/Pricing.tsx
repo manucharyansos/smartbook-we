@@ -51,16 +51,16 @@ function planFeatures(plan: PublicPlan, locale: Locale) {
 
   const custom = isCustomPlan(plan);
   const labels = {
-    hy: { active: (n: number) => `Մինչև ${n} ակտիվ մասնագետ`, activeUnlimited: "16+ ակտիվ մասնագետ", managers: "Սեփականատերեր և մենեջերներ՝ անսահմանափակ", location: "1 հասցե", locations: (n: number) => `Մինչև ${n} հասցե`, services: (n: number) => `Մինչև ${n} ծառայություն`, unlimitedServices: "Ծառայությունների սահմանափակում չկա", core: "Բոլոր հիմնական գործիքները ներառված են", operations: "Օրացույց, ամրագրումներ, առաջադրանքներ և վերլուծություն", growth: "Հաճախորդի cabinet, loyalty, նվերի քարտեր և աղբյուրների հետևում" },
-    ru: { active: (n: number) => `До ${n} активных специалистов`, activeUnlimited: "16+ активных специалистов", managers: "Владельцы и менеджеры — без ограничений", location: "1 адрес", locations: (n: number) => `До ${n} адресов`, services: (n: number) => `До ${n} услуг`, unlimitedServices: "Без ограничения услуг", core: "Все основные инструменты включены", operations: "Календарь, записи, задачи и аналитика", growth: "Кабинет клиента, лояльность, подарочные карты и источники" },
-    en: { active: (n: number) => `Up to ${n} active staff`, activeUnlimited: "16+ active staff", managers: "Unlimited owners and managers", location: "1 location", locations: (n: number) => `Up to ${n} locations`, services: (n: number) => `Up to ${n} services`, unlimitedServices: "Unlimited services", core: "All core tools included", operations: "Calendar, bookings, tasks and analytics", growth: "Client cabinet, loyalty, gift cards and source tracking" },
+    hy: { active: (n: number) => `Մինչև ${n} ակտիվ մասնագետ`, activeUnlimited: "16+ ակտիվ մասնագետ", managers: "Սեփականատերեր և մենեջերներ՝ անսահմանափակ", location: "1 հասցե", locations: (n: number) => `Մինչև ${n} հասցե`, services: (n: number) => `Մինչև ${n} ծառայություն`, unlimitedServices: "Ծառայությունների սահմանափակում չկա", core: "Բոլոր հիմնական գործիքները ներառված են", operations: "Օրացույց, ամրագրումներ, առաջադրանքներ և վերլուծություն", clients: "Հաճախորդների բազա, այցերի պատմություն և էլ. փոստով հաստատումներ" },
+    ru: { active: (n: number) => `До ${n} активных специалистов`, activeUnlimited: "16+ активных специалистов", managers: "Владельцы и менеджеры — без ограничений", location: "1 адрес", locations: (n: number) => `До ${n} адресов`, services: (n: number) => `До ${n} услуг`, unlimitedServices: "Без ограничения услуг", core: "Все основные инструменты включены", operations: "Календарь, записи, задачи и аналитика", clients: "База клиентов, история визитов и подтверждения по электронной почте" },
+    en: { active: (n: number) => `Up to ${n} active staff`, activeUnlimited: "16+ active staff", managers: "Unlimited owners and managers", location: "1 location", locations: (n: number) => `Up to ${n} locations`, services: (n: number) => `Up to ${n} services`, unlimitedServices: "Unlimited services", core: "All core tools included", operations: "Calendar, bookings, tasks and analytics", clients: "Client records, visit history and email confirmations" },
   }[locale];
   const items = [
     custom || staffLimit >= 999 ? labels.activeUnlimited : labels.active(staffLimit),
     labels.managers,
     Number(plan.locations ?? 1) > 1 ? labels.locations(Number(plan.locations)) : labels.location,
-    custom || servicesLimit >= 999 || servicesLimit <= 0 ? labels.unlimitedServices : labels.services(servicesLimit),
-    labels.core, labels.operations, labels.growth,
+    servicesLimit > 0 ? labels.services(servicesLimit) : labels.unlimitedServices,
+    labels.core, labels.operations, labels.clients,
   ];
 
   return items;

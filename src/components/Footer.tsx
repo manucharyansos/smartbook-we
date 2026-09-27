@@ -7,7 +7,6 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
-import { legalFooterSummary } from "../config/legal";
 import VizitLogo from "./VizitLogo";
 
 type FooterProps = {
@@ -15,7 +14,7 @@ type FooterProps = {
 };
 
 export default function Footer({ showCta = true }: FooterProps) {
-  const { t, locale } = useLanguage();
+  const { t } = useLanguage();
   const links = {
     navigation: [
       { to: "/", label: t("nav.home") }, { to: "/pricing", label: t("nav.pricing") },
@@ -143,9 +142,6 @@ export default function Footer({ showCta = true }: FooterProps) {
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <span>© {new Date().getFullYear()} Vizit.am. {t("footer.rights")}</span>
             <span>{t("footer.appointmentBusinesses")}</span>
-          </div>
-          <div className="mt-2 text-xs leading-5 text-[#7b6a7d] dark:text-white/55">
-            {legalFooterSummary(locale)}
           </div>
         </div>
       </div>

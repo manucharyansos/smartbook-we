@@ -26,10 +26,6 @@ export default function Footer({ showCta = true }: FooterProps) {
       { to: "/faq", label: t("footer.faq") }, { to: "/login", label: t("nav.login") },
       { to: "/register", label: t("footer.register") },
     ],
-    legal: [
-      { to: "/privacy-policy", label: t("footer.privacy") }, { to: "/terms", label: t("footer.terms") },
-      { to: "/cookies", label: t("footer.cookies") },
-    ],
   };
 
   return (
@@ -85,7 +81,7 @@ export default function Footer({ showCta = true }: FooterProps) {
           </motion.div>
         ) : null}
 
-        <div className={`${showCta ? "mt-10" : "mt-0"} grid gap-7 md:grid-cols-2 xl:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr]`}>
+        <div className={`${showCta ? "mt-10" : "mt-0"} grid gap-7 md:grid-cols-2 xl:grid-cols-[1.4fr_0.8fr_0.8fr]`}>
           <div>
             <Link to="/" className="vizit-footer-brand flex items-center gap-3">
               <VizitLogo />
@@ -128,14 +124,6 @@ export default function Footer({ showCta = true }: FooterProps) {
             </div>
           </div>
 
-          <div>
-            <div className="text-sm font-bold text-[#2b0d35] dark:text-white">{t("footer.legal")}</div>
-            <div className="mt-3 flex flex-col gap-2.5 text-sm text-[#5f5062] dark:text-white/70">
-              {links.legal.map((item) => (
-                <Link key={item.to} to={item.to} className="transition hover:text-[#2b0d35] dark:hover:text-white">{item.label}</Link>
-              ))}
-            </div>
-          </div>
         </div>
 
         <div className="mt-7 border-t border-[#d39a43]/18 pt-4 text-center text-sm text-[#665568] dark:border-white/10 dark:text-white/70 sm:mt-8 sm:text-left">

@@ -16,20 +16,24 @@ export function ScrollToTop() {
   useLayoutEffect(() => {
     if (location.hash) return;
 
-    const root = document.documentElement;
+    const documentRoot = document.documentElement;
     const body = document.body;
-    const previousRootScrollBehavior = root.style.scrollBehavior;
+    const appRoot = document.getElementById("root");
+    const previousDocumentScrollBehavior = documentRoot.style.scrollBehavior;
     const previousBodyScrollBehavior = body.style.scrollBehavior;
+    const previousAppScrollBehavior = appRoot?.style.scrollBehavior ?? "";
 
     // The global design system uses smooth scrolling. Temporarily override it
     // so a route change opens at the top immediately instead of animating from
     // the previous page's scroll position.
-    root.style.scrollBehavior = "auto";
+    documentRoot.style.scrollBehavior = "auto";
     body.style.scrollBehavior = "auto";
+    if (appRoot) appRoot.style.scrollBehavior = "auto";
 
     const scrollToPageTop = () => {
-      root.scrollTop = 0;
+      documentRoot.scrollTop = 0;
       body.scrollTop = 0;
+      if (appRoot) appRoot.scrollTop = 0;
 
       if (document.scrollingElement) {
         document.scrollingElement.scrollTop = 0;
@@ -38,8 +42,9 @@ export function ScrollToTop() {
       window.scrollTo(0, 0);
     };
     const restoreScrollBehavior = () => {
-      root.style.scrollBehavior = previousRootScrollBehavior;
+      documentRoot.style.scrollBehavior = previousDocumentScrollBehavior;
       body.style.scrollBehavior = previousBodyScrollBehavior;
+      if (appRoot) appRoot.style.scrollBehavior = previousAppScrollBehavior;
     };
 
     scrollToPageTop();

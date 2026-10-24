@@ -15,6 +15,7 @@ import {
     Sparkles,
     Stethoscope,
     Store,
+    Building2,
     User,
     UserPlus,
 } from "lucide-react";
@@ -33,7 +34,7 @@ import { fetchPublicCategories, type PublicBusinessCategory } from "../lib/publi
 import { useAuth } from "../store/auth";
 import { useLanguage } from "../contexts/LanguageContext";
 
-type BusinessVertical = "services" | "healthcare";
+type BusinessVertical = "services" | "healthcare" | "rentals";
 type RegistrationCategory = PublicBusinessCategory & {
     slug: string;
     vertical: BusinessVertical;
@@ -97,6 +98,7 @@ const categoryCopy = {
 } as const;
 
 const fallbackRegistrationCategories: RegistrationCategory[] = [
+    { vertical: "rentals", slug: "rental-space", name_hy: "Վարձով տարածք", name_ru: "Помещение в аренду", name_en: "Space for rent" },
     { vertical: "services", slug: "beauty-salon", name_hy: "Գեղեցկության սրահ", name_ru: "Салон красоты", name_en: "Beauty salon" },
     { vertical: "services", slug: "barber-shop", name_hy: "Բարբերշոփ", name_ru: "Барбершоп", name_en: "Barber shop" },
     { vertical: "services", slug: "nail-studio", name_hy: "Մատնահարդարման ստուդիա", name_ru: "Ногтевая студия", name_en: "Nail studio" },
@@ -119,12 +121,14 @@ const fallbackRegistrationCategories: RegistrationCategory[] = [
 ];
 
 function normalizeVertical(value: string | null | undefined): BusinessVertical {
+    if (value === "rentals") return "rentals";
     return ["dental", "clinic", "medical", "health", "healthcare"].includes(String(value ?? "").toLowerCase())
         ? "healthcare"
         : "services";
 }
 
 function initialCategorySlug(value: string | null): string {
+    if (value === "rentals") return "rental-space";
     if (["beauty", "salon"].includes(String(value ?? "").toLowerCase())) return "beauty-salon";
     if (["dental"].includes(String(value ?? "").toLowerCase())) return "dental-clinic";
     return "";
@@ -211,8 +215,8 @@ export default function Register() {
     const requestedPlanCode = searchParams.get("plan")?.trim() || undefined;
     const typeParam = searchParams.get("type");
 
-    const [business_type, setBusinessType] = useState<BusinessVertical>(() => normalizeVertical(typeParam));
-    const [business_category_slug, setBusinessCategorySlug] = useState(() => initialCategorySlug(typeParam));
+    const [business_type, setBusinessType] = useState<BusinessVertical>(() => normalizeVertical(typeParam ?? (requestedPlanCode === "rental" ? "rentals" : null)));
+    const [business_category_slug, setBusinessCategorySlug] = useState(() => initialCategorySlug(typeParam ?? (requestedPlanCode === "rental" ? "rentals" : null)));
     const [custom_category_name, setCustomCategoryName] = useState("");
     const [business_name, setBusinessName] = useState("");
     const [business_phone, setBusinessPhone] = useState("");
@@ -279,7 +283,9 @@ export default function Register() {
         else setPasswordStrength("strong");
     }, [password]);
 
+    const rentalLabel = { hy: "Վարձով տարածքներ", ru: "Аренда помещений", en: "Spaces for rent" }[locale];
     const businessMeta = {
+            rentals: { label: { hy: "Տարածքի ամրագրում · 25 000 ֏/ամիս", ru: "Бронирование помещения · 25 000 ֏/мес.", en: "Space reservations · 25,000 AMD/month" }[locale], short: rentalLabel, icon: Building2 },
             services: {
                 label: categoryText.servicesDetail,
                 short: categoryText.services,
@@ -297,7 +303,7 @@ export default function Register() {
     function chooseVertical(vertical: BusinessVertical) {
         if (vertical === business_type) return;
         setBusinessType(vertical);
-        setBusinessCategorySlug("");
+        setBusinessCategorySlug(vertical === "rentals" ? "rental-space" : "");
         setCustomCategoryName("");
         setError(null);
         setErrorCode(null);
@@ -396,7 +402,7 @@ export default function Register() {
                     business_category_id: selectedCategory?.id,
                     business_category_slug,
                     custom_category_name: isOtherCategory ? custom_category_name.trim() : null,
-                    plan_code: requestedPlanCode,
+                    plan_code: business_type === "rentals" ? "rental" : requestedPlanCode === "rental" ? undefined : requestedPlanCode,
                     name: owner_name,
                     email: owner_email,
                     password,
@@ -497,7 +503,7 @@ export default function Register() {
                         </div>
 
                         <div role="radiogroup" aria-labelledby="business-type-label" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                            {(["services", "healthcare"] as BusinessVertical[]).map((type) => {
+                            {(["services", "healthcare", "rentals"] as BusinessVertical[]).map((type) => {
                                 const Icon = businessMeta[type].icon;
                                 const active = business_type === type;
 
@@ -757,7 +763,7 @@ export default function Register() {
                                 businessCategoryId={selectedCategory?.id}
                                 businessCategorySlug={business_category_slug}
                                 customCategoryName={isOtherCategory ? custom_category_name : undefined}
-                                planCode={requestedPlanCode}
+                                planCode={business_type === "rentals" ? "rental" : requestedPlanCode === "rental" ? undefined : requestedPlanCode}
                                 legalAccepted={legalAccepted}
                             />
 

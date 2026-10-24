@@ -1,3 +1,4 @@
+import RentalPublic from "../components/rentals/RentalPublic";
 import { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -58,7 +59,7 @@ const copy = {
 const EMPTY_SERVICES: PublicService[] = [];
 const EMPTY_STAFF: PublicStaff[] = [];
 
-function businessTypeLabel(type: "beauty" | "dental" | undefined, locale: Locale) {
+function businessTypeLabel(type: "beauty" | "dental" | "rentals" | undefined, locale: Locale) {
     return type === "dental" ? copy[locale].dental : copy[locale].beauty;
 }
 
@@ -114,13 +115,13 @@ export default function PublicBusinessProfile() {
     const servicesQ = useQuery({
         queryKey: ["public-business-profile-services", slug],
         queryFn: () => fetchPublicServices(slug),
-        enabled: !!slug,
+        enabled: !!slug && !!businessQ.data && businessQ.data.business_type !== "rentals",
     });
 
     const staffQ = useQuery({
         queryKey: ["public-business-profile-staff", slug],
         queryFn: () => fetchPublicStaff(slug),
-        enabled: !!slug,
+        enabled: !!slug && !!businessQ.data && businessQ.data.business_type !== "rentals",
     });
 
     const business = businessQ.data;
@@ -146,6 +147,8 @@ export default function PublicBusinessProfile() {
         address: business.address ? { "@type": "PostalAddress", streetAddress: business.address } : undefined,
         potentialAction: { "@type": "ReserveAction", target: `https://vizit.am/book/${business.slug}` },
     } : null, [business, text.defaultDescription]);
+
+    if (business?.business_type === "rentals") return <RentalPublic key={business.slug} business={business} />;
 
     if (businessQ.isLoading) {
         return (

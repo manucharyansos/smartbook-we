@@ -32,6 +32,7 @@ export function formatPlanPrice(value: number | null | undefined, currency = "AM
 }
 
 export function localizePlanName(plan: PlanLike): string {
+  if (plan.code === "rental") return "Վարձով տարածք";
   const value = String(plan.name || plan.code || "").toLowerCase();
   if (value.includes("start")) return "Սկիզբ";
   if (value.includes("studio")) return "Ստուդիա";
@@ -42,6 +43,7 @@ export function localizePlanName(plan: PlanLike): string {
 }
 
 export function localizePlanNameForLocale(plan: PlanLike, locale: "hy" | "ru" | "en" = "hy"): string {
+  if (plan.code === "rental") return { hy: "Վարձով տարածք", ru: "Аренда помещения", en: "Space rental" }[locale];
   const value = String(plan.name || plan.code || "").toLowerCase();
   const names = {
     hy: { start: "Սկիզբ", studio: "Ստուդիա", scale: "Աճ", business: "Բիզնես", custom: "Անհատական", fallback: "Պլան" },
@@ -53,6 +55,7 @@ export function localizePlanNameForLocale(plan: PlanLike, locale: "hy" | "ru" | 
 }
 
 export function localizePlanDescription(plan: PlanLike, locale: "hy" | "ru" | "en" = "hy"): string {
+  if (plan.code === "rental") return { hy: "Տարածքի օրացույց, ամրագրումներ, պատկերասրահ և հաշվարկներ։", ru: "Календарь помещения, бронирования, галерея и расчёты.", en: "Space calendar, bookings, gallery and accounts." }[locale];
   const value = String(plan.code || plan.name || "").toLowerCase();
   const descriptions = {
     hy: {

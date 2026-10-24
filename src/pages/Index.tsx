@@ -1,3 +1,5 @@
+import RentalOffer from "../components/rentals/RentalOffer";
+import { rentalCopy } from "../i18n/rentals";
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
@@ -69,11 +71,12 @@ import {
 import { publicPlansApi, type PublicPlan } from "../lib/planApi";
 import { formatPlanPrice, localizePlanDescription, localizePlanNameForLocale, monthlyPlanPrice } from "../lib/planPresentation";
 
-type BusinessFilter = "all" | "services" | "healthcare";
+type BusinessFilter = "all" | "services" | "healthcare" | "rentals";
 type LocationStatus = "idle" | "loading" | "active" | "error" | "unsupported";
 type MapBusinessDetails = PublicDirectoryBusiness | PublicBusiness;
 
 const defaultPublicCategories: PublicBusinessCategory[] = [
+  { slug: "rental-space", vertical: "rentals", name_hy: "Վարձով տարածքներ", name_ru: "Аренда помещений", name_en: "Spaces for rent", icon: "building" },
   { slug: "beauty-salon", vertical: "services", name_hy: "Գեղեցկության սրահ", name_ru: "Салон красоты", name_en: "Beauty salon", icon: "sparkles" },
   { slug: "barber-shop", vertical: "services", name_hy: "Բարբերշոփ", name_ru: "Барбершоп", name_en: "Barber shop", icon: "scissors" },
   { slug: "nail-studio", vertical: "services", name_hy: "Մատնահարդարման ստուդիա", name_ru: "Ногтевая студия", name_en: "Nail studio", icon: "hand" },
@@ -103,7 +106,7 @@ type MapPinItem = {
   locationName?: string | null;
   address?: string | null;
   categoryName?: string | null;
-  vertical: "services" | "healthcare";
+  vertical: "services" | "healthcare" | "rentals";
   lat: number;
   lng: number;
   bookingUrl: string;
@@ -200,7 +203,8 @@ function normalizeText(value: unknown) {
     .trim();
 }
 
-function normalizeVertical(value?: string | null): "services" | "healthcare" {
+function normalizeVertical(value?: string | null): "services" | "healthcare" | "rentals" {
+  if (value === "rentals") return "rentals";
   const v = String(value ?? "").toLowerCase();
   return ["healthcare", "medical", "clinic", "dental"].includes(v) ? "healthcare" : "services";
 }
@@ -348,6 +352,7 @@ function matchesCategory(item: PublicDirectoryBusiness, selectedCategorySlug: st
   const itemCategory = normalizeText(item.category?.slug ?? item.category?.name ?? item.category?.name_hy ?? item.custom_category_name);
   const vertical = normalizeVertical(item.category?.vertical ?? item.vertical ?? item.business_type);
   if (["services", "beauty", "salon"].includes(selected)) return vertical === "services";
+  if (selected === "rentals" || selected === "rental-space") return vertical === "rentals";
   if (["healthcare", "dental", "clinic"].includes(selected)) return vertical === "healthcare";
   return !!itemCategory && (itemCategory.includes(selected) || selected.includes(itemCategory));
 }
@@ -375,15 +380,15 @@ function deriveCategories(businesses: PublicDirectoryBusiness[]): PublicBusiness
     }
 
     const vertical = normalizeVertical(business.vertical ?? business.business_type);
-    const slug = vertical === "healthcare" ? "healthcare" : "services";
+    const slug = vertical;
     if (!map.has(slug)) {
       map.set(slug, {
         id: vertical === "healthcare" ? 2 : 1,
         slug,
-        name: vertical === "healthcare" ? "Բժշկական" : "Ծառայություններ",
-        name_hy: vertical === "healthcare" ? "Բժշկական" : "Ծառայություններ",
-        name_ru: vertical === "healthcare" ? "Медицина" : "Услуги",
-        name_en: vertical === "healthcare" ? "Healthcare" : "Services",
+        name: vertical === "rentals" ? "Վարձով տարածքներ" : vertical === "healthcare" ? "Բժշկական" : "Ծառայություններ",
+        name_hy: vertical === "rentals" ? "Վարձով տարածքներ" : vertical === "healthcare" ? "Բժշկական" : "Ծառայություններ",
+        name_ru: vertical === "rentals" ? "Аренда помещений" : vertical === "healthcare" ? "Медицина" : "Услуги",
+        name_en: vertical === "rentals" ? "Spaces for rent" : vertical === "healthcare" ? "Healthcare" : "Services",
         vertical,
       });
     }
@@ -489,7 +494,7 @@ function directoryBusinessFromPin(pin: MapPinItem): PublicDirectoryBusiness {
     id: pin.businessId,
     name: pin.name,
     slug: pin.slug,
-    business_type: isHealthcare ? "dental" : "beauty",
+    business_type: pin.vertical === "rentals" ? "rentals" : isHealthcare ? "dental" : "beauty",
     vertical: pin.vertical,
     category: {
       vertical: pin.vertical,
@@ -1206,10 +1211,12 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
             <Link to={`/businesses/${item.slug}`} className="vizit-business-mobile-title block truncate text-[15px] font-black tracking-[-0.02em] text-[#321735] dark:text-[#fff8f2]">{item.name}</Link>
             <p className="mt-1 truncate text-[11px] font-semibold text-[#8a7182] dark:text-[#d7c8d4]">{categoryName}</p>
           </div>
+          {item.business_type === "rentals" ? <div className="rental-muted" style={{ marginTop: "auto", paddingTop: 8 }}>{item.rental_hourly_price != null ? `${Number(item.rental_hourly_price).toLocaleString()} ֏ · ${rentalCopy[locale].hourly}` : rentalCopy[locale].title}</div> : <>
           <div className="vizit-business-mobile-meta mt-auto flex min-w-0 items-center gap-3 pt-2 text-[10px] font-semibold text-[#786675] dark:text-[#cdbfca]">
             <span className="inline-flex min-w-0 items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 shrink-0 text-[var(--vz-brand-text)]" /><b className="text-[var(--vz-text)] dark:text-white">{item.services_count ?? 0}</b> {t("business.card.services")}</span>
             <span className="inline-flex min-w-0 items-center gap-1.5"><Users className="h-3.5 w-3.5 shrink-0 text-[var(--vz-brand-text)] dark:text-[var(--vz-brand-text)]" /><b className="text-[var(--vz-text)] dark:text-white">{item.staff_count ?? 0}</b> {t("business.card.staff")}</span>
           </div>
+          </>}
           <div className="vizit-business-mobile-actions mt-2 grid grid-cols-2 gap-1.5">
             <Link to={bookingUrl} className="inline-flex min-w-0 items-center justify-center gap-1 rounded-[10px] bg-[var(--vz-primary)] px-2 py-1.5 text-[10px] font-black text-[var(--vz-on-primary)] shadow-sm" aria-label={`${t("business.card.book")} — ${item.name}`}>
               <span className="truncate">{t("business.card.book")}</span><ArrowRight className="h-3 w-3 shrink-0" />
@@ -1219,11 +1226,13 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
             </Link>
           </div>
         </header>
-        <p className="vizit-business-description hidden min-h-[40px] text-[13px] leading-5 text-slate-600 dark:text-slate-300 md:line-clamp-2 sm:min-h-[44px] sm:text-sm sm:leading-[22px]">{item.short_description || t("business.card.defaultDescription")}</p>
+        <p className="vizit-business-description hidden min-h-[40px] text-[13px] leading-5 text-slate-600 dark:text-slate-300 md:line-clamp-2 sm:min-h-[44px] sm:text-sm sm:leading-[22px]">{item.short_description || (item.business_type === "rentals" ? rentalCopy[locale].book : t("business.card.defaultDescription"))}</p>
+        {item.business_type === "rentals" ? <p className="rental-muted hidden md:block" style={{ marginTop: 16 }}>{item.rental_hourly_price != null ? `${Number(item.rental_hourly_price).toLocaleString()} ֏ · ${rentalCopy[locale].hourly}` : rentalCopy[locale].title}</p> : <>
         <div className="vizit-business-stats mt-4 hidden grid-cols-2 gap-2 text-[11px] text-slate-600 dark:text-slate-300 md:grid sm:text-xs">
           <div className="flex items-center gap-2 rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-2.5 dark:border-white/10 dark:bg-white/[0.06]"><Sparkles className="h-4 w-4 shrink-0 text-violet-500" /><span className="min-w-0"><span className="font-black text-slate-950 dark:text-white">{item.services_count ?? 0}</span> <span className="truncate">{t("business.card.services")}</span></span></div>
           <div className="flex items-center gap-2 rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-2.5 dark:border-white/10 dark:bg-white/[0.06]"><Users className="h-4 w-4 shrink-0 text-cyan-500" /><span className="min-w-0"><span className="font-black text-slate-950 dark:text-white">{item.staff_count ?? 0}</span> <span className="truncate">{t("business.card.staff")}</span></span></div>
         </div>
+        </>}
         <div className="vizit-business-actions mt-auto hidden grid-cols-2 gap-2 pt-3 md:grid">
           <Link to={bookingUrl} className="inline-flex min-w-0 items-center justify-center gap-1 rounded-[12px] bg-gradient-to-r from-violet-600 to-sky-500 px-2.5 py-2 text-[11px] font-black text-white shadow-[0_10px_22px_rgba(124,58,237,0.18)] transition hover:brightness-105 sm:text-xs">{t("business.card.book")} <ArrowRight className="h-3.5 w-3.5 shrink-0" /></Link>
           <Link to={`/businesses/${item.slug}`} className="inline-flex min-w-0 items-center justify-center rounded-[12px] border border-slate-200 bg-slate-50 px-2.5 py-2 text-[11px] font-bold text-slate-800 transition hover:bg-slate-100 dark:border-white/10 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/[0.10] sm:text-xs">{t("business.card.view")}</Link>
@@ -1617,6 +1626,7 @@ export default function Index() {
                     { key: "all", label: t("businesses.all") },
                     { key: "services", label: t("businesses.services") },
                     { key: "healthcare", label: t("businesses.healthcare") },
+                    { key: "rentals", label: rentalCopy[locale].title },
                   ].map((item) => (
                     <button
                       key={item.key}
@@ -1674,6 +1684,7 @@ export default function Index() {
         </section>
 
         <HomePlansSection />
+        <RentalOffer />
 
         <section className="vizit-business-cta bg-white px-5 pb-20 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="vizit-business-cta-card mx-auto max-w-[1320px] overflow-hidden rounded-[34px] border p-8 backdrop-blur-2xl sm:p-10 lg:p-12">

@@ -1,3 +1,4 @@
+import { rentalCopy } from "../i18n/rentals";
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -164,6 +165,7 @@ export default function Clients() {
   const { locale } = useLanguage();
   const text = clientsCopy[locale];
   const vertical = String(user?.vertical ?? user?.business_type ?? "").toLowerCase();
+  const isRental = vertical === "rentals";
   const isHealthcare = ["healthcare", "dental", "clinic", "medical", "doctor", "health"].includes(vertical);
   const canManage = user?.role === "owner" || user?.role === "manager";
 
@@ -552,6 +554,7 @@ export default function Clients() {
                 </div>
 
                 <div className="mt-4 grid gap-3 sm:grid-cols-2 2xl:grid-cols-4">
+                  {!isRental && <>
                   <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
                     <div className="text-[11px] uppercase tracking-wide text-slate-400">{text.favoriteService}</div>
                     <div className="mt-1 text-sm font-semibold text-slate-900">{clientQ.data.crm?.favorite_service_name || "—"}</div>
@@ -560,6 +563,7 @@ export default function Clients() {
                     <div className="text-[11px] uppercase tracking-wide text-slate-400">{isHealthcare ? text.favoriteDoctor : text.favoriteStaff}</div>
                     <div className="mt-1 text-sm font-semibold text-slate-900">{clientQ.data.crm?.favorite_staff_name || "—"}</div>
                   </div>
+                  </>}
                   <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
                     <div className="text-[11px] uppercase tracking-wide text-slate-400">{text.source}</div>
                     <div className="mt-1 text-sm font-semibold text-slate-900">{clientQ.data.crm?.favorite_source || "—"}</div>
@@ -764,8 +768,8 @@ export default function Clients() {
                       <div key={booking.id} className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
                         <div className="flex items-start justify-between gap-3">
                           <div>
-                            <div className="font-medium text-slate-900">{booking.service_name ?? booking.service?.name ?? `${text.service} #${booking.service_id}`}</div>
-                            <div className="mt-1 text-xs text-slate-500">{formatDateTime(booking.starts_at, locale)} · {booking.staff_name ?? booking.staff?.name ?? "—"}</div>
+                            <div className="font-medium text-slate-900">{isRental ? (user?.business_name || rentalCopy[locale].space) : booking.service_name ?? booking.service?.name ?? `${text.service} #${booking.service_id}`}</div>
+                            <div className="mt-1 text-xs text-slate-500">{formatDateTime(booking.starts_at, locale)}{!isRental && <> · {booking.staff_name ?? booking.staff?.name ?? "—"}</>}</div>
                           </div>
                           <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-semibold text-slate-600">{booking.status}</span>
                         </div>

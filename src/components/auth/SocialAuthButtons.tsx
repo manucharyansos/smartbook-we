@@ -12,7 +12,7 @@ import { useLanguage } from "../../contexts/LanguageContext";
 
 type Provider = "google" | "facebook";
 type Audience = "business" | "client";
-type BusinessType = "services" | "healthcare";
+type BusinessType = "services" | "healthcare" | "rentals";
 
 type SocialAuthButtonsProps = {
   mode?: "login" | "register";

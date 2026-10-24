@@ -67,7 +67,7 @@ type BusinessDetailsResponse = {
     name: string;
     slug: string;
     business_type: string;
-    vertical?: "services" | "healthcare";
+    vertical?: "services" | "healthcare" | "rentals";
     phone?: string | null;
     address?: string | null;
     status: string;
@@ -333,7 +333,7 @@ export default function BusinessDetails() {
             <CheckCircle2 className="h-4 w-4" /> {business.status}
           </span>
           <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-medium text-violet-700">
-            <Sparkles className="h-4 w-4" /> {['dental', 'clinic', 'healthcare'].includes(business.vertical || business.business_type) ? "Առողջապահություն" : "Ծառայություններ"}
+            <Sparkles className="h-4 w-4" /> {(business.vertical || business.business_type) === 'rentals' ? 'Վարձով տարածքներ' : ['dental', 'clinic', 'healthcare'].includes(business.vertical || business.business_type) ? "Առողջապահություն" : "Ծառայություններ"}
           </span>
           <button
             type="button"

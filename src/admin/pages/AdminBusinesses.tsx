@@ -20,7 +20,7 @@ interface Business {
   name: string;
   slug: string;
   business_type: string;
-  vertical?: 'services' | 'healthcare';
+  vertical?: 'services' | 'healthcare' | 'rentals';
   status: 'active' | 'suspended' | 'pending';
   users_count?: number;
   bookings_count?: number;
@@ -48,6 +48,7 @@ function fmtAMD(n: number) {
 }
 
 function businessTypeLabel(type: string) {
+  if (type === 'rentals') return 'Վարձով տարածքներ';
   return ['dental', 'clinic', 'healthcare'].includes(type) ? 'Առողջապահություն' : 'Ծառայություններ';
 }
 
@@ -105,7 +106,7 @@ export default function AdminBusinesses() {
       const response = await adminAnalyticsService.exportBusinesses({
         search: search || undefined,
         status: (statusFilter || undefined) as 'active' | 'suspended' | 'pending' | undefined,
-        business_type: (typeFilter || undefined) as 'services' | 'healthcare' | undefined,
+        business_type: (typeFilter || undefined) as 'services' | 'healthcare' | 'rentals' | undefined,
       });
       const disposition = response.headers?.['content-disposition'] || response.headers?.['Content-Disposition'];
       downloadBlob(response.data, filenameFromContentDisposition(disposition) || 'vizit-businesses.csv');
@@ -157,6 +158,7 @@ export default function AdminBusinesses() {
             <option value="">Բոլոր տեսակները</option>
             <option value="services">Ծառայություններ</option>
             <option value="healthcare">Առողջապահություն</option>
+            <option value="rentals">Վարձով տարածքներ</option>
           </select>
         </div>
       </Card>

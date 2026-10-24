@@ -1,3 +1,5 @@
+import { isRentalBusiness } from "../lib/rentalApi";
+import { rentalCopy } from "../i18n/rentals";
 import { Outlet, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -76,6 +78,8 @@ export function AppLayout() {
   const featuresQ = useQuery({ queryKey: ["features"], queryFn: fetchFeatures, staleTime: 60_000, retry: 1 });
   const features = featuresQ.data;
   const businessValue = String(user?.vertical ?? user?.business_type ?? "").toLowerCase();
+  const isRental = isRentalBusiness(user);
+  const rentalText = rentalCopy[locale];
   const isHealthcare = ["healthcare", "dental", "clinic", "medical", "doctor", "health"].includes(businessValue);
 
   const navItems = useMemo(() => {
@@ -85,6 +89,11 @@ export function AppLayout() {
         : undefined;
       return { ...item, label: healthcareLabel ?? text.nav[item.to as keyof typeof text.nav] ?? item.label };
     });
+    if (isRental) {
+      items = items.filter((item) => !["/app/services", "/app/staff", "/app/tasks"].includes(item.to));
+      const labels: Record<string, string> = { "/app/dashboard": rentalText.dashboard, "/app/calendar": rentalText.calendar, "/app/analytics": rentalText.analytics, "/app/settings": rentalText.settings };
+      items = items.map((item) => ({ ...item, label: labels[item.to] || item.label }));
+    }
     items = items.filter((i) => !i.feature || hasFeature(features, i.feature));
     if (user?.role === "staff") {
       const allowed = new Set(["/app/dashboard", "/app/calendar", "/app/tasks"]);
@@ -98,9 +107,9 @@ export function AppLayout() {
     if (hasFeature(features, "loyalty")) insertBeforeSettings({ to: "/app/loyalty", label: text.loyalty, icon: Star, color: "from-orange-500 to-amber-500", feature: "loyalty" });
     if (hasFeature(features, "waitlist")) insertBeforeSettings({ to: "/app/growth", label: text.growth, icon: Megaphone, color: "from-emerald-600 to-teal-600", feature: "waitlist" });
     return items;
-  }, [features, isHealthcare, text, user?.role]);
+  }, [features, isHealthcare, isRental, rentalText, text, user?.role]);
 
-  const bottomNavItems = useMemo(() => navItems.filter((i) => mobileBottomPaths.includes(i.to)), [navItems]);
+  const bottomNavItems = useMemo(() => navItems.filter((i) => (mobileBottomPaths.includes(i.to) || (isRental && i.to === "/app/analytics"))), [navItems, isRental]);
 
   useEffect(() => {
     const h = () => setIsScrolled(window.scrollY > 10);
@@ -156,8 +165,8 @@ export function AppLayout() {
   };
 
   const businessTypeUi = useMemo(
-    () => isHealthcare ? { label: text.healthcare, icon: Award } : { label: text.services, icon: Sparkles },
-    [isHealthcare, text.healthcare, text.services]
+    () => isRental ? { label: rentalText.title, icon: Landmark } : isHealthcare ? { label: text.healthcare, icon: Award } : { label: text.services, icon: Sparkles },
+    [isRental, rentalText.title, isHealthcare, text.healthcare, text.services]
   );
   const BusinessTypeIcon = businessTypeUi?.icon ?? Sparkles;
 
@@ -291,7 +300,7 @@ export function AppLayout() {
                       </div>
                       <div>
                         <div className="mb-1 text-xs font-semibold text-slate-900">{text.hintTitle}</div>
-                        <div className="text-xs leading-relaxed text-slate-500">{text.hintText}</div>
+                        <div className="text-xs leading-relaxed text-slate-500">{isRental ? rentalText.subscriptionHelp : text.hintText}</div>
                       </div>
                     </div>
                   </div>

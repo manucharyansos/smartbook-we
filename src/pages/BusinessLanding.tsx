@@ -1,3 +1,4 @@
+import RentalOffer from "../components/rentals/RentalOffer";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -182,6 +183,7 @@ export default function BusinessLanding() {
         <section id="vizit-business-final" className="vizit-business-final px-4 pb-20 sm:px-6 lg:px-8 lg:pb-28"><div className="vizit-business-final-card mx-auto max-w-[1120px] overflow-hidden rounded-[38px] bg-[radial-gradient(circle_at_85%_0%,rgba(244,217,159,0.28),transparent_34%),linear-gradient(135deg,#2b0d35_0%,#6d2a63_100%)] px-6 py-10 text-center text-white shadow-[0_32px_100px_rgba(75,22,75,0.25)] sm:px-10 sm:py-14"><div className="vizit-business-final-badge inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm font-semibold text-[#f4d99f]"><HeartPulse className="h-4 w-4" />{text.finalBadge}</div><h2 className="vizit-display mx-auto mt-5 max-w-3xl text-3xl font-bold tracking-[-0.035em] sm:text-5xl">{text.finalTitle}</h2><p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/65 sm:text-base">{text.finalText}</p><div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row"><Link to="/register" className="vizit-business-final-primary inline-flex min-h-13 items-center justify-center gap-2 rounded-2xl bg-[#fff8ef] px-7 py-3.5 text-sm font-bold text-[#2b0d35] transition hover:bg-white">{text.primary}<ArrowRight className="h-4 w-4" /></Link><Link to="/pricing" className="vizit-business-final-secondary inline-flex min-h-13 items-center justify-center rounded-2xl border border-white/18 px-7 py-3.5 text-sm font-bold text-white transition">{text.secondary}</Link></div></div></section>
       </main>
 
+      <RentalOffer />
       <Footer />
     </motion.div>
   );

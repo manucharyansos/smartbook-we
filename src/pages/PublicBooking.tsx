@@ -1,3 +1,4 @@
+import RentalPublic from "../components/rentals/RentalPublic";
 /* eslint-disable react-hooks/set-state-in-effect -- this form reconciles URL, location and async availability state after each external source updates */
 import { cloneElement, isValidElement, useEffect, useId, useMemo, useRef, useState, type ReactElement, type ReactNode } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
@@ -482,7 +483,7 @@ function LineBookingCard({
     );
 }
 
-export default function PublicBooking() {
+function ServiceBooking() {
     const { slug = "" } = useParams();
     const { locale } = useLanguage();
     const text = publicBookingCopy[locale];
@@ -2754,4 +2755,11 @@ function ServicePreviewCard({
             </div>
         </div>
     );
+}
+
+export default function PublicBooking() {
+    const { slug = "" } = useParams();
+    const business = useQuery({ queryKey: ["public-business", slug], queryFn: () => fetchPublicBusiness(slug), enabled: !!slug });
+    if (business.data?.business_type === "rentals") return <RentalPublic key={slug} business={business.data} />;
+    return <ServiceBooking />;
 }

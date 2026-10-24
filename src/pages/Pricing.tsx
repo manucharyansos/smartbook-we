@@ -1,3 +1,4 @@
+import RentalOffer from "../components/rentals/RentalOffer";
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
@@ -81,7 +82,7 @@ export default function Pricing() {
   });
 
   const plans = useMemo(() => {
-    return (plansQ.data ?? []).map((plan) => {
+    return (plansQ.data ?? []).filter((plan) => plan.code !== "rental").map((plan) => {
       const custom = isCustomPlan(plan);
       const baseMonthly = monthlyPlanPrice(plan);
       const yearlyPrice = yearlyPlanPrice(plan);
@@ -350,6 +351,7 @@ export default function Pricing() {
           </div>
         </motion.div>
       </motion.section>
+      <RentalOffer />
     </MarketingPageShell>
   );
 }

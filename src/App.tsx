@@ -1,3 +1,5 @@
+import { useAuth } from "./store/auth";
+import { isRentalBusiness } from "./lib/rentalApi";
 import { Suspense, lazy } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
@@ -66,6 +68,16 @@ const AdminAdmins = lazy(() => import("./admin/pages/AdminAdmins"));
 const AdminLogs = lazy(() => import("./admin/pages/AdminLogs"));
 const AdminPlans = lazy(() => import("./admin/pages/AdminPlans"));
 
+const RentalWorkspace = lazy(() => import("./pages/RentalWorkspace"));
+const RentalSettings = lazy(() => import("./pages/RentalSettings"));
+function BusinessScreen({ children, screen = "workspace" }: { children: React.ReactNode; screen?: "workspace" | "settings" | "onboarding" | "catalog" }) {
+    const user = useAuth((state) => state.user);
+    if (!isRentalBusiness(user)) return children;
+    if (screen === "catalog") return <Navigate to="/app/settings" replace />;
+    if (screen === "settings" || screen === "onboarding") return <RentalSettings onboarding={screen === "onboarding"} />;
+    return <RentalWorkspace />;
+}
+
 export default function App() {
     const mockBankEnabled = String(import.meta.env.VITE_ENABLE_MOCK_BANK ?? import.meta.env.DEV).toLowerCase() === "true";
 
@@ -126,22 +138,22 @@ export default function App() {
                         <Route element={<BillingGuard />}>
                             <Route path="/app" element={<AppLayout />}>
                                 <Route index element={<Navigate to="/app/dashboard" replace />} />
-                                <Route path="dashboard" element={<Dashboard />} />
-                                <Route path="calendar" element={<Calendar />} />
-                                <Route path="services" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><Services /></RequireBusinessRoles>} />
-                                <Route path="staff" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><Staff /></RequireBusinessRoles>} />
+                                <Route path="dashboard" element={<BusinessScreen><Dashboard /></BusinessScreen>} />
+                                <Route path="calendar" element={<BusinessScreen><Calendar /></BusinessScreen>} />
+                                <Route path="services" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><BusinessScreen screen="catalog"><Services /></BusinessScreen></RequireBusinessRoles>} />
+                                <Route path="staff" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><BusinessScreen screen="catalog"><Staff /></BusinessScreen></RequireBusinessRoles>} />
                                 <Route path="clients" element={<Clients />} />
                                 <Route path="tasks" element={<RequireFeature feature="tasks"><Tasks /></RequireFeature>} />
-                                <Route path="analytics" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><RequireFeature feature="analytics"><Analytics /></RequireFeature></RequireBusinessRoles>} />
+                                <Route path="analytics" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><RequireFeature feature="analytics"><BusinessScreen><Analytics /></BusinessScreen></RequireFeature></RequireBusinessRoles>} />
                                 <Route path="gift-cards" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><RequireFeature feature="gift_cards"><GiftCards /></RequireFeature></RequireBusinessRoles>} />
                                 <Route path="loyalty" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><RequireFeature feature="loyalty"><Loyalty /></RequireFeature></RequireBusinessRoles>} />
                                 <Route path="growth" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><RequireFeature feature="waitlist"><Growth /></RequireFeature></RequireBusinessRoles>} />
-                                <Route path="settings" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><BusinessSettings /></RequireBusinessRoles>} />
+                                <Route path="settings" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><BusinessScreen screen="settings"><BusinessSettings /></BusinessScreen></RequireBusinessRoles>} />
                                 <Route path="billing" element={<RequireOwner><Billing /></RequireOwner>} />
                             </Route>
                         </Route>
 
-                        <Route path="/app/onboarding" element={<Onboarding />} />
+                        <Route path="/app/onboarding" element={<BusinessScreen screen="onboarding"><Onboarding /></BusinessScreen>} />
                     </Route>
                 </Route>
 

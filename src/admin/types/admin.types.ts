@@ -31,7 +31,7 @@ export interface Business {
     name: string;
     slug: string;
     business_type: string;
-    vertical?: 'services' | 'healthcare';
+    vertical?: 'services' | 'healthcare' | 'rentals';
     email?: string;
     phone?: string;
     address?: string;

@@ -24,8 +24,8 @@ function normalizeTime(value: unknown): string | undefined {
 export type BusinessSettings = {
   name: string;
   slug: string;
-  business_type: 'beauty' | 'dental' | 'services' | 'healthcare';
-  vertical?: 'services' | 'healthcare' | null;
+  business_type: 'beauty' | 'dental' | 'services' | 'healthcare' | 'rentals';
+  vertical?: 'services' | 'healthcare' | 'rentals' | null;
   phone: string | null;
   address: string | null;
   timezone: string;

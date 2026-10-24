@@ -13,7 +13,7 @@ const copy = {
   en: { clinic: "Clinic", page: "Business page", booking: "Online booking", home: "Home", back: "Go back to the previous page", powered: "Powered by Vizit", defaultPage: "Business page", summary: "Booking, contact details and essential business information in one place.", locations: "locations", primary: "Main location", branch: "Branch", hours: "See times on the booking page", website: "Website", book: "Book now" },
 } as const;
 
-function businessTypeLabel(type: "beauty" | "dental" | undefined, locale: Locale) {
+function businessTypeLabel(type: "beauty" | "dental" | "rentals" | undefined, locale: Locale) {
   return type === "dental" ? copy[locale].clinic : copy[locale].page;
 }
 

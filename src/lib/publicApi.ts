@@ -6,11 +6,12 @@ const publicApi = axios.create({
     baseURL: API_BASE_URL,
 });
 
-function normalizePublicBusinessType(value: unknown): "beauty" | "dental" {
+function normalizePublicBusinessType(value: unknown): "beauty" | "dental" | "rentals" {
+    if (["rentals", "rental"].includes(String(value ?? "").toLowerCase())) return "rentals";
     return ["dental", "clinic", "healthcare", "medical", "doctor", "health"].includes(String(value ?? "").toLowerCase()) ? "dental" : "beauty";
 }
 
-function normalizePublicBusinessItem<T extends { business_type?: unknown; vertical?: unknown }>(item: T): Omit<T, "business_type"> & { business_type: "beauty" | "dental" } {
+function normalizePublicBusinessItem<T extends { business_type?: unknown; vertical?: unknown }>(item: T): Omit<T, "business_type"> & { business_type: "beauty" | "dental" | "rentals" } {
     return {
         ...item,
         business_type: normalizePublicBusinessType(item.business_type ?? item.vertical),
@@ -34,7 +35,7 @@ export type PublicLocation = {
 export type PublicBusinessCategory = {
     id?: number;
     slug?: string | null;
-    vertical?: "services" | "healthcare" | "beauty" | "dental" | "salon" | "clinic" | string | null;
+    vertical?: "services" | "healthcare" | "rentals" | "beauty" | "dental" | "salon" | "clinic" | string | null;
     name?: string | null;
     name_hy?: string | null;
     name_ru?: string | null;
@@ -56,8 +57,8 @@ export type PublicBusiness = {
     id: number;
     name: string;
     slug: string;
-    business_type: "beauty" | "dental";
-    vertical?: "services" | "healthcare" | string | null;
+    business_type: "beauty" | "dental" | "rentals";
+    vertical?: "services" | "healthcare" | "rentals" | string | null;
     category?: PublicBusinessCategory | null;
     custom_category_name?: string | null;
     address?: string | null;
@@ -81,6 +82,8 @@ export type PublicBusiness = {
     show_cover?: boolean;
     show_staff?: boolean;
     show_services?: boolean;
+    gallery?: import("./rentalApi").GalleryItem[];
+    rental?: import("./rentalApi").RentalRates | null;
     settings?: {
         has_rooms: boolean;
         has_patients: boolean;
@@ -92,8 +95,8 @@ export type PublicDirectoryBusiness = {
     id: number;
     name: string;
     slug: string;
-    business_type: "beauty" | "dental";
-    vertical?: "services" | "healthcare" | string | null;
+    business_type: "beauty" | "dental" | "rentals";
+    vertical?: "services" | "healthcare" | "rentals" | string | null;
     category?: PublicBusinessCategory | null;
     custom_category_name?: string | null;
     address: string | null;
@@ -112,6 +115,7 @@ export type PublicDirectoryBusiness = {
     whatsapp_url?: string | null;
     messenger_url?: string | null;
     website_url?: string | null;
+    rental_hourly_price?: number | null;
     services_count: number;
     staff_count: number;
     is_featured: boolean;
@@ -194,7 +198,7 @@ export type PublicBookingResponse = {
         };
     };
     meta?: {
-        business_type?: "services" | "healthcare";
+        business_type?: "services" | "healthcare" | "rentals";
     };
 };
 
@@ -219,7 +223,7 @@ export type PublicBookingDetail = {
         id: number;
         name: string;
         slug: string;
-        business_type: "beauty" | "dental";
+        business_type: "beauty" | "dental" | "rentals";
         address?: string | null;
         phone?: string | null;
         timezone?: string | null;
@@ -275,7 +279,7 @@ export type PublicVerifyBookingResponse = {
 
 
 export async function fetchPublicCategories(params?: {
-    vertical?: "services" | "healthcare" | "beauty" | "dental" | "salon" | "clinic" | string;
+    vertical?: "services" | "healthcare" | "rentals" | "beauty" | "dental" | "salon" | "clinic" | string;
     locale?: string;
 }): Promise<PublicBusinessCategory[]> {
     const query: Record<string, string> = {};
@@ -321,7 +325,7 @@ function extractBusinessList(payload: unknown): PublicDirectoryBusiness[] {
 }
 
 function buildPublicBusinessQuery(params?: {
-    type?: "services" | "healthcare" | "beauty" | "dental" | "all";
+    type?: "services" | "healthcare" | "rentals" | "beauty" | "dental" | "all";
     search?: string;
     featured?: boolean;
     per_page?: number;
@@ -348,7 +352,7 @@ function buildPublicBusinessQuery(params?: {
 }
 
 export async function fetchPublicBusinesses(params?: {
-    type?: "services" | "healthcare" | "beauty" | "dental" | "all";
+    type?: "services" | "healthcare" | "rentals" | "beauty" | "dental" | "all";
     search?: string;
     featured?: boolean;
     per_page?: number;
@@ -437,7 +441,7 @@ function extractMapPins(payload: unknown): PublicMapPin[] {
 }
 
 export async function fetchPublicMapPins(params?: {
-    type?: "services" | "healthcare" | "beauty" | "dental" | "all";
+    type?: "services" | "healthcare" | "rentals" | "beauty" | "dental" | "all";
     vertical?: string;
     category?: string;
     category_id?: number;

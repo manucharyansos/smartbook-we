@@ -1,10 +1,11 @@
 import { api } from "@/lib/api.ts";
 
-export type BusinessType = "beauty" | "dental";
+export type BusinessType = "beauty" | "dental" | "rentals";
 
 export type PublicPlan = {
     id: number;
     code: string;
+    business_type?: string | null;
     name: string;
     description?: string | null;
     price: number | null;

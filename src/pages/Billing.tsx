@@ -1,3 +1,4 @@
+import { rentalCopy } from "../i18n/rentals";
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -657,7 +658,7 @@ export default function Billing() {
             </div>
             <h1 className="mt-6 text-4xl font-semibold leading-tight tracking-tight text-slate-950 md:text-5xl">{copy.title}</h1>
             <p className="mt-4 max-w-2xl text-base leading-8 text-slate-600">
-              {copy.intro}
+              {currentBusinessType === "rentals" ? rentalCopy[locale].subscriptionHelp : copy.intro}
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               {billingQ.data?.is_billable ? <Link to="/app/settings"><Button variant="secondary">{copy.generalSettings}</Button></Link> : null}
@@ -678,6 +679,7 @@ export default function Billing() {
                 <div className="text-xs uppercase tracking-[0.2em] text-slate-400">{copy.status}</div>
                 <div className="mt-2"><span className={cn("rounded-full border px-3 py-1 text-xs font-semibold", statusBadge(subscription?.status))}>{subscription?.status ?? "inactive"}</span></div>
               </div>
+              {currentBusinessType !== "rentals" && <>
               <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
                 <div className="text-xs uppercase tracking-[0.2em] text-slate-400">{copy.specialists}</div>
                 <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.seats.active_staff ?? 0} / {billingQ.data?.seats.staff_limit ?? "∞"}</div>
@@ -688,6 +690,7 @@ export default function Billing() {
                 <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.usage?.services_count ?? 0} / {billingQ.data?.usage?.services_limit ?? "∞"}</div>
                 <div className="mt-1 text-xs text-slate-500">{copy.servicesHint}</div>
               </div>
+              </>}
               <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
                 <div className="text-xs uppercase tracking-[0.2em] text-slate-400">{copy.locations}</div>
                 <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.usage?.locations_count ?? 0} / {billingQ.data?.usage?.locations_limit ?? "∞"}</div>
@@ -753,11 +756,11 @@ export default function Billing() {
             const isBusy = requestMut.isPending && selectedPlan === plan.code;
             return (
               <motion.div key={plan.id} whileHover={{ y: -4 }} className={cn("vizit-billing-plan relative rounded-2xl border p-6 pt-14 shadow-sm", isCurrent && "is-current", isCurrent ? "border-[var(--vz-primary)] bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-[0_24px_60px_rgba(55,138,221,0.22)]" : plan.isIndividualOffer ? "border-emerald-200 bg-emerald-50/40" : "border-slate-200 bg-white")}>
-                {billingCycle === "yearly" ? <div className={cn("absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-semibold", isCurrent ? "bg-white/15 text-white" : plan.isIndividualOffer ? "border border-emerald-200 bg-white text-emerald-700" : "bg-emerald-50 text-emerald-700")}>{plan.isIndividualOffer ? copy.individualPlan : copy.twoMonthsFree}</div> : null}
+                {billingCycle === "yearly" && plan.code !== "rental" ? <div className={cn("absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-semibold", isCurrent ? "bg-white/15 text-white" : plan.isIndividualOffer ? "border border-emerald-200 bg-white text-emerald-700" : "bg-emerald-50 text-emerald-700")}>{plan.isIndividualOffer ? copy.individualPlan : copy.twoMonthsFree}</div> : null}
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="text-xl font-semibold">{plan.name}</div>
-                    <div className={cn("mt-1 text-sm", isCurrent ? "text-white/70" : plan.isIndividualOffer ? "text-emerald-700" : "text-slate-500")}>{plan.isIndividualOffer ? plan.description : copy.activeStaff(plan.staff_limit ?? 0)}</div>
+                    <div className={cn("mt-1 text-sm", isCurrent ? "text-white/70" : plan.isIndividualOffer ? "text-emerald-700" : "text-slate-500")}>{plan.code === "rental" ? rentalCopy[locale].title : plan.isIndividualOffer ? plan.description : copy.activeStaff(plan.staff_limit ?? 0)}</div>
                   </div>
                   {isCurrent ? <span className={cn("rounded-full px-3 py-1 text-xs font-semibold", isCurrent ? "bg-white/15 text-white" : "bg-[var(--vz-accent-soft)] text-[var(--vz-brand-text)]")}><BadgeCheck className="mr-1 inline h-3.5 w-3.5" /> {copy.active}</span> : null}
                 </div>
@@ -771,7 +774,7 @@ export default function Billing() {
                   <div>{billingCycle === "yearly" ? `${copy.perMonthEffective} ~${formatMoney(plan.perMonthEffective, plan.currency, locale)}${copy.perMonth}` : `${formatMoney(plan.monthlyPrice, plan.currency, locale)} ${copy.perMonth}`}</div>
                   {billingCycle === "yearly" ? <div>{plan.isIndividualOffer ? `${copy.customYearly} ${formatMoney(plan.yearlyPrice, plan.currency, locale)}` : `${copy.savings} ${formatMoney(plan.discountAmount, plan.currency, locale)}`}</div> : null}
                   <div>{plan.locations && plan.locations > 1 ? copy.locationLimit(plan.locations) : copy.oneLocation}</div>
-                  <div>{plan.services_limit && plan.services_limit > 0 ? copy.servicesLimit(plan.services_limit) : copy.unlimitedServices}</div>
+                  <div>{plan.code === "rental" ? rentalCopy[locale].gallery : plan.services_limit && plan.services_limit > 0 ? copy.servicesLimit(plan.services_limit) : copy.unlimitedServices}</div>
                   {plan.billingCyclesLimit ? <div>{copy.remainingCycles(plan.remainingBillingCycles ?? plan.billingCyclesLimit)}</div> : null}
                 </div>
 

@@ -11,6 +11,8 @@ import { uploadMedia } from "../lib/mediaApi";
 import { api } from "../lib/api";
 import type { ScheduleDay } from "../lib/scheduleApi";
 import { getErrorMessage } from "../lib/http";
+import RentalDurationField from "../components/rentals/RentalDurationField";
+import { validRentalDuration } from "../lib/rentalTime";
 import "../rentals.css";
 
 export default function RentalSettings({ onboarding = false }: { onboarding?: boolean }) {
@@ -26,12 +28,15 @@ export default function RentalSettings({ onboarding = false }: { onboarding?: bo
 function RentalSettingsForm({ profile, settings, initialDays, onboarding }: { profile: BusinessSettings; settings: Settings; initialDays: ScheduleDay[]; onboarding: boolean }) {
   const { locale } = useLanguage(); const t = rentalCopy[locale];
   const navigate = useNavigate(); const queryClient = useQueryClient(); const { user, setUser } = useAuth();
-  const [rates, setRates] = useState({ hourly_price: settings.hourly_price, min_minutes: settings.min_minutes, max_minutes: settings.max_minutes, buffer_minutes: settings.buffer_minutes, slot_step_minutes: settings.slot_step_minutes });
+  const [rates, setRates] = useState({ hourly_price: settings.hourly_price, min_minutes: settings.min_minutes, max_minutes: settings.max_minutes, buffer_minutes: settings.buffer_minutes, slot_step_minutes: settings.slot_step_minutes, allow_overnight: settings.allow_overnight ?? false });
+  const validDurations = validRentalDuration(rates.min_minutes, 15, 43200, rates.slot_step_minutes) && validRentalDuration(rates.max_minutes, rates.min_minutes, 43200, rates.slot_step_minutes);
   const [data, setData] = useState({ phone: profile.phone || "", address: profile.address || "", short_description: profile.short_description || "", description: profile.description || "", logo_url: profile.logo_url || "", cover_url: profile.cover_url || "", is_public_profile_enabled: profile.is_public_profile_enabled ?? true, is_marketplace_visible: profile.is_marketplace_visible ?? true });
   const [days, setDays] = useState<ScheduleDay[]>(Array.from({ length: 7 }, (_, n) => initialDays.find((day) => day.weekday === n + 1) || { weekday: n + 1, is_closed: n === 6, start: "09:00", end: "18:00", break_start: null, break_end: null }));
   const [caption, setCaption] = useState(""); const [message, setMessage] = useState(""); const [success, setSuccess] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const refresh = () => { void queryClient.invalidateQueries({ queryKey: ["rental-settings"] }); void queryClient.invalidateQueries({ queryKey: ["public-business"] }); void queryClient.invalidateQueries({ queryKey: ["rental-profile"] }); };
+  const refresh = () => {
+    for (const key of ["rental-settings", "rental-profile", "public-business", "public-business-profile", "public-businesses-home-final", "public-map-business-details"]) void queryClient.invalidateQueries({ queryKey: [key] });
+  };
   const fail = (error: unknown) => { setMessage(getErrorMessage(error, t.error)); setSuccess(false); };
   const save = useMutation({ mutationFn: async (publish: boolean) => {
     await rentalApi.saveSettings(rates);
@@ -48,11 +53,15 @@ function RentalSettingsForm({ profile, settings, initialDays, onboarding }: { pr
   }, onError: fail, onSuccess: refresh });
   async function upload(file: File | undefined, field?: "logo_url" | "cover_url") {
     if (!file) return; setUploading(true); setMessage("");
-    try { if (field) { const url = await uploadMedia(file, `businesses/${user?.business_id}`); setData((old) => ({ ...old, [field]: url })); }
+    try { if (field) {
+        const url = await uploadMedia(file, `businesses/${user?.business_id}`);
+        await updateBusinessSettings({ [field]: url, [field === "logo_url" ? "show_logo" : "show_cover"]: true });
+        setData((old) => ({ ...old, [field]: url })); refresh(); setMessage(t.saved); setSuccess(true);
+      }
       else { await rentalApi.upload(file, caption); setCaption(""); refresh(); }
     } catch (error) { fail(error); } finally { setUploading(false); }
   }
-  function submit(event: FormEvent) { event.preventDefault(); setMessage(""); save.mutate(onboarding); }
+  function submit(event: FormEvent) { event.preventDefault(); if (!validDurations) return; setMessage(""); save.mutate(onboarding); }
   return <div className={onboarding ? "rental-page rental-wrap" : "rental-workspace"}>
     <div className="rental-row rental-between"><div><span className="rental-badge">{t.title}</span><h1 style={{ marginTop: 10 }}>{t.settings}</h1></div>
       {!onboarding && <Link className="rental-btn secondary" to={`/businesses/${profile.slug}`} target="_blank">{t.publicPage}</Link>}
@@ -61,10 +70,12 @@ function RentalSettingsForm({ profile, settings, initialDays, onboarding }: { pr
     {message && <div className={`rental-note ${success ? "rental-success" : "rental-error"}`} role={success ? "status" : "alert"}>{message}</div>}
     <form onSubmit={submit} className="rental-stack" style={{ marginTop: 20 }}>
       <section className="rental-card"><h2>{t.hourly}</h2><p className="rental-muted" style={{ marginBottom: 16 }}>{t.priceHelp}</p>
-        <div className="rental-fields">{(["hourly_price", "min_minutes", "max_minutes", "buffer_minutes"] as const).map((key) => <label className="rental-field" key={key}>
-          {key === "hourly_price" ? `${t.hourly} · AMD` : key === "min_minutes" ? t.min : key === "max_minutes" ? t.max : t.buffer}
-          <input type="number" min={key.includes("minutes") && key !== "buffer_minutes" ? 15 : 0} max={key === "hourly_price" ? 100000000 : key === "buffer_minutes" ? 240 : 1440} step={1} value={rates[key] ?? ""} onChange={(event) => setRates((old) => ({ ...old, [key]: event.target.value === "" && key === "hourly_price" ? null : Number(event.target.value) }))} required />
+        <div className="rental-fields">{(["hourly_price", "buffer_minutes"] as const).map((key) => <label className="rental-field" key={key}>
+          {key === "hourly_price" ? `${t.hourly} · AMD` : t.buffer}
+          <input type="number" min={0} max={key === "hourly_price" ? 100000000 : 240} step={1} value={rates[key] ?? ""} onChange={(event) => setRates((old) => ({ ...old, [key]: event.target.value === "" && key === "hourly_price" ? null : Number(event.target.value) }))} required />
         </label>)}<label className="rental-field">{t.step}<select value={rates.slot_step_minutes} onChange={(event) => setRates((old) => ({ ...old, slot_step_minutes: Number(event.target.value) }))}>{[5, 10, 15, 20, 30, 60].map((n) => <option key={n} value={n}>{n}</option>)}</select></label></div>
+        <div className="rental-fields" style={{ marginTop: 16 }}>{(["min_minutes", "max_minutes"] as const).map((key) => <RentalDurationField key={key} label={key === "min_minutes" ? t.minDuration : t.maxDuration} value={rates[key]} min={key === "min_minutes" ? 15 : Math.max(15, rates.min_minutes)} max={43200} step={rates.slot_step_minutes} onChange={(minutes) => setRates((old) => ({ ...old, [key]: minutes }))} />)}</div>
+        <label className="rental-check" style={{ marginTop: 20 }}><input type="checkbox" checked={rates.allow_overnight} onChange={(event) => setRates((old) => ({ ...old, allow_overnight: event.target.checked }))} />{t.overnight}</label><p className="rental-muted" style={{ marginTop: 10 }}>{t.overnightHelp}</p>
       </section>
       <section className="rental-card rental-stack"><h2>{t.space}</h2>
         <div className="rental-fields"><label className="rental-field">{t.address}<input value={data.address} onChange={(event) => setData((old) => ({ ...old, address: event.target.value }))} maxLength={255} required /></label><label className="rental-field">{t.phone}<input type="tel" value={data.phone} onChange={(event) => setData((old) => ({ ...old, phone: event.target.value }))} maxLength={40} /></label></div>
@@ -74,13 +85,14 @@ function RentalSettingsForm({ profile, settings, initialDays, onboarding }: { pr
           {data[key] && <img src={data[key]} alt={key === "logo_url" ? t.logo : t.cover} style={{ width: "100%", maxHeight: 160, objectFit: "contain", borderRadius: 12 }} />}
           <label className="rental-field">{key === "logo_url" ? t.logo : t.cover}<input type="file" accept="image/jpeg,image/png,image/webp" disabled={uploading} onChange={(event) => { void upload(event.target.files?.[0], key); event.target.value = ""; }} /></label>
         </div>)}</div>
+        <p className="rental-muted">{t.mediaSaveHelp}</p>
         {!onboarding && <><label className="rental-check"><input type="checkbox" checked={data.is_public_profile_enabled} onChange={(event) => setData((old) => ({ ...old, is_public_profile_enabled: event.target.checked }))} />{t.public}</label><label className="rental-check"><input type="checkbox" checked={data.is_marketplace_visible} onChange={(event) => setData((old) => ({ ...old, is_marketplace_visible: event.target.checked }))} />{t.visible}</label></>}
       </section>
       <section className="rental-card"><h2>{t.workingHours}</h2>{days.map((day, index) => <div className="rental-schedule-row" key={day.weekday}>
         <span>{t.weekdays[index]}</span><label className="rental-check"><input type="checkbox" checked={day.is_closed} onChange={(event) => setDays((old) => old.map((row, n) => n === index ? { ...row, is_closed: event.target.checked, start: row.start || "09:00", end: row.end || "18:00" } : row))} />{t.closed}</label>
         {(["start", "end"] as const).map((field) => <label className="rental-field" key={field}><span className="sr-only">{t.weekdays[index]} {field === "start" ? t.start : t.end}</span><input type="time" disabled={day.is_closed} value={day[field]?.slice(0, 5) || ""} required={!day.is_closed} onChange={(event) => setDays((old) => old.map((row, n) => n === index ? { ...row, [field]: event.target.value } : row))} /></label>)}
       </div>)}</section>
-      <button className="rental-btn" disabled={save.isPending || uploading}>{save.isPending ? t.loading : onboarding ? t.publish : t.save}</button>
+      <button className="rental-btn" disabled={!validDurations || save.isPending || uploading}>{save.isPending ? t.loading : onboarding ? t.publish : t.save}</button>
     </form>
     <section className="rental-card rental-stack" style={{ marginTop: 24 }}><h2>{t.gallery} ({settings.gallery.length}/20)</h2><p className="rental-muted">{t.uploadHelp}</p>
       <label className="rental-field">{t.caption}<input value={caption} maxLength={255} onChange={(event) => setCaption(event.target.value)} /></label>

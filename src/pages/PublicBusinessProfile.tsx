@@ -1,4 +1,4 @@
-import RentalPublic from "../components/rentals/RentalPublic";
+import RentalProfile from "../components/rentals/RentalProfile";
 import { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -148,7 +148,7 @@ export default function PublicBusinessProfile() {
         potentialAction: { "@type": "ReserveAction", target: `https://vizit.am/book/${business.slug}` },
     } : null, [business, text.defaultDescription]);
 
-    if (business?.business_type === "rentals") return <RentalPublic key={business.slug} business={business} />;
+    if (business?.business_type === "rentals") return <RentalProfile key={business.slug} business={business} />;
 
     if (businessQ.isLoading) {
         return (

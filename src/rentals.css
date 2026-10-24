@@ -13,6 +13,13 @@
 .rental-field { display:grid; align-content:start; gap:7px; min-width:0; font-size:13px; font-weight:550; }
 .rental-field input,.rental-field select,.rental-field textarea { width:100%; min-width:0; background:var(--vz-surface); color:var(--vz-text); border:1px solid var(--vz-line-strong); border-radius:12px; padding:12px; font:inherit; font-size:15px; font-weight:400; }
 .rental-field textarea { min-height:110px; resize:vertical; }
+.rental-duration-inputs { display:grid; grid-template-columns:minmax(0,1fr) minmax(90px,.8fr); gap:8px; }
+.rental-duration small { font-size:12px; font-weight:400; line-height:1.6; }
+.rental-duration-error { color:var(--vz-danger); }
+.rental-duration-presets { gap:6px; }
+.rental-duration-presets .rental-btn { padding:7px 10px; font-size:12px; }
+.rental-duration-presets [aria-pressed=true] { border-color:var(--vz-primary); color:var(--vz-brand-text); }
+.rental-selected-period { display:grid; gap:8px; overflow-wrap:anywhere; }
 .rental-field input:focus-visible,.rental-field select:focus-visible,.rental-field textarea:focus-visible { outline:3px solid var(--vz-focus); outline-offset:2px; }
 .rental-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; border-radius:12px; padding:10px 16px; background:var(--vz-primary); color:var(--vz-on-primary); font-size:14px; font-weight:600; text-decoration:none; cursor:pointer; border:1px solid transparent; }
 .rental-btn:hover { background:var(--vz-primary-hover); }
@@ -30,6 +37,18 @@
 .rental-price { font-size:28px; font-weight:700; color:var(--vz-brand-text); }
 .rental-cover { width:100%; max-height:420px; object-fit:cover; border-radius:18px; }
 .rental-logo { width:72px; height:72px; object-fit:contain; border-radius:16px; background:var(--vz-surface); border:1px solid var(--vz-line); }
+.rental-profile-hero { border:1px solid var(--vz-line); border-radius:24px; overflow:hidden; background:var(--vz-surface); }
+.rental-profile-cover { display:block; width:100%; height:clamp(180px,30vw,380px); object-fit:cover; }
+.rental-profile-cover-empty { display:grid; place-items:center; background:linear-gradient(135deg,var(--vz-accent-soft),var(--vz-surface-2)); color:var(--vz-brand-text); }
+.rental-profile-heading { display:flex; align-items:flex-start; gap:20px; padding:24px; }
+.rental-profile-heading .rental-logo { width:88px; height:88px; flex-shrink:0; }
+.rental-profile-heading h1 { margin:12px 0 8px; overflow-wrap:anywhere; }
+.rental-profile-logo-empty { display:grid; place-items:center; color:var(--vz-brand-text); }
+.rental-profile-hours { margin:0; display:grid; gap:12px; font-size:13px; }
+.rental-profile-hours > div { display:flex; justify-content:space-between; gap:12px; border-bottom:1px solid var(--vz-line); padding-bottom:10px; }
+.rental-profile-hours dd { margin:0; text-align:right; }
+.rental-profile-hours small { display:block; color:var(--vz-muted); margin-top:5px; }
+.rental-profile-mobile-book { display:none; }
 .rental-gallery { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
 .rental-gallery figure { margin:0; min-width:0; }
 .rental-gallery img,.rental-gallery video { display:block; width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:14px; background:var(--vz-surface-2); }
@@ -61,3 +80,4 @@
 .rental-month-count { display:inline-block; min-width:20px; border-radius:20px; font-size:11px; background:var(--vz-primary); color:var(--vz-on-primary); padding:1px 5px; }
 @media(max-width:850px) { .rental-layout { grid-template-columns:1fr; } .rental-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:540px) { .rental-wrap { padding:20px 14px 40px; } .rental-card { padding:18px; border-radius:17px; } .rental-fields { grid-template-columns:1fr; } .rental-gallery { gap:10px; } .rental-schedule-row { grid-template-columns:1fr 80px; gap:8px; } .rental-desktop-table { display:none; } .rental-mobile-cards { display:grid; gap:12px; } .rental-metric { padding:15px; } }
+@media(max-width:540px) { .rental-profile-heading { padding:18px; gap:14px; } .rental-profile-heading .rental-logo { width:64px; height:64px; } .rental-profile-heading h1 { font-size:23px; } .rental-profile-mobile-book { display:block; position:sticky; bottom:12px; margin-top:20px; z-index:20; padding:8px; border:1px solid var(--vz-line); border-radius:18px; background:var(--vz-surface); box-shadow:var(--vz-shadow-sm); } }

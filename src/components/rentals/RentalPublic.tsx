@@ -4,22 +4,15 @@ import { Link, useSearchParams } from "react-router-dom";
 import { Building2, Clock3, MapPin, Phone } from "lucide-react";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { rentalCopy } from "../../i18n/rentals";
-import { rentalApi, rentalToday, galleryUrl, type GalleryItem } from "../../lib/rentalApi";
+import { rentalApi, rentalToday } from "../../lib/rentalApi";
 import { cancelPublicBooking, fetchPublicBookingDetail, resendPublicBookingCode, verifyPublicBooking, type PublicBusiness } from "../../lib/publicApi";
 import { getErrorMessage } from "../../lib/http";
 import { LEGAL_DOCUMENT_VERSION } from "../../config/legal";
 import { PublicBusinessHeader, PublicBusinessFooter } from "../public/PublicBusinessChrome";
 import Seo from "../Seo";
+import RentalDurationField from "./RentalDurationField";
+import { rentalDurationLabel, rentalLocalStamp, validRentalDuration } from "../../lib/rentalTime";
 import "../../rentals.css";
-
-export function RentalGallery({ items }: { items: GalleryItem[] }) {
-  const { locale } = useLanguage();
-  return <div className="rental-gallery">{items.map((item) => <figure key={item.id}>
-    {item.kind === "video" ? <video src={galleryUrl(item)} controls playsInline preload="metadata" aria-label={item.caption || rentalCopy[locale].gallery} />
-      : <a href={galleryUrl(item)} target="_blank" rel="noopener noreferrer"><img src={galleryUrl(item)} alt={item.caption || rentalCopy[locale].space} loading="lazy" /></a>}
-    {item.caption && <figcaption>{item.caption}</figcaption>}
-  </figure>)}</div>;
-}
 
 export default function RentalPublic({ business }: { business: PublicBusiness }) {
   const { locale } = useLanguage();
@@ -29,6 +22,7 @@ export default function RentalPublic({ business }: { business: PublicBusiness })
   const rates = business.rental;
   const [date, setDate] = useState(() => rentalToday(business.timezone || undefined));
   const [duration, setDuration] = useState(rates?.min_minutes ?? 60);
+  const validDuration = !!rates && validRentalDuration(duration, rates.min_minutes, rates.max_minutes, rates.slot_step_minutes);
   const [time, setTime] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -52,10 +46,11 @@ export default function RentalPublic({ business }: { business: PublicBusiness })
   const detailQ = useQuery({ queryKey: ["rental-public-booking", code, token], queryFn: () => fetchPublicBookingDetail({ booking_code: code, token }), enabled: !!code && !!token, retry: false });
   const slotsQ = useQuery({ queryKey: ["rental-public-slots", business.slug, date, duration, moving, code],
     queryFn: () => moving ? rentalApi.rescheduleSlots(code, token, date) : rentalApi.slots(business.slug, date, duration),
-    enabled: !!rates && rates.hourly_price !== null && (!code || moving), staleTime: 0, refetchInterval: 30000 });
+    enabled: !!rates && rates.hourly_price !== null && (moving || validDuration) && (!code || moving), staleTime: 0, refetchInterval: 30000 });
+  const selectedSlot = slotsQ.data?.find((slot) => slot.starts_at === time);
   const onError = (error: unknown) => setMessage(getErrorMessage(error, t.error));
   const create = useMutation({ mutationFn: () => rentalApi.publicCreate(business.slug, {
-    starts_at: time, duration_minutes: duration, client_name: name, client_phone: phone, client_email: email, notes,
+    starts_at: selectedSlot?.starts_at || "", duration_minutes: duration, client_name: name, client_phone: phone, client_email: email, notes,
     legal_accepted: legal, terms_version: LEGAL_DOCUMENT_VERSION, privacy_version: LEGAL_DOCUMENT_VERSION,
   }), onError: (error) => { onError(error); setTime(""); void slotsQ.refetch(); }, onSuccess: (result) => { const next = new URLSearchParams(); next.set("booking", result.data.booking_code); setParams(next); setMessage(""); setTime(""); void slotsQ.refetch(); } });
   const verify = useMutation({ mutationFn: () => verifyPublicBooking({ booking_code: code, otp }), onError,
@@ -63,21 +58,19 @@ export default function RentalPublic({ business }: { business: PublicBusiness })
   const resend = useMutation({ mutationFn: () => resendPublicBookingCode(code), onError, onSuccess: () => setMessage(t.sent) });
   const cancel = useMutation({ mutationFn: () => cancelPublicBooking({ booking_code: code, token }), onError,
     onSuccess: () => { setMessage(""); void queryClient.invalidateQueries({ queryKey: ["rental-public-booking"] }); void slotsQ.refetch(); } });
-  const move = useMutation({ mutationFn: () => rentalApi.reschedule(code, token, time), onError,
+  const move = useMutation({ mutationFn: () => rentalApi.reschedule(code, token, selectedSlot?.starts_at || ""), onError,
     onSuccess: () => { setMoving(false); setTime(""); setMessage(""); void queryClient.invalidateQueries({ queryKey: ["rental-public-booking"] }); } });
   const detail = detailQ.data?.data;
   const booking = detail?.primary_booking;
   const currency = (value: number) => `${value.toLocaleString(locale === "hy" ? "hy-AM" : locale)} ֏`;
   const stamp = (value: string) => new Date(value).toLocaleString(locale === "hy" ? "hy-AM" : locale, { timeZone: business.timezone || "Asia/Yerevan", dateStyle: "medium", timeStyle: "short" });
-  const durations: number[] = [];
-  for (let n = rates?.min_minutes ?? 60; n <= (rates?.max_minutes ?? 720); n += rates?.slot_step_minutes || 15) durations.push(n);
   const amount = rates?.hourly_price == null ? null : Math.ceil(rates.hourly_price * duration / 60);
-  function submit(event: FormEvent) { event.preventDefault(); setMessage(""); if (!time) { setMessage(t.chooseSlot); return; } create.mutate(); }
+  function submit(event: FormEvent) { event.preventDefault(); setMessage(""); if (!selectedSlot || !validDuration || slotsQ.isError || slotsQ.isFetching) { setMessage(t.chooseSlot); return; } create.mutate(); }
   function newBooking() { setParams({}); setToken(""); setOtp(""); setTime(""); setMessage(""); setMoving(false); }
 
   return <div className="rental-page">
-    <Seo title={`${business.name} · ${t.title}`} description={business.short_description || business.description || t.book} canonical={`/businesses/${business.slug}`} />
-    <PublicBusinessHeader business={business} primaryHref={`/book/${business.slug}`} primaryLabel={t.book} secondaryHref="/" secondaryLabel="Vizit" />
+    <Seo title={`${t.book} · ${business.name}`} description={business.short_description || business.description || t.book} canonical={`/book/${business.slug}`} />
+    <PublicBusinessHeader business={business} primaryHref={`/businesses/${business.slug}`} primaryLabel={t.viewSpace} secondaryHref={`/businesses/${business.slug}`} secondaryLabel={t.viewSpace} />
     <main className="rental-wrap">
       <div className="rental-row rental-between"><div className="rental-row">
         {business.logo_url && business.show_logo !== false ? <img className="rental-logo" src={business.logo_url} alt={business.name} /> : <Building2 size={36} />}
@@ -93,7 +86,7 @@ export default function RentalPublic({ business }: { business: PublicBusiness })
             {business.phone && <a className="rental-row" href={`tel:${business.phone}`}><Phone size={18} />{business.phone}</a>}
             <p className="rental-row rental-muted"><Clock3 size={17} />{t.timezone}: {business.timezone || "Asia/Yerevan"}</p>
           </section>
-          {!!business.gallery?.length && <section className="rental-card"><h2>{t.gallery}</h2><RentalGallery items={business.gallery} /></section>}
+          <Link className="rental-btn secondary rental-full" to={`/businesses/${business.slug}`}>{t.viewSpace}</Link>
         </div>
         <section className="rental-card rental-stack" aria-label={t.book}>
           {message && <div role="alert" className="rental-note rental-error">{message}</div>}
@@ -117,21 +110,23 @@ export default function RentalPublic({ business }: { business: PublicBusiness })
 
           {(!code || moving) && <>
             <div className="rental-fields"><label className="rental-field">{t.date}<input type="date" value={date} min={rentalToday(business.timezone || undefined)} onChange={(event) => { setDate(event.target.value); setTime(""); }} /></label>
-              {!moving && <label className="rental-field">{t.duration}<select value={duration} onChange={(event) => { setDuration(Number(event.target.value)); setTime(""); }}>{durations.map((n) => <option key={n} value={n}>{n} {t.minutes}</option>)}</select></label>}
+              {!moving && rates && <RentalDurationField value={duration} onChange={(minutes) => { setDuration(minutes); setTime(""); }} min={rates.min_minutes} max={rates.max_minutes} step={rates.slot_step_minutes} presets />}
             </div>
+            <p className="rental-muted">{t.availabilityHelp} {rates?.allow_overnight ? t.overnightPublic : t.withinHours}</p>
             <h2 style={{ marginBottom: 0 }}>{t.availability}</h2>
-            {slotsQ.isPending && <p role="status">{t.loading}</p>}
+            {(moving || validDuration) && slotsQ.isPending && <p role="status">{t.loading}</p>}
             {slotsQ.isError && <div className="rental-note rental-error" role="alert">{getErrorMessage(slotsQ.error, t.error)} <button className="rental-btn secondary" onClick={() => void slotsQ.refetch()}>{t.retry}</button></div>}
             {slotsQ.data?.length === 0 && <p className="rental-empty">{t.noSlots}</p>}
-            <div className="rental-slots">{slotsQ.data?.map((slot) => <button type="button" key={slot.starts_at} className="rental-slot" aria-pressed={time === slot.starts_at} onClick={() => { setTime(slot.starts_at); setMessage(""); }}>{slot.starts_at.slice(11, 16)}<small style={{ display: "block", opacity: .75 }}>– {slot.ends_at.slice(11, 16)}</small></button>)}</div>
-            {moving ? <button className="rental-btn" disabled={!time || move.isPending} onClick={() => move.mutate()}>{move.isPending ? t.loading : t.save}</button> : <form className="rental-stack" onSubmit={submit}>
-              {amount !== null && <div className="rental-row rental-between"><span>{t.total}</span><strong className="rental-price">{currency(amount)}</strong></div>}
+            <div className="rental-slots">{slotsQ.data?.map((slot) => <button type="button" key={slot.starts_at} className="rental-slot" aria-label={`${t.start}: ${rentalLocalStamp(slot.starts_at, locale)} · ${t.end}: ${rentalLocalStamp(slot.ends_at, locale)}`} aria-pressed={time === slot.starts_at} onClick={() => { setTime(slot.starts_at); setMessage(""); }}>{slot.starts_at.slice(11, 16)}<small style={{ display: "block", opacity: .75 }}>– {slot.ends_at.slice(0, 10) !== slot.starts_at.slice(0, 10) ? rentalLocalStamp(slot.ends_at, locale) : slot.ends_at.slice(11, 16)}</small></button>)}</div>
+            {selectedSlot && <div className="rental-note rental-selected-period" role="status"><strong>{t.selection}</strong><span>{t.start}: {rentalLocalStamp(selectedSlot.starts_at, locale)}</span><span>{t.end}: {rentalLocalStamp(selectedSlot.ends_at, locale)}</span>{!moving && <span>{t.duration}: {rentalDurationLabel(duration, t)}</span>}</div>}
+            {moving ? <button className="rental-btn" disabled={!selectedSlot || slotsQ.isError || slotsQ.isFetching || move.isPending} onClick={() => move.mutate()}>{move.isPending ? t.loading : t.save}</button> : <form className="rental-stack" onSubmit={submit}>
+              {amount !== null && validDuration && <div className="rental-row rental-between"><span>{t.total}</span><strong className="rental-price">{currency(amount)}</strong></div>}
               <label className="rental-field">{t.name}<input value={name} onChange={(event) => setName(event.target.value)} autoComplete="name" minLength={2} maxLength={120} required /></label>
               <div className="rental-fields"><label className="rental-field">{t.phone}<input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} autoComplete="tel" maxLength={40} required /></label>
                 <label className="rental-field">{t.email}<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" maxLength={150} required /></label></div>
               <label className="rental-field">{t.notes}<textarea value={notes} onChange={(event) => setNotes(event.target.value)} maxLength={2000} /></label>
               <label className="rental-check"><input type="checkbox" checked={legal} onChange={(event) => setLegal(event.target.checked)} required /><span>{locale === "hy" ? "Ընդունում եմ" : locale === "ru" ? "Я принимаю" : "I accept the"} <Link to="/terms" target="_blank">{locale === "hy" ? "Պայմանները" : locale === "ru" ? "Условия" : "Terms"}</Link> {locale === "hy" ? "և" : locale === "ru" ? "и" : "and"} <Link to="/privacy-policy" target="_blank">{locale === "hy" ? "Գաղտնիության քաղաքականությունը" : locale === "ru" ? "Политику конфиденциальности" : "Privacy Policy"}</Link></span></label>
-              <button className="rental-btn rental-full" disabled={!time || !legal || create.isPending || rates?.hourly_price == null}>{create.isPending ? t.loading : t.book}</button>
+              <button className="rental-btn rental-full" disabled={!selectedSlot || !validDuration || slotsQ.isError || slotsQ.isFetching || !legal || create.isPending || rates?.hourly_price == null}>{create.isPending ? t.loading : t.book}</button>
             </form>}
           </>}
         </section>

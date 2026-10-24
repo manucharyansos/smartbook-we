@@ -9,6 +9,8 @@ import { rentalApi, rentalToday, type RentalBooking } from "../lib/rentalApi";
 import { createBlock, deleteBlock, fetchBlocks } from "../lib/calendarBlocksApi";
 import { getErrorMessage } from "../lib/http";
 import { Modal } from "../components/ui/Modal";
+import RentalDurationField from "../components/rentals/RentalDurationField";
+import { rentalOverlapsDay, validRentalDuration } from "../lib/rentalTime";
 import "../rentals.css";
 
 function monthBounds(value: string): [string, string] {
@@ -34,9 +36,9 @@ export default function RentalWorkspace() {
   const summary = summaryQ.data; const all = bookingsQ.data || [];
   const current = all.find((item) => item.id === selectedId);
   const money = (value: number) => `${value.toLocaleString(locale === "hy" ? "hy-AM" : locale)} ֏`;
-  const datePart = (value: string) => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Yerevan", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(value));
-  const stamp = (value: string) => new Date(value).toLocaleString(locale === "hy" ? "hy-AM" : locale, { timeZone: "Asia/Yerevan", dateStyle: "short", timeStyle: "short" });
-  const items = selectedDay && view === "calendar" ? all.filter((item) => datePart(item.starts_at) === selectedDay) : all;
+  const timezone = ratesQ.data?.timezone || "Asia/Yerevan";
+  const stamp = (value: string) => new Date(value).toLocaleString(locale === "hy" ? "hy-AM" : locale, { timeZone: timezone, dateStyle: "short", timeStyle: "short" });
+  const items = selectedDay && view === "calendar" ? all.filter((item) => rentalOverlapsDay(item, selectedDay, timezone)) : all;
   const statuses = t.statuses as Record<string, string>;
   function shiftMonth(offset: number) { const [year, month] = from.split("-").map(Number); const next = new Date(Date.UTC(year, month - 1 + offset, 1)).toISOString().slice(0, 10); const bounds = monthBounds(next); setFrom(bounds[0]); setTo(bounds[1]); setSelectedDay(""); }
   const first = new Date(`${from.slice(0, 7)}-01T12:00:00Z`); const emptyDays = (first.getUTCDay() + 6) % 7;
@@ -59,7 +61,7 @@ export default function RentalWorkspace() {
     {view === "calendar" && <section className="rental-card" style={{ marginTop: 24 }}>
       <div className="rental-row rental-between" style={{ marginBottom: 20 }}><div className="rental-row"><button className="rental-btn secondary" aria-label={t.back} onClick={() => shiftMonth(-1)}><ChevronLeft size={18} /></button><h2 style={{ margin: 0 }}>{first.toLocaleDateString(locale === "hy" ? "hy-AM" : locale, { month: "long", year: "numeric", timeZone: "UTC" })}</h2><button className="rental-btn secondary" aria-label={t.later} onClick={() => shiftMonth(1)}><ChevronRight size={18} /></button></div><button className="rental-btn secondary" onClick={() => setBlockOpen(true)}>{t.block}</button></div>
       <div className="rental-month">{t.weekdays.map((label) => <div key={label} className="rental-muted" aria-label={label}>{label.slice(0, 2)}</div>)}{Array.from({ length: emptyDays }, (_, n) => <div key={`empty-${n}`} />)}
-        {Array.from({ length: daysInMonth }, (_, index) => { const value = `${from.slice(0, 7)}-${String(index + 1).padStart(2, "0")}`; const count = all.filter((item) => datePart(item.starts_at) === value && !["cancelled", "no_show"].includes(item.status) && !item.is_expired).length;
+        {Array.from({ length: daysInMonth }, (_, index) => { const value = `${from.slice(0, 7)}-${String(index + 1).padStart(2, "0")}`; const count = all.filter((item) => rentalOverlapsDay(item, value, timezone) && !["cancelled", "no_show"].includes(item.status) && !item.is_expired).length;
           return <button key={value} className="rental-month-day" aria-pressed={selectedDay === value} onClick={() => setSelectedDay(selectedDay === value ? "" : value)}><strong>{index + 1}</strong>{count > 0 && <span className="rental-month-count">{count}</span>}</button>;
         })}
       </div>
@@ -69,24 +71,25 @@ export default function RentalWorkspace() {
     <section className="rental-card" style={{ marginTop: 24 }}><h2>{t.bookings}{selectedDay && view === "calendar" ? ` · ${selectedDay}` : ""}</h2>
       {!items.length && !bookingsQ.isPending && <p className="rental-empty">{t.noBookings}</p>}
       <div className="rental-desktop-table rental-table-wrap"><table className="rental-table"><thead><tr><th>{t.date}</th><th>{t.name}</th><th>{t.status}</th><th>{t.total}</th><th>{t.paid}</th><th>{t.debt}</th><th /></tr></thead><tbody>{items.map((item) => <tr key={item.id} data-selectable="true" onClick={() => setSelectedId(item.id)}><td>{stamp(item.starts_at)}<div className="rental-muted">{stamp(item.ends_at)}</div></td><td>{item.client_name}<div className="rental-muted">{item.client_phone}</div></td><td><span className="rental-status" data-status={item.status}>{item.is_expired ? t.expired : statuses[item.status] || item.status}</span></td><td>{money(item.final_price)}</td><td>{money(item.paid_amount)}</td><td>{["cancelled", "no_show"].includes(item.status) ? "—" : money(item.outstanding_amount)}</td><td><button className="rental-btn secondary" onClick={(event) => { event.stopPropagation(); setSelectedId(item.id); }}>{t.status}</button></td></tr>)}</tbody></table></div>
-      <div className="rental-mobile-cards">{items.map((item) => <button key={item.id} className="rental-card rental-stack" style={{ textAlign: "left", padding: 16 }} onClick={() => setSelectedId(item.id)}><div className="rental-row rental-between"><strong>{item.client_name}</strong><span className="rental-status" data-status={item.status}>{item.is_expired ? t.expired : statuses[item.status]}</span></div><span>{stamp(item.starts_at)}</span><span className="rental-row rental-between"><span>{t.total}: {money(item.final_price)}</span><span>{t.paid}: {money(item.paid_amount)}</span></span></button>)}</div>
+      <div className="rental-mobile-cards">{items.map((item) => <button key={item.id} className="rental-card rental-stack" style={{ textAlign: "left", padding: 16 }} onClick={() => setSelectedId(item.id)}><div className="rental-row rental-between"><strong>{item.client_name}</strong><span className="rental-status" data-status={item.status}>{item.is_expired ? t.expired : statuses[item.status]}</span></div><span>{stamp(item.starts_at)} — {stamp(item.ends_at)}</span><span className="rental-row rental-between"><span>{t.total}: {money(item.final_price)}</span><span>{t.paid}: {money(item.paid_amount)}</span></span></button>)}</div>
     </section>
     <Modal open={createOpen} onClose={() => setCreateOpen(false)} title={t.manual}>{createOpen && <ManualBooking minMinutes={ratesQ.data?.min_minutes || 60} maxMinutes={ratesQ.data?.max_minutes || 720} step={ratesQ.data?.slot_step_minutes || 15} hourly={ratesQ.data?.hourly_price || 0} onSuccess={() => { setCreateOpen(false); refresh(); }} />}</Modal>
     <Modal open={blockOpen} onClose={() => setBlockOpen(false)} title={t.block}>{blockOpen && <BlockForm onSuccess={() => { setBlockOpen(false); refresh(); }} />}</Modal>
-    <Modal open={!!current} onClose={() => setSelectedId(null)} title={current ? `${current.client_name} · #${current.booking_code}` : ""}>{current && <BookingDetail key={current.id} booking={current} onChange={refresh} />}</Modal>
+    <Modal open={!!current} onClose={() => setSelectedId(null)} title={current ? `${current.client_name} · #${current.booking_code}` : ""}>{current && <BookingDetail key={current.id} booking={current} timezone={timezone} onChange={refresh} />}</Modal>
   </div>;
 }
 
 function ManualBooking({ minMinutes, maxMinutes, step, hourly, onSuccess }: { minMinutes: number; maxMinutes: number; step: number; hourly: number; onSuccess: () => void }) {
   const { locale } = useLanguage(); const t = rentalCopy[locale];
   const [data, setData] = useState({ starts_at: "", duration_minutes: minMinutes, client_name: "", client_phone: "", client_email: "", notes: "" });
+  const validDuration = validRentalDuration(data.duration_minutes, minMinutes, maxMinutes, step);
   const mutation = useMutation({ mutationFn: () => rentalApi.create({ ...data, starts_at: data.starts_at.replace("T", " ") }), onSuccess });
-  function submit(event: FormEvent) { event.preventDefault(); mutation.mutate(); }
+  function submit(event: FormEvent) { event.preventDefault(); if (validDuration) mutation.mutate(); }
   return <form className="rental-workspace rental-stack" onSubmit={submit}>
     {mutation.isError && <div className="rental-note rental-error" role="alert">{getErrorMessage(mutation.error, t.error)}</div>}
-    <div className="rental-fields"><label className="rental-field">{t.start}<input type="datetime-local" value={data.starts_at} onChange={(event) => setData((old) => ({ ...old, starts_at: event.target.value }))} required /></label><label className="rental-field">{t.duration} ({t.minutes})<input type="number" min={minMinutes} max={maxMinutes} step={step} value={data.duration_minutes} onChange={(event) => setData((old) => ({ ...old, duration_minutes: Number(event.target.value) }))} required /></label></div>
+    <div className="rental-fields"><label className="rental-field">{t.start}<input type="datetime-local" value={data.starts_at} onChange={(event) => setData((old) => ({ ...old, starts_at: event.target.value }))} required /></label><RentalDurationField value={data.duration_minutes} min={minMinutes} max={maxMinutes} step={step} onChange={(minutes) => setData((old) => ({ ...old, duration_minutes: minutes }))} presets /></div>
     {(["client_name", "client_phone", "client_email", "notes"] as const).map((key) => <label className="rental-field" key={key}>{key === "client_name" ? t.name : key === "client_phone" ? t.phone : key === "client_email" ? t.email : t.notes}<input value={data[key]} type={key === "client_email" ? "email" : key === "client_phone" ? "tel" : "text"} maxLength={key === "notes" ? 2000 : key === "client_phone" ? 40 : key === "client_email" ? 255 : 120} required={key === "client_name" || key === "client_phone"} onChange={(event) => setData((old) => ({ ...old, [key]: event.target.value }))} /></label>)}
-    <p>{t.total}: <strong>{Math.ceil(hourly * data.duration_minutes / 60).toLocaleString()} ֏</strong></p><button className="rental-btn" disabled={mutation.isPending}>{mutation.isPending ? t.loading : t.save}</button>
+    {validDuration && <p>{t.total}: <strong>{Math.ceil(hourly * data.duration_minutes / 60).toLocaleString()} ֏</strong></p>}<button className="rental-btn" disabled={!validDuration || mutation.isPending}>{mutation.isPending ? t.loading : t.save}</button>
   </form>;
 }
 
@@ -98,7 +101,7 @@ function BlockForm({ onSuccess }: { onSuccess: () => void }) {
   </form>;
 }
 
-function BookingDetail({ booking, onChange }: { booking: RentalBooking; onChange: () => void }) {
+function BookingDetail({ booking, timezone, onChange }: { booking: RentalBooking; timezone: string; onChange: () => void }) {
   const { locale } = useLanguage(); const t = rentalCopy[locale]; const [amount, setAmount] = useState(""); const [operation, setOperation] = useState<"payment" | "refund">("payment"); const [key, setKey] = useState(() => crypto.randomUUID()); const [newTime, setNewTime] = useState("");
   const status = useMutation({ mutationFn: (value: string) => rentalApi.update(booking.id, { status: value }), onSuccess: onChange });
   const payment = useMutation({ mutationFn: () => rentalApi.payment(booking.id, Number(amount), operation, key), onSuccess: () => { setAmount(""); setKey(crypto.randomUUID()); onChange(); } });
@@ -109,6 +112,7 @@ function BookingDetail({ booking, onChange }: { booking: RentalBooking; onChange
   return <div className="rental-workspace rental-stack">
     {error && <div className="rental-note rental-error" role="alert">{getErrorMessage(error, t.error)}</div>}
     <p>{booking.client_phone} {booking.client_email}</p><span className="rental-status" data-status={booking.status}>{stateNames[booking.status]}</span>
+    <div className="rental-note rental-selected-period">{[booking.starts_at, booking.ends_at].map((value, index) => <span key={value}>{index === 0 ? t.start : t.end}: {new Date(value).toLocaleString(locale === "hy" ? "hy-AM" : locale, { timeZone: timezone, dateStyle: "medium", timeStyle: "short" })}</span>)}</div>
     <div className="rental-fields"><div>{t.total}<strong style={{ display: "block" }}>{booking.final_price.toLocaleString()} ֏</strong></div><div>{t.paid}<strong style={{ display: "block" }}>{booking.paid_amount.toLocaleString()} ֏</strong></div></div>
     {booking.notes && <p>{booking.notes}</p>}
     <div className="rental-row">{(allowed[booking.status] || []).map((value) => <button key={value} className={`rental-btn ${value === "cancelled" ? "danger" : "secondary"}`} disabled={status.isPending} onClick={() => status.mutate(value)}>{stateNames[value]}</button>)}</div>

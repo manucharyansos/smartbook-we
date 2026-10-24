@@ -1,5 +1,9 @@
 export const rentalCopy = {
   hy: {
+    mediaSaveHelp: "Լոգոն, շապիկը և պատկերասրահի ֆայլերը պահպանվում են վերբեռնելիս։ Մնացած փոփոխությունների համար սեղմեք «Պահպանել»։",
+    aboutSpace: "Տարածքի մասին", viewSpace: "Տեսնել տարածքի էջը", chooseDateTime: "Ընտրել օրն ու ժամը", website: "Կայք", allDay: "Շուրջօրյա", breakTime: "Ընդմիջում",
+    minDuration: "Նվազագույն տևողություն", maxDuration: "Առավելագույն տևողություն",
+    days: "օր", unit: "Չափման միավոր", allowedDuration: "Թույլատրելի տևողություն", durationStep: "Քայլ", selection: "Ընտրված ժամանակահատվածը", availabilityHelp: "Ընտրեք տևողությունը, հետո՝ ազատ մեկնարկի ժամը։ Զբաղված միջակայքին համընկնող ժամերը չեն առաջարկվում։", overnight: "Թույլատրել գիշերակացով և բազմօրյա վարձակալություն", overnightHelp: "Սկզբի և ավարտի ժամերը պետք է լինեն հասանելի ժամերի մեջ։ Տարածքն ամբողջ ընթացքում, ներառյալ գիշերները, զբաղված է և վճարվում է ժամավարձով։ Առավելագույնը՝ 30 օր։", overnightPublic: "Մեկ օրը 24 անընդմեջ ժամ է։ Գիշերային ժամերը ներառված են տևողության և գնի մեջ։", withinHours: "Ամբողջ ժամանակահատվածը պետք է տեղավորվի հասանելի ժամերի մեջ։",
     title: "Վարձով տարածքներ", space: "Տարածք", book: "Ամրագրել տարածքը", availability: "Ազատ ժամեր", gallery: "Նկարներ և տեսանյութեր",
     hourly: "Մեկ ժամվա վարձը", duration: "Տևողություն", minutes: "րոպե", date: "Ամսաթիվ", total: "Ընդհանուր", name: "Անուն, ազգանուն", phone: "Հեռախոս", email: "Էլ. փոստ", notes: "Նշումներ",
     loading: "Բեռնվում է…", retry: "Կրկին փորձել", noSlots: "Այս օրվա համար ազատ ժամ չկա։ Ընտրեք այլ օր կամ տևողություն։", chooseSlot: "Ընտրեք ազատ ժամը։", error: "Գործողությունը չհաջողվեց։ Փորձեք կրկին։",
@@ -10,6 +14,10 @@ export const rentalCopy = {
     weekdays: ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ", "Շաբաթ", "Կիրակի"],
   },
   ru: {
+    mediaSaveHelp: "Логотип, обложка и файлы галереи сохраняются при загрузке. Для остальных изменений нажмите «Сохранить».",
+    aboutSpace: "О помещении", viewSpace: "Открыть страницу помещения", chooseDateTime: "Выбрать дату и время", website: "Сайт", allDay: "Круглосуточно", breakTime: "Перерыв",
+    minDuration: "Минимальная длительность", maxDuration: "Максимальная длительность",
+    days: "дн", unit: "Единица времени", allowedDuration: "Допустимая длительность", durationStep: "Шаг", selection: "Выбранный период", availabilityHelp: "Выберите длительность, затем свободное время начала. Время с пересечением занятых интервалов не предлагается.", overnight: "Разрешить аренду с ночёвкой и на несколько дней", overnightHelp: "Начало и окончание должны попадать в доступные часы. Помещение занято весь период, включая ночи, и оплачивается по часовой ставке. Максимум — 30 дней.", overnightPublic: "Один день — 24 непрерывных часа. Ночное время входит в длительность и стоимость.", withinHours: "Весь период должен попадать в доступное время.",
     title: "Аренда помещений", space: "Помещение", book: "Забронировать помещение", availability: "Свободное время", gallery: "Фото и видео",
     hourly: "Стоимость часа", duration: "Продолжительность", minutes: "мин", date: "Дата", total: "Итого", name: "Имя и фамилия", phone: "Телефон", email: "Эл. почта", notes: "Примечания",
     loading: "Загрузка…", retry: "Повторить", noSlots: "На этот день нет свободного времени. Выберите другую дату или продолжительность.", chooseSlot: "Выберите свободное время.", error: "Не удалось выполнить действие. Попробуйте снова.",
@@ -20,6 +28,10 @@ export const rentalCopy = {
     weekdays: ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"],
   },
   en: {
+    mediaSaveHelp: "The logo, cover and gallery files are saved on upload. Use Save for other changes.",
+    aboutSpace: "About this space", viewSpace: "View space page", chooseDateTime: "Choose date and time", website: "Website", allDay: "24 hours", breakTime: "Break",
+    minDuration: "Minimum duration", maxDuration: "Maximum duration",
+    days: "days", unit: "Time unit", allowedDuration: "Allowed duration", durationStep: "Step", selection: "Selected period", availabilityHelp: "Choose a duration, then an available start time. Times that overlap occupied periods are not offered.", overnight: "Allow overnight and multi-day rentals", overnightHelp: "Start and return times must fall within available hours. The space is held for the entire period, including nights, and charged at the hourly rate. Maximum: 30 days.", overnightPublic: "One day is 24 continuous hours. Nights are included in the duration and price.", withinHours: "The entire period must fit within available hours.",
     title: "Spaces for rent", space: "Space", book: "Book this space", availability: "Available times", gallery: "Photos and videos",
     hourly: "Hourly rate", duration: "Duration", minutes: "min", date: "Date", total: "Total", name: "Full name", phone: "Phone", email: "Email", notes: "Notes",
     loading: "Loading…", retry: "Try again", noSlots: "No times available. Choose another day or duration.", chooseSlot: "Choose an available time.", error: "The action failed. Please try again.",

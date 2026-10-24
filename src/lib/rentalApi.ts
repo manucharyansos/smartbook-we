@@ -5,8 +5,8 @@ import { resolveMediaUrl } from "./mediaUrl";
 
 const publicApi = axios.create({ baseURL: API_BASE_URL });
 export type GalleryItem = { id: number; url: string; kind: "image" | "video"; caption?: string | null; sort_order: number };
-export type RentalRates = { hourly_price: number | null; min_minutes: number; max_minutes: number; buffer_minutes: number; slot_step_minutes: number; currency?: string };
-export type RentalSettings = RentalRates & { gallery: GalleryItem[] };
+export type RentalRates = { hourly_price: number | null; min_minutes: number; max_minutes: number; buffer_minutes: number; slot_step_minutes: number; allow_overnight?: boolean; currency?: string };
+export type RentalSettings = RentalRates & { gallery: GalleryItem[]; timezone?: string };
 export type RentalSlot = { starts_at: string; ends_at: string; price: number; currency: string };
 export type RentalBooking = {
   id: number; booking_code: string; client_name: string; client_phone: string; client_email?: string | null;

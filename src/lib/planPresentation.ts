@@ -21,7 +21,7 @@ export function monthlyPlanPrice(plan: PlanLike): number | null {
 export function yearlyPlanPrice(plan: PlanLike): number | null {
   if (isCustomPlan(plan)) return null;
   const monthly = monthlyPlanPrice(plan);
-  const value = plan.yearly_offer?.price ?? (monthly == null ? null : monthly * 10);
+  const value = plan.yearly_offer?.price ?? (monthly == null ? null : monthly * (plan.code === "rental" ? 12 : 10));
   return value == null ? null : Number(value);
 }
 

@@ -10,6 +10,7 @@ Rental spaces stay in Vizit's shared directory and map, with their own registrat
 - Logo and cover uploads immediately persist and enable their public display. Gallery entries also persist on upload. Profile, booking and directory queries are invalidated after updates.
 - Existing customer profiles remain available, with service/staff-specific fields hidden for rental owners.
 - New screens use the current theme palette and support Armenian, Russian and English.
+- Home and pricing plan selectors list services, healthcare and rentals. Selecting rentals shows only its API-backed plan. Monthly/yearly controls belong to each fixed-price card and update that card independently; rental annual pricing uses 12 paid months and no two-month gift. The separate rental-price block was removed from these two pages.
 
 ## Flexible rental periods
 

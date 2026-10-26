@@ -1,18 +1,18 @@
-import RentalOffer from "../components/rentals/RentalOffer";
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Check, ShieldCheck, Sparkles, Users, Building2, BadgePercent, Handshake } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 import MarketingPageShell from "../components/marketing/MarketingPageShell";
 import { publicPlansApi, type PublicPlan } from "../lib/planApi";
-import { formatPlanPrice, isCustomPlan, localizePlanDescription, localizePlanNameForLocale, monthlyPlanPrice, yearlyPlanPrice } from "../lib/planPresentation";
+import { formatPlanPrice, isCustomPlan, localizePlanDescription, localizePlanNameForLocale } from "../lib/planPresentation";
+import { initialPlanType, planApiType, planCyclePrice, plansForType, planSignupHref, type BillingCycle, type PlanBusinessType } from "../lib/pricing";
+import { PlanBillingSelector, PlanTypeSelector } from "../components/pricing/PlanControls";
+import { rentalCopy } from "../i18n/rentals";
 import { cn } from "../lib/cn";
 import { fadeUp, scaleIn, staggerContainer } from "../lib/motion";
 import { useLanguage, type Locale } from "../contexts/LanguageContext";
-
-type BillingCycle = "monthly" | "yearly";
 
 const copy = {
   hy: {
@@ -45,6 +45,10 @@ const copy = {
 };
 
 function planFeatures(plan: PublicPlan, locale: Locale) {
+  if (plan.code === "rental" || plan.business_type === "rentals") {
+    const rental = rentalCopy[locale];
+    return [rental.calendar, rental.gallery, rental.analytics, rental.workingHours, rental.block];
+  }
   const features = plan.features ?? {};
   const staffLimit = Number(plan.staff_limit ?? features.staff_limit ?? 0);
 
@@ -70,37 +74,25 @@ function planFeatures(plan: PublicPlan, locale: Locale) {
 export default function Pricing() {
   const { locale } = useLanguage();
   const text = copy[locale];
-  const [billingCycle, setBillingCycle] = useState<BillingCycle>("yearly");
+  const [searchParams] = useSearchParams();
+  const [businessType, setBusinessType] = useState<PlanBusinessType>(() => initialPlanType(searchParams.get("type")));
+  const [billingCycles, setBillingCycles] = useState<Record<string, BillingCycle>>({});
+  const rental = rentalCopy[locale];
 
   const plansQ = useQuery({
-    queryKey: ["public-pricing-plans"],
+    queryKey: ["public-pricing-plans", businessType],
     queryFn: async () => {
-      const res = await publicPlansApi.list();
+      const res = await publicPlansApi.list(planApiType(businessType));
       return (res.data?.data ?? []) as PublicPlan[];
     },
     staleTime: 60_000,
   });
 
   const plans = useMemo(() => {
-    return (plansQ.data ?? []).filter((plan) => plan.code !== "rental").map((plan) => {
-      const custom = isCustomPlan(plan);
-      const baseMonthly = monthlyPlanPrice(plan);
-      const yearlyPrice = yearlyPlanPrice(plan);
-      const displayPrice = custom ? null : billingCycle === "yearly" ? yearlyPrice : baseMonthly;
-      const discountAmount = baseMonthly != null && yearlyPrice != null ? (plan.yearly_offer?.discount_amount ?? Math.max(baseMonthly * 12 - yearlyPrice, 0)) : 0;
-
-      return {
-        ...plan,
-        isCustom: custom,
-        yearlyPrice,
-        displayPrice,
-        discountAmount,
-        monthsCharged: plan.yearly_offer?.months_charged ?? 10,
-        monthsFree: plan.yearly_offer?.months_free ?? 2,
-        perMonthEffective: yearlyPrice != null ? Math.round(yearlyPrice / 12) : null,
-      };
-    });
-  }, [plansQ.data, billingCycle]);
+    return plansForType(plansQ.data ?? [], businessType).map((plan) => ({
+      ...plan, ...planCyclePrice(plan, billingCycles[`${businessType}:${plan.id}`] ?? "monthly"),
+    }));
+  }, [plansQ.data, billingCycles, businessType]);
 
   return (
     <MarketingPageShell
@@ -115,7 +107,7 @@ export default function Pricing() {
           {text.titleLead} <span className="text-violet-600">{text.titleAccent}</span>
         </>
       }
-      description={text.intro}
+      description={businessType === "rentals" ? rental.subscriptionHelp : text.intro}
     >
       <motion.section
         variants={staggerContainer(0.08, 0.05)}
@@ -127,43 +119,20 @@ export default function Pricing() {
           variants={fadeUp}
           className="rounded-[32px] border border-slate-200 bg-white p-5 shadow-[0_18px_60px_rgba(124,58,237,0.08)] dark:border-white/10 dark:bg-white/[0.07] dark:shadow-black/20 sm:p-6"
         >
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-5">
             <div className="max-w-3xl">
               <h2 className="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white sm:text-3xl">
                 {text.systemTitle}
               </h2>
               <p className="mt-3 text-base leading-7 text-slate-600 dark:text-slate-300">
-                {text.systemText}
+                {businessType === "rentals" ? localizePlanDescription({ code: "rental" }, locale) : text.systemText}
               </p>
             </div>
 
-            <div className="vizit-segmented-control inline-flex items-center rounded-2xl border p-1">
-              <button
-                type="button"
-                onClick={() => setBillingCycle("monthly")}
-                aria-pressed={billingCycle === "monthly"}
-                className={cn(
-                  "vizit-segmented-option rounded-[14px] px-4 py-2.5 text-sm font-medium transition",
-                  billingCycle === "monthly" && "is-active"
-                )}
-              >
-                {text.monthly}
-              </button>
-              <button
-                type="button"
-                onClick={() => setBillingCycle("yearly")}
-                aria-pressed={billingCycle === "yearly"}
-                className={cn(
-                  "vizit-segmented-option rounded-[14px] px-4 py-2.5 text-sm font-medium transition",
-                  billingCycle === "yearly" && "is-active"
-                )}
-              >
-                {text.yearly}
-              </button>
-            </div>
+            <PlanTypeSelector value={businessType} onChange={setBusinessType} />
           </div>
 
-          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {businessType !== "rentals" && <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {text.cards.map(([title, cardText], index) => {
               const item = { icon: [Users, ShieldCheck, BadgePercent, Handshake][index], title, text: cardText };
               const Icon = item.icon;
@@ -177,7 +146,7 @@ export default function Pricing() {
                 </div>
               );
             })}
-          </div>
+          </div>}
         </motion.div>
 
         {plansQ.isLoading ? (
@@ -187,17 +156,22 @@ export default function Pricing() {
             ))}
           </div>
         ) : plansQ.isError ? (
-          <motion.div variants={fadeUp} className="rounded-[28px] border border-rose-200 bg-rose-50 p-5 text-rose-700">
-            {text.loadingError}
+          <motion.div variants={fadeUp} className="rounded-[28px] border border-rose-200 bg-rose-50 p-5 text-rose-700" role="alert">
+            {text.loadingError}<button type="button" className="ml-3 underline" onClick={() => void plansQ.refetch()}>{rental.retry}</button>
           </motion.div>
+        ) : !plans.length ? (
+          <p role="status">{locale === "hy" ? "Այս տեսակի համար հասանելի պլան չկա։" : locale === "ru" ? "Для этого типа пока нет доступных тарифов." : "No plans are available for this business type."}</p>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          <div className={cn("grid gap-6", plans.length === 1 ? "mx-auto w-full max-w-xl grid-cols-1" : "md:grid-cols-2 xl:grid-cols-4")}>
             {plans.map((plan) => {
               const highlighted = plan.code === "studio";
               const isCustom = plan.isCustom;
+              const billingCycle = plan.billingCycle;
+              const name = localizePlanNameForLocale(plan, locale);
               return (
                 <motion.article
-                  key={plan.id}
+                  key={`${businessType}:${plan.id}`}
+                  aria-label={name}
                   variants={scaleIn}
                   className={cn(
                     "relative flex h-full flex-col rounded-[30px] border p-5 pt-16 sm:p-6 sm:pt-14 shadow-sm",
@@ -206,16 +180,16 @@ export default function Pricing() {
                       : "border-slate-200 bg-white text-slate-950 dark:border-white/10 dark:bg-white/[0.07] dark:text-white"
                   )}
                 >
-                  {(highlighted || (billingCycle === "yearly" && !isCustom)) && (
+                  {(highlighted || (billingCycle === "yearly" && !isCustom && plan.monthsFree > 0)) && (
                     <div className="absolute inset-x-4 top-4 flex flex-wrap items-center justify-between gap-2 sm:gap-3">
-                      {billingCycle === "yearly" && !isCustom ? (
+                      {billingCycle === "yearly" && !isCustom && plan.monthsFree > 0 ? (
                         <div
                           className={cn(
                             "rounded-full px-3 py-1.5 text-xs font-semibold",
                             highlighted ? "bg-white/10 text-white" : "border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-300/25 dark:bg-emerald-300/10 dark:text-emerald-200"
                           )}
                         >
-                          {text.twoFree}
+                          {plan.monthsFree === 2 ? text.twoFree : `${plan.monthsFree} ${text.gift}`}
                         </div>
                       ) : <span />}
 
@@ -237,17 +211,18 @@ export default function Pricing() {
                     {text.businessPlan}
                   </div>
 
-                  <h3 className="mt-6 text-2xl font-semibold tracking-tight sm:mt-5">{localizePlanNameForLocale(plan, locale)}</h3>
+                  <h3 className="mt-6 text-2xl font-semibold tracking-tight sm:mt-5">{name}</h3>
                   <p className={cn("mt-3 text-sm leading-6", highlighted ? "text-white/70" : "text-slate-600 dark:text-slate-300")}>
                     {localizePlanDescription(plan, locale)}
                   </p>
 
-                  <div className="mt-6">
+                  {plan.hasYearly && <div className="mt-5"><PlanBillingSelector value={billingCycle} planName={name} onChange={(cycle) => setBillingCycles((current) => ({ ...current, [`${businessType}:${plan.id}`]: cycle }))} /></div>}
+                  <div className="mt-6" aria-live="polite">
                     <div className="flex flex-wrap items-end gap-3">
                       <div className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                        {formatPlanPrice(plan.displayPrice, plan.currency || "AMD")}
+                        {isCustom ? text.customPrice : formatPlanPrice(plan.displayPrice, plan.currency || "AMD")}
                       </div>
-                      {billingCycle === "yearly" && !isCustom && (
+                      {billingCycle === "yearly" && !isCustom && plan.discountAmount > 0 && (
                         <div className={cn("pb-1 text-sm line-through", highlighted ? "text-white/50" : "text-slate-500 dark:text-slate-400")}>
                           {formatPlanPrice((plan.monthly_price ?? plan.price ?? 0) * 12, plan.currency || "AMD")}
                         </div>
@@ -265,10 +240,12 @@ export default function Pricing() {
                           highlighted ? "bg-white/10 text-white/90" : "border border-violet-100 bg-violet-50 text-slate-700 dark:border-violet-300/20 dark:bg-violet-400/10 dark:text-violet-100"
                         )}
                       >
-                        {text.pay} {plan.monthsCharged} {text.months}, {text.receive} {plan.monthsFree} {text.gift}. {text.average}: <span className="font-semibold">{formatPlanPrice(plan.perMonthEffective, plan.currency || "AMD")}/{text.perMonth}</span>
+                        {plan.monthsFree > 0 && <>{text.pay} {plan.monthsCharged} {text.months}, {text.receive} {plan.monthsFree} {text.gift}. </>}{text.average}: <span className="font-semibold">{formatPlanPrice(plan.perMonthEffective, plan.currency || "AMD")}/{text.perMonth}</span>
                       </div>
                     )}
                   </div>
+
+                  {businessType === "rentals" && <p className="mt-5 text-sm leading-6 text-slate-600 dark:text-slate-300">{rental.subscriptionHelp}</p>}
 
                   <div className="mt-6 space-y-3">
                     {planFeatures(plan, locale).map((item) => (
@@ -283,7 +260,7 @@ export default function Pricing() {
 
                   <div className="mt-8 space-y-3">
                     <Link
-                      to={isCustom ? "/contact?subject=custom-plan" : `/register?intent=business&plan=${encodeURIComponent(plan.code)}`}
+                      to={planSignupHref(plan, businessType)}
                       className={cn(
                         "inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 text-sm font-medium transition",
                         highlighted ? "bg-white text-slate-950 hover:bg-slate-100" : "bg-violet-600 text-white hover:bg-violet-700"
@@ -293,7 +270,7 @@ export default function Pricing() {
                       <ArrowRight className="h-4 w-4" />
                     </Link>
 
-                    {!isCustom && billingCycle === "yearly" && (
+                    {!isCustom && billingCycle === "yearly" && plan.discountAmount > 0 && (
                       <div className={cn("text-center text-xs", highlighted ? "text-white/60" : "text-slate-500 dark:text-slate-400")}>
                         {text.save} {formatPlanPrice(plan.discountAmount, plan.currency || "AMD")}
                       </div>
@@ -305,7 +282,7 @@ export default function Pricing() {
           </div>
         )}
 
-        <motion.div
+        {businessType !== "rentals" && <motion.div
           variants={fadeUp}
           className="grid gap-6 rounded-[32px] border border-slate-200 bg-white p-5 shadow-[0_18px_60px_rgba(124,58,237,0.06)] dark:border-white/10 dark:bg-white/[0.07] dark:shadow-black/20 sm:p-6 2xl:grid-cols-[1.3fr_0.7fr]"
         >
@@ -349,9 +326,8 @@ export default function Pricing() {
               </Link>
             </div>
           </div>
-        </motion.div>
+        </motion.div>}
       </motion.section>
-      <RentalOffer />
     </MarketingPageShell>
   );
 }

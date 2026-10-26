@@ -1,4 +1,4 @@
-import RentalOffer from "../components/rentals/RentalOffer";
+import HomePlansSection from "../components/pricing/HomePlansSection";
 import { rentalCopy } from "../i18n/rentals";
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
@@ -68,8 +68,6 @@ import {
   type PublicMapPin,
   type PublicWorkingHour,
 } from "../lib/publicApi";
-import { publicPlansApi, type PublicPlan } from "../lib/planApi";
-import { formatPlanPrice, localizePlanDescription, localizePlanNameForLocale, monthlyPlanPrice } from "../lib/planPresentation";
 
 type BusinessFilter = "all" | "services" | "healthcare" | "rentals";
 type LocationStatus = "idle" | "loading" | "active" | "error" | "unsupported";
@@ -1242,47 +1240,6 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
   );
 }
 
-function HomePlansSection() {
-  const { t, locale } = useLanguage();
-  const plansQ = useQuery({
-    queryKey: ["home-public-plans-preview"],
-    queryFn: async () => {
-      const res = await publicPlansApi.list();
-      return (res.data?.data ?? []) as PublicPlan[];
-    },
-  });
-
-  return (
-    <section id="plans" className="vizit-plans-section scroll-mt-24 bg-slate-50 px-5 py-16 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8 lg:py-20">
-      <div className="mx-auto max-w-[1320px]">
-        <div className="mb-9 grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
-          <div>
-            <SectionBadge><BadgeCheck className="h-4 w-4" /> {t("plans.badge")}</SectionBadge>
-            <h2 className="mt-5 text-3xl font-black tracking-[-0.04em] text-slate-950 dark:text-white sm:text-5xl">{t("plans.title")}</h2>
-          </div>
-          <Link to="/pricing" className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-100 dark:border-white/12 dark:bg-white/[0.07] dark:text-white dark:hover:bg-white/[0.12]">{t("cta.pricing")} <ArrowRight className="h-4 w-4" /></Link>
-        </div>
-        {plansQ.isLoading ? (
-          <div className="vizit-plans-grid grid gap-5 md:grid-cols-3">{Array.from({ length: 3 }).map((_, idx) => <div key={idx} className="h-[230px] animate-pulse rounded-[26px] border border-slate-200 bg-white dark:border-white/10 dark:bg-white/[0.06]" />)}</div>
-        ) : plansQ.isError ? (
-          <div className="rounded-[24px] border border-rose-300/20 bg-rose-500/10 p-6 text-rose-100">{t("status.errorPlans")}</div>
-        ) : (
-          <div className="vizit-plans-grid grid gap-5 md:grid-cols-3">
-            {(plansQ.data ?? []).slice(0, 3).map((plan) => (
-              <div key={plan.id} className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
-                <div className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-slate-950">{t("plans.businessPlan")}</div>
-                <h3 className="mt-5 text-2xl font-black text-slate-950 dark:text-white">{localizePlanNameForLocale(plan, locale)}</h3>
-                <div className="mt-4 text-3xl font-black text-slate-950 dark:text-white">{formatPlanPrice(monthlyPlanPrice(plan), plan.currency ?? undefined)}</div>
-                <p className="mt-3 min-h-[48px] text-sm leading-6 text-slate-500 dark:text-slate-300">{localizePlanDescription(plan, locale)}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
-  );
-}
-
 export default function Index() {
   const { t, locale } = useLanguage();
   const [search, setSearch] = useState("");
@@ -1684,7 +1641,6 @@ export default function Index() {
         </section>
 
         <HomePlansSection />
-        <RentalOffer />
 
         <section className="vizit-business-cta bg-white px-5 pb-20 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8">
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="vizit-business-cta-card mx-auto max-w-[1320px] overflow-hidden rounded-[34px] border p-8 backdrop-blur-2xl sm:p-10 lg:p-12">

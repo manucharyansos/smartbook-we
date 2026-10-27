@@ -22,41 +22,50 @@ import { TelegramConnectionCard } from "../components/TelegramConnectionCard";
 type NavItem = {
   to: string; label: string;
   icon: React.ComponentType<LucideProps>;
-  color: string; feature?: string;
+  feature?: string;
 };
 
 const baseNavItems: NavItem[] = [
-  { to: "/app/dashboard", label: "Վահանակ", icon: LayoutDashboard, color: "from-indigo-600 to-violet-600" },
-  { to: "/app/calendar", label: "Օրացույց", icon: CalendarDays, color: "from-violet-600 to-fuchsia-600" },
-  { to: "/app/services", label: "Ծառայություններ", icon: Scissors, color: "from-orange-500 to-amber-500" },
-  { to: "/app/staff", label: "Աշխատակիցներ", icon: Users, color: "from-cyan-600 to-blue-600" },
-  { to: "/app/clients", label: "Հաճախորդներ", icon: Contact, color: "from-emerald-600 to-teal-600" },
-  { to: "/app/tasks", label: "Ամրագրումների վահանակ", icon: ClipboardList, color: "from-amber-500 to-orange-600", feature: "tasks" },
-  { to: "/app/analytics", label: "Վերլուծություն", icon: BarChart3, color: "from-fuchsia-600 to-violet-600", feature: "analytics" },
-  { to: "/app/billing", label: "Պլան", icon: Landmark, color: "from-indigo-600 to-violet-600" },
-  { to: "/app/settings", label: "Կարգավորումներ", icon: Settings, color: "from-slate-700 to-slate-900" },
+  { to: "/app/dashboard", label: "Վահանակ", icon: LayoutDashboard },
+  { to: "/app/calendar", label: "Օրացույց", icon: CalendarDays },
+  { to: "/app/services", label: "Ծառայություններ", icon: Scissors },
+  { to: "/app/staff", label: "Աշխատակիցներ", icon: Users },
+  { to: "/app/clients", label: "Հաճախորդներ", icon: Contact },
+  { to: "/app/tasks", label: "Ամրագրումների վահանակ", icon: ClipboardList, feature: "tasks" },
+  { to: "/app/analytics", label: "Վերլուծություն", icon: BarChart3, feature: "analytics" },
+  { to: "/app/billing", label: "Պլան", icon: Landmark },
+  { to: "/app/settings", label: "Կարգավորումներ", icon: Settings },
 ];
 
 const mobileBottomPaths = ["/app/dashboard", "/app/calendar", "/app/services", "/app/clients"];
+
+// Shared token classes for the workspace chrome (work in light and dark themes).
+const iconButton =
+  "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text-secondary)] transition hover:bg-[var(--vz-surface-2)] hover:text-[var(--vz-text)]";
+const chromeToggle =
+  "border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text-secondary)] hover:bg-[var(--vz-surface-2)] hover:text-[var(--vz-text)]";
+const navLinkBase = "flex items-center rounded-xl text-sm font-medium transition-colors";
+const navLinkIdle = "text-[var(--vz-text-secondary)] hover:bg-[var(--vz-surface-2)] hover:text-[var(--vz-text)]";
+const navLinkActive = "bg-[var(--vz-accent-soft)] font-semibold text-[var(--vz-accent-text)]";
 
 const workspaceCopy = {
   hy: {
     growth: "Աճ",
     nav: { "/app/dashboard": "Վահանակ", "/app/calendar": "Օրացույց", "/app/services": "Ծառայություններ", "/app/staff": "Աշխատակիցներ", "/app/clients": "Հաճախորդներ", "/app/tasks": "Ամրագրումների վահանակ", "/app/analytics": "Վերլուծություն", "/app/billing": "Պլան", "/app/settings": "Կարգավորումներ" },
     medicalNav: { "/app/services": "Բժշկական ծառայություններ", "/app/staff": "Բժիշկներ և թիմ", "/app/clients": "Պացիենտներ", "/app/tasks": "Այցերի վահանակ" },
-    giftCards: "Նվերի քարտեր", loyalty: "Լոյալություն", more: "Ավելին", logout: "Ելք", navigation: "Նավիգացիա", menu: "Մենյու", openMenu: "Բացել մենյուն", closeMenu: "Փակել մենյուն", loading: "Բեռնվում է…", workspace: "Աշխատանքային միջավայր", owner: "Սեփականատեր", manager: "Կառավարիչ", staff: "Աշխատակից", superAdmin: "Սուպեր ադմին", healthcare: "Առողջապահություն", services: "Ծառայություններ", trial: "Փորձաշրջան", daysLeft: "օր մնաց", expand: "Բացել կողային վահանակը", collapse: "Փոքրացնել կողային վահանակը", hintTitle: "Արագ սկիզբ", hintText: "Ավելացրեք ծառայությունները, բժիշկներին և նրանց աշխատաժամերը, ապա ընդունեք առաջին այցը։",
+    giftCards: "Նվերի քարտեր", loyalty: "Լոյալություն", more: "Ավելին", logout: "Ելք", navigation: "Նավիգացիա", menu: "Մենյու", openMenu: "Բացել մենյուն", closeMenu: "Փակել մենյուն", loading: "Բեռնվում է…", workspace: "Աշխատանքային միջավայր", owner: "Սեփականատեր", manager: "Կառավարիչ", staff: "Աշխատակից", superAdmin: "Սուպեր ադմին", healthcare: "Առողջապահություն", services: "Ծառայություններ", trial: "Փորձաշրջան", daysLeft: "օր մնաց", expand: "Բացել կողային վահանակը", collapse: "Փոքրացնել կողային վահանակը", hintTitle: "Արագ սկիզբ", hintText: "Ավելացրեք ծառայությունները, բժիշկներին և նրանց աշխատաժամերը, ապա ընդունեք առաջին այցը։", hintTextServices: "Ավելացրեք ծառայությունները, աշխատակիցներին և նրանց աշխատաժամերը, ապա ընդունեք առաջին ամրագրումը։",
   },
   ru: {
     growth: "Рост",
     nav: { "/app/dashboard": "Панель", "/app/calendar": "Календарь", "/app/services": "Услуги", "/app/staff": "Сотрудники", "/app/clients": "Клиенты", "/app/tasks": "Панель записей", "/app/analytics": "Аналитика", "/app/billing": "Тариф", "/app/settings": "Настройки" },
     medicalNav: { "/app/services": "Медицинские услуги", "/app/staff": "Врачи и команда", "/app/clients": "Пациенты", "/app/tasks": "Панель визитов" },
-    giftCards: "Подарочные карты", loyalty: "Лояльность", more: "Ещё", logout: "Выйти", navigation: "Навигация", menu: "Меню", openMenu: "Открыть меню", closeMenu: "Закрыть меню", loading: "Загрузка…", workspace: "Рабочее пространство", owner: "Владелец", manager: "Менеджер", staff: "Сотрудник", superAdmin: "Суперадмин", healthcare: "Здравоохранение", services: "Услуги", trial: "Пробный период", daysLeft: "дн. осталось", expand: "Развернуть боковую панель", collapse: "Свернуть боковую панель", hintTitle: "Быстрый старт", hintText: "Добавьте услуги, врачей и их расписание, затем примите первый визит.",
+    giftCards: "Подарочные карты", loyalty: "Лояльность", more: "Ещё", logout: "Выйти", navigation: "Навигация", menu: "Меню", openMenu: "Открыть меню", closeMenu: "Закрыть меню", loading: "Загрузка…", workspace: "Рабочее пространство", owner: "Владелец", manager: "Менеджер", staff: "Сотрудник", superAdmin: "Суперадмин", healthcare: "Здравоохранение", services: "Услуги", trial: "Пробный период", daysLeft: "дн. осталось", expand: "Развернуть боковую панель", collapse: "Свернуть боковую панель", hintTitle: "Быстрый старт", hintText: "Добавьте услуги, врачей и их расписание, затем примите первый визит.", hintTextServices: "Добавьте услуги, сотрудников и их расписание, затем примите первую запись.",
   },
   en: {
     growth: "Growth",
     nav: { "/app/dashboard": "Dashboard", "/app/calendar": "Calendar", "/app/services": "Services", "/app/staff": "Staff", "/app/clients": "Clients", "/app/tasks": "Booking board", "/app/analytics": "Analytics", "/app/billing": "Plan", "/app/settings": "Settings" },
     medicalNav: { "/app/services": "Medical services", "/app/staff": "Doctors & team", "/app/clients": "Patients", "/app/tasks": "Visit board" },
-    giftCards: "Gift cards", loyalty: "Loyalty", more: "More", logout: "Log out", navigation: "Navigation", menu: "Menu", openMenu: "Open menu", closeMenu: "Close menu", loading: "Loading…", workspace: "Workspace", owner: "Owner", manager: "Manager", staff: "Staff", superAdmin: "Super admin", healthcare: "Healthcare", services: "Services", trial: "Trial", daysLeft: "days left", expand: "Expand sidebar", collapse: "Collapse sidebar", hintTitle: "Quick start", hintText: "Add services, doctors and their schedules, then accept the first visit.",
+    giftCards: "Gift cards", loyalty: "Loyalty", more: "More", logout: "Log out", navigation: "Navigation", menu: "Menu", openMenu: "Open menu", closeMenu: "Close menu", loading: "Loading…", workspace: "Workspace", owner: "Owner", manager: "Manager", staff: "Staff", superAdmin: "Super admin", healthcare: "Healthcare", services: "Services", trial: "Trial", daysLeft: "days left", expand: "Expand sidebar", collapse: "Collapse sidebar", hintTitle: "Quick start", hintText: "Add services, doctors and their schedules, then accept the first visit.", hintTextServices: "Add services, staff and their schedules, then accept the first booking.",
   },
 } as const;
 
@@ -103,9 +112,9 @@ export function AppLayout() {
       const idx = items.findIndex((x) => x.to === "/app/settings");
       if (idx >= 0) items.splice(idx, 0, item); else items.push(item);
     };
-    if (hasFeature(features, "gift_cards")) insertBeforeSettings({ to: "/app/gift-cards", label: text.giftCards, icon: Gift, color: "from-violet-600 to-fuchsia-600", feature: "gift_cards" });
-    if (hasFeature(features, "loyalty")) insertBeforeSettings({ to: "/app/loyalty", label: text.loyalty, icon: Star, color: "from-orange-500 to-amber-500", feature: "loyalty" });
-    if (hasFeature(features, "waitlist")) insertBeforeSettings({ to: "/app/growth", label: text.growth, icon: Megaphone, color: "from-emerald-600 to-teal-600", feature: "waitlist" });
+    if (hasFeature(features, "gift_cards")) insertBeforeSettings({ to: "/app/gift-cards", label: text.giftCards, icon: Gift, feature: "gift_cards" });
+    if (hasFeature(features, "loyalty")) insertBeforeSettings({ to: "/app/loyalty", label: text.loyalty, icon: Star, feature: "loyalty" });
+    if (hasFeature(features, "waitlist")) insertBeforeSettings({ to: "/app/growth", label: text.growth, icon: Megaphone, feature: "waitlist" });
     return items;
   }, [features, isHealthcare, isRental, rentalText, text, user?.role]);
 
@@ -169,82 +178,78 @@ export function AppLayout() {
     [isRental, rentalText.title, isHealthcare, text.healthcare, text.services]
   );
   const BusinessTypeIcon = businessTypeUi?.icon ?? Sparkles;
+  const hintText = isRental ? rentalText.subscriptionHelp : isHealthcare ? text.hintText : text.hintTextServices;
+
+  const subscription = features?.subscription;
+  const subscriptionLabel = subscription?.status
+    ? subscription.status === "trialing" && typeof subscription.days_left === "number"
+      ? `${text.trial} · ${Math.round(subscription.days_left)} ${text.daysLeft}`
+      : features?.plan_code ? `${features.plan_code}` : subscription.status
+    : null;
+  const isTrial = subscription?.status === "trialing";
+  const subscriptionPill = cn(
+    "rounded-full px-2.5 py-0.5 text-[11px] font-semibold",
+    isTrial ? "bg-[var(--vz-highlight-soft)] text-[var(--vz-highlight-text)]" : "bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]",
+  );
 
   return (
-    <div className="vizit-admin-shell min-h-screen w-full bg-[#f4f6fb] dark:bg-[#080b12]">
+    <div className="vizit-admin-shell min-h-screen w-full bg-[var(--vz-page)] text-[var(--vz-text)]">
       {/* HEADER */}
       <motion.header
         initial={{ y: -90 }} animate={{ y: 0 }}
         className={cn(
-          "vizit-admin-header sticky top-0 z-30 transition-all duration-300",
-          isScrolled ? "border-b border-slate-200/80 bg-white/92 shadow-sm backdrop-blur-xl"
-            : "border-b border-slate-200/70 bg-white/84 backdrop-blur-xl"
+          "vizit-admin-header sticky top-0 z-30 border-b border-[var(--vz-line)] bg-[var(--vz-surface)] transition-shadow duration-300",
+          isScrolled && "shadow-[var(--vz-shadow-sm)]",
         )}
       >
         <div className="mx-auto max-w-[1540px] px-3 sm:px-6">
-          <div className="flex h-14 items-center justify-between sm:h-20">
-            <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex h-14 items-center justify-between gap-3 sm:h-[72px]">
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
               {/* Desktop sidebar collapse */}
               <button type="button" onClick={() => setIsDesktopCollapsed((v) => !v)}
-                className="hidden items-center justify-center rounded-2xl border border-slate-200 bg-white p-2.5 text-slate-600 transition hover:bg-slate-50 xl:inline-flex"
+                className={cn(iconButton, "hidden xl:inline-flex")}
                 aria-label={isDesktopCollapsed ? text.expand : text.collapse}
               >
                 {isDesktopCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
               </button>
               {/* Mobile hamburger */}
-              <motion.button whileTap={{ scale: 0.95 }}
-                className="vizit-admin-mobile-menu-trigger inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white xl:hidden"
+              <motion.button type="button" whileTap={{ scale: 0.95 }}
+                className={cn(iconButton, "xl:hidden")}
                 onClick={() => setIsMobileMenuOpen(true)} aria-label={text.openMenu}
               >
-                <Menu size={20} className="text-slate-700" />
+                <Menu size={20} />
               </motion.button>
               {/* Logo */}
-              <motion.div whileHover={{ scale: 1.01 }}
-                className="vizit-workspace-brand flex cursor-pointer items-center gap-2 sm:gap-3"
+              <button type="button"
+                className="flex min-w-0 items-center gap-2 sm:gap-3"
                 onClick={() => navigate("/app/dashboard")}
               >
                 <VizitLogo markClassName="!h-9 !w-9 sm:!h-10 sm:!w-10" textClassName="!text-[17px] sm:!text-[20px]" />
-                <div className="hidden min-[360px]:block">
-                  <div className="hidden max-w-[150px] truncate text-[11px] text-slate-500 sm:block">{user?.business_name || text.workspace}</div>
-                </div>
-              </motion.div>
+                <span className="hidden max-w-[160px] truncate text-left text-xs text-[var(--vz-muted)] sm:block">{user?.business_name || text.workspace}</span>
+              </button>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3">
               {businessTypeUi && (
-                <div className="vizit-workspace-badge hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 md:flex">
-                  <BusinessTypeIcon size={14} />
-                  <span className="text-xs text-slate-600">{businessTypeUi.label}</span>
+                <div className="hidden items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-3 py-1.5 text-xs text-[var(--vz-text-secondary)] md:flex">
+                  <BusinessTypeIcon size={14} className="text-[var(--vz-accent-text)]" aria-hidden="true" />
+                  <span>{businessTypeUi.label}</span>
                 </div>
               )}
               <div className="hidden text-right sm:block">
-                <div className="text-sm font-semibold text-slate-950">{user?.name || "—"}</div>
-                <div className="flex items-center justify-end gap-1 text-xs text-slate-500">
-                  <Sparkles size={12} className="text-violet-600" />{getRoleDisplay()}
+                <div className="text-sm font-semibold text-[var(--vz-text)]">{user?.name || "—"}</div>
+                <div className="mt-0.5 flex items-center justify-end gap-2">
+                  <span className="text-xs text-[var(--vz-muted)]">{getRoleDisplay()}</span>
+                  {subscriptionLabel ? <span className={subscriptionPill}>{subscriptionLabel}</span> : null}
                 </div>
-                {features?.subscription?.status && (
-                  <div className="mt-1 flex justify-end">
-                    <div className="rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[11px] font-medium text-violet-700">
-                      {features.subscription.status === "trialing" && typeof features.subscription.days_left === "number"
-                        ? `${text.trial} · ${Math.round(features.subscription.days_left)} ${text.daysLeft}`
-                        : features.plan_code ? `${features.plan_code}` : features.subscription.status}
-                    </div>
-                  </div>
-                )}
               </div>
-              <ThemeToggle
-                compact
-                className="border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
-              />
-              <LanguageToggle
-                compact
-                className="vizit-workspace-language rounded-full border border-slate-200 bg-white text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
-              />
-              <motion.button whileTap={{ scale: 0.96 }}
-                className="hidden h-10 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 sm:inline-flex sm:px-4"
+              <ThemeToggle compact className={chromeToggle} />
+              <LanguageToggle compact className={cn("vizit-workspace-language rounded-full", chromeToggle)} />
+              <motion.button type="button" whileTap={{ scale: 0.96 }}
+                className="hidden h-10 items-center gap-2 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 text-sm font-medium text-[var(--vz-text-secondary)] transition hover:bg-[var(--vz-surface-2)] hover:text-[var(--vz-text)] sm:inline-flex sm:px-4"
                 onClick={handleLogout}
               >
-                <LogOut size={16} /><span className="hidden sm:inline">{text.logout}</span>
+                <LogOut size={16} aria-hidden="true" /><span className="hidden sm:inline">{text.logout}</span>
               </motion.button>
             </div>
           </div>
@@ -257,33 +262,27 @@ export function AppLayout() {
 
           {/* DESKTOP SIDEBAR */}
           <aside className="vizit-admin-sidebar hidden xl:block">
-            <motion.div initial={{ opacity: 0, x: -18 }} animate={{ opacity: 1, x: 0 }} className="sticky top-28 space-y-4">
-              <div className={cn("rounded-[24px] border border-slate-200/80 bg-white/95 p-3 shadow-[0_14px_38px_rgba(15,23,42,0.07)] backdrop-blur", isDesktopCollapsed && "px-2")}>
-                <div className={cn("mb-3 px-2 text-xs font-semibold tracking-[0.18em] text-slate-400", isDesktopCollapsed && "text-center text-[10px]")}>
-                  {isDesktopCollapsed ? text.menu.slice(0, 3).toUpperCase() : text.navigation.toUpperCase()}
+            <motion.div initial={{ opacity: 0, x: -18 }} animate={{ opacity: 1, x: 0 }} className="sticky top-24 space-y-4">
+              <div className={cn("rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-3 shadow-[var(--vz-shadow-sm)]", isDesktopCollapsed && "px-2")}>
+                <div className={cn("mb-2 px-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--vz-muted)]", isDesktopCollapsed && "text-center text-[10px]")}>
+                  {isDesktopCollapsed ? text.menu.slice(0, 3) : text.navigation}
                 </div>
-                <nav className="space-y-1.5">
+                <nav className="space-y-1">
                   {navItems.map((item) => (
                     <NavLink key={item.to} to={item.to}
                       className={({ isActive }) => cn(
-                        "vizit-admin-nav-link group relative flex items-center overflow-hidden rounded-2xl text-sm font-medium transition-all duration-300",
-                        isDesktopCollapsed ? "justify-center px-2 py-3.5" : "gap-3 px-3.5 py-3",
-                        isActive ? "is-active text-white" : "text-slate-700 hover:text-slate-950"
+                        "vizit-workspace-nav-link min-h-11",
+                        navLinkBase,
+                        isDesktopCollapsed ? "justify-center px-2 py-3" : "gap-3 px-3 py-2.5",
+                        isActive ? navLinkActive : navLinkIdle,
                       )}
                       title={isDesktopCollapsed ? item.label : undefined}
                     >
                       {({ isActive }) => (
                         <>
-                          {isActive && <span className={cn("vizit-admin-nav-active-bg absolute inset-0 rounded-2xl bg-gradient-to-r shadow-sm", item.color)} />}
-                          <span className="relative z-10">
-                            <item.icon size={18} className={cn("transition-colors", isActive ? "text-white" : "text-slate-500 group-hover:text-violet-600")} />
-                          </span>
-                          {!isDesktopCollapsed && <span className="relative z-10 flex-1">{item.label}</span>}
-                          {isActive && !isDesktopCollapsed && (
-                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="relative z-10">
-                              <ChevronRight size={16} className="text-white" />
-                            </motion.div>
-                          )}
+                          <item.icon size={18} aria-hidden="true" />
+                          {!isDesktopCollapsed && <span className="flex-1 truncate">{item.label}</span>}
+                          {isActive && !isDesktopCollapsed && <ChevronRight size={16} aria-hidden="true" />}
                         </>
                       )}
                     </NavLink>
@@ -293,14 +292,14 @@ export function AppLayout() {
               {!isDesktopCollapsed && (
                 <>
                   <TelegramConnectionCard variant="sidebar" />
-                  <div className="rounded-[24px] border border-slate-200/80 bg-white/96 p-4 shadow-[0_14px_38px_rgba(15,23,42,0.06)]">
+                  <div className="rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4 shadow-[var(--vz-shadow-sm)]">
                     <div className="flex items-start gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-r from-violet-100 to-fuchsia-100">
-                        <Sparkles size={16} className="text-violet-700" />
+                      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[var(--vz-highlight-soft)] text-[var(--vz-highlight-text)]">
+                        <Sparkles size={16} aria-hidden="true" />
                       </div>
                       <div>
-                        <div className="mb-1 text-xs font-semibold text-slate-900">{text.hintTitle}</div>
-                        <div className="text-xs leading-relaxed text-slate-500">{isRental ? rentalText.subscriptionHelp : text.hintText}</div>
+                        <div className="mb-1 text-xs font-semibold text-[var(--vz-text)]">{text.hintTitle}</div>
+                        <div className="text-xs leading-relaxed text-[var(--vz-muted)]">{hintText}</div>
                       </div>
                     </div>
                   </div>
@@ -314,72 +313,61 @@ export function AppLayout() {
             {isMobileMenuOpen && (
               <>
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                  className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm xl:hidden"
+                  className="fixed inset-0 z-40 bg-black/45 xl:hidden"
                   onClick={() => setIsMobileMenuOpen(false)}
                 />
                 <motion.div
                   initial={{ x: -300, opacity: 0 }}
                   animate={{ x: 0, opacity: 1, transition: { type: "spring", damping: 28, stiffness: 220 } }}
                   exit={{ x: -300, opacity: 0, transition: { duration: 0.2 } }}
-                  className="vizit-admin-drawer fixed left-0 top-0 z-50 flex h-full w-[min(88vw,320px)] flex-col border-r border-slate-200 bg-white shadow-2xl xl:hidden"
+                  className="vizit-workspace-drawer fixed left-0 top-0 z-50 flex h-full w-[min(88vw,320px)] flex-col border-r border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text)] shadow-2xl xl:hidden"
+                  role="dialog" aria-modal="true" aria-label={text.menu}
                 >
                   {/* Drawer header */}
-                  <div className="vizit-admin-drawer-header flex items-center justify-between border-b border-slate-200 px-4 py-4">
+                  <div className="flex items-center justify-between border-b border-[var(--vz-line)] px-4 py-4">
                     <div className="min-w-0">
                       <VizitLogo markClassName="!h-8 !w-8" textClassName="!text-[17px]" />
-                      <div className="mt-1.5 max-w-[200px] truncate pl-1 text-[11px] font-medium text-slate-500">{user?.business_name || text.workspace}</div>
+                      <div className="mt-1.5 max-w-[200px] truncate pl-1 text-xs text-[var(--vz-muted)]">{user?.business_name || text.workspace}</div>
                     </div>
-                    <button onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 transition hover:bg-slate-50"
+                    <button type="button" onClick={() => setIsMobileMenuOpen(false)}
+                      className={cn(iconButton, "h-9 w-9")}
                       aria-label={text.closeMenu}
                     >
-                      <X size={16} className="text-slate-600" />
+                      <X size={16} />
                     </button>
                   </div>
-                  {/* Subscription badge */}
-                  {features?.subscription?.status && (
-                    <div className="vizit-admin-drawer-meta border-b border-slate-100 px-4 py-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-slate-500">{getRoleDisplay()}</span>
-                        <span className="rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[10px] font-medium text-violet-700">
-                          {features.subscription.status === "trialing" && typeof features.subscription.days_left === "number"
-                            ? `${Math.round(features.subscription.days_left)} ${text.daysLeft}`
-                            : features.subscription.status}
-                        </span>
-                      </div>
-                    </div>
-                  )}
+                  {/* Role and subscription */}
+                  <div className="flex items-center justify-between border-b border-[var(--vz-divider)] px-4 py-3">
+                    <span className="text-xs text-[var(--vz-muted)]">{user?.name ? `${user.name} · ` : ""}{getRoleDisplay()}</span>
+                    {subscriptionLabel ? <span className={subscriptionPill}>{subscriptionLabel}</span> : null}
+                  </div>
                   {/* Nav links */}
-                  <nav className="vizit-admin-drawer-nav flex-1 space-y-1 overflow-y-auto p-3">
-                    <div className="px-3 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">{text.navigation}</div>
+                  <nav className="flex-1 space-y-1 overflow-y-auto p-3">
+                    <div className="px-3 pb-2 pt-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--vz-muted)]">{text.navigation}</div>
                     {navItems.map((item) => (
                       <NavLink key={item.to} to={item.to}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className={({ isActive }) => cn(
-                          "vizit-admin-drawer-link flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium transition-all",
-                          isActive ? "is-active text-white shadow-sm"
-                            : "text-slate-700 hover:bg-slate-50 active:bg-slate-100"
-                        )}
+                        className={({ isActive }) => cn("min-h-12 gap-3 px-3 py-2", navLinkBase, isActive ? navLinkActive : navLinkIdle)}
                       >
-                        <span className="vizit-admin-drawer-icon grid h-8 w-8 shrink-0 place-items-center rounded-xl"><item.icon size={17} /></span>
+                        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg"><item.icon size={18} aria-hidden="true" /></span>
                         <span className="min-w-0 flex-1 truncate">{item.label}</span>
-                        <ChevronRight className="h-4 w-4 shrink-0 opacity-40" />
+                        <ChevronRight className="h-4 w-4 shrink-0 opacity-50" aria-hidden="true" />
                       </NavLink>
                     ))}
                     <div className="px-1 pb-2 pt-3">
                       <TelegramConnectionCard variant="drawer" />
                     </div>
                   </nav>
-                  {/* Logout */}
-                  <div className="vizit-admin-drawer-footer border-t border-slate-200 p-3">
+                  {/* Footer */}
+                  <div className="border-t border-[var(--vz-line)] p-3">
                     <div className="mb-3 grid gap-2">
                       <LanguageToggle />
-                      <ThemeToggle className="min-h-12 border-slate-200 bg-white text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100" />
+                      <ThemeToggle className={cn("min-h-12", chromeToggle)} />
                     </div>
-                    <button onClick={handleLogout}
-                      className="flex w-full items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                    <button type="button" onClick={handleLogout}
+                      className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] text-sm font-medium text-[var(--vz-text-secondary)] transition hover:bg-[var(--vz-surface-2)] hover:text-[var(--vz-text)]"
                     >
-                      <LogOut size={16} />{text.logout}
+                      <LogOut size={16} aria-hidden="true" />{text.logout}
                     </button>
                   </div>
                 </motion.div>
@@ -407,28 +395,32 @@ export function AppLayout() {
       </div>
 
       {/* MOBILE BOTTOM NAV */}
-      <nav className="vizit-admin-bottom-nav fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/80 bg-white/95 backdrop-blur-xl xl:hidden">
+      <nav className="vizit-workspace-bottom-nav fixed inset-x-0 bottom-0 z-30 border-t border-[var(--vz-line)] bg-[var(--vz-surface)] shadow-[0_-8px_24px_rgb(var(--vz-shadow-rgb)/0.08)] xl:hidden">
         <div className="mx-auto flex max-w-md items-center justify-around px-1 pb-[env(safe-area-inset-bottom,8px)] pt-1">
           {bottomNavItems.map((item) => (
             <NavLink key={item.to} to={item.to}
               className={({ isActive }) => cn(
-                "vizit-admin-bottom-link flex min-w-0 flex-1 flex-col items-center gap-0.5 py-1.5 text-[10px] font-medium transition-all",
-                isActive ? "is-active" : "text-slate-400"
+                "group flex min-h-[52px] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 py-1.5 text-[11px] font-medium transition-colors",
+                isActive ? "text-[var(--vz-accent-text)]" : "text-[var(--vz-muted)] hover:text-[var(--vz-text)]",
               )}
             >
-              <div className="vizit-admin-bottom-icon grid h-8 w-8 place-items-center rounded-xl transition-all">
-                <item.icon size={20} />
-              </div>
-              <span className="max-w-[68px] truncate">{item.label}</span>
+              {({ isActive }) => (
+                <>
+                  <span className={cn("grid h-8 w-10 place-items-center rounded-xl transition-colors", isActive && "bg-[var(--vz-accent-soft)]")}>
+                    <item.icon size={20} aria-hidden="true" />
+                  </span>
+                  <span className="max-w-[72px] truncate">{item.label}</span>
+                </>
+              )}
             </NavLink>
           ))}
-          <button onClick={() => setIsMobileMenuOpen(true)}
-            className="vizit-admin-bottom-more flex min-w-0 flex-1 flex-col items-center gap-0.5 py-1.5 text-[10px] font-medium text-slate-400 transition active:text-slate-700"
+          <button type="button" onClick={() => setIsMobileMenuOpen(true)}
+            className="flex min-h-[52px] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 py-1.5 text-[11px] font-medium text-[var(--vz-muted)] transition-colors hover:text-[var(--vz-text)]"
             aria-label={text.openMenu}
           >
-            <div className="grid h-8 w-8 place-items-center rounded-xl">
-              <Menu size={20} />
-            </div>
+            <span className="grid h-8 w-10 place-items-center rounded-xl">
+              <Menu size={20} aria-hidden="true" />
+            </span>
             <span>{text.more}</span>
           </button>
         </div>

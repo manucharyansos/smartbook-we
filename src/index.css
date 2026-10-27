@@ -258,7 +258,7 @@ html.dark :is(.vizit-booking-page, .vizit-public-detail-page) :where(input, sele
   box-shadow: 0 12px 34px rgba(15, 23, 42, 0.055) !important;
 }
 
-.vizit-admin-content .admin-page > :first-child {
+.vizit-admin-content .admin-page > :first-child:not(.vizit-cover) {
   border-radius: 22px !important;
 }
 
@@ -302,7 +302,7 @@ html.dark .vizit-admin-sidebar [class*="text-slate-500"] {
   color: var(--admin-muted) !important;
 }
 
-html.dark .vizit-admin-content .admin-page > :first-child:not(.vizit-preserve-dark):not(.vizit-dashboard-hero) {
+html.dark .vizit-admin-content .admin-page > :first-child:not(.vizit-preserve-dark):not(.vizit-dashboard-hero):not(.vizit-cover) {
   background-color: var(--admin-surface) !important;
   background-image: none !important;
 }

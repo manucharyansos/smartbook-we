@@ -36,7 +36,7 @@ export default function Support() {
             </motion.div>
 
             <div className="mt-12 grid gap-6 2xl:grid-cols-[0.95fr_1.05fr]">
-              <motion.div variants={scaleIn} className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-sm dark:border-white/10 dark:bg-white/[0.07] dark:shadow-black/20">
+              <motion.div variants={scaleIn} className="rounded-[32px] border border-white/70 bg-white/[0.88] p-6 shadow-sm dark:border-white/10 dark:bg-white/[0.07] dark:shadow-black/20">
                 <div className="flex items-center gap-3">
                   <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white shadow-lg">
                     <Headset className="h-6 w-6" />

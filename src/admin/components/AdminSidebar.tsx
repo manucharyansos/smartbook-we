@@ -108,7 +108,7 @@ export default function AdminSidebar({ expanded, mobileOpen, onToggleExpanded, o
                   className={({ isActive }) =>
                     cn(
                       'group flex items-center gap-3 rounded-2xl px-4 py-3 transition',
-                      isActive ? 'bg-white/12 text-white shadow-inner' : 'text-white/65 hover:bg-white/8 hover:text-white',
+                      isActive ? 'bg-white/[0.12] text-white shadow-inner' : 'text-white/65 hover:bg-white/[0.08] hover:text-white',
                       !expanded && 'justify-center px-0',
                     )
                   }
@@ -122,7 +122,7 @@ export default function AdminSidebar({ expanded, mobileOpen, onToggleExpanded, o
 
           {expanded ? (
             <div className="border-t border-white/10 p-4">
-              <div className="rounded-2xl bg-white/6 p-4 text-xs text-white/55">
+              <div className="rounded-2xl bg-white/[0.06] p-4 text-xs text-white/55">
                 Central control for plans, businesses, billing and audit trails.
               </div>
             </div>

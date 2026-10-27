@@ -134,7 +134,7 @@ export function LocationMapPicker({
         ariaLabel={text.dragHint}
         className="min-h-[280px] rounded-[22px] border border-slate-200 shadow-inner dark:border-white/10"
       >
-        <div className="pointer-events-none absolute left-3 top-3 z-30 max-w-[calc(100%-112px)] rounded-2xl border border-white/70 bg-white/92 px-3 py-2 text-xs font-medium text-slate-700 shadow-lg backdrop-blur dark:border-white/10 dark:bg-slate-950/88 dark:text-slate-100">
+        <div className="pointer-events-none absolute left-3 top-3 z-30 max-w-[calc(100%-112px)] rounded-2xl border border-white/70 bg-white/[0.92] px-3 py-2 text-xs font-medium text-slate-700 shadow-lg backdrop-blur dark:border-white/10 dark:bg-slate-950/[0.88] dark:text-slate-100">
           {text.dragHint}
         </div>
 

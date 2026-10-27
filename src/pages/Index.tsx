@@ -612,17 +612,17 @@ function InteractiveBusinessMap({
         setZoom((current) => Math.max(current, 14));
       }}
       ariaLabel={t("map.title")}
-      className="min-h-[390px] w-full min-w-0 rounded-[28px] border border-[#e8e2f0] shadow-[0_30px_100px_rgba(62,31,120,0.18)] dark:border-white/10 dark:shadow-[0_30px_100px_rgba(0,0,0,0.32)] sm:min-h-[520px] sm:rounded-[34px]"
+      className="min-h-[390px] w-full min-w-0 rounded-[24px] border border-[var(--vz-line)] shadow-[var(--vz-shadow)] sm:min-h-[520px] sm:rounded-[28px]"
     >
-      <div className="pointer-events-none absolute left-3 top-3 z-30 flex max-w-[calc(100%_-_96px)] items-center gap-2 rounded-2xl border border-white/70 bg-white/88 px-3 py-2 text-[11px] font-bold text-[#3e1f78] shadow-[0_18px_60px_rgba(62,31,120,0.16)] backdrop-blur-2xl dark:border-white/14 dark:bg-slate-950/78 dark:text-white sm:left-5 sm:top-5 sm:px-4 sm:py-3 sm:text-xs">
-        <MapPin className="h-3.5 w-3.5 shrink-0 text-[#1e9e92] dark:text-cyan-200" />
+      <div className="pointer-events-none absolute left-3 top-3 z-30 flex max-w-[calc(100%_-_96px)] items-center gap-2 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-[11px] font-semibold text-[var(--vz-text)] shadow-[var(--vz-shadow-sm)] sm:left-5 sm:top-5 sm:px-4 sm:py-3 sm:text-xs">
+        <MapPin className="h-3.5 w-3.5 shrink-0 text-[var(--vz-accent-text)]" />
         <span className="truncate">{isCompact ? t("map.mobileInstructions") : t("map.instructions")}</span>
       </div>
 
-      <div className="absolute right-3 top-3 z-30 grid overflow-hidden rounded-2xl border border-white/70 bg-white/92 text-[#3e1f78] shadow-[0_18px_60px_rgba(62,31,120,0.16)] backdrop-blur-2xl dark:border-white/14 dark:bg-slate-950/80 dark:text-white sm:right-5 sm:top-5">
-        <button type="button" onClick={() => zoomMap(1)} className="grid h-10 w-10 place-items-center border-b border-[#e8e2f0] text-lg font-black transition hover:bg-[#f1edf7] dark:border-white/10 dark:hover:bg-white/10" aria-label={t("map.zoomIn")}>+</button>
-        <button type="button" onClick={() => zoomMap(-1)} className="grid h-10 w-10 place-items-center border-b border-[#e8e2f0] text-lg font-black transition hover:bg-[#f1edf7] dark:border-white/10 dark:hover:bg-white/10" aria-label={t("map.zoomOut")}>−</button>
-        <button type="button" onClick={fitMap} className="grid h-10 w-10 place-items-center transition hover:bg-[#f1edf7] dark:hover:bg-white/10" aria-label={t("map.center")}><LocateFixed className="h-4 w-4" /></button>
+      <div className="absolute right-3 top-3 z-30 grid overflow-hidden rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text)] shadow-[var(--vz-shadow-sm)] sm:right-5 sm:top-5">
+        <button type="button" onClick={() => zoomMap(1)} className="grid h-10 w-10 place-items-center border-b border-[var(--vz-line)] text-lg font-semibold transition hover:bg-[var(--vz-surface-2)]" aria-label={t("map.zoomIn")}>+</button>
+        <button type="button" onClick={() => zoomMap(-1)} className="grid h-10 w-10 place-items-center border-b border-[var(--vz-line)] text-lg font-semibold transition hover:bg-[var(--vz-surface-2)]" aria-label={t("map.zoomOut")}>−</button>
+        <button type="button" onClick={fitMap} className="grid h-10 w-10 place-items-center transition hover:bg-[var(--vz-surface-2)]" aria-label={t("map.center")}><LocateFixed className="h-4 w-4" /></button>
       </div>
 
       {isCompact ? (
@@ -644,10 +644,10 @@ function InteractiveBusinessMap({
 
       {!pins.length ? (
         <div className="pointer-events-none absolute inset-0 z-20 grid place-items-center p-6 text-center">
-          <div className="max-w-md rounded-[28px] border border-white/70 bg-white/88 p-7 shadow-xl backdrop-blur-2xl dark:border-white/12 dark:bg-slate-950/78">
-            <MapPin className="mx-auto h-10 w-10 text-[#1e9e92] dark:text-cyan-200" />
-            <h3 className="mt-4 text-2xl font-black text-[#241736] dark:text-white">{t("map.emptyTitle")}</h3>
-            <p className="mt-3 text-sm leading-7 text-[#6b6178] dark:text-slate-300">{t("map.emptyText")}</p>
+          <div className="max-w-md rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-7 shadow-[var(--vz-shadow)]">
+            <MapPin className="mx-auto h-10 w-10 text-[var(--vz-accent-text)]" />
+            <h3 className="mt-4 text-2xl font-semibold text-[var(--vz-text)]">{t("map.emptyTitle")}</h3>
+            <p className="mt-3 text-sm leading-7 text-[var(--vz-muted)]">{t("map.emptyText")}</p>
           </div>
         </div>
       ) : null}
@@ -866,13 +866,13 @@ function BusinessCardVisual({
         </div>
       )}
 
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/24 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/[0.24] to-transparent" />
       <span className="vizit-business-category-pill absolute left-3 top-3 hidden max-w-[calc(100%_-_24px)] items-center gap-2 rounded-full border border-white/15 bg-slate-950/50 px-3 py-1.5 text-[11px] font-bold text-white backdrop-blur-xl md:inline-flex sm:left-4 sm:top-4 sm:text-xs">
         <Icon className="h-3.5 w-3.5 shrink-0" />
         <span className="truncate">{categoryName}</span>
       </span>
       <div className="vizit-business-overlay-identity absolute bottom-3 left-3 hidden min-w-0 items-center gap-3 pr-3 md:flex sm:bottom-4 sm:left-4 sm:pr-4">
-        <div className="vizit-business-logo-tile grid h-11 w-11 place-items-center overflow-hidden rounded-[14px] border border-white/20 bg-white/12 text-white shadow-2xl backdrop-blur-xl sm:h-12 sm:w-12 sm:rounded-2xl">
+        <div className="vizit-business-logo-tile grid h-11 w-11 place-items-center overflow-hidden rounded-[14px] border border-white/20 bg-white/[0.12] text-white shadow-2xl backdrop-blur-xl sm:h-12 sm:w-12 sm:rounded-2xl">
           {logoUrl ? (
             <img
               src={logoUrl}
@@ -1652,7 +1652,7 @@ export default function Index() {
               </div>
               <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
                 <Link to="/register" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3.5 text-sm font-black text-slate-950 transition hover:bg-slate-100">{t("nav.start")} <ArrowRight className="h-4 w-4" /></Link>
-                <Link to="/pricing" className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-3.5 text-sm font-bold text-slate-800 transition hover:bg-slate-100 dark:border-white/12 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/[0.10]">{t("cta.pricing")}</Link>
+                <Link to="/pricing" className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-3.5 text-sm font-bold text-slate-800 transition hover:bg-slate-100 dark:border-white/[0.12] dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/[0.10]">{t("cta.pricing")}</Link>
               </div>
             </div>
           </motion.div>

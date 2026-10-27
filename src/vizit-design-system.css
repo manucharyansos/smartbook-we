@@ -705,7 +705,6 @@ html.dark .vizit-smart-slot.is-active { background: var(--vz-accent-soft) !impor
 }
 .vizit-auth-glow { pointer-events: none; background: rgb(var(--vz-accent-rgb) / 0.18) !important; }
 .vizit-auth-glow-right { background: rgb(var(--vz-accent-rgb) / 0.11) !important; }
-.vizit-onboarding-rail { background: linear-gradient(145deg, var(--vz-page), var(--vz-surface) 62%, var(--vz-primary)) !important; }
 .vizit-auth-back-link,
 .vizit-auth-language-control {
   border-color: rgb(var(--vz-accent-rgb) / 0.2) !important;
@@ -935,10 +934,6 @@ html.dark :is(.vizit-public-page, .vizit-public-detail-page, .vizit-booking-page
   border-color: var(--admin-border) !important;
   background-color: var(--admin-surface) !important;
   background-image: radial-gradient(circle at top right, rgb(var(--vz-accent-rgb) / 0.12), transparent 38%) !important;
-}
-.vizit-onboarding-rail-head {
-  border-color: var(--vz-line) !important;
-  background: linear-gradient(135deg, var(--vz-surface), var(--vz-primary)) !important;
 }
 
 /* Compatibility for feature screens that still use legacy color utilities. */

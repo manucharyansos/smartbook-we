@@ -283,16 +283,16 @@ export default function YandexMap({
       />
 
       {status === "loading" ? (
-        <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center bg-white/72 text-sm font-semibold text-slate-600 backdrop-blur-sm dark:bg-slate-950/65 dark:text-slate-200" role="status">
-          <span className="rounded-full border border-slate-200 bg-white/90 px-4 py-2 shadow-sm dark:border-white/10 dark:bg-slate-900/90">{text.loading}</span>
+        <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center bg-[color-mix(in_srgb,var(--vz-page)_72%,transparent)] text-sm font-semibold text-[var(--vz-text-secondary)] backdrop-blur-sm" role="status">
+          <span className="rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-2 shadow-[var(--vz-shadow-sm)]">{text.loading}</span>
         </div>
       ) : null}
 
       {status === "error" ? (
         <div className="absolute inset-0 z-10 grid place-items-center bg-[var(--vz-page-alt)] p-6 text-center">
-          <div className="max-w-sm rounded-3xl border border-white/70 bg-white/90 p-6 shadow-xl backdrop-blur dark:border-white/10 dark:bg-slate-950/88">
-            <div className="font-bold text-slate-950 dark:text-white">{text.title}</div>
-            <div className="mt-2 text-xs leading-5 text-slate-600 dark:text-slate-300">{text.text}</div>
+          <div className="max-w-sm rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-[var(--vz-shadow)]">
+            <div className="font-semibold text-[var(--vz-text)]">{text.title}</div>
+            <div className="mt-2 text-xs leading-5 text-[var(--vz-muted)]">{text.text}</div>
           </div>
         </div>
       ) : null}

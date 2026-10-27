@@ -76,7 +76,7 @@ export default function Loyalty() {
 
   return (
     <motion.div {...page} className="admin-page space-y-4">
-      <div className="rounded-[32px] border border-white/70 bg-white/88 p-6 shadow-sm">
+      <div className="rounded-[32px] border border-white/70 bg-white/[0.88] p-6 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-medium text-violet-700">

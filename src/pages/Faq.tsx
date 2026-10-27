@@ -60,7 +60,7 @@ export default function Faq() {
               key={item.q}
               variants={fadeUp}
               {...hoverLift}
-              className="rounded-[28px] border border-white/70 bg-white/88 p-6 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/[0.07] dark:shadow-black/20"
+              className="rounded-[28px] border border-white/70 bg-white/[0.88] p-6 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/[0.07] dark:shadow-black/20"
             >
               <div className="flex items-start gap-3">
                 <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-violet-50 text-violet-700 dark:bg-violet-400/15 dark:text-violet-200">

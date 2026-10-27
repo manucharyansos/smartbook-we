@@ -385,7 +385,7 @@ export default function PublicBusinessProfile() {
                                 initial={{ opacity: 0, y: 16 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.35, delay: 0.05 }}
-                                className="vizit-profile-section vizit-profile-services-section scroll-mt-24 rounded-[32px] border border-white/70 bg-white/88 p-5 shadow-sm dark:border-white/10 dark:bg-white/5 sm:p-7"
+                                className="vizit-profile-section vizit-profile-services-section scroll-mt-24 rounded-[32px] border border-white/70 bg-white/[0.88] p-5 shadow-sm dark:border-white/10 dark:bg-white/5 sm:p-7"
                             >
                                 <div>
                                     <div>
@@ -439,7 +439,7 @@ export default function PublicBusinessProfile() {
                                 initial={{ opacity: 0, y: 16 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.35, delay: 0.08 }}
-                                className="vizit-profile-section vizit-profile-team-section rounded-[32px] border border-white/70 bg-white/88 p-5 shadow-sm dark:border-white/10 dark:bg-white/5 sm:p-7"
+                                className="vizit-profile-section vizit-profile-team-section rounded-[32px] border border-white/70 bg-white/[0.88] p-5 shadow-sm dark:border-white/10 dark:bg-white/5 sm:p-7"
                             >
                                 <div className="vizit-profile-section-badge inline-flex items-center gap-2 rounded-xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-4 py-2 text-sm font-medium text-[var(--vz-brand-text)]">
                                     <Users className="h-4 w-4" />

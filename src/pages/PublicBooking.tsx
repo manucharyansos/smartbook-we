@@ -1418,13 +1418,13 @@ function ServiceBooking() {
                                 </p>
 
                                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                                    <div className="vizit-booking-hero-stat rounded-2xl bg-white/12 px-4 py-3 backdrop-blur">
+                                    <div className="vizit-booking-hero-stat rounded-2xl bg-white/[0.12] px-4 py-3 backdrop-blur">
                                         <div className="text-white/75 text-xs">{text.workingHours}</div>
                                         <div className="mt-1 font-semibold">
                                             {String(business.work_start || "09:00").slice(0,5)} – {String(business.work_end || "18:00").slice(0,5)}
                                         </div>
                                     </div>
-                                    <div className="vizit-booking-hero-stat rounded-2xl bg-white/12 px-4 py-3 backdrop-blur">
+                                    <div className="vizit-booking-hero-stat rounded-2xl bg-white/[0.12] px-4 py-3 backdrop-blur">
                                         <div className="text-white/75 text-xs">{text.timezone}</div>
                                         <div className="mt-1 font-semibold">
                                             {business.timezone
@@ -1437,7 +1437,7 @@ function ServiceBooking() {
                             </div>
                         </div>
 
-                        {!activeBookingCode && <div className="rounded-[24px] border border-white/70 bg-white/88 p-4 shadow-lg backdrop-blur-xl sm:p-5">
+                        {!activeBookingCode && <div className="rounded-[24px] border border-white/70 bg-white/[0.88] p-4 shadow-lg backdrop-blur-xl sm:p-5">
                             <div className="text-sm font-semibold text-slate-900">{text.chooseMode}</div>
                             <div className="mt-1 text-xs leading-5 text-slate-500">{text.modeIntro}</div>
                             <div className="mt-4 grid gap-2.5">

@@ -514,7 +514,7 @@ export default function Staff() {
         <div className="absolute -bottom-24 -right-16 h-60 w-60 rounded-full border border-[#d39a43]/20" aria-hidden="true" />
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#d39a43]/25 bg-white/65 px-3 py-1.5 text-xs font-bold text-[#6d2a63] backdrop-blur dark:bg-white/8 dark:text-[#efcb87]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#d39a43]/25 bg-white/65 px-3 py-1.5 text-xs font-bold text-[#6d2a63] backdrop-blur dark:bg-white/[0.08] dark:text-[#efcb87]">
               {isHealthcare ? <Stethoscope className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
               {isHealthcare ? text.medicalBadge : text.badge}
             </span>
@@ -530,7 +530,7 @@ export default function Staff() {
       {usage ? (
         <Card className="rounded-[24px] border border-[#d39a43]/20 bg-[#fffdf9]/95 p-4 shadow-[0_14px_36px_rgba(70,34,49,.06)] dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90 sm:p-5">
           <div className="flex flex-wrap items-center gap-3 text-sm text-slate-600">
-            <span className="rounded-full border border-[#d39a43]/25 bg-[#f8eee4] px-3 py-1 font-semibold text-[#6d2a63] dark:bg-white/8 dark:text-[#efcb87]">{settingsQ.data?.plan?.name ?? "Plan"}</span>
+            <span className="rounded-full border border-[#d39a43]/25 bg-[#f8eee4] px-3 py-1 font-semibold text-[#6d2a63] dark:bg-white/[0.08] dark:text-[#efcb87]">{settingsQ.data?.plan?.name ?? "Plan"}</span>
             <span>{text.activeStaff}՝ <strong className="text-slate-950">{usage.active_staff}</strong> / <strong className="text-slate-950">{usage.staff_limit ?? "∞"}</strong></span>
             <span>{text.services}՝ <strong className="text-slate-950">{usage.services_count}</strong> / <strong className="text-slate-950">{usage.services_limit ?? "∞"}</strong></span>
             <span>{text.locations}՝ <strong className="text-slate-950">{usage.locations_count}</strong> / <strong className="text-slate-950">{usage.locations_limit}</strong></span>

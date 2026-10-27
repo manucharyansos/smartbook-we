@@ -24,7 +24,7 @@ export default function ThemeToggle({ compact = false, className }: ThemeToggleP
       type="button"
       onClick={toggleTheme}
       className={cn(
-        "vizit-theme-toggle inline-flex items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-sm font-semibold text-white shadow-sm backdrop-blur-2xl transition hover:-translate-y-0.5 hover:bg-white/[0.10] active:translate-y-0",
+        "vizit-theme-toggle inline-flex items-center justify-center rounded-full border border-white/[0.12] bg-white/[0.06] text-sm font-semibold text-white shadow-sm backdrop-blur-2xl transition hover:-translate-y-0.5 hover:bg-white/[0.10] active:translate-y-0",
         compact ? "h-11 w-11" : "gap-2 px-4 py-2.5",
         className,
       )}

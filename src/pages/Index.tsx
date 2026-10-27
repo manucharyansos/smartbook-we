@@ -633,8 +633,8 @@ function InteractiveBusinessMap({
           className={cn(
             "absolute bottom-3 left-1/2 z-30 inline-flex min-h-11 -translate-x-1/2 items-center justify-center gap-2 rounded-xl border px-4 text-xs font-black shadow-[0_16px_44px_rgba(7,22,36,0.24)] backdrop-blur-xl transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--vz-line-strong)] focus-visible:ring-offset-2",
             mobileInteractionEnabled
-              ? "border-[var(--vz-primary)]/40 bg-[#15558e] text-white"
-              : "border-[#315a77] bg-[var(--vz-surface)]/95 text-[#d9eaf7]",
+              ? "border-[var(--vz-primary)] bg-[var(--vz-primary)] text-[var(--vz-on-primary)]"
+              : "border-[var(--vz-line-strong)] bg-[var(--vz-surface)] text-[var(--vz-text)]",
           )}
         >
           <Hand className="h-4 w-4" aria-hidden="true" />
@@ -1377,7 +1377,7 @@ export default function Index() {
 
   return (
     <div className="vizit-public-page vizit-home-page min-h-screen w-full max-w-full overflow-x-hidden bg-[#faf8fc] text-[#241736] transition-colors dark:bg-[#090712] dark:text-white">
-      <Seo title={t("seo.homeTitle")} description={t("seo.homeDescription")} image="/og-default.svg" />
+      <Seo title={t("seo.homeTitle")} description={t("seo.homeDescription")} image="/og-default.png" />
       <LandingNavbar />
 
       <main>

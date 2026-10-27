@@ -34,7 +34,7 @@ export default function Seo({ title, description, image, canonical, type = "webs
     const url = canonical
       ? new URL(canonical, window.location.origin).href
       : `${window.location.origin}${window.location.pathname}`;
-    const img = new URL(image || "/og-default.svg", window.location.origin).href;
+    const img = new URL(image || "/og-default.png", window.location.origin).href;
     const locale = { hy: "hy_AM", ru: "ru_RU", en: "en_US" }[document.documentElement.lang] ?? "hy_AM";
 
     document.title = title;

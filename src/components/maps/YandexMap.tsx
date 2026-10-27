@@ -289,7 +289,7 @@ export default function YandexMap({
       ) : null}
 
       {status === "error" ? (
-        <div className="absolute inset-0 z-10 grid place-items-center bg-gradient-to-br from-slate-100 to-violet-100 p-6 text-center dark:from-slate-950 dark:to-violet-950">
+        <div className="absolute inset-0 z-10 grid place-items-center bg-[var(--vz-page-alt)] p-6 text-center">
           <div className="max-w-sm rounded-3xl border border-white/70 bg-white/90 p-6 shadow-xl backdrop-blur dark:border-white/10 dark:bg-slate-950/88">
             <div className="font-bold text-slate-950 dark:text-white">{text.title}</div>
             <div className="mt-2 text-xs leading-5 text-slate-600 dark:text-slate-300">{text.text}</div>

@@ -44,7 +44,7 @@ function vizit_default_meta($path) {
     return [
         'title' => $page[0] ?? 'Vizit — օնլայն ամրագրում սրահների ու կլինիկաների համար',
         'description' => $page[1] ?? 'Vizit-ը օնլայն ամրագրման համակարգ է գեղեցկության սրահների, կլինիկաների և ծառայություն մատուցող բիզնեսների համար Հայաստանում։',
-        'image' => 'https://vizit.am/og-default.svg',
+        'image' => 'https://vizit.am/og-default.png',
         'url' => $url,
         'canonical' => $url,
         'site_name' => 'Vizit',

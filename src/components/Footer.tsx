@@ -2,11 +2,16 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
+  Lock,
   Mail,
+  MessageCircle,
+  Phone,
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
+import { SUPPORT_EMAIL, SUPPORT_PHONE, SUPPORT_PHONE_DISPLAY, SUPPORT_WHATSAPP, whatsappLink } from "../lib/support";
+import PaymentLogos from "./PaymentLogos";
 import VizitLogo from "./VizitLogo";
 
 type FooterProps = {
@@ -27,6 +32,7 @@ export default function Footer({ showCta = true }: FooterProps) {
     ],
     legal: [
       { to: "/privacy-policy", label: t("footer.privacy") }, { to: "/terms", label: t("footer.terms") },
+      { to: "/refund-policy", label: t("footer.refund") }, { to: "/personal-data", label: t("footer.personalData") },
       { to: "/cookies", label: t("footer.cookies") },
     ],
   };
@@ -107,6 +113,24 @@ export default function Footer({ showCta = true }: FooterProps) {
                 {t("footer.supportAvailable")}
               </div>
             </div>
+
+            <div className="mt-5">
+              <div className="text-sm font-bold text-[#2b0d35] dark:text-white">{t("footer.contacts")}</div>
+              <div className="mt-3 flex flex-col gap-2.5 text-sm text-[#5f5062] dark:text-white/70">
+                <a href={`tel:${SUPPORT_PHONE}`} className="inline-flex items-center gap-2 transition hover:text-[#2b0d35] dark:hover:text-white">
+                  <Phone className="h-4 w-4 text-[#c88e37]" />
+                  {SUPPORT_PHONE_DISPLAY}
+                </a>
+                <a href={`mailto:${SUPPORT_EMAIL}`} className="inline-flex items-center gap-2 transition hover:text-[#2b0d35] dark:hover:text-white">
+                  <Mail className="h-4 w-4 text-[#c88e37]" />
+                  {SUPPORT_EMAIL}
+                </a>
+                <a href={whatsappLink(SUPPORT_WHATSAPP)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 transition hover:text-[#2b0d35] dark:hover:text-white">
+                  <MessageCircle className="h-4 w-4 text-[#c88e37]" />
+                  WhatsApp
+                </a>
+              </div>
+            </div>
           </div>
 
           <div>
@@ -138,8 +162,18 @@ export default function Footer({ showCta = true }: FooterProps) {
 
         </div>
 
-        <div className="mt-7 border-t border-[#d39a43]/18 pt-4 text-center text-sm text-[#665568] dark:border-white/10 dark:text-white/70 sm:mt-8 sm:text-left">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-7 flex flex-col gap-3 border-t border-[#d39a43]/18 pt-5 dark:border-white/10 sm:mt-8 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-3">
+            <span className="text-xs font-semibold uppercase tracking-wide text-[#665568] dark:text-white/60">{t("footer.weAccept")}</span>
+            <PaymentLogos />
+          </div>
+          <div className="inline-flex items-center justify-center gap-2 text-xs text-[#665568] dark:text-white/60">
+            <Lock className="h-3.5 w-3.5 text-[#c88e37]" />
+            {t("footer.securePayment")}
+          </div>
+        </div>
+
+        <div className="mt-4 border-t border-[#d39a43]/18 pt-4 text-center text-sm text-[#665568] dark:border-white/10 dark:text-white/70 sm:text-left">          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <span>© {new Date().getFullYear()} Vizit.am. {t("footer.rights")}</span>
             <span>{t("footer.appointmentBusinesses")}</span>
           </div>

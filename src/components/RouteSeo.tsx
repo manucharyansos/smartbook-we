@@ -56,6 +56,16 @@ const routeMeta: Record<string, MetaCopy> = {
     ru: { title: "Политика cookie | Vizit", description: "Узнайте, как Vizit использует файлы cookie." },
     en: { title: "Cookie policy | Vizit", description: "Learn how Vizit uses cookies." },
   },
+  "/refund-policy": {
+    hy: { title: "Չեղարկման և վերադարձի քաղաքականություն | Vizit", description: "Ինչպես չեղարկել Vizit-ի պլանը և երբ է հնարավոր գումարի վերադարձը։" },
+    ru: { title: "Политика отмены и возврата | Vizit", description: "Как отменить тариф Vizit и когда возможен возврат средств." },
+    en: { title: "Cancellation and refund policy | Vizit", description: "How to cancel a Vizit plan and when a refund is possible." },
+  },
+  "/personal-data": {
+    hy: { title: "Անձնական տվյալների մշակման քաղաքականություն | Vizit", description: "Ինչպես է Vizit-ը մշակում և պաշտպանում անձնական տվյալները։" },
+    ru: { title: "Политика обработки персональных данных | Vizit", description: "Как Vizit обрабатывает и защищает персональные данные." },
+    en: { title: "Personal data processing policy | Vizit", description: "How Vizit processes and protects personal data." },
+  },
 };
 
 const noIndexPrefixes = ["/login", "/register", "/forgot-password", "/reset-password", "/business/", "/client/", "/admin", "/app", "/payment-return", "/auth/", "/mock-bank"];

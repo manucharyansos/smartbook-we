@@ -34,6 +34,8 @@ const Pricing = lazy(() => import("./pages/Pricing"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Cookies = lazy(() => import("./pages/Cookies"));
+const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
+const PersonalDataPolicy = lazy(() => import("./pages/PersonalDataPolicy"));
 const Support = lazy(() => import("./pages/Support"));
 const Faq = lazy(() => import("./pages/Faq"));
 const PublicBusinessProfile = lazy(() => import("./pages/PublicBusinessProfile"));
@@ -111,6 +113,8 @@ export default function App() {
                     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                     <Route path="/terms" element={<Terms />} />
                     <Route path="/cookies" element={<Cookies />} />
+                    <Route path="/refund-policy" element={<RefundPolicy />} />
+                    <Route path="/personal-data" element={<PersonalDataPolicy />} />
                     <Route path="/support" element={<Support />} />
                     <Route path="/faq" element={<Faq />} />
 

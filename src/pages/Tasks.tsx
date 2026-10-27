@@ -56,11 +56,11 @@ const tasksCopy = {
 
 function buildColumns(text: Record<string, string>): Column[] {
   return [
-    { key: "pending", title: text.pending, subtitle: text.pendingSub, headerTone: "border-amber-200 bg-amber-50", badgeTone: "bg-amber-100 text-amber-700" },
-    { key: "confirmed", title: text.confirmed, subtitle: text.confirmedSub, headerTone: "border-sky-200 bg-sky-50", badgeTone: "bg-sky-100 text-sky-700" },
-    { key: "done", title: text.done, subtitle: text.doneSub, headerTone: "border-emerald-200 bg-emerald-50", badgeTone: "bg-emerald-100 text-emerald-700" },
-    { key: "no_show", title: text.noShow, subtitle: text.noShowSub, headerTone: "border-rose-200 bg-rose-50", badgeTone: "bg-rose-100 text-rose-700" },
-    { key: "cancelled", title: text.cancelled, subtitle: text.archive, headerTone: "border-slate-200 bg-slate-100", badgeTone: "bg-slate-200 text-slate-700" },
+    { key: "pending", title: text.pending, subtitle: text.pendingSub, headerTone: "border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)]", badgeTone: "bg-[var(--vz-warning-soft)] text-[var(--vz-warning)]" },
+    { key: "confirmed", title: text.confirmed, subtitle: text.confirmedSub, headerTone: "border-[var(--vz-info-line)] bg-[var(--vz-info-soft)]", badgeTone: "bg-[var(--vz-info-soft)] text-[var(--vz-info)]" },
+    { key: "done", title: text.done, subtitle: text.doneSub, headerTone: "border-[var(--vz-success-line)] bg-[var(--vz-success-soft)]", badgeTone: "bg-[var(--vz-success-soft)] text-[var(--vz-success)]" },
+    { key: "no_show", title: text.noShow, subtitle: text.noShowSub, headerTone: "border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)]", badgeTone: "bg-[var(--vz-danger-soft)] text-[var(--vz-danger)]" },
+    { key: "cancelled", title: text.cancelled, subtitle: text.archive, headerTone: "border-[var(--vz-line)] bg-[var(--vz-surface-2)]", badgeTone: "bg-[var(--vz-surface-pressed)] text-[var(--vz-text-secondary)]" },
   ];
 }
 
@@ -109,17 +109,17 @@ function statusLabel(status: BookingStatus, columns: Column[]) {
 function statusUi(status: BookingStatus) {
   switch (status) {
     case "pending":
-      return "border-amber-200 bg-amber-50 text-amber-700";
+      return "border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] text-[var(--vz-warning)]";
     case "confirmed":
-      return "border-sky-200 bg-sky-50 text-sky-700";
+      return "border-[var(--vz-info-line)] bg-[var(--vz-info-soft)] text-[var(--vz-info)]";
     case "done":
-      return "border-emerald-200 bg-emerald-50 text-emerald-700";
+      return "border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] text-[var(--vz-success)]";
     case "no_show":
-      return "border-rose-200 bg-rose-50 text-rose-700";
+      return "border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] text-[var(--vz-danger)]";
     case "cancelled":
-      return "border-slate-200 bg-slate-100 text-slate-600";
+      return "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]";
     default:
-      return "border-slate-200 bg-slate-100 text-slate-600";
+      return "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]";
   }
 }
 
@@ -178,20 +178,20 @@ function timePillTone(booking: Booking) {
   const diff = start.getTime() - now.getTime();
   const hours = diff / 3_600_000;
 
-  if (booking.status === "cancelled") return "bg-slate-200 text-slate-600";
-  if (booking.status === "done") return "bg-emerald-100 text-emerald-700";
-  if (booking.status === "no_show") return "bg-rose-100 text-rose-700";
-  if (hours < 0) return "bg-rose-100 text-rose-700";
-  if (hours < 24) return "bg-amber-100 text-amber-700";
-  return "bg-slate-100 text-slate-700";
+  if (booking.status === "cancelled") return "bg-[var(--vz-surface-pressed)] text-[var(--vz-text-secondary)]";
+  if (booking.status === "done") return "bg-[var(--vz-success-soft)] text-[var(--vz-success)]";
+  if (booking.status === "no_show") return "bg-[var(--vz-danger-soft)] text-[var(--vz-danger)]";
+  if (hours < 0) return "bg-[var(--vz-danger-soft)] text-[var(--vz-danger)]";
+  if (hours < 24) return "bg-[var(--vz-warning-soft)] text-[var(--vz-warning)]";
+  return "bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]";
 }
 
 function SummaryChip({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
   return (
-    <div className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-600 shadow-sm">
-      <span className="text-slate-400">{icon}</span>
+    <div className="inline-flex items-center gap-2 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-xs font-medium text-[var(--vz-text-secondary)] shadow-sm">
+      <span className="text-[var(--vz-muted)]">{icon}</span>
       <span>{label}</span>
-      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-700">{value}</span>
+      <span className="rounded-full bg-[var(--vz-surface-2)] px-2 py-0.5 text-[11px] font-semibold text-[var(--vz-text-secondary)]">{value}</span>
     </div>
   );
 }
@@ -218,23 +218,23 @@ function BookingCard({
   const transitions = bookingTransitions(booking.status);
 
   return (
-    <div className="rounded-[12px] border border-[#d7d7d7] bg-white p-3 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition hover:-translate-y-0.5 hover:shadow-[0_8px_18px_rgba(15,23,42,0.08)]">
+    <div className="rounded-[12px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-3 shadow-[0_1px_3px_rgba(15,23,42,0.06)] transition hover:-translate-y-0.5 hover:shadow-[0_8px_18px_rgba(15,23,42,0.08)]">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <div className="truncate text-[14px] font-semibold text-slate-900">{booking.client_name}</div>
-          <div className="mt-1 line-clamp-2 text-[12px] leading-5 text-slate-500">{bookingServicesTitle(booking, serviceById, text.service)}</div>
+          <div className="truncate text-[14px] font-semibold text-[var(--vz-text)]">{booking.client_name}</div>
+          <div className="mt-1 line-clamp-2 text-[12px] leading-5 text-[var(--vz-muted)]">{bookingServicesTitle(booking, serviceById, text.service)}</div>
         </div>
         <span className={cn("shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold", statusUi(booking.status))}>
           {statusLabel(booking.status, columns)}
         </span>
       </div>
 
-      <div className="mt-3 flex items-center gap-2 text-[11px] text-slate-500">
-        <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1">
+      <div className="mt-3 flex items-center gap-2 text-[11px] text-[var(--vz-muted)]">
+        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--vz-surface-2)] px-2 py-1">
           <Clock3 className="h-3.5 w-3.5" /> {formatTime(booking.starts_at)}
         </span>
         {booking.client_phone ? (
-          <span className="inline-flex min-w-0 items-center gap-1 rounded-full bg-slate-100 px-2 py-1">
+          <span className="inline-flex min-w-0 items-center gap-1 rounded-full bg-[var(--vz-surface-2)] px-2 py-1">
             <Phone className="h-3.5 w-3.5" />
             <span className="max-w-[110px] truncate">{booking.client_phone}</span>
           </span>
@@ -252,7 +252,7 @@ function BookingCard({
               key={nextStatus}
               type="button"
               onClick={() => onMove(booking, nextStatus)}
-              className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-1 text-[10px] font-semibold text-slate-700 transition hover:bg-slate-200"
+              className="inline-flex items-center gap-1 rounded-md bg-[var(--vz-surface-2)] px-2 py-1 text-[10px] font-semibold text-[var(--vz-text-secondary)] transition hover:bg-[var(--vz-surface-pressed)]"
               title={bookingActionLabel(nextStatus, text)}
             >
               {bookingActionLabel(nextStatus, text)}
@@ -260,13 +260,13 @@ function BookingCard({
             </button>
           ))}
 
-          <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#e9eaec] text-[10px] font-semibold text-slate-700">
+          <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[var(--vz-surface-2)] text-[10px] font-semibold text-[var(--vz-text-secondary)]">
             {initials(staffName || (isHealthcare ? text.doctor : text.specialist))}
           </div>
         </div>
       </div>
 
-      <div className="mt-2 text-[11px] text-slate-400">{staffName || (isHealthcare ? text.noDoctor : text.noStaff)}</div>
+      <div className="mt-2 text-[11px] text-[var(--vz-muted)]">{staffName || (isHealthcare ? text.noDoctor : text.noStaff)}</div>
     </div>
   );
 }
@@ -368,14 +368,14 @@ export default function Tasks() {
 
   return (
     <motion.div {...page} className="admin-page space-y-4">
-      <div className="flex flex-col gap-4 overflow-hidden rounded-[28px] border border-[#d39a43]/22 bg-[radial-gradient(circle_at_90%_0%,rgba(232,194,174,.58),transparent_32%),linear-gradient(135deg,#fffdf9,#f8eee4)] px-4 py-5 shadow-[0_20px_55px_rgba(70,34,49,.08)] dark:border-[#e7bc6b]/15 dark:bg-[radial-gradient(circle_at_90%_0%,rgba(109,42,99,.34),transparent_34%),linear-gradient(135deg,#2f182e,#1d121f)] sm:px-6 sm:py-6">
+      <div className="flex flex-col gap-4 overflow-hidden rounded-[28px] border border-[var(--vz-line-strong)] bg-[var(--vz-surface-2)] px-4 py-5 shadow-[0_20px_55px_rgba(70,34,49,.08)] sm:px-6 sm:py-6">
         <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-600">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--vz-text-secondary)]">
               <CalendarDays className="h-3.5 w-3.5" /> {text.badge}
             </div>
-            <h1 className="mt-3 font-serif text-2xl font-semibold text-slate-950 sm:text-3xl">{text.title}</h1>
-            <p className="mt-1 text-sm leading-6 text-slate-500">{text.intro}</p>
+            <h1 className="mt-3 font-serif text-2xl font-semibold text-[var(--vz-text)] sm:text-3xl">{text.title}</h1>
+            <p className="mt-1 text-sm leading-6 text-[var(--vz-muted)]">{text.intro}</p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
@@ -385,7 +385,7 @@ export default function Tasks() {
             <SummaryChip icon={<CalendarDays className="h-4 w-4" />} label={text.today} value={boardSummary.today} />
             <Link
               to="/app/calendar"
-              className="inline-flex items-center gap-2 rounded-xl bg-[#24364b] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#1d2b3c]"
+              className="inline-flex items-center gap-2 rounded-xl bg-[var(--vz-primary)] px-4 py-2 text-sm font-medium text-[var(--vz-on-primary)] transition hover:bg-[var(--vz-primary-hover)]"
             >
               <CalendarDays className="h-4 w-4" /> {text.openCalendar}
             </Link>
@@ -394,18 +394,18 @@ export default function Tasks() {
 
         <div className="grid gap-2 md:grid-cols-[1.7fr_1fr_1fr_auto]">
           <label className="relative block">
-            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
             <input
               value={filters.search}
               onChange={(e) => setFilters((p) => ({ ...p, search: e.target.value }))}
               placeholder={text.search}
-              className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-11 pr-4 text-sm"
+              className="w-full rounded-xl border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] py-2.5 pl-11 pr-4 text-sm"
             />
           </label>
           <select
             value={filters.status}
             onChange={(e) => setFilters((p) => ({ ...p, status: e.target.value as FiltersState["status"] }))}
-            className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm"
+            className="rounded-xl border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] px-4 py-2.5 text-sm"
           >
             <option value="">{text.allStatuses}</option>
             {columns.map((col) => (
@@ -418,7 +418,7 @@ export default function Tasks() {
             value={filters.staff_id}
             onChange={(e) => setFilters((p) => ({ ...p, staff_id: e.target.value }))}
             disabled={isStaff}
-            className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm disabled:bg-slate-50"
+            className="rounded-xl border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] px-4 py-2.5 text-sm disabled:bg-[var(--vz-surface-2)]"
           >
             <option value="">{isHealthcare ? text.allDoctors : text.allStaff}</option>
             {staff.map((member) => (
@@ -438,7 +438,7 @@ export default function Tasks() {
           <Spinner size={28} />
         </div>
       ) : bookingsQ.isError ? (
-        <div className="rounded-[18px] border border-rose-200 bg-rose-50 px-4 py-6 text-sm text-rose-700">
+        <div className="rounded-[18px] border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-6 text-sm text-[var(--vz-danger)]">
           {text.loadFailed}
         </div>
       ) : bookings.length === 0 ? (
@@ -447,12 +447,12 @@ export default function Tasks() {
         <div className="overflow-x-auto pb-2">
           <div className="flex min-w-max gap-3">
             {columns.map((col) => (
-              <section key={col.key} className="w-[288px] shrink-0 rounded-[10px] border border-[#cfcfcf] bg-[#dfdfdf] p-2 shadow-sm">
+              <section key={col.key} className="w-[288px] shrink-0 rounded-[10px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-2 shadow-sm">
                 <div className={cn("rounded-[10px] border px-3 py-2.5 shadow-sm", col.headerTone)}>
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <div className="text-[13px] font-semibold text-slate-900">{col.title} ({grouped[col.key].length})</div>
-                      <div className="mt-0.5 text-[11px] text-slate-500">{col.subtitle}</div>
+                      <div className="text-[13px] font-semibold text-[var(--vz-text)]">{col.title} ({grouped[col.key].length})</div>
+                      <div className="mt-0.5 text-[11px] text-[var(--vz-muted)]">{col.subtitle}</div>
                     </div>
                     <span className={cn("inline-flex min-w-[34px] items-center justify-center rounded-full px-2 py-1 text-[10px] font-bold", col.badgeTone)}>
                       {grouped[col.key].length}
@@ -476,7 +476,7 @@ export default function Tasks() {
                       />
                     ))
                   ) : (
-                    <div className="rounded-[12px] border border-dashed border-slate-300 bg-white px-4 py-8 text-center text-sm text-slate-400">
+                    <div className="rounded-[12px] border border-dashed border-[var(--vz-line-strong)] bg-[var(--vz-surface)] px-4 py-8 text-center text-sm text-[var(--vz-muted)]">
                       {text.emptyColumn}
                     </div>
                   )}

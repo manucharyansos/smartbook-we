@@ -61,7 +61,7 @@ export default function Login() {
             sideTitle={text.sideTitle}
             sideText={text.sideText}
             footer={
-                <div className="text-center text-sm text-slate-500">
+                <div className="text-center text-sm text-[var(--vz-muted)]">
                     {text.noAccount}{" "}
                     <Link to="/register" className="font-medium text-[var(--vz-brand-text)] hover:text-[var(--vz-brand-text)]">
                         {text.register}
@@ -79,16 +79,16 @@ export default function Login() {
                 {error ? (
                     <motion.div
                         variants={fadeUp}
-                        className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"
+                        className="rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-sm text-[var(--vz-danger)]"
                     >
                         {error}
                     </motion.div>
                 ) : null}
 
                 <motion.div variants={fadeUp}>
-                    <label htmlFor="business-login-email" className="mb-2 block text-sm font-medium text-slate-700">{text.email}</label>
+                    <label htmlFor="business-login-email" className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">{text.email}</label>
                     <div className="relative">
-                        <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                        <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
                         <input
                             id="business-login-email"
                             name="email"
@@ -97,7 +97,7 @@ export default function Login() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="owner@mail.com"
-                            className="h-14 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
+                            className="h-14 w-full rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] pl-11 pr-4 text-base sm:h-12 sm:text-sm text-[var(--vz-text)] outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
                             required
                         />
                     </div>
@@ -105,17 +105,17 @@ export default function Login() {
 
                 <motion.div variants={fadeUp}>
                     <div className="mb-2 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
-                        <label htmlFor="business-login-password" className="block text-sm font-medium text-slate-700">{text.password}</label>
+                        <label htmlFor="business-login-password" className="block text-sm font-medium text-[var(--vz-text-secondary)]">{text.password}</label>
                         <Link
                             to="/forgot-password"
-                            className="text-xs font-medium text-slate-500 transition hover:text-[var(--vz-brand-text)]"
+                            className="text-xs font-medium text-[var(--vz-muted)] transition hover:text-[var(--vz-brand-text)]"
                         >
                             {text.forgot}
                         </Link>
                     </div>
 
                     <div className="relative">
-                        <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                        <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
                         <input
                             id="business-login-password"
                             name="password"
@@ -124,7 +124,7 @@ export default function Login() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="••••••••"
-                            className="h-14 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-12 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
+                            className="h-14 w-full rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] pl-11 pr-12 text-base sm:h-12 sm:text-sm text-[var(--vz-text)] outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
                             required
                         />
                         <button
@@ -132,7 +132,7 @@ export default function Login() {
                             onClick={() => setShowPassword((s) => !s)}
                             aria-label={showPassword ? text.hide : text.show}
                             aria-pressed={showPassword}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-[var(--vz-brand-text)]"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--vz-muted)] transition hover:text-[var(--vz-brand-text)]"
                         >
                             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </button>

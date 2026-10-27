@@ -152,17 +152,17 @@ export default function PublicBusinessProfile() {
 
     if (businessQ.isLoading) {
         return (
-            <div className="vizit-public-detail-page min-h-screen bg-[linear-gradient(180deg,#faf8fc_0%,#ffffff_20%,#f5f0fa_100%)] transition-colors dark:bg-[linear-gradient(180deg,#090712_0%,#151020_45%,#090712_100%)] dark:text-white">
+            <div className="vizit-public-detail-page min-h-screen bg-[var(--vz-surface-2)] transition-colors dark:text-white">
                 <Seo title={`${text.loadingTitle} | Vizit`} description={text.loadingText} />
                 <PublicBusinessHeader secondaryHref="/" secondaryLabel="Vizit" />
                 <main className="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6 lg:px-8">
-                    <div className="h-72 animate-pulse rounded-[34px] border border-slate-200 bg-white/80" />
+                    <div className="h-72 animate-pulse rounded-[34px] border border-[var(--vz-line)] bg-[var(--vz-surface)]" />
                     <div className="mt-8 grid gap-6 2xl:grid-cols-[1fr_340px]">
                         <div className="space-y-6">
-                            <div className="h-48 animate-pulse rounded-[30px] border border-slate-200 bg-white/80" />
-                            <div className="h-72 animate-pulse rounded-[30px] border border-slate-200 bg-white/80" />
+                            <div className="h-48 animate-pulse rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)]" />
+                            <div className="h-72 animate-pulse rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)]" />
                         </div>
-                        <div className="h-80 animate-pulse rounded-[30px] border border-slate-200 bg-white/80" />
+                        <div className="h-80 animate-pulse rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)]" />
                     </div>
                 </main>
                 <PublicBusinessFooter compact />
@@ -172,22 +172,22 @@ export default function PublicBusinessProfile() {
 
     if (businessQ.isError || !business) {
         return (
-            <div className="vizit-public-detail-page min-h-screen bg-[linear-gradient(180deg,#faf8fc_0%,#ffffff_20%,#f5f0fa_100%)] transition-colors dark:bg-[linear-gradient(180deg,#090712_0%,#151020_45%,#090712_100%)] dark:text-white">
+            <div className="vizit-public-detail-page min-h-screen bg-[var(--vz-surface-2)] transition-colors dark:text-white">
                 <PublicBusinessHeader secondaryHref="/" secondaryLabel="Vizit" />
                 <main className="mx-auto max-w-4xl px-4 pb-16 pt-8 sm:px-6 lg:px-8">
-                    <div className="rounded-[32px] border border-rose-200 bg-white p-10 text-center shadow-sm">
-                        <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-rose-50 text-rose-500">
+                    <div className="rounded-[32px] border border-[var(--vz-danger-line)] bg-[var(--vz-surface)] p-10 text-center shadow-sm">
+                        <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-[var(--vz-danger-soft)] text-[var(--vz-danger)]">
                             <Building2 className="h-7 w-7" />
                         </div>
-                        <h1 className="mt-5 text-2xl font-semibold text-slate-900">
+                        <h1 className="mt-5 text-2xl font-semibold text-[var(--vz-text)]">
                             {text.notFoundTitle}
                         </h1>
-                        <p className="mt-3 text-slate-500">
+                        <p className="mt-3 text-[var(--vz-muted)]">
                             {text.notFoundText}
                         </p>
                         <Link
                             to="/"
-                            className="mt-6 inline-flex items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-medium text-white"
+                            className="mt-6 inline-flex items-center justify-center rounded-2xl bg-[var(--vz-primary)] px-5 py-3 text-sm font-medium text-[var(--vz-on-primary)]"
                         >
                             {text.home}
                         </Link>
@@ -201,7 +201,7 @@ export default function PublicBusinessProfile() {
     const categoryLabel = businessCategoryLabel(business, locale);
 
     return (
-        <div className="vizit-public-detail-page min-h-screen bg-[linear-gradient(180deg,#faf8fc_0%,#ffffff_22%,#f5f0fa_100%)] text-slate-900 transition-colors dark:bg-[linear-gradient(180deg,#090712_0%,#151020_48%,#090712_100%)] dark:text-white">
+        <div className="vizit-public-detail-page min-h-screen bg-[var(--vz-surface-2)] text-[var(--vz-text)] transition-colors">
             <Seo
                 title={`${business.name} | Vizit`}
                 description={business.short_description || text.defaultDescription}
@@ -218,16 +218,16 @@ export default function PublicBusinessProfile() {
                             initial={{ opacity: 0, y: 18 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.35 }}
-                            className="vizit-business-profile-shell relative overflow-hidden rounded-[38px] border border-white/70 bg-white/85 shadow-[0_24px_90px_rgba(15,23,42,0.08)] backdrop-blur-xl"
+                            className="vizit-business-profile-shell relative overflow-hidden rounded-[38px] border border-white/70 bg-[var(--vz-surface)] shadow-[0_24px_90px_rgba(15,23,42,0.08)] backdrop-blur-xl"
                         >
-                            <div className="vizit-business-profile-backdrop absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(88,165,232,0.24),transparent_31%),linear-gradient(145deg,#071624_0%,#0b2133_58%,#15558e_100%)]" />
+                            <div className="vizit-business-profile-backdrop absolute inset-0 bg-[var(--vz-surface-2)]" />
 
                             <div className="vizit-business-profile-hero relative grid gap-4 p-3 sm:p-4 lg:grid-cols-[minmax(300px,0.82fr)_minmax(0,1.18fr)] lg:gap-6">
-                                <div className="vizit-business-profile-cover relative min-h-[230px] overflow-hidden rounded-[28px] border border-white/70 bg-[linear-gradient(145deg,#e9cfc3,#f7e9dd_52%,#d8c0d0)] shadow-[0_18px_52px_rgba(72,35,49,0.13)] sm:min-h-[300px] lg:min-h-full">
+                                <div className="vizit-business-profile-cover relative min-h-[230px] overflow-hidden rounded-[28px] border border-white/70 bg-[var(--vz-surface-2)] shadow-[0_18px_52px_rgba(72,35,49,0.13)] sm:min-h-[300px] lg:min-h-full">
                                     {business.cover_url ? (
                                         <img src={business.cover_url} alt={business.name} className="absolute inset-0 h-full w-full object-cover" />
                                     ) : (
-                                        <div className="vizit-business-profile-fallback absolute inset-0 grid place-items-center bg-[radial-gradient(circle_at_80%_10%,rgba(255,255,255,.45),transparent_30%),radial-gradient(circle_at_12%_100%,rgba(109,42,99,.20),transparent_34%),linear-gradient(145deg,#e8c8ba,#f7e9de_58%,#d7becf)]">
+                                        <div className="vizit-business-profile-fallback absolute inset-0 grid place-items-center bg-[var(--vz-surface-2)]">
                                             <div className="vizit-business-profile-fallback-logo grid h-28 w-28 place-items-center overflow-hidden rounded-2xl border border-[#315a77] bg-[var(--vz-surface-2)]/90 text-[#d9eaf7] shadow-[0_24px_70px_rgba(0,0,0,.22)] backdrop-blur-xl">
                                                 {business.logo_url ? <img src={business.logo_url} alt={business.name} className="h-full w-full object-cover" /> : <Building2 className="h-11 w-11" />}
                                             </div>
@@ -250,15 +250,15 @@ export default function PublicBusinessProfile() {
                                             {business.logo_url ? (
                                                 <img src={business.logo_url} alt={business.name} className="h-full w-full object-cover" />
                                             ) : (
-                                                <div className="grid h-full w-full place-items-center"><Building2 className="h-7 w-7 text-slate-700" /></div>
+                                                <div className="grid h-full w-full place-items-center"><Building2 className="h-7 w-7 text-[var(--vz-text-secondary)]" /></div>
                                             )}
                                         </div>
 
                                         <div className="min-w-0">
-                                            <h1 className="break-words text-3xl font-semibold tracking-tight text-slate-950 dark:text-white sm:text-4xl lg:text-5xl">
+                                            <h1 className="break-words text-3xl font-semibold tracking-tight text-[var(--vz-text)] sm:text-4xl lg:text-5xl">
                                                 {business.name}
                                             </h1>
-                                            <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600 dark:text-slate-300">
+                                            <p className="mt-3 max-w-3xl text-base leading-7 text-[var(--vz-text-secondary)]">
                                                 {business.short_description || text.defaultDescription}
                                             </p>
                                         </div>
@@ -272,27 +272,27 @@ export default function PublicBusinessProfile() {
                                             <CalendarDays className="h-4 w-4" /> {text.bookNow}<ArrowRight className="h-4 w-4" />
                                         </Link>
                                         {business.show_services !== false ? (
-                                            <a href="#services" className="inline-flex w-full items-center justify-center rounded-2xl border border-slate-200/90 bg-white/80 px-5 py-3.5 text-sm font-semibold text-slate-700 backdrop-blur transition hover:bg-white dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10 sm:w-auto">
+                                            <a href="#services" className="inline-flex w-full items-center justify-center rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-5 py-3.5 text-sm font-semibold text-[var(--vz-text-secondary)] backdrop-blur transition hover:bg-[var(--vz-surface)] dark:hover:bg-white/10 sm:w-auto">
                                                 {text.viewServices}
                                             </a>
                                         ) : null}
                                         {instagramUrl ? (
-                                            <a aria-label="Instagram" href={instagramUrl} target="_blank" rel="noopener noreferrer" className="grid h-12 w-12 place-items-center rounded-2xl border border-slate-200/90 bg-white/80 text-pink-500 transition hover:-translate-y-0.5 hover:bg-white dark:border-white/15 dark:bg-white/5">
+                                            <a aria-label="Instagram" href={instagramUrl} target="_blank" rel="noopener noreferrer" className="grid h-12 w-12 place-items-center rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] text-pink-500 transition hover:-translate-y-0.5 hover:bg-[var(--vz-surface)]">
                                                 <Instagram className="h-5 w-5" />
                                             </a>
                                         ) : null}
                                         {facebookUrl ? (
-                                            <a aria-label="Facebook" href={facebookUrl} target="_blank" rel="noopener noreferrer" className="grid h-12 w-12 place-items-center rounded-2xl border border-slate-200/90 bg-white/80 text-sky-600 transition hover:-translate-y-0.5 hover:bg-white dark:border-white/15 dark:bg-white/5">
+                                            <a aria-label="Facebook" href={facebookUrl} target="_blank" rel="noopener noreferrer" className="grid h-12 w-12 place-items-center rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-info)] transition hover:-translate-y-0.5 hover:bg-[var(--vz-surface)]">
                                                 <Facebook className="h-5 w-5" />
                                             </a>
                                         ) : null}
                                         {whatsappUrl ? (
-                                            <a aria-label="WhatsApp" href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="grid h-12 w-12 place-items-center rounded-2xl border border-slate-200/90 bg-white/80 text-emerald-600 transition hover:-translate-y-0.5 hover:bg-white dark:border-white/15 dark:bg-white/5">
+                                            <a aria-label="WhatsApp" href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="grid h-12 w-12 place-items-center rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-success)] transition hover:-translate-y-0.5 hover:bg-[var(--vz-surface)]">
                                                 <MessageCircleMore className="h-5 w-5" />
                                             </a>
                                         ) : null}
                                         {messengerUrl ? (
-                                            <a aria-label="Messenger" href={messengerUrl} target="_blank" rel="noopener noreferrer" className="grid h-12 w-12 place-items-center rounded-xl border border-slate-200/90 bg-white/80 text-[var(--vz-brand-text)] transition hover:-translate-y-0.5 hover:bg-white dark:border-white/15 dark:bg-white/5">
+                                            <a aria-label="Messenger" href={messengerUrl} target="_blank" rel="noopener noreferrer" className="grid h-12 w-12 place-items-center rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-brand-text)] transition hover:-translate-y-0.5 hover:bg-[var(--vz-surface)]">
                                                 <MessageCircleMore className="h-5 w-5" />
                                             </a>
                                         ) : null}
@@ -300,41 +300,41 @@ export default function PublicBusinessProfile() {
 
                                     <div className="vizit-business-profile-stats mt-7 grid grid-cols-2 gap-3 xl:grid-cols-4">
                                         <div className="vizit-business-profile-stat rounded-2xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
-                                            <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                                            <div className="flex items-center gap-2 text-sm text-[var(--vz-muted)]">
                                                 <Clock3 className="h-4 w-4 text-[var(--vz-brand-text)]" />
                                                 {text.workingHours}
                                             </div>
-                                            <div className="mt-2 text-sm font-semibold text-slate-900 dark:text-white">
+                                            <div className="mt-2 text-sm font-semibold text-[var(--vz-text)]">
                                                 {formatWorkHours(business.work_start, business.work_end, locale)}
                                             </div>
                                         </div>
 
                                         <div className="vizit-business-profile-stat rounded-2xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
-                                            <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                                            <div className="flex items-center gap-2 text-sm text-[var(--vz-muted)]">
                                                 <Users className="h-4 w-4 text-[var(--vz-brand-text)]" />
                                                 {text.team}
                                             </div>
-                                            <div className="mt-2 text-sm font-semibold text-slate-900 dark:text-white">
+                                            <div className="mt-2 text-sm font-semibold text-[var(--vz-text)]">
                                                 {staff.length} {text.staffUnit}
                                             </div>
                                         </div>
 
                                         <div className="vizit-business-profile-stat rounded-2xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
-                                            <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                                            <div className="flex items-center gap-2 text-sm text-[var(--vz-muted)]">
                                                 <Sparkles className="h-4 w-4 text-[var(--vz-brand-text)]" />
                                                 {text.services}
                                             </div>
-                                            <div className="mt-2 text-sm font-semibold text-slate-900 dark:text-white">
+                                            <div className="mt-2 text-sm font-semibold text-[var(--vz-text)]">
                                                 {services.length} {text.servicesUnit}
                                             </div>
                                         </div>
 
                                         <div className="vizit-business-profile-stat rounded-2xl border border-white/70 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
-                                            <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+                                            <div className="flex items-center gap-2 text-sm text-[var(--vz-muted)]">
                                                 <CalendarDays className="h-4 w-4 text-[var(--vz-brand-text)]" />
                                                 {text.booking}
                                             </div>
-                                            <div className="mt-2 text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+                                            <div className="mt-2 text-sm font-semibold text-[var(--vz-success)] dark:text-emerald-300">
                                                 {text.online}
                                             </div>
                                         </div>
@@ -343,29 +343,29 @@ export default function PublicBusinessProfile() {
 
                                 <div className="vizit-business-profile-contact relative grid gap-3 rounded-[26px] border border-white/70 bg-white/65 p-3 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/5 sm:grid-cols-2 lg:col-span-2 lg:grid-cols-3">
                                     {business.address ? (
-                                        <div className="flex items-start gap-3 rounded-2xl bg-white/75 px-4 py-3 text-sm text-slate-600 dark:bg-white/5 dark:text-slate-300">
+                                        <div className="flex items-start gap-3 rounded-2xl bg-white/75 px-4 py-3 text-sm text-[var(--vz-text-secondary)] dark:bg-white/5">
                                             <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[var(--vz-brand-text)]" />
                                             <span>{business.address}</span>
                                         </div>
                                     ) : null}
                                     {business.phone ? (
-                                        <a href={`tel:${business.phone}`} className="flex items-start gap-3 rounded-2xl bg-white/75 px-4 py-3 text-sm text-slate-600 transition hover:bg-white dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10">
+                                        <a href={`tel:${business.phone}`} className="flex items-start gap-3 rounded-2xl bg-white/75 px-4 py-3 text-sm text-[var(--vz-text-secondary)] transition hover:bg-[var(--vz-surface)] dark:bg-white/5 dark:hover:bg-white/10">
                                             <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[var(--vz-brand-text)]" />
                                             <span>{business.phone}</span>
                                         </a>
                                     ) : null}
-                                    <div className="flex items-start gap-3 rounded-2xl bg-white/75 px-4 py-3 text-sm text-slate-600 dark:bg-white/5 dark:text-slate-300">
-                                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                                    <div className="flex items-start gap-3 rounded-2xl bg-white/75 px-4 py-3 text-sm text-[var(--vz-text-secondary)] dark:bg-white/5">
+                                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[var(--vz-success)]" />
                                         <span>{text.onlineVia}</span>
                                     </div>
 
                                     {Array.isArray(business.locations) && business.locations.length > 1 ? (
                                         <div className="grid gap-2 sm:col-span-2 sm:grid-cols-2 lg:col-span-3 lg:grid-cols-3">
                                             {business.locations.map((location) => (
-                                                <div key={location.id} className="rounded-2xl border border-white/80 bg-white/75 px-4 py-3 text-sm text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
-                                                    <div className="font-semibold text-slate-900 dark:text-white">{location.name || (location.is_primary ? text.mainLocation : text.branch)}</div>
+                                                <div key={location.id} className="rounded-2xl border border-white/80 bg-white/75 px-4 py-3 text-sm text-[var(--vz-text-secondary)] dark:border-white/10 dark:bg-white/5">
+                                                    <div className="font-semibold text-[var(--vz-text)]">{location.name || (location.is_primary ? text.mainLocation : text.branch)}</div>
                                                     <div className="mt-1 leading-6">{location.address}</div>
-                                                    {location.phone ? <a href={`tel:${location.phone}`} className="mt-1 inline-block text-xs hover:text-slate-900 dark:hover:text-white">{location.phone}</a> : null}
+                                                    {location.phone ? <a href={`tel:${location.phone}`} className="mt-1 inline-block text-xs hover:text-[var(--vz-text)] dark:hover:text-white">{location.phone}</a> : null}
                                                 </div>
                                             ))}
                                         </div>
@@ -385,7 +385,7 @@ export default function PublicBusinessProfile() {
                                 initial={{ opacity: 0, y: 16 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.35, delay: 0.05 }}
-                                className="vizit-profile-section vizit-profile-services-section scroll-mt-24 rounded-[32px] border border-white/70 bg-white/[0.88] p-5 shadow-sm dark:border-white/10 dark:bg-white/5 sm:p-7"
+                                className="vizit-profile-section vizit-profile-services-section scroll-mt-24 rounded-[32px] border border-white/70 bg-[var(--vz-surface)] p-5 shadow-sm dark:border-white/10 sm:p-7"
                             >
                                 <div>
                                     <div>
@@ -393,14 +393,14 @@ export default function PublicBusinessProfile() {
                                             <Sparkles className="h-4 w-4" />
                                             {text.services}
                                         </div>
-                                        <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
+                                        <h2 className="mt-4 text-2xl font-semibold tracking-tight text-[var(--vz-text)]">
                                             {text.publicServices}
                                         </h2>
                                     </div>
                                 </div>
 
                                 {!topServices.length ? (
-                                    <div className="mt-6 rounded-2xl border border-slate-100 bg-slate-50 p-5 text-sm text-slate-500">
+                                    <div className="mt-6 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-5 text-sm text-[var(--vz-muted)]">
                                         {text.noServices}
                                     </div>
                                 ) : (
@@ -408,19 +408,19 @@ export default function PublicBusinessProfile() {
                                         {topServices.map((service) => (
                                             <div
                                                 key={service.id}
-                                                className="vizit-profile-service-card rounded-xl border border-slate-100 bg-slate-50/70 p-4 transition hover:-translate-y-0.5 hover:border-[var(--vz-line-strong)] hover:bg-[var(--vz-accent-soft)]/40 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10 sm:p-5"
+                                                className="vizit-profile-service-card rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4 transition hover:-translate-y-0.5 hover:border-[var(--vz-line-strong)] hover:bg-[var(--vz-accent-soft)]/40 dark:hover:bg-white/10 sm:p-5"
                                             >
                                                 {service.image_url && <div className="vizit-profile-service-image mb-4 h-32 overflow-hidden rounded-2xl"><img src={service.image_url} alt={service.name} className="h-full w-full object-cover" /></div>}
                                                 <div className="flex items-start justify-between gap-4">
                                                     <div>
-                                                        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                                                        <h3 className="text-lg font-semibold text-[var(--vz-text)]">
                                                             {service.name}
                                                         </h3>
                                                         <div className="mt-2 flex flex-wrap gap-2">
-                                                            <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600 dark:bg-white/10 dark:text-slate-300">
+                                                            <span className="rounded-full bg-[var(--vz-surface)] px-3 py-1 text-xs font-medium text-[var(--vz-text-secondary)]">
                                                                 {service.duration_minutes} {text.minutes}
                                                             </span>
-                                                            <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-600 dark:bg-white/10 dark:text-slate-300">
+                                                            <span className="rounded-full bg-[var(--vz-surface)] px-3 py-1 text-xs font-medium text-[var(--vz-text-secondary)]">
                                                                 {formatPrice(service.price, service.currency, locale)}
                                                             </span>
                                                         </div>
@@ -439,19 +439,19 @@ export default function PublicBusinessProfile() {
                                 initial={{ opacity: 0, y: 16 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.35, delay: 0.08 }}
-                                className="vizit-profile-section vizit-profile-team-section rounded-[32px] border border-white/70 bg-white/[0.88] p-5 shadow-sm dark:border-white/10 dark:bg-white/5 sm:p-7"
+                                className="vizit-profile-section vizit-profile-team-section rounded-[32px] border border-white/70 bg-[var(--vz-surface)] p-5 shadow-sm dark:border-white/10 sm:p-7"
                             >
                                 <div className="vizit-profile-section-badge inline-flex items-center gap-2 rounded-xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-4 py-2 text-sm font-medium text-[var(--vz-brand-text)]">
                                     <Users className="h-4 w-4" />
                                     {text.specialists}
                                 </div>
 
-                                <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">
+                                <h2 className="mt-4 text-2xl font-semibold tracking-tight text-[var(--vz-text)]">
                                     {text.teamTitle}
                                 </h2>
 
                                 {!topStaff.length ? (
-                                    <div className="mt-6 rounded-2xl border border-slate-100 bg-slate-50 p-5 text-sm text-slate-500">
+                                    <div className="mt-6 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-5 text-sm text-[var(--vz-muted)]">
                                         {text.noStaff}
                                     </div>
                                 ) : (
@@ -459,32 +459,32 @@ export default function PublicBusinessProfile() {
                                         {topStaff.map((person) => (
                                             <div
                                                 key={person.id}
-                                                className="vizit-profile-staff-card rounded-xl border border-slate-100 bg-slate-50/70 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--vz-line-strong)] hover:bg-white dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
+                                                className="vizit-profile-staff-card rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--vz-line-strong)] hover:bg-[var(--vz-surface)] dark:hover:bg-white/10"
                                             >
                                                 <div className="vizit-profile-staff-head flex items-start justify-between gap-3">
                                                     <div className="flex min-w-0 items-center gap-3">
-                                                        <div className="h-12 w-12 overflow-hidden rounded-2xl bg-white shadow-sm">
-                                                            {person.avatar_url ? <img src={person.avatar_url} alt={person.name} className="h-full w-full object-cover" /> : <div className="grid h-full w-full place-items-center"><Users className="h-5 w-5 text-slate-500" /></div>}
+                                                        <div className="h-12 w-12 overflow-hidden rounded-2xl bg-[var(--vz-surface)] shadow-sm">
+                                                            {person.avatar_url ? <img src={person.avatar_url} alt={person.name} className="h-full w-full object-cover" /> : <div className="grid h-full w-full place-items-center"><Users className="h-5 w-5 text-[var(--vz-muted)]" /></div>}
                                                         </div>
                                                         <div className="min-w-0">
-                                                            <div className="break-words font-semibold text-slate-900 dark:text-white">
+                                                            <div className="break-words font-semibold text-[var(--vz-text)]">
                                                                 {person.name}
                                                             </div>
-                                                            <div className="text-sm text-slate-500">
+                                                            <div className="text-sm text-[var(--vz-muted)]">
                                                                 {publicRoleLabel(person.role, locale)}
                                                             </div>
                                                         </div>
                                                     </div>
 
-                                                    <div className={person.is_bookable ? "vizit-profile-staff-availability rounded-xl border border-[#245171] bg-[var(--vz-accent-soft)] px-3 py-1.5 text-[11px] font-semibold text-[#b9dcfa]" : "vizit-profile-staff-availability rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-medium text-slate-500"}>
+                                                    <div className={person.is_bookable ? "vizit-profile-staff-availability rounded-xl border border-[#245171] bg-[var(--vz-accent-soft)] px-3 py-1.5 text-[11px] font-semibold text-[#b9dcfa]" : "vizit-profile-staff-availability rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-1.5 text-[11px] font-medium text-[var(--vz-muted)]"}>
                                                         {person.is_bookable ? text.onlineBooking : text.publicProfile}
                                                     </div>
                                                 </div>
 
-                                                {person.bio ? <div className="mt-4 text-sm leading-6 text-slate-500">{person.bio}</div> : <div className="mt-4 text-sm leading-6 text-slate-500">{text.bioFallback}</div>}
+                                                {person.bio ? <div className="mt-4 text-sm leading-6 text-[var(--vz-muted)]">{person.bio}</div> : <div className="mt-4 text-sm leading-6 text-[var(--vz-muted)]">{text.bioFallback}</div>}
 
                                                 <div className="vizit-profile-staff-tags mt-4 flex flex-wrap gap-2">
-                                                    <span className="rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600">{publicRoleLabel(person.role, locale)}</span>
+                                                    <span className="rounded-lg border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-1 text-xs font-medium text-[var(--vz-text-secondary)]">{publicRoleLabel(person.role, locale)}</span>
                                                 </div>
 
                                                 {person.is_bookable ? (
@@ -508,14 +508,14 @@ export default function PublicBusinessProfile() {
                             initial={{ opacity: 0, y: 16 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.35, delay: 0.12 }}
-                            className="vizit-profile-section vizit-profile-why-section overflow-hidden rounded-[32px] border border-white/70 bg-[linear-gradient(135deg,rgba(255,255,255,.92),rgba(249,238,244,.86))] p-5 shadow-sm dark:border-white/10 dark:bg-[linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.03))] sm:p-7"
+                            className="vizit-profile-section vizit-profile-why-section overflow-hidden rounded-[32px] border border-white/70 bg-[var(--vz-surface-2)] p-5 shadow-sm dark:border-white/10 sm:p-7"
                         >
                             <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--vz-brand-text)] dark:text-[var(--vz-brand-text)]">Vizit</div>
-                            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">{text.why}</h2>
+                            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[var(--vz-text)]">{text.why}</h2>
                             <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                                 {text.whyItems.map((item) => (
-                                    <div key={item} className="flex items-start gap-3 rounded-2xl border border-white/80 bg-white/75 px-4 py-4 text-sm font-medium leading-6 text-slate-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-200">
-                                        <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500" />
+                                    <div key={item} className="flex items-start gap-3 rounded-2xl border border-white/80 bg-white/75 px-4 py-4 text-sm font-medium leading-6 text-[var(--vz-text-secondary)] dark:border-white/10 dark:bg-white/5">
+                                        <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[var(--vz-success)]" />
                                         <span>{item}</span>
                                     </div>
                                 ))}

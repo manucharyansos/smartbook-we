@@ -49,18 +49,18 @@ export default function ForgotPassword() {
       subtitle={text.subtitle}
       sideTitle={text.sideTitle}
       sideText={text.sideText}
-      footer={<div className="text-center text-sm text-slate-500">{text.remembered} <Link to={isClient ? "/client/login" : "/login"} className="font-medium text-violet-700 hover:text-violet-600">{text.back}</Link></div>}
+      footer={<div className="text-center text-sm text-[var(--vz-muted)]">{text.remembered} <Link to={isClient ? "/client/login" : "/login"} className="font-medium text-[var(--vz-accent-text)] hover:text-[var(--vz-accent-text)]">{text.back}</Link></div>}
     >
       <motion.form variants={staggerContainer(0.08)} initial="hidden" animate="show" onSubmit={submit} className="space-y-5">
-        {msg ? <motion.div variants={fadeUp} className={cn("rounded-2xl border px-4 py-3 text-sm", isError ? "border-rose-200 bg-rose-50 text-rose-700" : "border-violet-200 bg-violet-50 text-violet-700")}>{msg}</motion.div> : null}
+        {msg ? <motion.div variants={fadeUp} className={cn("rounded-2xl border px-4 py-3 text-sm", isError ? "border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] text-[var(--vz-danger)]" : "border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]")}>{msg}</motion.div> : null}
         <motion.div variants={fadeUp}>
-          <label htmlFor="forgot-password-email" className="mb-2 block text-sm font-medium text-slate-700">{text.email}</label>
+          <label htmlFor="forgot-password-email" className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">{text.email}</label>
           <div className="relative">
-            <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input id="forgot-password-email" name="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" required placeholder="example@mail.com" className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100" />
+            <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
+            <input id="forgot-password-email" name="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" required placeholder="example@mail.com" className="h-12 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] pl-11 pr-4 text-sm text-[var(--vz-text)] outline-none transition focus:border-[var(--vz-primary)] focus:ring-4 focus:ring-[var(--vz-focus)]" />
           </div>
         </motion.div>
-        <motion.button variants={fadeUp} type="submit" disabled={loading} {...hoverLift} className={cn("inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-5 text-sm font-medium text-white shadow-lg shadow-violet-500/20 transition", loading && "cursor-not-allowed opacity-70")}>
+        <motion.button variants={fadeUp} type="submit" disabled={loading} {...hoverLift} className={cn("bg-[var(--vz-primary)] inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 text-sm font-medium text-[var(--vz-on-primary)] shadow-lg transition", loading && "cursor-not-allowed opacity-70")}>
           <Send className="h-4 w-4" />{loading ? text.sending : text.send}
         </motion.button>
       </motion.form>

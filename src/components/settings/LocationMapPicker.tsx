@@ -132,15 +132,15 @@ export function LocationMapPicker({
         disabled={disabled}
         onLocationChange={commitCenter}
         ariaLabel={text.dragHint}
-        className="min-h-[280px] rounded-[22px] border border-slate-200 shadow-inner dark:border-white/10"
+        className="min-h-[280px] rounded-[22px] border border-[var(--vz-line)] shadow-inner"
       >
-        <div className="pointer-events-none absolute left-3 top-3 z-30 max-w-[calc(100%-112px)] rounded-2xl border border-white/70 bg-white/[0.92] px-3 py-2 text-xs font-medium text-slate-700 shadow-lg backdrop-blur dark:border-white/10 dark:bg-slate-950/[0.88] dark:text-slate-100">
+        <div className="pointer-events-none absolute left-3 top-3 z-30 max-w-[calc(100%-112px)] rounded-2xl border border-white/70 bg-[var(--vz-surface)] px-3 py-2 text-xs font-medium text-[var(--vz-text-secondary)] shadow-lg backdrop-blur dark:border-white/10">
           {text.dragHint}
         </div>
 
-        <div className="absolute right-3 top-3 z-30 grid overflow-hidden rounded-2xl border border-white/70 bg-white/95 shadow-lg backdrop-blur dark:border-white/10 dark:bg-slate-950/90">
-          <button type="button" disabled={disabled} onClick={() => setZoom((value) => clamp(value + 1, 8, 19))} className="grid h-10 w-10 place-items-center border-b border-slate-200 text-lg font-semibold text-slate-700 disabled:opacity-50 dark:border-white/10 dark:text-white" aria-label={text.zoomIn}>+</button>
-          <button type="button" disabled={disabled} onClick={() => setZoom((value) => clamp(value - 1, 8, 19))} className="grid h-10 w-10 place-items-center text-lg font-semibold text-slate-700 disabled:opacity-50 dark:text-white" aria-label={text.zoomOut}>−</button>
+        <div className="absolute right-3 top-3 z-30 grid overflow-hidden rounded-2xl border border-white/70 bg-[var(--vz-surface)] shadow-lg backdrop-blur dark:border-white/10">
+          <button type="button" disabled={disabled} onClick={() => setZoom((value) => clamp(value + 1, 8, 19))} className="grid h-10 w-10 place-items-center border-b border-[var(--vz-line)] text-lg font-semibold text-[var(--vz-text-secondary)] disabled:opacity-50" aria-label={text.zoomIn}>+</button>
+          <button type="button" disabled={disabled} onClick={() => setZoom((value) => clamp(value - 1, 8, 19))} className="grid h-10 w-10 place-items-center text-lg font-semibold text-[var(--vz-text-secondary)] disabled:opacity-50" aria-label={text.zoomOut}>−</button>
         </div>
 
         <div className="pointer-events-none absolute left-1/2 top-1/2 z-30 -translate-x-1/2 -translate-y-full">
@@ -153,28 +153,28 @@ export function LocationMapPicker({
       </YandexMap>
 
       <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="text-xs leading-5 text-slate-500 dark:text-slate-400">
+        <div className="text-xs leading-5 text-[var(--vz-muted)]">
           {hasCoordinates
             ? `${Number(latitude).toFixed(6)}, ${Number(longitude).toFixed(6)}`
             : text.emptyCoordinates}
         </div>
         <div className="flex flex-wrap gap-2">
           {!hasCoordinates ? (
-            <button type="button" disabled={disabled} onClick={() => commitCenter(center, zoom)} className="inline-flex items-center gap-2 rounded-xl border border-violet-300 bg-violet-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-violet-700 disabled:opacity-50">
+            <button type="button" disabled={disabled} onClick={() => commitCenter(center, zoom)} className="inline-flex items-center gap-2 rounded-xl border border-[var(--vz-primary)] bg-[var(--vz-primary)] px-3 py-2 text-xs font-semibold text-[var(--vz-on-primary)] transition hover:bg-[var(--vz-primary-hover)] disabled:opacity-50">
               <Check className="h-4 w-4" /> {text.confirm}
             </button>
           ) : null}
-          <button type="button" disabled={disabled || locating} onClick={useCurrentLocation} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:border-violet-300 hover:text-violet-700 disabled:opacity-50 dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-200">
+          <button type="button" disabled={disabled || locating} onClick={useCurrentLocation} className="inline-flex items-center gap-2 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-xs font-semibold text-[var(--vz-text-secondary)] transition hover:border-[var(--vz-primary)] hover:text-[var(--vz-accent-text)] disabled:opacity-50">
             <LocateFixed className="h-4 w-4" /> {locating ? text.locating : text.useCurrentLocation}
           </button>
           {hasCoordinates ? (
-            <button type="button" disabled={disabled} onClick={() => { setCenter(YEREVAN_CENTER); setZoom(15); onChange(null); }} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-500 transition hover:text-rose-600 disabled:opacity-50 dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-300">
+            <button type="button" disabled={disabled} onClick={() => { setCenter(YEREVAN_CENTER); setZoom(15); onChange(null); }} className="inline-flex items-center gap-2 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-xs font-semibold text-[var(--vz-muted)] transition hover:text-[var(--vz-danger)] disabled:opacity-50">
               <RotateCcw className="h-4 w-4" /> {text.clear}
             </button>
           ) : null}
         </div>
       </div>
-      {locationError ? <div className="mt-2 text-xs leading-5 text-rose-600">{locationError}</div> : null}
+      {locationError ? <div className="mt-2 text-xs leading-5 text-[var(--vz-danger)]">{locationError}</div> : null}
     </div>
   );
 }

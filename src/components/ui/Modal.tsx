@@ -63,7 +63,7 @@ export function Modal({
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] as const }}
             className={cn(
-              "relative flex w-full flex-col overflow-hidden overflow-x-hidden bg-white shadow-[0_30px_100px_rgba(15,23,42,0.28)]",
+              "relative flex w-full flex-col overflow-hidden overflow-x-hidden bg-[var(--vz-surface)] shadow-[0_30px_100px_rgba(15,23,42,0.28)]",
               "max-h-[94dvh] rounded-t-[28px] sm:max-h-[92vh] sm:rounded-[32px] sm:border sm:border-white/70",
               sizeMap[size],
               panelClassName,
@@ -72,17 +72,17 @@ export function Modal({
           >
             {/* Drag handle for mobile */}
             <div className="flex justify-center pt-3 sm:hidden">
-              <div className="h-1 w-10 rounded-full bg-slate-300" />
+              <div className="h-1 w-10 rounded-full bg-[var(--vz-line-strong)]" />
             </div>
 
-            <div className="flex items-start justify-between gap-4 border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur sm:px-6 sm:py-4">
+            <div className="flex items-start justify-between gap-4 border-b border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 backdrop-blur sm:px-6 sm:py-4">
               <div className="min-w-0">
-                <div className="text-base font-semibold text-slate-950 sm:text-lg">{title ?? ""}</div>
-                {description ? <div className="mt-0.5 text-xs leading-5 text-slate-500 sm:mt-1 sm:text-sm">{description}</div> : null}
+                <div className="text-base font-semibold text-[var(--vz-text)] sm:text-lg">{title ?? ""}</div>
+                {description ? <div className="mt-0.5 text-xs leading-5 text-[var(--vz-muted)] sm:mt-1 sm:text-sm">{description}</div> : null}
               </div>
               <button
                 type="button"
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 sm:h-10 sm:w-10 sm:rounded-2xl"
+                className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text-secondary)] transition hover:bg-[var(--vz-surface-2)] hover:text-[var(--vz-text)] sm:h-10 sm:w-10 sm:rounded-2xl"
                 onClick={onClose}
                 aria-label="Close"
               >
@@ -92,7 +92,7 @@ export function Modal({
 
             <div className={cn("min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-3 sm:px-6 sm:py-4", bodyClassName)}>{children}</div>
 
-            {footer ? <div className="border-t border-slate-200/80 bg-white/95 px-4 py-3 sm:px-6 sm:py-4">{footer}</div> : null}
+            {footer ? <div className="border-t border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 sm:px-6 sm:py-4">{footer}</div> : null}
           </motion.div>
         </div>
       )}

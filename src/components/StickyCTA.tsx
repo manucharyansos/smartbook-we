@@ -11,12 +11,12 @@ export default function StickyCTA() {
                 initial={{ opacity: 0, y: 18, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
-                className="mx-auto max-w-xl rounded-3xl border bg-white/85 backdrop-blur-xl shadow-lg p-3"
+                className="mx-auto max-w-xl rounded-3xl border bg-[var(--vz-surface)] backdrop-blur-xl shadow-lg p-3"
             >
                 <div className="flex items-center gap-2">
                     <Link
                         to="/login"
-                        className="flex-1 text-center rounded-2xl border bg-white py-3 text-sm font-medium hover:bg-gray-50 transition"
+                        className="flex-1 text-center rounded-2xl border bg-[var(--vz-surface)] py-3 text-sm font-medium hover:bg-[var(--vz-surface-2)] transition"
                     >
                         {text.login}
                     </Link>

@@ -20,8 +20,8 @@ export function Toast({
                 >
                     <div
                         className={[
-                            "rounded-2xl border px-4 py-3 shadow-lg backdrop-blur bg-white/90 text-sm",
-                            type === "success" ? "border-green-200 text-green-700" : "border-red-200 text-red-700",
+                            "rounded-2xl border px-4 py-3 shadow-lg backdrop-blur bg-[var(--vz-surface)] text-sm",
+                            type === "success" ? "border-[var(--vz-success-line)] text-[var(--vz-success)]" : "border-[var(--vz-danger-line)] text-[var(--vz-danger)]",
                         ].join(" ")}
                     >
                         {text}

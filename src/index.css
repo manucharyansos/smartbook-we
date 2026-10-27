@@ -376,9 +376,11 @@ textarea {
   }
 
   .bb-surface {
-    @apply border bg-white shadow-sm;
-    border-color: var(--bb-border-strong);
-    box-shadow: var(--bb-shadow-soft);
+    @apply border;
+    border-color: var(--vz-line);
+    background-color: var(--vz-surface);
+    color: var(--vz-text);
+    box-shadow: var(--vz-shadow-sm);
   }
 
   .bb-surface-soft {
@@ -386,8 +388,10 @@ textarea {
   }
 
   .bb-input {
-    @apply h-12 w-full rounded-2xl border bg-white px-4 text-sm outline-none transition;
-    border-color: var(--bb-border);
+    @apply h-12 w-full rounded-2xl border px-4 text-sm outline-none transition;
+    border-color: var(--vz-line-strong);
+    background-color: var(--vz-surface);
+    color: var(--vz-text);
     /* Prevent iOS zoom on focus (font-size >= 16px) */
     font-size: 16px;
   }
@@ -399,20 +403,27 @@ textarea {
     }
   }
 
+  .bb-input::placeholder {
+    color: var(--vz-muted);
+  }
+
   .bb-input:focus {
-    @apply ring-4;
-    border-color: rgba(139, 92, 246, 0.4);
-    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.12);
+    border-color: var(--vz-primary);
+    box-shadow: 0 0 0 4px var(--vz-focus);
   }
 
   .bb-eyebrow {
-    @apply inline-flex items-center gap-2 rounded-full border bg-white/80 px-4 py-2 text-sm font-medium text-violet-700 shadow-sm;
-    border-color: rgba(196, 181, 253, 0.8);
+    @apply inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium;
+    border-color: var(--vz-line-strong);
+    background-color: var(--vz-accent-soft);
+    color: var(--vz-accent-text);
   }
 
   .bb-stat-pill {
-    @apply rounded-full border bg-slate-50 px-4 py-2 text-sm text-slate-600;
-    border-color: var(--bb-border);
+    @apply rounded-full border px-4 py-2 text-sm;
+    border-color: var(--vz-line);
+    background-color: var(--vz-surface-2);
+    color: var(--vz-text-secondary);
   }
 }
 

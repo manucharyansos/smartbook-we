@@ -25,9 +25,9 @@ export const PremiumButton: React.FC<PremiumButtonProps> = ({
     const baseClasses = "relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full text-sm tracking-widest uppercase overflow-hidden transition-all duration-700 group cursor-pointer";
 
     const variants = {
-        primary: "bg-[#2C2C2C] text-white hover:bg-[#8F6B58]",
-        secondary: "bg-white text-[#2C2C2C] hover:bg-[#C5A28A] hover:text-white",
-        outline: "border border-[#C5A28A]/30 text-[#8F6B58] hover:border-[#C5A28A]"
+        primary: "bg-[var(--vz-cover)] text-white hover:bg-[#8F6B58]",
+        secondary: "bg-[var(--vz-surface)] text-[var(--vz-text)] hover:bg-[#C5A28A] hover:text-white",
+        outline: "border border-[var(--vz-line-strong)] text-[var(--vz-muted)] hover:border-[var(--vz-line-strong)]"
     };
 
     const handleClick = () => {
@@ -50,7 +50,7 @@ export const PremiumButton: React.FC<PremiumButtonProps> = ({
                 {Icon && <Icon size={18} className="group-hover:translate-x-1 transition-transform" />}
             </span>
             <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-[#C5A28A] to-[#B88E72]"
+                className="bg-[var(--vz-primary)] absolute inset-0"
                 initial={{ x: "100%" }}
                 whileHover={{ x: 0 }}
                 transition={{ duration: 0.5 }}

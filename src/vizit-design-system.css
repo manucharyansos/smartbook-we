@@ -36,12 +36,18 @@ html.dark {
   --vz-logo-check: #FFB86B;
   --vz-success: #347651;
   --vz-success-soft: #E7F3EA;
-  --vz-warning: #94671F;
+  --vz-warning: #8A5F1C;
   --vz-warning-soft: #FBF0DC;
   --vz-danger: #B3433F;
   --vz-danger-soft: #FBEAE8;
-  --vz-info: #4C6FA5;
+  --vz-info: #3F6297;
   --vz-info-soft: #EAEFF6;
+  --vz-on-success: #FFFFFF;
+  --vz-on-danger: #FFFFFF;
+  --vz-success-line: color-mix(in srgb, var(--vz-success) 32%, transparent);
+  --vz-warning-line: color-mix(in srgb, var(--vz-warning) 32%, transparent);
+  --vz-danger-line: color-mix(in srgb, var(--vz-danger) 32%, transparent);
+  --vz-info-line: color-mix(in srgb, var(--vz-info) 32%, transparent);
   --vz-cover: #0F766E;
   --vz-cover-deep: #134E4A;
   --vz-cover-text: #FFFFFF;
@@ -107,12 +113,14 @@ html.dark {
   --vz-highlight-rgb: 255 174 92;
   --vz-success: #5FBE95;
   --vz-success-soft: rgb(95 190 149 / .16);
-  --vz-warning: #D7AD5E;
+  --vz-warning: #E0B96C;
   --vz-warning-soft: rgb(215 173 94 / .16);
   --vz-danger: #E28783;
   --vz-danger-soft: rgb(226 135 131 / .16);
   --vz-info: #7FA3D1;
   --vz-info-soft: rgb(127 163 209 / .16);
+  --vz-on-success: #06261A;
+  --vz-on-danger: #2A0E0D;
   --vz-cover: #134E4A;
   --vz-cover-deep: #0F3B38;
   --vz-cover-text: #ECF3F1;
@@ -1614,15 +1622,6 @@ body,
   .vizit-business-directory-card { transform: none !important; transition: none !important; }
 }
 
-/* Selected plans are highlighted surfaces, with readable labels in both themes. */
-.vizit-admin-shell .vizit-billing-plan.is-current {
-  border-color: var(--vz-accent) !important;
-  background: var(--vz-accent-subtle) !important;
-  color: var(--vz-text) !important;
-  box-shadow: var(--vz-shadow-sm) !important;
-}
-.vizit-admin-shell .vizit-billing-plan.is-current :is([class*="text-white"], [class*="text-[var(--vz-on-primary)]"]) { color: var(--vz-text-secondary) !important; }
-.vizit-admin-shell .vizit-billing-plan.is-current .vizit-button { background: var(--vz-primary) !important; color: var(--vz-on-primary) !important; }
 .vizit-client-page > div > div:first-child > div > div:first-child > div:first-child { border-color: color-mix(in srgb, var(--vz-on-primary) 25%, transparent) !important; color: var(--vz-on-primary) !important; }
 
 /* Interactive labels and preview surfaces must keep their contrast when the

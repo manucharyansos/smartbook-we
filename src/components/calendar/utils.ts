@@ -117,17 +117,17 @@ export function formatMoney(value: number) {
 export function eventColor(status: Booking["status"]) {
     switch (status) {
         case "pending":
-            return { outer: "border-[#efd7a2] bg-[#fbf2dc]", badge: "bg-[#f4e2b2] text-[#7a5a13]" };
+            return { outer: "border-[var(--vz-line)] bg-[var(--vz-surface-2)]", badge: "bg-[var(--vz-surface-2)] text-[var(--vz-highlight-text)]" };
         case "confirmed":
-            return { outer: "border-[#b9dec4] bg-[#e8f4eb]", badge: "bg-[#cfe8d5] text-[#2f6b3f]" };
+            return { outer: "border-[var(--vz-line)] bg-[var(--vz-surface-2)]", badge: "bg-[var(--vz-success-soft)] text-[var(--vz-success)]" };
         case "done":
-            return { outer: "border-[#bfd8ea] bg-[#eaf4fb]", badge: "bg-[#d4e8f6] text-[#2d5876]" };
+            return { outer: "border-[var(--vz-line)] bg-[var(--vz-info-soft)]", badge: "bg-[var(--vz-info-soft)] text-[var(--vz-info)]" };
         case "cancelled":
-            return { outer: "border-slate-200 bg-slate-50 opacity-75", badge: "bg-slate-100 text-slate-600" };
+            return { outer: "border-[var(--vz-line)] bg-[var(--vz-surface-2)] opacity-75", badge: "bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]" };
         case "no_show":
-            return { outer: "border-[#efc0bf] bg-[#fae8e7]", badge: "bg-[#f4d3d1] text-[#8f4a49]" };
+            return { outer: "border-[var(--vz-line)] bg-[var(--vz-danger-soft)]", badge: "bg-[#f4d3d1] text-[var(--vz-danger)]" };
         default:
-            return { outer: "border-slate-200 bg-white", badge: "bg-slate-100 text-slate-600" };
+            return { outer: "border-[var(--vz-line)] bg-[var(--vz-surface)]", badge: "bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]" };
     }
 }
 
@@ -151,17 +151,17 @@ export function bookingStatusLabel(status: Booking["status"]) {
 export function bookingStatusTone(status: Booking["status"]) {
     switch (status) {
         case "pending":
-            return "border-[#efd7a2] bg-[#fbf2dc] text-[#7a5a13]";
+            return "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-highlight-text)]";
         case "confirmed":
-            return "border-[#b9dec4] bg-[#e8f4eb] text-[#2f6b3f]";
+            return "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-success)]";
         case "done":
-            return "border-[#bfd8ea] bg-[#eaf4fb] text-[#2d5876]";
+            return "border-[var(--vz-line)] bg-[var(--vz-info-soft)] text-[var(--vz-info)]";
         case "cancelled":
-            return "border-slate-200 bg-slate-100 text-slate-600";
+            return "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]";
         case "no_show":
-            return "border-[#efc0bf] bg-[#fae8e7] text-[#8f4a49]";
+            return "border-[var(--vz-line)] bg-[var(--vz-danger-soft)] text-[var(--vz-danger)]";
         default:
-            return "border-slate-200 bg-slate-100 text-slate-600";
+            return "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]";
     }
 }
 
@@ -193,19 +193,19 @@ export function bookingSourceLabel(source?: string | null) {
 export function bookingSourceTone(source?: string | null) {
     switch (source) {
         case "instagram":
-            return "bg-[#fcecf4] text-[#a44972] border-[#f4d1e2]";
+            return "bg-[var(--vz-surface-2)] text-[var(--vz-accent-text)] border-[var(--vz-line)]";
         case "facebook":
-            return "bg-[#eef5fb] text-[#3e6a8b] border-[#d8e7f4]";
+            return "bg-[var(--vz-surface-2)] text-[var(--vz-info)] border-[var(--vz-line)]";
         case "whatsapp":
-            return "bg-[#eaf7ee] text-[#2f6b3f] border-[#cee8d6]";
+            return "bg-[var(--vz-surface-2)] text-[var(--vz-success)] border-[var(--vz-line)]";
         case "website":
-            return "bg-[#eff5fb] text-[#37627c] border-[#d7e6f3]";
+            return "bg-[var(--vz-surface-2)] text-[var(--vz-info)] border-[var(--vz-line)]";
         case "admin":
-            return "bg-[#f0ebfa] text-[#6346a8] border-[#ddd2f6]";
+            return "bg-[var(--vz-surface-2)] text-[var(--vz-accent-text)] border-[var(--vz-line)]";
         case "partner":
-            return "bg-[#fbf2e4] text-[#8a6522] border-[#f0dfbb]";
+            return "bg-[var(--vz-surface-2)] text-[var(--vz-highlight-text)] border-[var(--vz-line)]";
         default:
-            return "bg-slate-50 text-slate-600 border-slate-200";
+            return "bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)] border-[var(--vz-line)]";
     }
 }
 

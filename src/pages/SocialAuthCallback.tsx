@@ -174,7 +174,7 @@ export default function SocialAuthCallback() {
                 {error ? (
                     <motion.div
                         variants={fadeUp}
-                        className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-4 text-sm text-rose-700"
+                        className="rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-4 text-sm text-[var(--vz-danger)]"
                     >
                         <div className="flex items-start gap-3">
                             <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
@@ -184,15 +184,15 @@ export default function SocialAuthCallback() {
                 ) : (
                     <motion.div
                         variants={fadeUp}
-                        className="rounded-2xl border border-violet-200 bg-violet-50 px-4 py-5 text-sm text-slate-700"
+                        className="rounded-2xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-4 py-5 text-sm text-[var(--vz-text-secondary)]"
                     >
                         <div className="flex items-center gap-3">
-                            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-white text-violet-600 shadow-sm">
+                            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-[var(--vz-surface)] text-[var(--vz-accent-text)] shadow-sm">
                                 <LoaderCircle className="h-5 w-5 animate-spin" />
                             </div>
                             <div>
-                                <div className="font-medium text-slate-900">{text.waiting}</div>
-                                <div className="mt-1 text-slate-500">
+                                <div className="font-medium text-[var(--vz-text)]">{text.waiting}</div>
+                                <div className="mt-1 text-[var(--vz-muted)]">
                                     {text.loading}
                                 </div>
                             </div>
@@ -200,9 +200,9 @@ export default function SocialAuthCallback() {
                     </motion.div>
                 )}
 
-                <motion.div variants={fadeUp} className="rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm text-slate-600">
+                <motion.div variants={fadeUp} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-4 text-sm text-[var(--vz-text-secondary)]">
                     <div className="flex items-start gap-3">
-                        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-violet-600" />
+                        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[var(--vz-accent-text)]" />
                         <div>{text.secure}</div>
                     </div>
                 </motion.div>

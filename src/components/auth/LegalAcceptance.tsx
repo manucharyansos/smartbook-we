@@ -38,8 +38,8 @@ export default function LegalAcceptance({ id, checked, onChange }: LegalAcceptan
   }[locale];
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-white/10 dark:bg-white/[0.055]">
-      <label htmlFor={id} className="flex cursor-pointer items-start gap-3 text-sm leading-6 text-slate-700 dark:text-slate-200">
+    <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3">
+      <label htmlFor={id} className="flex cursor-pointer items-start gap-3 text-sm leading-6 text-[var(--vz-text-secondary)]">
         <input
           id={id}
           name="legal_accepted"
@@ -47,19 +47,19 @@ export default function LegalAcceptance({ id, checked, onChange }: LegalAcceptan
           checked={checked}
           onChange={(event) => onChange(event.target.checked)}
           required
-          className="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 text-violet-700 focus:ring-violet-500"
+          className="mt-1 h-4 w-4 shrink-0 rounded border-[var(--vz-line-strong)] text-[var(--vz-accent-text)] focus:ring-[var(--vz-focus)]"
         />
         <span>
           {text.prefix}{" "}
-          <Link to="/terms" target="_blank" rel="noreferrer" className="font-semibold text-violet-700 underline underline-offset-2 dark:text-violet-300">
+          <Link to="/terms" target="_blank" rel="noreferrer" className="font-semibold text-[var(--vz-accent-text)] underline underline-offset-2 dark:text-violet-300">
             {text.terms}
           </Link>{" "}
           {text.connector}{" "}
-          <Link to="/privacy-policy" target="_blank" rel="noreferrer" className="font-semibold text-violet-700 underline underline-offset-2 dark:text-violet-300">
+          <Link to="/privacy-policy" target="_blank" rel="noreferrer" className="font-semibold text-[var(--vz-accent-text)] underline underline-offset-2 dark:text-violet-300">
             {text.privacy}
           </Link>
           {text.sentenceEnd}
-          <span className="mt-1 block text-xs text-slate-500 dark:text-slate-400">{text.required}</span>
+          <span className="mt-1 block text-xs text-[var(--vz-muted)]">{text.required}</span>
         </span>
       </label>
     </div>

@@ -437,7 +437,7 @@ export default function Register() {
             sideTitle={text.sideTitle}
             sideText={text.sideText}
             footer={
-                <div className="text-center text-sm text-slate-500">
+                <div className="text-center text-sm text-[var(--vz-muted)]">
                     {text.hasAccount}{" "}
                     <Link to="/login" className="font-medium text-[var(--vz-brand-text)] hover:text-[var(--vz-brand-text)]">
                         {text.login}
@@ -458,8 +458,8 @@ export default function Register() {
                         className={cn(
                             "rounded-2xl border px-4 py-4 text-sm",
                             errorCode === "trial_already_used"
-                                ? "border-amber-200 bg-amber-50 text-amber-900"
-                                : "border-rose-200 bg-rose-50 text-rose-700"
+                                ? "border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] text-[var(--vz-warning)]"
+                                : "border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] text-[var(--vz-danger)]"
                         )}
                     >
                         <div className="flex items-start gap-3">
@@ -471,21 +471,21 @@ export default function Register() {
                                     <div className="mt-3 flex flex-wrap gap-2">
                                         <Link
                                             to="/business/login"
-                                            className="inline-flex items-center rounded-xl bg-slate-900 px-3 py-2 text-xs font-semibold text-white"
+                                            className="inline-flex items-center rounded-xl bg-[var(--vz-primary)] px-3 py-2 text-xs font-semibold text-[var(--vz-on-primary)]"
                                         >
                                             {text.businessLogin}
                                         </Link>
 
                                         <Link
                                             to="/forgot-password"
-                                            className="inline-flex items-center rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700"
+                                            className="inline-flex items-center rounded-xl border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] px-3 py-2 text-xs font-semibold text-[var(--vz-text-secondary)]"
                                         >
                                             {text.resetPassword}
                                         </Link>
 
                                         <Link
                                             to="/support"
-                                            className="inline-flex items-center rounded-xl border border-amber-300 bg-white px-3 py-2 text-xs font-semibold text-amber-900"
+                                            className="inline-flex items-center rounded-xl border border-[var(--vz-warning-line)] bg-[var(--vz-surface)] px-3 py-2 text-xs font-semibold text-[var(--vz-warning)]"
                                         >
                                             {text.contactSupport}
                                         </Link>
@@ -498,7 +498,7 @@ export default function Register() {
 
                 <motion.div variants={fadeUp} className="vizit-registration-classifier space-y-5">
                     <div>
-                        <div id="business-type-label" className="mb-3 block text-sm font-medium text-slate-700">
+                        <div id="business-type-label" className="mb-3 block text-sm font-medium text-[var(--vz-text-secondary)]">
                             {categoryText.chooseVertical}
                         </div>
 
@@ -518,23 +518,23 @@ export default function Register() {
                                             "vizit-registration-type-option flex items-center gap-3 rounded-xl border p-4 text-left transition",
                                             active
                                                 ? "border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] shadow-sm"
-                                                : "border-slate-200 bg-white hover:border-[#c4d4e1] hover:bg-[var(--vz-accent-soft)]"
+                                                : "border-[var(--vz-line)] bg-[var(--vz-surface)] hover:border-[var(--vz-line)] hover:bg-[var(--vz-accent-soft)]"
                                         )}
                                     >
                                         <div
                                             className={cn(
                                                 "grid h-11 w-11 place-items-center rounded-2xl",
-                                                active ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)]" : "bg-slate-100 text-slate-500"
+                                                active ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)]" : "bg-[var(--vz-surface-2)] text-[var(--vz-muted)]"
                                             )}
                                         >
                                             <Icon className="h-5 w-5" />
                                         </div>
 
                                         <div className="min-w-0 flex-1">
-                                            <div className="text-sm font-semibold text-slate-900">
+                                            <div className="text-sm font-semibold text-[var(--vz-text)]">
                                                 {businessMeta[type].short}
                                             </div>
-                                            <div className="text-xs text-slate-500">
+                                            <div className="text-xs text-[var(--vz-muted)]">
                                                 {businessMeta[type].label}
                                             </div>
                                         </div>
@@ -547,7 +547,7 @@ export default function Register() {
                     </div>
 
                     <div>
-                        <label htmlFor="business-register-category" className="mb-2 block text-sm font-medium text-slate-700">
+                        <label htmlFor="business-register-category" className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">
                             {categoryText.category}
                         </label>
                         <div className="relative">
@@ -562,7 +562,7 @@ export default function Register() {
                                     setErrorCode(null);
                                 }}
                                 aria-busy={categoriesQuery.isLoading}
-                                className="h-14 w-full appearance-none rounded-2xl border border-slate-200 bg-white px-4 pr-11 text-base text-slate-900 outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15 sm:h-12 sm:text-sm"
+                                className="h-14 w-full appearance-none rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 pr-11 text-base text-[var(--vz-text)] outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15 sm:h-12 sm:text-sm"
                                 required
                             >
                                 <option value="">{categoryText.categoryPlaceholder}</option>
@@ -572,14 +572,14 @@ export default function Register() {
                                     </option>
                                 ))}
                             </select>
-                            <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                            <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
                         </div>
-                        <p className="mt-2 text-xs leading-5 text-slate-500">{categoryText.categoryHelp}</p>
+                        <p className="mt-2 text-xs leading-5 text-[var(--vz-muted)]">{categoryText.categoryHelp}</p>
                     </div>
 
                     {isOtherCategory ? (
                         <div>
-                            <label htmlFor="business-register-custom-category" className="mb-2 block text-sm font-medium text-slate-700">
+                            <label htmlFor="business-register-custom-category" className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">
                                 {categoryText.customCategory}
                             </label>
                             <input
@@ -589,7 +589,7 @@ export default function Register() {
                                 onChange={(event) => setCustomCategoryName(event.target.value)}
                                 placeholder={categoryText.customPlaceholder}
                                 maxLength={120}
-                                className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-900 outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15 sm:h-12 sm:text-sm"
+                                className="h-14 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 text-base text-[var(--vz-text)] outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15 sm:h-12 sm:text-sm"
                                 required
                             />
                         </div>
@@ -604,7 +604,7 @@ export default function Register() {
                                     "grid h-10 w-10 place-items-center rounded-full text-sm font-semibold transition",
                                     currentStep >= step
                                         ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-md"
-                                        : "bg-slate-100 text-slate-600"
+                                        : "bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]"
                                 )}
                             >
                                 {step}
@@ -614,7 +614,7 @@ export default function Register() {
                                 <div
                                     className={cn(
                                         "h-[2px] w-10 rounded-full transition sm:w-14",
-                                        currentStep >= 2 ? "bg-[var(--vz-accent-soft)]0" : "bg-slate-200"
+                                        currentStep >= 2 ? "bg-[var(--vz-accent-soft)]0" : "bg-[var(--vz-surface-pressed)]"
                                     )}
                                 />
                             ) : null}
@@ -634,18 +634,18 @@ export default function Register() {
                         >
                             <motion.div
                                 variants={fadeUp}
-                                className="rounded-xl border border-[#d8e3ec] bg-[var(--vz-accent-soft)] p-4"
+                                className="rounded-xl border border-[var(--vz-line)] bg-[var(--vz-accent-soft)] p-4"
                             >
                                 <div className="flex items-start gap-3">
-                                    <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white text-[var(--vz-brand-text)] shadow-sm">
+                                    <div className="grid h-11 w-11 place-items-center rounded-2xl bg-[var(--vz-surface)] text-[var(--vz-brand-text)] shadow-sm">
                                         <CurrentIcon className="h-5 w-5" />
                                     </div>
 
                                     <div>
-                                        <div className="text-sm font-semibold text-slate-900">
+                                        <div className="text-sm font-semibold text-[var(--vz-text)]">
                                             {selectedCategoryName}
                                         </div>
-                                        <div className="mt-1 text-xs leading-6 text-slate-500">
+                                        <div className="mt-1 text-xs leading-6 text-[var(--vz-muted)]">
                                             {businessMeta[business_type].short} · {text.basics}
                                         </div>
                                     </div>
@@ -653,12 +653,12 @@ export default function Register() {
                             </motion.div>
 
                             <motion.div variants={fadeUp}>
-                                <label htmlFor="business-register-name" className="mb-2 block text-sm font-medium text-slate-700">
+                                <label htmlFor="business-register-name" className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">
                                     {text.businessName}
                                 </label>
 
                                 <div className="relative">
-                                    <Store className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                                    <Store className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
                                     <input
                                         id="business-register-name"
                                         name="business_name"
@@ -668,19 +668,19 @@ export default function Register() {
                                         placeholder={
                                             business_type === "services" ? categoryText.servicesPlaceholder : categoryText.healthcarePlaceholder
                                         }
-                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
+                                        className="h-14 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] pl-11 pr-4 text-base sm:h-12 sm:text-sm text-[var(--vz-text)] outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
                                         required
                                     />
                                 </div>
                             </motion.div>
 
                             <motion.div variants={fadeUp}>
-                                <label htmlFor="business-register-phone" className="mb-2 block text-sm font-medium text-slate-700">
+                                <label htmlFor="business-register-phone" className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">
                                     {text.phone}
                                 </label>
 
                                 <div className="relative">
-                                    <Phone className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                                    <Phone className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
                                     <input
                                         id="business-register-phone"
                                         name="business_phone"
@@ -689,19 +689,19 @@ export default function Register() {
                                         value={business_phone}
                                         onChange={(e) => setBusinessPhone(e.target.value)}
                                         placeholder="+374 77 123456"
-                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
+                                        className="h-14 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] pl-11 pr-4 text-base sm:h-12 sm:text-sm text-[var(--vz-text)] outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
                                         required
                                     />
                                 </div>
                             </motion.div>
 
                             <motion.div variants={fadeUp}>
-                                <label htmlFor="business-register-address" className="mb-2 block text-sm font-medium text-slate-700">
+                                <label htmlFor="business-register-address" className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">
                                     {text.address}
                                 </label>
 
                                 <div className="relative">
-                                    <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                                    <MapPin className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
                                     <input
                                         id="business-register-address"
                                         name="business_address"
@@ -709,7 +709,7 @@ export default function Register() {
                                         value={business_address}
                                         onChange={(e) => setBusinessAddress(e.target.value)}
                                         placeholder={text.addressPlaceholder}
-                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
+                                        className="h-14 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] pl-11 pr-4 text-base sm:h-12 sm:text-sm text-[var(--vz-text)] outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
                                         required
                                     />
                                 </div>
@@ -717,8 +717,8 @@ export default function Register() {
 
                             <motion.div variants={fadeUp} className="space-y-3">
                                 <div>
-                                    <div className="text-sm font-medium text-slate-700">{locationText.title}</div>
-                                    <div className="mt-1 text-xs leading-5 text-slate-500">{locationText.help}</div>
+                                    <div className="text-sm font-medium text-[var(--vz-text-secondary)]">{locationText.title}</div>
+                                    <div className="mt-1 text-xs leading-5 text-[var(--vz-muted)]">{locationText.help}</div>
                                 </div>
                                 <LocationMapPicker
                                     latitude={latitude}
@@ -780,12 +780,12 @@ export default function Register() {
                         >
                             <div className="grid gap-5 md:grid-cols-2">
                             <motion.div variants={fadeUp}>
-                                <label htmlFor="business-register-owner-name" className="mb-2 block text-sm font-medium text-slate-700">
+                                <label htmlFor="business-register-owner-name" className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">
                                     {text.ownerName}
                                 </label>
 
                                 <div className="relative">
-                                    <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                                    <User className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
                                     <input
                                         id="business-register-owner-name"
                                         name="name"
@@ -793,19 +793,19 @@ export default function Register() {
                                         value={owner_name}
                                         onChange={(e) => setOwnerName(e.target.value)}
                                         placeholder={text.ownerPlaceholder}
-                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
+                                        className="h-14 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] pl-11 pr-4 text-base sm:h-12 sm:text-sm text-[var(--vz-text)] outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
                                         required
                                     />
                                 </div>
                             </motion.div>
 
                             <motion.div variants={fadeUp}>
-                                <label htmlFor="business-register-owner-email" className="mb-2 block text-sm font-medium text-slate-700">
+                                <label htmlFor="business-register-owner-email" className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">
                                     {text.email}
                                 </label>
 
                                 <div className="relative">
-                                    <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                                    <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
                                     <input
                                         id="business-register-owner-email"
                                         name="email"
@@ -814,7 +814,7 @@ export default function Register() {
                                         value={owner_email}
                                         onChange={(e) => setOwnerEmail(e.target.value)}
                                         placeholder="owner@example.com"
-                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
+                                        className="h-14 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] pl-11 pr-4 text-base sm:h-12 sm:text-sm text-[var(--vz-text)] outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
                                         required
                                     />
                                 </div>
@@ -823,12 +823,12 @@ export default function Register() {
 
                             <div className="grid gap-5 md:grid-cols-2">
                             <motion.div variants={fadeUp}>
-                                <label htmlFor="business-register-password" className="mb-2 block text-sm font-medium text-slate-700">
+                                <label htmlFor="business-register-password" className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">
                                     {text.password}
                                 </label>
 
                                 <div className="relative">
-                                    <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                                    <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
                                     <input
                                         id="business-register-password"
                                         name="password"
@@ -838,7 +838,7 @@ export default function Register() {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         placeholder="••••••••"
-                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-12 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
+                                        className="h-14 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] pl-11 pr-12 text-base sm:h-12 sm:text-sm text-[var(--vz-text)] outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
                                         required
                                     />
                                     <button
@@ -846,7 +846,7 @@ export default function Register() {
                                         onClick={() => setShowPassword((s) => !s)}
                                         aria-label={showPassword ? text.hide : text.show}
                                         aria-pressed={showPassword}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-[var(--vz-brand-text)]"
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--vz-muted)] transition hover:text-[var(--vz-brand-text)]"
                                     >
                                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                     </button>
@@ -861,19 +861,19 @@ export default function Register() {
                                                     className={cn(
                                                         "h-2 flex-1 rounded-full transition",
                                                         passwordStrength === "weak" && index === 1 && "bg-rose-400",
-                                                        passwordStrength === "medium" && index <= 2 && "bg-amber-400",
-                                                        passwordStrength === "strong" && index <= 3 && "bg-emerald-500",
+                                                        passwordStrength === "medium" && index <= 2 && "bg-[var(--vz-highlight)]",
+                                                        passwordStrength === "strong" && index <= 3 && "bg-[var(--vz-success)]",
                                                         !(
                                                             (passwordStrength === "weak" && index === 1) ||
                                                             (passwordStrength === "medium" && index <= 2) ||
                                                             (passwordStrength === "strong" && index <= 3)
-                                                        ) && "bg-slate-200"
+                                                        ) && "bg-[var(--vz-surface-pressed)]"
                                                     )}
                                                 />
                                             ))}
                                         </div>
 
-                                        <div className="mt-2 text-xs text-slate-500">
+                                        <div className="mt-2 text-xs text-[var(--vz-muted)]">
                                             {text.strength}:{" "}
                                             <span className="font-medium">
                         {passwordStrength === "weak"
@@ -888,12 +888,12 @@ export default function Register() {
                             </motion.div>
 
                             <motion.div variants={fadeUp}>
-                                <label htmlFor="business-register-password-confirmation" className="mb-2 block text-sm font-medium text-slate-700">
+                                <label htmlFor="business-register-password-confirmation" className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">
                                     {text.confirmPassword}
                                 </label>
 
                                 <div className="relative">
-                                    <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                                    <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
                                     <input
                                         id="business-register-password-confirmation"
                                         name="password_confirmation"
@@ -903,7 +903,7 @@ export default function Register() {
                                         value={password_confirmation}
                                         onChange={(e) => setPasswordConfirmation(e.target.value)}
                                         placeholder="••••••••"
-                                        className="h-14 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-12 text-base sm:h-12 sm:text-sm text-slate-900 outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
+                                        className="h-14 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] pl-11 pr-12 text-base sm:h-12 sm:text-sm text-[var(--vz-text)] outline-none transition focus:border-[var(--vz-line-strong)] focus:ring-4 focus:ring-[var(--vz-primary)]/15"
                                         required
                                     />
                                     <button
@@ -911,7 +911,7 @@ export default function Register() {
                                         onClick={() => setShowConfirmPassword((s) => !s)}
                                         aria-label={showConfirmPassword ? text.hide : text.show}
                                         aria-pressed={showConfirmPassword}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-[var(--vz-brand-text)]"
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--vz-muted)] transition hover:text-[var(--vz-brand-text)]"
                                     >
                                         {showConfirmPassword ? (
                                             <EyeOff className="h-4 w-4" />
@@ -927,7 +927,7 @@ export default function Register() {
                                 <button
                                     type="button"
                                     onClick={prevStep}
-                                    className="inline-flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 text-sm font-medium text-slate-700 transition hover:border-[#c4d4e1] hover:bg-[var(--vz-accent-soft)]"
+                                    className="inline-flex h-12 items-center justify-center rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-5 text-sm font-medium text-[var(--vz-text-secondary)] transition hover:border-[var(--vz-line)] hover:bg-[var(--vz-accent-soft)]"
                                 >
                                     {text.back}
                                 </button>

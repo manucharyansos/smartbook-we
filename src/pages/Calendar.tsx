@@ -220,33 +220,33 @@ function eventColor(status: Booking["status"]) {
     switch (status) {
         case "pending":
             return {
-                outer: "border-[#efd7a2] bg-[#fbf2dc]",
-                badge: "bg-[#f4e2b2] text-[#7a5a13]",
+                outer: "border-[var(--vz-line)] bg-[var(--vz-surface-2)]",
+                badge: "bg-[var(--vz-surface-2)] text-[var(--vz-highlight-text)]",
             };
         case "confirmed":
             return {
-                outer: "border-[#b9dec4] bg-[#e8f4eb]",
-                badge: "bg-[#cfe8d5] text-[#2f6b3f]",
+                outer: "border-[var(--vz-line)] bg-[var(--vz-surface-2)]",
+                badge: "bg-[var(--vz-success-soft)] text-[var(--vz-success)]",
             };
         case "done":
             return {
-                outer: "border-[#bfd8ea] bg-[#eaf4fb]",
-                badge: "bg-[#d4e8f6] text-[#2d5876]",
+                outer: "border-[var(--vz-line)] bg-[var(--vz-info-soft)]",
+                badge: "bg-[var(--vz-info-soft)] text-[var(--vz-info)]",
             };
         case "cancelled":
             return {
-                outer: "border-slate-200 bg-slate-50 opacity-75",
-                badge: "bg-slate-100 text-slate-600",
+                outer: "border-[var(--vz-line)] bg-[var(--vz-surface-2)] opacity-75",
+                badge: "bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]",
             };
         case "no_show":
             return {
-                outer: "border-[#efc0bf] bg-[#fae8e7]",
-                badge: "bg-[#f4d3d1] text-[#8f4a49]",
+                outer: "border-[var(--vz-line)] bg-[var(--vz-danger-soft)]",
+                badge: "bg-[#f4d3d1] text-[var(--vz-danger)]",
             };
         default:
             return {
-                outer: "border-slate-200 bg-white",
-                badge: "bg-slate-100 text-slate-600",
+                outer: "border-[var(--vz-line)] bg-[var(--vz-surface)]",
+                badge: "bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]",
             };
     }
 }
@@ -272,17 +272,17 @@ function bookingStatusLabel(status: Booking["status"]) {
 function bookingStatusTone(status: Booking["status"]) {
     switch (status) {
         case "pending":
-            return "border-[#efd7a2] bg-[#fbf2dc] text-[#7a5a13]";
+            return "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-highlight-text)]";
         case "confirmed":
-            return "border-[#b9dec4] bg-[#e8f4eb] text-[#2f6b3f]";
+            return "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-success)]";
         case "done":
-            return "border-[#bfd8ea] bg-[#eaf4fb] text-[#2d5876]";
+            return "border-[var(--vz-line)] bg-[var(--vz-info-soft)] text-[var(--vz-info)]";
         case "cancelled":
-            return "border-slate-200 bg-slate-100 text-slate-600";
+            return "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]";
         case "no_show":
-            return "border-[#efc0bf] bg-[#fae8e7] text-[#8f4a49]";
+            return "border-[var(--vz-line)] bg-[var(--vz-danger-soft)] text-[var(--vz-danger)]";
         default:
-            return "border-slate-200 bg-slate-100 text-slate-600";
+            return "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]";
     }
 }
 
@@ -315,19 +315,19 @@ function bookingSourceLabel(source?: string | null) {
 function bookingSourceTone(source?: string | null) {
     switch (source) {
         case "instagram":
-            return "bg-[#fcecf4] text-[#a44972] border-[#f4d1e2]";
+            return "bg-[var(--vz-surface-2)] text-[var(--vz-accent-text)] border-[var(--vz-line)]";
         case "facebook":
-            return "bg-[#eef5fb] text-[#3e6a8b] border-[#d8e7f4]";
+            return "bg-[var(--vz-surface-2)] text-[var(--vz-info)] border-[var(--vz-line)]";
         case "whatsapp":
-            return "bg-[#eaf7ee] text-[#2f6b3f] border-[#cee8d6]";
+            return "bg-[var(--vz-surface-2)] text-[var(--vz-success)] border-[var(--vz-line)]";
         case "website":
-            return "bg-[#eff5fb] text-[#37627c] border-[#d7e6f3]";
+            return "bg-[var(--vz-surface-2)] text-[var(--vz-info)] border-[var(--vz-line)]";
         case "admin":
-            return "bg-[#f0ebfa] text-[#6346a8] border-[#ddd2f6]";
+            return "bg-[var(--vz-surface-2)] text-[var(--vz-accent-text)] border-[var(--vz-line)]";
         case "partner":
-            return "bg-[#fbf2e4] text-[#8a6522] border-[#f0dfbb]";
+            return "bg-[var(--vz-surface-2)] text-[var(--vz-highlight-text)] border-[var(--vz-line)]";
         default:
-            return "bg-slate-50 text-slate-600 border-slate-200";
+            return "bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)] border-[var(--vz-line)]";
     }
 }
 
@@ -440,16 +440,16 @@ function BookingDetailsDrawer({
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: 420, opacity: 0 }}
                         transition={{ type: "spring", stiffness: 260, damping: 28 }}
-                        className="fixed right-0 top-0 z-50 flex h-full w-full flex-col overflow-hidden border-l border-slate-200 bg-[#fbfaf8] shadow-[0_18px_48px_rgba(15,23,42,0.12)] sm:max-w-[460px]"
+                        className="fixed right-0 top-0 z-50 flex h-full w-full flex-col overflow-hidden border-l border-[var(--vz-line)] bg-[var(--vz-surface-2)] shadow-[0_18px_48px_rgba(15,23,42,0.12)] sm:max-w-[460px]"
                     >
-                        <div className="border-b border-slate-200 bg-[#faf8f4] px-5 py-5 text-slate-900">
+                        <div className="border-b border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-5 py-5 text-[var(--vz-text)]">
                             <div className="flex items-start justify-between gap-4">
                                 <div>
-                                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--vz-muted)]">
                                         Ամրագրման տվյալներ · #{booking.booking_code || booking.id}
                                     </div>
                                     <div className="mt-2 text-2xl font-semibold tracking-tight">{booking.client_name}</div>
-                                    <div className="mt-1 flex items-center gap-2 text-sm text-slate-500">
+                                    <div className="mt-1 flex items-center gap-2 text-sm text-[var(--vz-muted)]">
                                         <Phone className="h-4 w-4" /> {booking.client_phone}
                                     </div>
                                 </div>
@@ -457,7 +457,7 @@ function BookingDetailsDrawer({
                                     <button
                                         type="button"
                                         onClick={() => setEditing((v) => !v)}
-                                        className="grid h-11 w-11 place-items-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 transition hover:bg-white/15"
+                                        className="grid h-11 w-11 place-items-center rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-text)] transition hover:bg-white/15"
                                         title={editing ? 'Չեղարկել խմբագրումը' : 'Խմբագրել'}
                                     >
                                         {editing ? <RotateCcw className="h-5 w-5" /> : <Pencil className="h-5 w-5" />}
@@ -465,7 +465,7 @@ function BookingDetailsDrawer({
                                     <button
                                         type="button"
                                         onClick={onClose}
-                                        className="grid h-11 w-11 place-items-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 transition hover:bg-white/15"
+                                        className="grid h-11 w-11 place-items-center rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-text)] transition hover:bg-white/15"
                                     >
                                         <X className="h-5 w-5" />
                                     </button>
@@ -476,32 +476,32 @@ function BookingDetailsDrawer({
                 <span className={cn("inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold", bookingStatusTone(booking.status))}>
                   {bookingStatusLabel(booking.status)}
                 </span>
-                                {staffName ? <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">{staffName}</span> : null}
-                                {(booking.party_size ?? 1) > 1 ? <span className="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">{booking.party_size} մասնակից</span> : null}
-                                {booking.recurrence_id ? <span className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">Կրկնվող · {booking.recurrence_index ?? 1}/{booking.recurrence_count ?? 1}</span> : null}
+                                {staffName ? <span className="rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-3 py-1 text-xs font-medium text-[var(--vz-text-secondary)]">{staffName}</span> : null}
+                                {(booking.party_size ?? 1) > 1 ? <span className="rounded-full border border-[var(--vz-info-line)] bg-[var(--vz-info-soft)] px-3 py-1 text-xs font-semibold text-[var(--vz-info)]">{booking.party_size} մասնակից</span> : null}
+                                {booking.recurrence_id ? <span className="rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--vz-accent-text)]">Կրկնվող · {booking.recurrence_index ?? 1}/{booking.recurrence_count ?? 1}</span> : null}
                                 <span className={cn('rounded-full border px-3 py-1 text-xs font-semibold', bookingSourceTone(booking.source))}>{bookingSourceLabel(booking.source)}</span>
                             </div>
                         </div>
 
                         <div className="flex-1 overflow-y-auto p-5">
                             {editing ? (
-                                <div className="space-y-4 rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
+                                <div className="space-y-4 rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 shadow-sm">
                                     <div className="flex items-center justify-between gap-3">
                                         <div>
-                                            <div className="text-sm font-semibold text-slate-950">Խմբագրել ամրագրումը</div>
-                                            <div className="mt-1 text-xs text-slate-500">Փոխիր հաճախորդին, ժամը, մասնագետին կամ կարգավիճակը։</div>
+                                            <div className="text-sm font-semibold text-[var(--vz-text)]">Խմբագրել ամրագրումը</div>
+                                            <div className="mt-1 text-xs text-[var(--vz-muted)]">Փոխիր հաճախորդին, ժամը, մասնագետին կամ կարգավիճակը։</div>
                                         </div>
                                         <Button size="sm" onClick={saveEdit} loading={saving}><Save className="h-4 w-4" /> Պահպանել</Button>
                                     </div>
                                     <div className="grid gap-3 sm:grid-cols-2">
-                                        <CreateField label="Հաճախորդի անուն"><input value={form.client_name} onChange={(e) => setForm((p) => ({ ...p, client_name: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" /></CreateField>
-                                        <CreateField label="Հեռախոս"><input value={form.client_phone} onChange={(e) => setForm((p) => ({ ...p, client_phone: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" /></CreateField>
-                                        <CreateField label="Ամսաթիվ"><input type="date" value={form.date} onChange={(e) => setForm((p) => ({ ...p, date: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" /></CreateField>
-                                        <CreateField label="Ժամ"><input type="time" value={form.time} onChange={(e) => setForm((p) => ({ ...p, time: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" /></CreateField>
-                                        <CreateField label="Աշխատակից"><select value={form.staff_id} onChange={(e) => setForm((p) => ({ ...p, staff_id: e.target.value ? Number(e.target.value) : '' }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"><option value="">Առանց ընտրության</option>{Array.from(staffById.values()).map((member) => <option key={member.id} value={member.id}>{member.name}</option>)}</select></CreateField>
-                                        <CreateField label="Կարգավիճակ"><select value={form.status} onChange={(e) => setForm((p) => ({ ...p, status: e.target.value as BookingStatus }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"><option value="pending">Սպասող</option><option value="confirmed">Հաստատված</option><option value="done">Ավարտված</option><option value="cancelled">Չեղարկված</option><option value="no_show">Չներկայացած</option></select></CreateField>
+                                        <CreateField label="Հաճախորդի անուն"><input value={form.client_name} onChange={(e) => setForm((p) => ({ ...p, client_name: e.target.value }))} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" /></CreateField>
+                                        <CreateField label="Հեռախոս"><input value={form.client_phone} onChange={(e) => setForm((p) => ({ ...p, client_phone: e.target.value }))} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" /></CreateField>
+                                        <CreateField label="Ամսաթիվ"><input type="date" value={form.date} onChange={(e) => setForm((p) => ({ ...p, date: e.target.value }))} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" /></CreateField>
+                                        <CreateField label="Ժամ"><input type="time" value={form.time} onChange={(e) => setForm((p) => ({ ...p, time: e.target.value }))} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" /></CreateField>
+                                        <CreateField label="Աշխատակից"><select value={form.staff_id} onChange={(e) => setForm((p) => ({ ...p, staff_id: e.target.value ? Number(e.target.value) : '' }))} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm"><option value="">Առանց ընտրության</option>{Array.from(staffById.values()).map((member) => <option key={member.id} value={member.id}>{member.name}</option>)}</select></CreateField>
+                                        <CreateField label="Կարգավիճակ"><select value={form.status} onChange={(e) => setForm((p) => ({ ...p, status: e.target.value as BookingStatus }))} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm"><option value="pending">Սպասող</option><option value="confirmed">Հաստատված</option><option value="done">Ավարտված</option><option value="cancelled">Չեղարկված</option><option value="no_show">Չներկայացած</option></select></CreateField>
                                     </div>
-                                    <CreateField label="Նշումներ"><textarea rows={4} value={form.notes} onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" /></CreateField>
+                                    <CreateField label="Նշումներ"><textarea rows={4} value={form.notes} onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" /></CreateField>
                                     <div className="grid gap-2 sm:grid-cols-3">
                                         {[{ delta: -30, label: '-30ր' }, { delta: -15, label: '-15ր' }, { delta: 15, label: '+15ր' }, { delta: 30, label: '+30ր' }].map((step) => (
                                             <Button key={step.label} variant="secondary" size="sm" onClick={() => onShift(booking, step.delta)}>{step.label}</Button>
@@ -511,45 +511,45 @@ function BookingDetailsDrawer({
                             ) : null}
 
                             <div className="grid gap-4 sm:grid-cols-2 mt-0">
-                                <div className="rounded-[26px] border border-slate-200 bg-white p-4 shadow-sm">
-                                    <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">Սկիզբ</div>
-                                    <div className="mt-2 text-sm font-semibold text-slate-900">{formatDateTimeLabel(booking.starts_at)}</div>
+                                <div className="rounded-[26px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4 shadow-sm">
+                                    <div className="text-xs font-semibold uppercase tracking-wide text-[var(--vz-muted)]">Սկիզբ</div>
+                                    <div className="mt-2 text-sm font-semibold text-[var(--vz-text)]">{formatDateTimeLabel(booking.starts_at)}</div>
                                 </div>
-                                <div className="rounded-[26px] border border-slate-200 bg-white p-4 shadow-sm">
-                                    <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">Ավարտ</div>
-                                    <div className="mt-2 text-sm font-semibold text-slate-900">{formatDateTimeLabel(booking.ends_at)}</div>
+                                <div className="rounded-[26px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4 shadow-sm">
+                                    <div className="text-xs font-semibold uppercase tracking-wide text-[var(--vz-muted)]">Ավարտ</div>
+                                    <div className="mt-2 text-sm font-semibold text-[var(--vz-text)]">{formatDateTimeLabel(booking.ends_at)}</div>
                                 </div>
                             </div>
 
-                            <div className="mt-4 rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
-                                <div className="flex items-center gap-2 text-sm font-semibold text-slate-950">
-                                    <Scissors className="h-4 w-4 text-violet-600" /> Ծառայություններ
+                            <div className="mt-4 rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 shadow-sm">
+                                <div className="flex items-center gap-2 text-sm font-semibold text-[var(--vz-text)]">
+                                    <Scissors className="h-4 w-4 text-[var(--vz-accent-text)]" /> Ծառայություններ
                                 </div>
-                                <div className="mt-3 divide-y divide-slate-100">
+                                <div className="mt-3 divide-y divide-[var(--vz-line)]">
                                     {items.map((item) => (
                                         <div key={item.id} className="py-3 first:pt-0 last:pb-0">
                                             <div className="flex items-start justify-between gap-3">
                                                 <div>
-                                                    <div className="font-medium text-slate-900">{item.name}</div>
-                                                    <div className="mt-1 text-xs text-slate-500">{item.duration} րոպե</div>
+                                                    <div className="font-medium text-[var(--vz-text)]">{item.name}</div>
+                                                    <div className="mt-1 text-xs text-[var(--vz-muted)]">{item.duration} րոպե</div>
                                                 </div>
-                                                {item.price != null ? <div className="text-sm font-semibold text-violet-700">{item.price} AMD</div> : null}
+                                                {item.price != null ? <div className="text-sm font-semibold text-[var(--vz-accent-text)]">{item.price} AMD</div> : null}
                                             </div>
                                         </div>
                                     ))}
                                 </div>
-                                <div className="mt-4 rounded-2xl border border-violet-100 bg-violet-50 px-4 py-3 text-sm font-semibold text-violet-700">Ընդհանուր արժեքը՝ {totalPrice} {booking.currency || "AMD"}</div>
+                                <div className="mt-4 rounded-2xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-4 py-3 text-sm font-semibold text-[var(--vz-accent-text)]">Ընդհանուր արժեքը՝ {totalPrice} {booking.currency || "AMD"}</div>
                             </div>
 
                             {booking.notes ? (
-                                <div className="mt-4 rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
-                                    <div className="flex items-center gap-2 text-sm font-semibold text-slate-950"><NotebookText className="h-4 w-4 text-slate-600" /> Նշումներ</div>
-                                    <div className="mt-3 text-sm leading-6 text-slate-600">{booking.notes}</div>
+                                <div className="mt-4 rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 shadow-sm">
+                                    <div className="flex items-center gap-2 text-sm font-semibold text-[var(--vz-text)]"><NotebookText className="h-4 w-4 text-[var(--vz-text-secondary)]" /> Նշումներ</div>
+                                    <div className="mt-3 text-sm leading-6 text-[var(--vz-text-secondary)]">{booking.notes}</div>
                                 </div>
                             ) : null}
 
-                            <div className="mt-5 border-t border-slate-200 pt-5">
-                                <div className="text-sm font-semibold text-slate-950">Արագ գործողություններ</div>
+                            <div className="mt-5 border-t border-[var(--vz-line)] pt-5">
+                                <div className="text-sm font-semibold text-[var(--vz-text)]">Արագ գործողություններ</div>
                                 <div className="mt-3 grid gap-2">
                                     {options.map((option) => (
                                         <button
@@ -559,8 +559,8 @@ function BookingDetailsDrawer({
                                             className={cn(
                                                 'rounded-2xl border px-4 py-3 text-left transition',
                                                 option.danger
-                                                    ? 'border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100'
-                                                    : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-violet-200 hover:bg-violet-50'
+                                                    ? 'border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] text-[var(--vz-danger)] hover:bg-[var(--vz-danger-soft)]'
+                                                    : 'border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)] hover:border-[var(--vz-line-strong)] hover:bg-[var(--vz-accent-soft)]'
                                             )}
                                         >
                                             <div className="font-medium">{option.title}</div>
@@ -579,8 +579,8 @@ function BookingDetailsDrawer({
 
 function CreateField({ label, children }: { label: string; children: ReactNode }) {
     return (
-        <label className="block text-sm text-slate-600">
-            <div className="mb-2 font-medium text-slate-600">{label}</div>
+        <label className="block text-sm text-[var(--vz-text-secondary)]">
+            <div className="mb-2 font-medium text-[var(--vz-text-secondary)]">{label}</div>
             {children}
         </label>
     );
@@ -608,8 +608,8 @@ function ModeCard({
             className={cn(
                 "group rounded-[20px] border p-3 text-left transition-all duration-200 sm:rounded-[22px] sm:p-4",
                 active
-                    ? "border-transparent bg-white text-slate-900 shadow-[0_24px_60px_rgba(15,23,42,0.18)]"
-                    : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+                    ? "border-transparent bg-[var(--vz-surface)] text-[var(--vz-text)] shadow-[0_24px_60px_rgba(15,23,42,0.18)]"
+                    : "border-[var(--vz-line)] bg-[var(--vz-surface)] hover:border-[var(--vz-line-strong)] hover:bg-[var(--vz-surface-2)]"
             )}
         >
             <div className="flex items-start gap-3">
@@ -621,8 +621,8 @@ function ModeCard({
                     {icon}
                 </div>
                 <div className="min-w-0">
-                    <div className={cn("text-sm font-semibold", active ? "text-slate-900" : "text-slate-900")}>{title}</div>
-                    <div className={cn("mt-1 text-xs leading-5 sm:text-sm sm:leading-6", active ? "text-slate-500" : "text-slate-500")}>{description}</div>
+                    <div className={cn("text-sm font-semibold", active ? "text-[var(--vz-text)]" : "text-[var(--vz-text)]")}>{title}</div>
+                    <div className={cn("mt-1 text-xs leading-5 sm:text-sm sm:leading-6", active ? "text-[var(--vz-muted)]" : "text-[var(--vz-muted)]")}>{description}</div>
                 </div>
             </div>
         </button>
@@ -643,12 +643,12 @@ function SmartSlotPicker({
     if (!slots.length) return null;
 
     return (
-        <div className="rounded-[28px] border border-emerald-200 bg-gradient-to-r from-emerald-50 via-white to-violet-50 p-4">
-            <div className="flex items-center gap-2 text-sm font-semibold text-emerald-800">
+        <div className="rounded-[28px] border border-[var(--vz-success-line)] bg-[var(--vz-primary)] from-emerald-50 via-white p-4">
+            <div className="flex items-center gap-2 text-sm font-semibold text-[var(--vz-success)]">
                 <Sparkles className="h-4 w-4" />
                 Խելացի առաջարկներ
             </div>
-            <div className="mt-1 text-sm leading-6 text-slate-600">
+            <div className="mt-1 text-sm leading-6 text-[var(--vz-text-secondary)]">
                 Համակարգը նախընտրում է այն ժամերը, որոնք օրացույցում ավելի քիչ բացեր են թողնում։
             </div>
             <div className="mt-3 grid gap-2 2xl:grid-cols-3">
@@ -663,20 +663,20 @@ function SmartSlotPicker({
                             className={cn(
                                 "rounded-2xl border px-3 py-3 text-left transition-all",
                                 active
-                                    ? "border-emerald-400 bg-emerald-100 shadow-sm"
-                                    : "border-white/80 bg-white hover:border-emerald-300 hover:bg-white"
+                                    ? "border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] shadow-sm"
+                                    : "border-white/80 bg-[var(--vz-surface)] hover:border-[var(--vz-success-line)] hover:bg-[var(--vz-surface)]"
                             )}
                         >
                             <div className="flex items-center justify-between gap-2">
-                                <div className="text-sm font-semibold text-slate-900">
+                                <div className="text-sm font-semibold text-[var(--vz-text)]">
                                     {slot.starts_at.slice(11, 16)}
                                     {showStaff && slot.staff_name ? ` · ${slot.staff_name}` : ""}
                                 </div>
-                                <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[11px] font-semibold text-white">
+                                <span className="rounded-full bg-[var(--vz-success)] px-2 py-0.5 text-[11px] font-semibold text-[var(--vz-on-success)]">
                   #{slot.recommendation_rank ?? "★"}
                 </span>
                             </div>
-                            <div className="mt-1 text-xs text-slate-500">{slot.smart_reason || "Առաջարկվող slot"}</div>
+                            <div className="mt-1 text-xs text-[var(--vz-muted)]">{slot.smart_reason || "Առաջարկվող slot"}</div>
                         </button>
                     );
                 })}
@@ -800,18 +800,18 @@ function SonlineMobileSchedule({
     );
     return (
         <div className="space-y-4 pb-4">
-            <div className="overflow-hidden rounded-[30px] border border-[#e7dfd6] bg-white text-slate-900 shadow-[0_14px_36px_rgba(15,23,42,0.08)]">
-                <div className="border-b border-[#eee6dc] px-4 py-4">
+            <div className="overflow-hidden rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text)] shadow-[0_14px_36px_rgba(15,23,42,0.08)]">
+                <div className="border-b border-[var(--vz-line)] px-4 py-4">
                     <div className="flex items-start justify-between gap-3">
                         <div>
-                            <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">Օրվա ամրագրումներ</div>
-                            <div className="mt-1 text-lg font-semibold text-slate-950">{formatDateTimeLabel(`${datePick} 10:00`)?.split(',')[0] ?? datePick}</div>
-                            <div className="mt-1 text-xs text-slate-500">{dayBookings.length} ամրագրում • {formatMoney(selectedDateRevenue)} դր</div>
+                            <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--vz-muted)]">Օրվա ամրագրումներ</div>
+                            <div className="mt-1 text-lg font-semibold text-[var(--vz-text)]">{formatDateTimeLabel(`${datePick} 10:00`)?.split(',')[0] ?? datePick}</div>
+                            <div className="mt-1 text-xs text-[var(--vz-muted)]">{dayBookings.length} ամրագրում • {formatMoney(selectedDateRevenue)} դր</div>
                         </div>
                         <button
                             type="button"
                             onClick={() => onOpenCreate(datePick, "10:00")}
-                            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-violet-600 text-white shadow-sm"
+                            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-sm"
                         >
                             <Plus className="h-5 w-5" />
                         </button>
@@ -819,12 +819,12 @@ function SonlineMobileSchedule({
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 px-4 py-4">
-                    <div className="rounded-[22px] border border-[#eee6dc] bg-[#fcfbf8] px-3 py-3">
-                        <div className="text-[11px] text-slate-400">Ամրագրումներ</div>
+                    <div className="rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-3 py-3">
+                        <div className="text-[11px] text-[var(--vz-muted)]">Ամրագրումներ</div>
                         <div className="mt-1 text-2xl font-semibold">{dayBookings.length}</div>
                     </div>
-                    <div className="rounded-[22px] border border-[#eee6dc] bg-[#fcfbf8] px-3 py-3">
-                        <div className="text-[11px] text-slate-400">Շրջանառություն</div>
+                    <div className="rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-3 py-3">
+                        <div className="text-[11px] text-[var(--vz-muted)]">Շրջանառություն</div>
                         <div className="mt-1 text-2xl font-semibold">{formatMoney(selectedDateRevenue)}</div>
                     </div>
                 </div>
@@ -843,8 +843,8 @@ function SonlineMobileSchedule({
                                 className={cn(
                                     "min-w-[78px] rounded-[20px] border px-3 py-2.5 text-center transition",
                                     active
-                                        ? "border-[#24364b] bg-[#24364b] text-white shadow-sm"
-                                        : "border-[#e7dfd6] bg-white text-slate-700"
+                                        ? "border-[#24364b] bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-sm"
+                                        : "border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text-secondary)]"
                                 )}
                             >
                                 <div className="text-[11px] font-medium opacity-80">{weekdayShort(day)}</div>
@@ -862,13 +862,13 @@ function SonlineMobileSchedule({
                             key={block.id}
                             type="button"
                             onClick={() => onBlockClick(block)}
-                            className="flex w-full items-center justify-between rounded-[22px] border border-[#efc0bf] bg-[#fae8e7] px-4 py-3 text-left"
+                            className="flex w-full items-center justify-between rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-left"
                         >
                             <div>
-                                <div className="text-sm font-semibold text-[#8f4a49]">{block.reason || "Փակ ժամ"}</div>
-                                <div className="mt-1 text-xs text-[#8f4a49]">{block.starts_at.slice(11, 16)} – {block.ends_at.slice(11, 16)}</div>
+                                <div className="text-sm font-semibold text-[var(--vz-danger)]">{block.reason || "Փակ ժամ"}</div>
+                                <div className="mt-1 text-xs text-[var(--vz-danger)]">{block.starts_at.slice(11, 16)} – {block.ends_at.slice(11, 16)}</div>
                             </div>
-                            <Ban className="h-4 w-4 text-[#8f4a49]" />
+                            <Ban className="h-4 w-4 text-[var(--vz-danger)]" />
                         </button>
                     ))}
                 </div>
@@ -885,27 +885,27 @@ function SonlineMobileSchedule({
                                 type="button"
                                 data-booking-id={booking.id}
                                 onClick={() => onBookingClick(booking)}
-                                className="w-full rounded-[24px] border border-[#e7dfd6] bg-white px-4 py-4 text-left shadow-[0_10px_22px_rgba(15,23,42,0.05)] transition hover:border-violet-200"
+                                className="w-full rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-4 text-left shadow-[0_10px_22px_rgba(15,23,42,0.05)] transition hover:border-[var(--vz-line-strong)]"
                             >
                                 <div className="flex items-start justify-between gap-3">
                                     <div>
-                                        <div className="text-[15px] font-semibold text-slate-950">{booking.client_name}</div>
-                                        <div className="mt-1 text-sm text-slate-500">{serviceLabel}</div>
+                                        <div className="text-[15px] font-semibold text-[var(--vz-text)]">{booking.client_name}</div>
+                                        <div className="mt-1 text-sm text-[var(--vz-muted)]">{serviceLabel}</div>
                                     </div>
                                     <span className={cn("rounded-full border px-2.5 py-1 text-[10px] font-semibold", bookingStatusTone(booking.status))}>
                     {bookingStatusLabel(booking.status)}
                   </span>
                                 </div>
-                                <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px] text-slate-500">
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-[#f5f2ee] px-2.5 py-1"><Clock3 className="h-3.5 w-3.5" /> {booking.starts_at.slice(11, 16)} – {booking.ends_at.slice(11, 16)}</span>
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-[#f5f2ee] px-2.5 py-1"><User className="h-3.5 w-3.5" /> {staffName}</span>
-                                    {booking.client_phone ? <span className="inline-flex items-center gap-1 rounded-full bg-[#f5f2ee] px-2.5 py-1"><Phone className="h-3.5 w-3.5" /> {booking.client_phone}</span> : null}
+                                <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px] text-[var(--vz-muted)]">
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--vz-surface-2)] px-2.5 py-1"><Clock3 className="h-3.5 w-3.5" /> {booking.starts_at.slice(11, 16)} – {booking.ends_at.slice(11, 16)}</span>
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--vz-surface-2)] px-2.5 py-1"><User className="h-3.5 w-3.5" /> {staffName}</span>
+                                    {booking.client_phone ? <span className="inline-flex items-center gap-1 rounded-full bg-[var(--vz-surface-2)] px-2.5 py-1"><Phone className="h-3.5 w-3.5" /> {booking.client_phone}</span> : null}
                                 </div>
                             </button>
                         );
                     })
                 ) : (
-                    <div className="rounded-[24px] border border-dashed border-[#e7dfd6] bg-white px-4 py-8 text-center text-sm text-slate-500">
+                    <div className="rounded-[24px] border border-dashed border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-8 text-center text-sm text-[var(--vz-muted)]">
                         Այս օրը ամրագրում չկա։
                     </div>
                 )}
@@ -969,14 +969,14 @@ function SonlineDesktopDayColumns({
     const totalColumns = Math.max(columns.length + (showUnassigned ? 1 : 0), 1);
 
     return (
-        <div className="overflow-hidden rounded-[30px] border border-[#e7dfd6] bg-white shadow-[0_16px_44px_rgba(15,23,42,0.07)]">
-            <div className="border-b border-[#eee6dc] bg-[#fcfbf8] px-4 py-4 text-slate-900">
+        <div className="overflow-hidden rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)] shadow-[0_16px_44px_rgba(15,23,42,0.07)]">
+            <div className="border-b border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-4 text-[var(--vz-text)]">
                 <div className="flex items-center justify-between gap-3">
                     <div>
-                        <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">Էլեկտրոնային մատյան</div>
+                        <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--vz-muted)]">Էլեկտրոնային մատյան</div>
                         <div className="mt-1 text-lg font-semibold">{date}</div>
                     </div>
-                    <div className="inline-flex items-center gap-2 rounded-full border border-[#e7dfd6] bg-white px-3 py-1.5 text-xs font-medium text-slate-500">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-1.5 text-xs font-medium text-[var(--vz-muted)]">
                         <Users2 className="h-3.5 w-3.5" /> {dayBookings.length} այց
                     </div>
                 </div>
@@ -984,35 +984,35 @@ function SonlineDesktopDayColumns({
 
             <div className="overflow-auto">
                 <div className="min-w-[980px]">
-                    <div className="grid border-b border-[#eee6dc] bg-[#faf8f5]" style={{ gridTemplateColumns: `84px repeat(${totalColumns}, minmax(220px, 1fr))` }}>
-                        <div className="border-r border-[#eee6dc] px-3 py-3 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Ժամ</div>
+                    <div className="grid border-b border-[var(--vz-line)] bg-[var(--vz-surface-2)]" style={{ gridTemplateColumns: `84px repeat(${totalColumns}, minmax(220px, 1fr))` }}>
+                        <div className="border-r border-[var(--vz-line)] px-3 py-3 text-[11px] font-semibold uppercase tracking-wide text-[var(--vz-muted)]">Ժամ</div>
                         {showUnassigned ? (
-                            <div className="flex items-center gap-3 border-r border-[#eee6dc] px-4 py-3">
-                                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#e7dfd6] bg-white text-[11px] font-semibold text-slate-700">NA</div>
+                            <div className="flex items-center gap-3 border-r border-[var(--vz-line)] px-4 py-3">
+                                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[11px] font-semibold text-[var(--vz-text-secondary)]">NA</div>
                                 <div className="min-w-0">
-                                    <div className="truncate text-sm font-semibold text-slate-950">Առանց մասնագետի</div>
-                                    <div className="text-[11px] text-slate-500">{unassignedBookings.length} այց</div>
+                                    <div className="truncate text-sm font-semibold text-[var(--vz-text)]">Առանց մասնագետի</div>
+                                    <div className="text-[11px] text-[var(--vz-muted)]">{unassignedBookings.length} այց</div>
                                 </div>
                             </div>
                         ) : null}
                         {columns.map((member) => (
-                            <div key={member.id} className="flex items-center gap-3 border-r border-[#eee6dc] px-4 py-3 last:border-r-0">
-                                <div className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full border border-[#e7dfd6] bg-white text-sm font-semibold text-slate-700">
+                            <div key={member.id} className="flex items-center gap-3 border-r border-[var(--vz-line)] px-4 py-3 last:border-r-0">
+                                <div className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] text-sm font-semibold text-[var(--vz-text-secondary)]">
                                     {member.avatar_url ? <img src={member.avatar_url} alt={member.name} className="h-full w-full object-cover" /> : initials(staffAvatarName(member.name))}
                                 </div>
                                 <div className="min-w-0">
-                                    <div className="truncate text-sm font-semibold text-slate-950">{member.name}</div>
-                                    <div className="text-[11px] text-slate-500">{dayBookings.filter((booking) => booking.staff_id === member.id).length} այց</div>
+                                    <div className="truncate text-sm font-semibold text-[var(--vz-text)]">{member.name}</div>
+                                    <div className="text-[11px] text-[var(--vz-muted)]">{dayBookings.filter((booking) => booking.staff_id === member.id).length} այց</div>
                                 </div>
                             </div>
                         ))}
                     </div>
 
                     <div className="grid" style={{ gridTemplateColumns: `84px repeat(${totalColumns}, minmax(220px, 1fr))` }}>
-                        <div className="relative border-r border-[#eee6dc] bg-[#faf8f5]" style={{ height: bodyHeight }}>
+                        <div className="relative border-r border-[var(--vz-line)] bg-[var(--vz-surface-2)]" style={{ height: bodyHeight }}>
                             {timeMarks.map((mark) => (
                                 <div key={mark} className="absolute inset-x-0" style={{ top: (mark - startMinutes) * pxPerMinute }}>
-                                    <div className="-translate-y-1/2 px-3 text-[11px] font-medium text-slate-400">
+                                    <div className="-translate-y-1/2 px-3 text-[11px] font-medium text-[var(--vz-muted)]">
                                         {`${String(Math.floor(mark / 60)).padStart(2, "0")}:${String(mark % 60).padStart(2, "0")}`}
                                     </div>
                                 </div>
@@ -1026,13 +1026,13 @@ function SonlineDesktopDayColumns({
                             const bookingLayout = layoutOverlappingBookings(memberBookings);
 
                             return (
-                                <div key={memberId ?? 'na'} className="relative border-r border-[#eee6dc] last:border-r-0 bg-white" style={{ height: bodyHeight }}>
+                                <div key={memberId ?? 'na'} className="relative border-r border-[var(--vz-line)] last:border-r-0 bg-[var(--vz-surface)]" style={{ height: bodyHeight }}>
                                     {slotMarks.map((mark) => (
                                         <button
                                             key={mark}
                                             type="button"
                                             onClick={() => onSelectSlot(date, `${String(Math.floor(mark / 60)).padStart(2, "0")}:${String(mark % 60).padStart(2, "0")}`)}
-                                            className="absolute inset-x-0 z-0 border-t border-[#f1ece6] text-left transition hover:bg-[#f6f3ef]"
+                                            className="absolute inset-x-0 z-0 border-t border-[var(--vz-line)] text-left transition hover:bg-[var(--vz-surface-2)]"
                                             style={{ top: (mark - startMinutes) * pxPerMinute, height: slotMinutes * pxPerMinute }}
                                         />
                                     ))}
@@ -1048,7 +1048,7 @@ function SonlineDesktopDayColumns({
                                                 key={`block-${block.id}`}
                                                 type="button"
                                                 onClick={() => onBlockClick(block)}
-                                                className="absolute left-1.5 right-1.5 z-10 rounded-[16px] border border-[#efc0bf] bg-[#fae8e7] px-3 py-2 text-left text-xs font-semibold text-[#8f4a49]"
+                                                className="absolute left-1.5 right-1.5 z-10 rounded-[16px] border border-[var(--vz-line)] bg-[var(--vz-danger-soft)] px-3 py-2 text-left text-xs font-semibold text-[var(--vz-danger)]"
                                                 style={{ top, height }}
                                             >
                                                 <div>{block.reason || "Փակ ժամ"}</div>
@@ -1081,15 +1081,15 @@ function SonlineDesktopDayColumns({
                                             >
                                                 <div className="flex items-start justify-between gap-2">
                                                     <div className="min-w-0">
-                                                        <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">{booking.starts_at.slice(11, 16)} – {booking.ends_at.slice(11, 16)}</div>
-                                                        <div className="mt-1 truncate text-[12px] font-semibold text-slate-900">{booking.client_name}</div>
-                                                        <div className="mt-0.5 truncate text-[11px] text-slate-600">{bookingServiceTitle(booking, serviceById)}</div>
+                                                        <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--vz-muted)]">{booking.starts_at.slice(11, 16)} – {booking.ends_at.slice(11, 16)}</div>
+                                                        <div className="mt-1 truncate text-[12px] font-semibold text-[var(--vz-text)]">{booking.client_name}</div>
+                                                        <div className="mt-0.5 truncate text-[11px] text-[var(--vz-text-secondary)]">{bookingServiceTitle(booking, serviceById)}</div>
                                                     </div>
                                                     <span className={cn("rounded-full px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide", ui.badge)}>
                                                         {bookingStatusLabel(booking.status)}
                                                     </span>
                                                 </div>
-                                                {booking.client_phone ? <div className="mt-2 truncate text-[10px] text-slate-500">{booking.client_phone}</div> : null}
+                                                {booking.client_phone ? <div className="mt-2 truncate text-[10px] text-[var(--vz-muted)]">{booking.client_phone}</div> : null}
                                             </button>
                                         );
                                     })}
@@ -1952,24 +1952,24 @@ export function Calendar() {
 
     return (
         <motion.div {...page} className="admin-page space-y-3">
-            <div className="overflow-hidden rounded-[24px] border border-[#e7dfd6] bg-white shadow-[0_14px_38px_rgba(15,23,42,0.06)] sm:rounded-[30px]">
-                <div className="space-y-3 bg-[#fcfbf8] p-3 sm:space-y-4 sm:p-5 lg:p-6">
+            <div className="overflow-hidden rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface)] shadow-[0_14px_38px_rgba(15,23,42,0.06)] sm:rounded-[30px]">
+                <div className="space-y-3 bg-[var(--vz-surface-2)] p-3 sm:space-y-4 sm:p-5 lg:p-6">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         {/* Title - compact on mobile */}
                         <div className="flex items-center gap-2 sm:gap-3">
-                            <div className="grid h-9 w-9 place-items-center rounded-xl bg-[#24364b] text-white shadow-sm sm:h-11 sm:w-11 sm:rounded-2xl">
+                            <div className="grid h-9 w-9 place-items-center rounded-xl bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-sm sm:h-11 sm:w-11 sm:rounded-2xl">
                                 <CalendarDays className="h-4 w-4 sm:h-5 sm:w-5" />
                             </div>
                             <div>
-                                <div className="hidden text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-400 sm:block">Vizit</div>
-                                <h1 className="text-lg font-semibold tracking-tight text-slate-950 sm:mt-1 sm:text-2xl">Օրացույց</h1>
+                                <div className="hidden text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--vz-muted)] sm:block">Vizit</div>
+                                <h1 className="text-lg font-semibold tracking-tight text-[var(--vz-text)] sm:mt-1 sm:text-2xl">Օրացույց</h1>
                             </div>
                         </div>
 
                         {/* Right controls */}
                         <div className="flex w-full items-center justify-between gap-1.5 sm:w-auto sm:justify-start sm:gap-2">
                             {/* Day/Week toggle */}
-                            <div className="inline-flex items-center rounded-xl border border-[#e7dfd6] bg-white p-0.5 shadow-sm sm:rounded-2xl sm:p-1">
+                            <div className="inline-flex items-center rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-0.5 shadow-sm sm:rounded-2xl sm:p-1">
                                 {[
                                     { key: "day", label: "Օր" },
                                     { key: "week", label: "Շաբաթ" },
@@ -1980,7 +1980,7 @@ export function Calendar() {
                                         onClick={() => setViewMode(item.key as ViewMode)}
                                         className={cn(
                                             "rounded-lg px-2.5 py-1.5 text-xs font-medium transition sm:rounded-xl sm:px-3 sm:py-2 sm:text-sm",
-                                            viewMode === item.key ? "bg-[#24364b] text-white" : "text-slate-500 hover:text-slate-700"
+                                            viewMode === item.key ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)]" : "text-[var(--vz-muted)] hover:text-[var(--vz-text-secondary)]"
                                         )}
                                     >
                                         {item.label}
@@ -1993,29 +1993,29 @@ export function Calendar() {
                             <button
                                 type="button"
                                 onClick={() => setFiltersOpen(true)}
-                                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-[#e7dfd6] bg-white shadow-sm transition hover:bg-slate-50 sm:h-auto sm:w-auto sm:px-3 sm:py-2"
+                                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] shadow-sm transition hover:bg-[var(--vz-surface-2)] sm:h-auto sm:w-auto sm:px-3 sm:py-2"
                                 title="Ֆիլտրեր"
                             >
-                                <Filter className="h-4 w-4 text-slate-600 shrink-0" />
-                                <span className="hidden sm:ml-1.5 sm:inline text-sm font-medium text-slate-700">
+                                <Filter className="h-4 w-4 text-[var(--vz-text-secondary)] shrink-0" />
+                                <span className="hidden sm:ml-1.5 sm:inline text-sm font-medium text-[var(--vz-text-secondary)]">
         Ֆիլտրեր
     </span>
                             </button>
 
                             {/* Nav prev/next */}
-                            <div className="flex items-center gap-0.5 rounded-xl border border-[#e7dfd6] bg-white p-0.5 shadow-sm sm:gap-1 sm:rounded-2xl sm:p-1">
-                                <button type="button" onClick={() => navRange(-1)} className="grid h-8 w-8 place-items-center rounded-lg transition hover:bg-slate-100 sm:h-9 sm:w-9 sm:rounded-xl">
-                                    <ChevronLeft className="h-4 w-4 text-slate-600" />
+                            <div className="flex items-center gap-0.5 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-0.5 shadow-sm sm:gap-1 sm:rounded-2xl sm:p-1">
+                                <button type="button" onClick={() => navRange(-1)} className="grid h-8 w-8 place-items-center rounded-lg transition hover:bg-[var(--vz-surface-2)] sm:h-9 sm:w-9 sm:rounded-xl">
+                                    <ChevronLeft className="h-4 w-4 text-[var(--vz-text-secondary)]" />
                                 </button>
-                                <button type="button" onClick={() => navRange(1)} className="grid h-8 w-8 place-items-center rounded-lg transition hover:bg-slate-100 sm:h-9 sm:w-9 sm:rounded-xl">
-                                    <ChevronRight className="h-4 w-4 text-slate-600" />
+                                <button type="button" onClick={() => navRange(1)} className="grid h-8 w-8 place-items-center rounded-lg transition hover:bg-[var(--vz-surface-2)] sm:h-9 sm:w-9 sm:rounded-xl">
+                                    <ChevronRight className="h-4 w-4 text-[var(--vz-text-secondary)]" />
                                 </button>
                             </div>
 
                             {/* Block - hidden on mobile unless manager */}
                             {canManageBlocks && (
                                 <button type="button" onClick={() => setBlockOpen(true)}
-                                    className="hidden h-9 items-center gap-2 rounded-xl border border-[#e7dfd6] bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 sm:inline-flex"
+                                    className="hidden h-9 items-center gap-2 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-sm font-medium text-[var(--vz-text-secondary)] shadow-sm transition hover:bg-[var(--vz-surface-2)] sm:inline-flex"
                                 >
                                     <Ban className="h-4 w-4" /> Block
                                 </button>
@@ -2025,7 +2025,7 @@ export function Calendar() {
                             <button
                                 type="button"
                                 onClick={() => openCreateWithRange({ start: new Date(), end: new Date(new Date().getTime() + 30 * 60_000) })}
-                                className="hidden h-9 items-center gap-2 rounded-xl bg-[#24364b] px-4 text-sm font-medium text-white shadow-[0_10px_24px_rgba(36,54,75,0.18)] transition hover:bg-[#1d2b3c] sm:inline-flex"
+                                className="hidden h-9 items-center gap-2 rounded-xl bg-[var(--vz-primary)] px-4 text-sm font-medium text-[var(--vz-on-primary)] shadow-[0_10px_24px_rgba(36,54,75,0.18)] transition hover:bg-[var(--vz-primary-hover)] sm:inline-flex"
                             >
                                 <Plus className="h-4 w-4" />
                                 <span>Նոր ամրագրում</span>
@@ -2035,44 +2035,44 @@ export function Calendar() {
 
                     <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
                         <div className="flex flex-wrap items-center gap-3">
-                            <div className="hidden rounded-2xl border border-[#e7dfd6] bg-white px-4 py-2 text-sm text-slate-600 shadow-sm sm:block">
-                                <span className="font-semibold text-slate-900">{viewMode === "day" ? "Օր" : "Շաբաթ"}</span> · {rangeLabel}
+                            <div className="hidden rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-2 text-sm text-[var(--vz-text-secondary)] shadow-sm sm:block">
+                                <span className="font-semibold text-[var(--vz-text)]">{viewMode === "day" ? "Օր" : "Շաբաթ"}</span> · {rangeLabel}
                             </div>
                             {isStaff ? (
-                                <div className="inline-flex items-center gap-2 rounded-full border border-[#ddd2f6] bg-[#f0ebfa] px-3 py-2 text-xs font-semibold text-[#6346a8]">
+                                <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-3 py-2 text-xs font-semibold text-[var(--vz-accent-text)]">
                                     <User className="h-3.5 w-3.5" /> միայն քո ամրագրումները
                                 </div>
                             ) : (
-                                <div className="inline-flex items-center gap-2 rounded-full border border-[#e7dfd6] bg-white px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm">
-                                    <Crown className="h-3.5 w-3.5 text-violet-600" /> բոլոր աշխատակիցները
+                                <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-xs font-semibold text-[var(--vz-text-secondary)] shadow-sm">
+                                    <Crown className="h-3.5 w-3.5 text-[var(--vz-accent-text)]" /> բոլոր աշխատակիցները
                                 </div>
                             )}
                             {visibleStaff.slice(0, 3).map((member) => (
-                                <div key={member.id} className="inline-flex items-center gap-2 rounded-full border border-[#e7dfd6] bg-white px-2.5 py-1.5 text-xs text-slate-600 shadow-sm">
-                                    <div className="grid h-6 w-6 place-items-center overflow-hidden rounded-full border border-[#e7dfd6] bg-[#f7f3ee] text-[10px] font-semibold text-slate-700">
+                                <div key={member.id} className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] px-2.5 py-1.5 text-xs text-[var(--vz-text-secondary)] shadow-sm">
+                                    <div className="grid h-6 w-6 place-items-center overflow-hidden rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[10px] font-semibold text-[var(--vz-text-secondary)]">
                                         {member.avatar_url ? <img src={member.avatar_url} alt={member.name} className="h-full w-full object-cover" /> : initials(member.name)}
                                     </div>
                                     <span className="max-w-[92px] truncate">{member.name}</span>
                                 </div>
                             ))}
                             {visibleStaff.length > 3 ? (
-                                <div className="inline-flex items-center rounded-full border border-[#e7dfd6] bg-white px-3 py-2 text-xs font-semibold text-slate-500 shadow-sm">
+                                <div className="inline-flex items-center rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-xs font-semibold text-[var(--vz-muted)] shadow-sm">
                                     +{visibleStaff.length - 3}
                                 </div>
                             ) : null}
                         </div>
 
                         <div className="flex items-center gap-2 sm:gap-3">
-                            <label className="text-sm font-medium text-slate-600">Ամսաթիվ</label>
+                            <label className="text-sm font-medium text-[var(--vz-text-secondary)]">Ամսաթիվ</label>
                             <button
                                 type="button"
                                 onClick={() => {
                                     setPickerMonth(viewDate);
                                     setDatePickerOpen(true);
                                 }}
-                                className="inline-flex min-h-10 items-center gap-2 rounded-2xl border border-[#e7dfd6] bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm sm:hidden"
+                                className="inline-flex min-h-10 items-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-2 text-sm font-medium text-[var(--vz-text-secondary)] shadow-sm sm:hidden"
                             >
-                                <CalendarDays className="h-4 w-4 text-violet-600" />
+                                <CalendarDays className="h-4 w-4 text-[var(--vz-accent-text)]" />
                                 {datePick.split("-").reverse().join(".")}
                             </button>
                             <input
@@ -2080,7 +2080,7 @@ export function Calendar() {
                                 value={datePick}
                                 onChange={(e) => jumpToPickedDate(e.target.value)}
                                 lang="hy-AM"
-                                className="hidden rounded-2xl border border-[#e7dfd6] bg-white px-4 py-2.5 text-sm shadow-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100 sm:block"
+                                className="hidden rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-2.5 text-sm shadow-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-4 focus:ring-[var(--vz-focus)] sm:block"
                             />
                         </div>
                     </div>
@@ -2089,15 +2089,15 @@ export function Calendar() {
             </div>
 
             {hasBusinessContextBlock && (
-                <div className="rounded-[20px] border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                <div className="rounded-[20px] border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] p-4 text-sm text-[var(--vz-warning)]">
                     Մուտք չկա business context-ին։ Խնդրում եմ նորից login արա կամ ավարտիր onboarding-ը։
                 </div>
             )}
 
             {isLoading ? (
                 <div className="grid gap-4">
-                    <div className="h-24 animate-pulse rounded-[28px] border border-slate-200 bg-white" />
-                    <div className="h-[520px] animate-pulse rounded-[28px] border border-slate-200 bg-white" />
+                    <div className="h-24 animate-pulse rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)]" />
+                    <div className="h-[520px] animate-pulse rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)]" />
                 </div>
             ) : isMobile ? (
                 <SonlineMobileSchedule
@@ -2115,20 +2115,20 @@ export function Calendar() {
                 />
             ) : (
                 <div className="grid gap-3 xl:grid-cols-[280px_minmax(0,1fr)]">
-                    <Card className="overflow-hidden rounded-[28px] border border-[#e9e2d8] bg-white p-0 shadow-[0_12px_32px_rgba(15,23,42,0.06)]">
+                    <Card className="overflow-hidden rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-0 shadow-[0_12px_32px_rgba(15,23,42,0.06)]">
                         <div className="space-y-3 p-3">
-                            <div className="rounded-[20px] border border-slate-200 bg-slate-50 p-4">
+                            <div className="rounded-[20px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
                                 <div className="mb-3 flex items-center justify-between">
-                                    <button type="button" onClick={() => navMonth(-1)} className="grid h-8 w-8 place-items-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:border-violet-200 hover:text-violet-700">
+                                    <button type="button" onClick={() => navMonth(-1)} className="grid h-8 w-8 place-items-center rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text-secondary)] transition hover:border-[var(--vz-line-strong)] hover:text-[var(--vz-accent-text)]">
                                         <ChevronLeft className="h-4 w-4" />
                                     </button>
-                                    <div className="text-sm font-semibold capitalize text-slate-900">{monthLabel}</div>
-                                    <button type="button" onClick={() => navMonth(1)} className="grid h-8 w-8 place-items-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:border-violet-200 hover:text-violet-700">
+                                    <div className="text-sm font-semibold capitalize text-[var(--vz-text)]">{monthLabel}</div>
+                                    <button type="button" onClick={() => navMonth(1)} className="grid h-8 w-8 place-items-center rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text-secondary)] transition hover:border-[var(--vz-line-strong)] hover:text-[var(--vz-accent-text)]">
                                         <ChevronRight className="h-4 w-4" />
                                     </button>
                                 </div>
 
-                                <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                                <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-semibold uppercase tracking-wide text-[var(--vz-muted)]">
                                     {["Ե", "ԵՔ", "Չ", "Հ", "Ո", "Շ", "Կ"].map((label) => (
                                         <div key={label} className="py-1">{label}</div>
                                     ))}
@@ -2150,14 +2150,14 @@ export function Calendar() {
                                                         className={cn(
                                                             "relative flex h-9 items-center justify-center rounded-xl text-xs font-medium transition",
                                                             isActive
-                                                                ? "bg-[#24364b] text-white shadow-sm"
+                                                                ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-sm"
                                                                 : isCurrentMonth
-                                                                    ? "bg-white text-slate-700 hover:bg-violet-50"
-                                                                    : "bg-transparent text-slate-300 hover:bg-slate-100"
+                                                                    ? "bg-[var(--vz-surface)] text-[var(--vz-text-secondary)] hover:bg-[var(--vz-accent-soft)]"
+                                                                    : "bg-transparent text-[var(--vz-muted)] hover:bg-[var(--vz-surface-2)]"
                                                         )}
                                                     >
                                                         {day.getDate()}
-                                                        {hasItems ? <span className={cn("absolute bottom-1 h-1.5 w-1.5 rounded-full", isActive ? "bg-white" : "bg-violet-400")} /> : null}
+                                                        {hasItems ? <span className={cn("absolute bottom-1 h-1.5 w-1.5 rounded-full", isActive ? "bg-[var(--vz-surface)]" : "bg-[var(--vz-accent)]")} /> : null}
                                                     </button>
                                                 );
                                             })}
@@ -2167,40 +2167,40 @@ export function Calendar() {
                             </div>
 
                             <div className="space-y-3">
-                                <div className="rounded-[20px] border border-slate-200 bg-white p-4">
-                                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                                        <CalendarRange className="h-4 w-4 text-violet-500" /> Օրվա ամփոփում
+                                <div className="rounded-[20px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4">
+                                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[var(--vz-muted)]">
+                                        <CalendarRange className="h-4 w-4 text-[var(--vz-accent-text)]" /> Օրվա ամփոփում
                                     </div>
-                                    <div className="mt-3 text-2xl font-semibold text-slate-950">{selectedDateBookings.length}</div>
-                                    <div className="mt-1 text-sm text-slate-500">ամրագրում ընտրված օրվա համար</div>
+                                    <div className="mt-3 text-2xl font-semibold text-[var(--vz-text)]">{selectedDateBookings.length}</div>
+                                    <div className="mt-1 text-sm text-[var(--vz-muted)]">ամրագրում ընտրված օրվա համար</div>
                                     <div className="mt-4 space-y-2">
-                                        <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-3 py-2 text-sm text-slate-600">
+                                        <div className="flex items-center justify-between rounded-2xl bg-[var(--vz-surface-2)] px-3 py-2 text-sm text-[var(--vz-text-secondary)]">
                                             <span>Սպասում են</span>
-                                            <span className="font-semibold text-amber-600">{selectedDateBookings.filter((b) => b.status === "pending").length}</span>
+                                            <span className="font-semibold text-[var(--vz-warning)]">{selectedDateBookings.filter((b) => b.status === "pending").length}</span>
                                         </div>
-                                        <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-3 py-2 text-sm text-slate-600">
+                                        <div className="flex items-center justify-between rounded-2xl bg-[var(--vz-surface-2)] px-3 py-2 text-sm text-[var(--vz-text-secondary)]">
                                             <span>Block-եր</span>
-                                            <span className="font-semibold text-rose-600">{selectedDateBlocks.length}</span>
+                                            <span className="font-semibold text-[var(--vz-danger)]">{selectedDateBlocks.length}</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="rounded-[20px] border border-slate-200 bg-white p-4">
-                                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                                        <Users2 className="h-4 w-4 text-violet-500" /> Ֆիլտրեր
+                                <div className="rounded-[20px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4">
+                                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[var(--vz-muted)]">
+                                        <Users2 className="h-4 w-4 text-[var(--vz-accent-text)]" /> Ֆիլտրեր
                                     </div>
                                     <div className="mt-3 flex flex-wrap gap-2">
                                         {staffFilter.slice(0, 3).map((id) => (
-                                            <span key={id} className="rounded-full bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700">
+                                            <span key={id} className="rounded-full bg-[var(--vz-accent-soft)] px-3 py-1 text-xs font-medium text-[var(--vz-accent-text)]">
                                                 {staffById.get(id)?.name ?? `#${id}`}
                                             </span>
                                         ))}
                                         {serviceFilter.slice(0, 2).map((id) => (
-                                            <span key={id} className="rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-700">
+                                            <span key={id} className="rounded-full bg-[var(--vz-info-soft)] px-3 py-1 text-xs font-medium text-[var(--vz-info)]">
                                                 {serviceById.get(id)?.name ?? `#${id}`}
                                             </span>
                                         ))}
-                                        {!activeFilterCount ? <span className="text-sm text-slate-500">Ֆիլտրեր չկան</span> : null}
+                                        {!activeFilterCount ? <span className="text-sm text-[var(--vz-muted)]">Ֆիլտրեր չկան</span> : null}
                                     </div>
                                     <Button variant="secondary" size="sm" className="mt-4 w-full" onClick={() => setFiltersOpen(true)}>
                                         <Filter className="h-4 w-4" /> Կառավարել ֆիլտրերը
@@ -2210,50 +2210,50 @@ export function Calendar() {
                         </div>
                     </Card>
 
-                    <Card className="overflow-hidden rounded-[28px] border border-[#e9e2d8] bg-white p-0 shadow-[0_12px_32px_rgba(15,23,42,0.06)]">
-                        <div className="border-b border-[#eee6dc] bg-[#fcfbf8] px-4 py-4">
+                    <Card className="overflow-hidden rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-0 shadow-[0_12px_32px_rgba(15,23,42,0.06)]">
+                        <div className="border-b border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-4">
                             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                                 <div>
-                                    <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">Ամրագրումների օրացույց</div>
-                                    <div className="mt-1 text-lg font-semibold text-slate-950">{viewMode === "day" ? datePick : "Շաբաթվա տեսք"}</div>
+                                    <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[var(--vz-muted)]">Ամրագրումների օրացույց</div>
+                                    <div className="mt-1 text-lg font-semibold text-[var(--vz-text)]">{viewMode === "day" ? datePick : "Շաբաթվա տեսք"}</div>
                                 </div>
 
                                 <div className="flex flex-wrap items-center gap-2">
                                     <label className="calendar-search-field min-w-[220px] max-w-[320px] flex-1 lg:flex-none">
-                                        <Search className="h-4 w-4 text-slate-400" />
-                                        <input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder={searchPlaceholder} className="w-full border-0 bg-transparent p-0 text-sm text-slate-600 outline-none placeholder:text-slate-400" />
+                                        <Search className="h-4 w-4 text-[var(--vz-muted)]" />
+                                        <input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder={searchPlaceholder} className="w-full border-0 bg-transparent p-0 text-sm text-[var(--vz-text-secondary)] outline-none placeholder:text-[var(--vz-muted)]" />
                                     </label>
-                                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-[#e7dfd6] bg-white px-3 py-2 text-xs font-medium text-slate-600">
+                                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-xs font-medium text-[var(--vz-text-secondary)]">
                                         <input
                                             type="checkbox"
                                             checked={showCancelled}
                                             onChange={(event) => setShowCancelled(event.target.checked)}
-                                            className="h-4 w-4 rounded border-slate-300 text-violet-600"
+                                            className="h-4 w-4 rounded border-[var(--vz-line-strong)] text-[var(--vz-accent-text)]"
                                         />
                                         Ցույց տալ չեղարկվածները
                                     </label>
-                                    <div className="inline-flex items-center gap-2 rounded-full border border-[#e7dfd6] bg-white px-3 py-2 text-xs font-medium text-slate-500">
+                                    <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-xs font-medium text-[var(--vz-muted)]">
                                         <Users2 className="h-3.5 w-3.5" /> {visibleBookings.length} ամրագրում
                                     </div>
                                 </div>
                             </div>
 
                             <div className="mt-4 grid gap-3 md:grid-cols-4">
-                                <div className="rounded-[18px] border border-[#eee6dc] bg-white px-4 py-3">
-                                    <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Բոլորը</div>
-                                    <div className="mt-1 text-xl font-semibold text-slate-950">{stats.total}</div>
+                                <div className="rounded-[18px] border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3">
+                                    <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--vz-muted)]">Բոլորը</div>
+                                    <div className="mt-1 text-xl font-semibold text-[var(--vz-text)]">{stats.total}</div>
                                 </div>
-                                <div className="rounded-[18px] border border-emerald-200 bg-emerald-50 px-4 py-3">
-                                    <div className="text-[10px] font-semibold uppercase tracking-wide text-emerald-700">Հաստատված</div>
-                                    <div className="mt-1 text-xl font-semibold text-emerald-700">{stats.confirmed}</div>
+                                <div className="rounded-[18px] border border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] px-4 py-3">
+                                    <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--vz-success)]">Հաստատված</div>
+                                    <div className="mt-1 text-xl font-semibold text-[var(--vz-success)]">{stats.confirmed}</div>
                                 </div>
-                                <div className="rounded-[18px] border border-amber-200 bg-amber-50 px-4 py-3">
-                                    <div className="text-[10px] font-semibold uppercase tracking-wide text-amber-700">Սպասող</div>
-                                    <div className="mt-1 text-xl font-semibold text-amber-700">{stats.pending}</div>
+                                <div className="rounded-[18px] border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-4 py-3">
+                                    <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--vz-warning)]">Սպասող</div>
+                                    <div className="mt-1 text-xl font-semibold text-[var(--vz-warning)]">{stats.pending}</div>
                                 </div>
-                                <div className="rounded-[18px] border border-sky-200 bg-sky-50 px-4 py-3">
-                                    <div className="text-[10px] font-semibold uppercase tracking-wide text-sky-700">Այսօրվա շրջանառություն</div>
-                                    <div className="mt-1 text-xl font-semibold text-sky-700">{formatMoney(stats.todayRevenue)} դր</div>
+                                <div className="rounded-[18px] border border-[var(--vz-info-line)] bg-[var(--vz-info-soft)] px-4 py-3">
+                                    <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--vz-info)]">Այսօրվա շրջանառություն</div>
+                                    <div className="mt-1 text-xl font-semibold text-[var(--vz-info)]">{formatMoney(stats.todayRevenue)} դր</div>
                                 </div>
                             </div>
 
@@ -2268,13 +2268,13 @@ export function Calendar() {
                                                 onClick={() => setDatePick(item.key)}
                                                 className={cn(
                                                     "rounded-[18px] border px-3 py-3 text-left transition",
-                                                    active ? "border-violet-300 bg-violet-50 shadow-sm" : "border-slate-200 bg-white hover:border-violet-200 hover:bg-violet-50/40"
+                                                    active ? "border-[var(--vz-primary)] bg-[var(--vz-accent-soft)] shadow-sm" : "border-[var(--vz-line)] bg-[var(--vz-surface)] hover:border-[var(--vz-line-strong)] hover:bg-[var(--vz-accent-soft)]"
                                                 )}
                                             >
-                                                <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">{weekdayShort(item.day)}</div>
-                                                <div className="mt-1 text-lg font-semibold text-slate-950">{item.day.getDate()}</div>
-                                                <div className="mt-2 text-xs text-slate-500">{item.bookings} ամրագրում</div>
-                                                <div className="mt-1 text-xs font-medium text-slate-700">{formatMoney(item.revenue)} դր</div>
+                                                <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--vz-muted)]">{weekdayShort(item.day)}</div>
+                                                <div className="mt-1 text-lg font-semibold text-[var(--vz-text)]">{item.day.getDate()}</div>
+                                                <div className="mt-2 text-xs text-[var(--vz-muted)]">{item.bookings} ամրագրում</div>
+                                                <div className="mt-1 text-xs font-medium text-[var(--vz-text-secondary)]">{formatMoney(item.revenue)} դր</div>
                                             </button>
                                         );
                                     })}
@@ -2327,7 +2327,7 @@ export function Calendar() {
                                             const ext = arg.event.extendedProps as CalendarExtendedProps;
                                             const booking = ext.booking;
                                             if (!booking) {
-                                                return <div className="px-2 py-1 text-[11px] font-medium text-rose-700">{arg.event.title}</div>;
+                                                return <div className="px-2 py-1 text-[11px] font-medium text-[var(--vz-danger)]">{arg.event.title}</div>;
                                             }
                                             const ui = eventColor(booking.status);
                                             const statusLabel = bookingStatusLabel(booking.status);
@@ -2335,18 +2335,18 @@ export function Calendar() {
                                                 <div data-booking-id={booking.id} className={cn("calendar-event-card rounded-[16px] border px-3 py-2 shadow-sm", ui.outer)}>
                                                     <div className="flex items-start justify-between gap-2">
                                                         <div className="min-w-0">
-                                                            <div className="truncate text-[10px] font-semibold leading-4 text-slate-900">{booking.client_name}</div>
-                                                            <div className="mt-0.5 truncate text-[10px] leading-4 text-slate-600">{ext?.serviceName || arg.event.title}</div>
+                                                            <div className="truncate text-[10px] font-semibold leading-4 text-[var(--vz-text)]">{booking.client_name}</div>
+                                                            <div className="mt-0.5 truncate text-[10px] leading-4 text-[var(--vz-text-secondary)]">{ext?.serviceName || arg.event.title}</div>
                                                         </div>
                                                         <span className={cn("shrink-0 rounded-full px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide", ui.badge)}>
                                                             {statusLabel}
                                                         </span>
                                                     </div>
-                                                    <div className="mt-2 flex items-center justify-between gap-2 text-[9px] text-slate-500">
+                                                    <div className="mt-2 flex items-center justify-between gap-2 text-[9px] text-[var(--vz-muted)]">
                                                         <span className="truncate">{arg.timeText}</span>
                                                         {ext?.staffName ? <span className="truncate">{ext.staffName}</span> : null}
                                                     </div>
-                                                    {booking.client_phone ? <div className="mt-1 truncate text-[9px] text-slate-500">{booking.client_phone}</div> : null}
+                                                    {booking.client_phone ? <div className="mt-1 truncate text-[9px] text-[var(--vz-muted)]">{booking.client_phone}</div> : null}
                                                 </div>
                                             );
                                         }}
@@ -2365,28 +2365,28 @@ export function Calendar() {
                 description="Օրացույցի օրը կփոխվի անմիջապես ընտրելուց հետո։"
             >
                 <div className="space-y-4">
-                    <div className="rounded-[24px] border border-[#e7dfd6] bg-[#fcfbf8] p-3">
+                    <div className="rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-3">
                         <div className="mb-4 flex items-center justify-between gap-3">
                             <button
                                 type="button"
                                 onClick={() => setPickerMonth((current) => addMonths(current, -1))}
-                                className="grid h-10 w-10 place-items-center rounded-2xl border border-[#e7dfd6] bg-white text-slate-600 shadow-sm"
+                                className="grid h-10 w-10 place-items-center rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text-secondary)] shadow-sm"
                                 aria-label="Նախորդ ամիս"
                             >
                                 <ChevronLeft className="h-4 w-4" />
                             </button>
-                            <div className="text-sm font-semibold capitalize text-slate-950">{pickerMonthLabel}</div>
+                            <div className="text-sm font-semibold capitalize text-[var(--vz-text)]">{pickerMonthLabel}</div>
                             <button
                                 type="button"
                                 onClick={() => setPickerMonth((current) => addMonths(current, 1))}
-                                className="grid h-10 w-10 place-items-center rounded-2xl border border-[#e7dfd6] bg-white text-slate-600 shadow-sm"
+                                className="grid h-10 w-10 place-items-center rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text-secondary)] shadow-sm"
                                 aria-label="Հաջորդ ամիս"
                             >
                                 <ChevronRight className="h-4 w-4" />
                             </button>
                         </div>
 
-                        <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-semibold text-slate-400">
+                        <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-semibold text-[var(--vz-muted)]">
                             {['Երկ', 'Երք', 'Չրք', 'Հնգ', 'Ուրբ', 'Շբթ', 'Կիր'].map((label) => (
                                 <div key={label} className="py-1">{label}</div>
                             ))}
@@ -2410,10 +2410,10 @@ export function Calendar() {
                                                 className={cn(
                                                     "grid aspect-square min-h-10 place-items-center rounded-xl text-sm font-medium transition",
                                                     active
-                                                        ? "bg-[#24364b] text-white shadow-sm"
+                                                        ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-sm"
                                                         : inMonth
-                                                            ? "bg-white text-slate-700 hover:bg-violet-50"
-                                                            : "text-slate-300 hover:bg-white",
+                                                            ? "bg-[var(--vz-surface)] text-[var(--vz-text-secondary)] hover:bg-[var(--vz-accent-soft)]"
+                                                            : "text-[var(--vz-muted)] hover:bg-[var(--vz-surface)]",
                                                 )}
                                             >
                                                 {day.getDate()}
@@ -2444,7 +2444,7 @@ export function Calendar() {
                 <div className="space-y-4">
                     {canManageAllBookings ? (
                         <div>
-                            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Աշխատակիցներ</div>
+                            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--vz-muted)]">Աշխատակիցներ</div>
                             <div className="flex flex-wrap gap-2">
                                 {staff.map((s) => {
                                     const active = staffFilter.includes(s.id);
@@ -2455,7 +2455,7 @@ export function Calendar() {
                                             onClick={() => setStaffFilter((prev) => (prev.includes(s.id) ? prev.filter((x) => x !== s.id) : [...prev, s.id]))}
                                             className={cn(
                                                 "rounded-full border px-3 py-2 text-sm transition",
-                                                active ? "border-violet-300 bg-violet-50 text-violet-700" : "border-slate-200 bg-white text-slate-700"
+                                                active ? "border-[var(--vz-primary)] bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]" : "border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text-secondary)]"
                                             )}
                                         >
                                             {s.name}
@@ -2465,13 +2465,13 @@ export function Calendar() {
                             </div>
                         </div>
                     ) : (
-                        <div className="rounded-2xl border border-violet-200 bg-violet-50 p-4 text-sm text-violet-800">
+                        <div className="rounded-2xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] p-4 text-sm text-[var(--vz-accent-text)]">
                             Staff mode-ում ֆիլտրը սահմանված է քո վրա և չի փոխվում։
                         </div>
                     )}
 
                     <div>
-                        <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Ծառայություններ</div>
+                        <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--vz-muted)]">Ծառայություններ</div>
                         <div className="flex flex-wrap gap-2">
                             {services.map((s) => {
                                 const active = serviceFilter.includes(s.id);
@@ -2482,7 +2482,7 @@ export function Calendar() {
                                         onClick={() => setServiceFilter((prev) => (prev.includes(s.id) ? prev.filter((x) => x !== s.id) : [...prev, s.id]))}
                                         className={cn(
                                             "rounded-full border px-3 py-2 text-sm transition",
-                                            active ? "border-violet-300 bg-violet-50 text-violet-700" : "border-slate-200 bg-white text-slate-700"
+                                            active ? "border-[var(--vz-primary)] bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]" : "border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text-secondary)]"
                                         )}
                                     >
                                         {s.name}
@@ -2506,14 +2506,14 @@ export function Calendar() {
                             <button
                                 type="button"
                                 onClick={() => setBlockDraft((p) => ({ ...p, scope: "business" }))}
-                                className={cn("rounded-2xl border px-4 py-3 text-sm transition", blockDraft.scope === "business" ? "border-violet-300 bg-violet-50 text-violet-700" : "border-slate-200 bg-white")}
+                                className={cn("rounded-2xl border px-4 py-3 text-sm transition", blockDraft.scope === "business" ? "border-[var(--vz-primary)] bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]" : "border-[var(--vz-line)] bg-[var(--vz-surface)]")}
                             >
                                 Ամբողջ business
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setBlockDraft((p) => ({ ...p, scope: "staff" }))}
-                                className={cn("rounded-2xl border px-4 py-3 text-sm transition", blockDraft.scope === "staff" ? "border-violet-300 bg-violet-50 text-violet-700" : "border-slate-200 bg-white")}
+                                className={cn("rounded-2xl border px-4 py-3 text-sm transition", blockDraft.scope === "staff" ? "border-[var(--vz-primary)] bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]" : "border-[var(--vz-line)] bg-[var(--vz-surface)]")}
                             >
                                 Միայն staff
                             </button>
@@ -2525,7 +2525,7 @@ export function Calendar() {
                             <select
                                 value={blockDraft.staffId}
                                 onChange={(e) => setBlockDraft((p) => ({ ...p, staffId: e.target.value ? Number(e.target.value) : "" }))}
-                                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                                className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm"
                             >
                                 <option value="">Ընտրիր...</option>
                                 {staff.map((s) => (
@@ -2537,10 +2537,10 @@ export function Calendar() {
 
                     <div className="grid gap-4 sm:grid-cols-2">
                         <CreateField label="Ամսաթիվ">
-                            <input type="date" value={blockDraft.date} onChange={(e) => setBlockDraft((p) => ({ ...p, date: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" />
+                            <input type="date" value={blockDraft.date} onChange={(e) => setBlockDraft((p) => ({ ...p, date: e.target.value }))} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" />
                         </CreateField>
                         <CreateField label="Տեսակ">
-                            <select value={blockDraft.mode} onChange={(e) => setBlockDraft((p) => ({ ...p, mode: e.target.value as "allday" | "duration" }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
+                            <select value={blockDraft.mode} onChange={(e) => setBlockDraft((p) => ({ ...p, mode: e.target.value as "allday" | "duration" }))} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
                                 <option value="duration">Փակ ժամ</option>
                                 <option value="allday">Ամբողջ օր</option>
                             </select>
@@ -2550,16 +2550,16 @@ export function Calendar() {
                     {blockDraft.mode === "duration" && (
                         <div className="grid gap-4 sm:grid-cols-2">
                             <CreateField label="Սկիզբ">
-                                <input type="time" value={blockDraft.startTime} onChange={(e) => setBlockDraft((p) => ({ ...p, startTime: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" />
+                                <input type="time" value={blockDraft.startTime} onChange={(e) => setBlockDraft((p) => ({ ...p, startTime: e.target.value }))} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" />
                             </CreateField>
                             <CreateField label="Տևողություն (րոպե)">
-                                <input type="number" min={1} value={blockDraft.durationMin} onChange={(e) => setBlockDraft((p) => ({ ...p, durationMin: Number(e.target.value) || 1 }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" />
+                                <input type="number" min={1} value={blockDraft.durationMin} onChange={(e) => setBlockDraft((p) => ({ ...p, durationMin: Number(e.target.value) || 1 }))} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" />
                             </CreateField>
                         </div>
                     )}
 
                     <CreateField label="Պատճառ">
-                        <input value={blockDraft.reason} onChange={(e) => setBlockDraft((p) => ({ ...p, reason: e.target.value }))} placeholder="Օր․ Ընդմիջում / Հանգիստ" className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" />
+                        <input value={blockDraft.reason} onChange={(e) => setBlockDraft((p) => ({ ...p, reason: e.target.value }))} placeholder="Օր․ Ընդմիջում / Հանգիստ" className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" />
                     </CreateField>
 
                     <div className="grid gap-3 sm:grid-cols-2">
@@ -2569,7 +2569,7 @@ export function Calendar() {
                         <Button variant="secondary" onClick={() => setBlockOpen(false)}>Փակել</Button>
                     </div>
 
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-xs leading-6 text-slate-600">
+                    <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-3 text-xs leading-6 text-[var(--vz-text-secondary)]">
                         Փակ ժամանակը կարող է վերաբերել մեկ մասնագետի կամ ամբողջ բիզնեսին։ Այն ջնջելու համար սեղմիր օրացույցում։
                     </div>
                 </div>
@@ -2586,32 +2586,32 @@ export function Calendar() {
                 <div className="grid min-w-0 gap-0 overflow-x-hidden xl:grid-cols-[minmax(0,1.2fr)_380px]">
                     <div className="min-w-0 space-y-4 p-3 sm:space-y-6 sm:p-6">
                         {draft && (
-                            <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-[radial-gradient(circle_at_top_left,rgba(124,58,237,0.14),transparent_38%),linear-gradient(135deg,#f8fafc,#ffffff)] p-4 shadow-sm sm:rounded-[28px] sm:p-5">
+                            <div className="overflow-hidden rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4 shadow-sm sm:rounded-[28px] sm:p-5">
                                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                                     <div>
-                                        <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-violet-700">
+                                        <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--vz-accent-text)]">
                                             <Clock3 className="h-3.5 w-3.5" /> Ընտրված մեկնարկ
                                         </div>
-                                        <div className="mt-3 text-lg font-semibold tracking-tight text-slate-950 sm:text-2xl">
+                                        <div className="mt-3 text-lg font-semibold tracking-tight text-[var(--vz-text)] sm:text-2xl">
                                             {ymd(draft.startsAt)} · {hm(draft.startsAt)} – {hm(draft.endsAt)}
                                         </div>
-                                        <p className="mt-2 hidden max-w-2xl text-sm leading-6 text-slate-500 sm:block">
+                                        <p className="mt-2 hidden max-w-2xl text-sm leading-6 text-[var(--vz-muted)] sm:block">
                                             Ընտրիր ամրագրման ճիշտ տեսակը, լրացրու հաճախորդի տվյալները և պահիր ամրագրումը անմիջապես calendar-ից։
                                         </p>
                                     </div>
 
                                     <div className="grid grid-cols-3 gap-2 sm:gap-3 xl:w-[360px]">
-                                        <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2.5 sm:rounded-2xl sm:px-4 sm:py-3">
-                                            <div className="text-[9px] font-semibold uppercase tracking-wide text-slate-400 sm:text-[11px]">Քայլ</div>
-                                            <div className="mt-1 text-sm font-semibold text-slate-950 sm:text-lg">{slotMinutes} ր</div>
+                                        <div className="rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-2.5 py-2.5 sm:rounded-2xl sm:px-4 sm:py-3">
+                                            <div className="text-[9px] font-semibold uppercase tracking-wide text-[var(--vz-muted)] sm:text-[11px]">Քայլ</div>
+                                            <div className="mt-1 text-sm font-semibold text-[var(--vz-text)] sm:text-lg">{slotMinutes} ր</div>
                                         </div>
-                                        <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2.5 sm:rounded-2xl sm:px-4 sm:py-3">
-                                            <div className="text-[9px] font-semibold uppercase tracking-wide text-slate-400 sm:text-[11px]">Ժամեր</div>
-                                            <div className="mt-1 text-xs font-semibold text-slate-950 sm:text-lg">{workStart}–{workEnd}</div>
+                                        <div className="rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-2.5 py-2.5 sm:rounded-2xl sm:px-4 sm:py-3">
+                                            <div className="text-[9px] font-semibold uppercase tracking-wide text-[var(--vz-muted)] sm:text-[11px]">Ժամեր</div>
+                                            <div className="mt-1 text-xs font-semibold text-[var(--vz-text)] sm:text-lg">{workStart}–{workEnd}</div>
                                         </div>
-                                        <div className="rounded-xl border border-slate-200 bg-white px-2.5 py-2.5 sm:rounded-2xl sm:px-4 sm:py-3">
-                                            <div className="text-[9px] font-semibold uppercase tracking-wide text-slate-400 sm:text-[11px]">Տեսակ</div>
-                                            <div className="mt-1 truncate text-sm font-semibold text-slate-950 sm:text-lg">
+                                        <div className="rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-2.5 py-2.5 sm:rounded-2xl sm:px-4 sm:py-3">
+                                            <div className="text-[9px] font-semibold uppercase tracking-wide text-[var(--vz-muted)] sm:text-[11px]">Տեսակ</div>
+                                            <div className="mt-1 truncate text-sm font-semibold text-[var(--vz-text)] sm:text-lg">
                                                 {bookingMode === "single" ? "Մեկ" : bookingMode === "multi" ? "Մի քանի" : "Առանձին"}
                                             </div>
                                         </div>
@@ -2622,8 +2622,8 @@ export function Calendar() {
 
                         <section className="space-y-3">
                             <div>
-                                <div className="text-lg font-semibold text-slate-950">Ամրագրման տեսակ</div>
-                                <div className="text-sm text-slate-500">Ընտրիր ամենապարզ համապատասխան տարբերակը։</div>
+                                <div className="text-lg font-semibold text-[var(--vz-text)]">Ամրագրման տեսակ</div>
+                                <div className="text-sm text-[var(--vz-muted)]">Ընտրիր ամենապարզ համապատասխան տարբերակը։</div>
                             </div>
                             <div className="grid gap-3 xl:grid-cols-3">
                                 <ModeCard
@@ -2631,7 +2631,7 @@ export function Calendar() {
                                     icon={<CheckCircle2 className="h-5 w-5" />}
                                     title="Մեկ ծառայություն"
                                     description="Մեկ ծառայություն, մեկ աշխատակից, մեկ մեկնարկի ժամ։"
-                                    color="bg-sky-500"
+                                    color="bg-[var(--vz-primary)]"
                                     onClick={() => {
                                         setBookingMode("single");
                                         if (serviceIds.length > 1) setServiceIds((prev) => prev.slice(0, 1));
@@ -2642,7 +2642,7 @@ export function Calendar() {
                                     icon={<Layers3 className="h-5 w-5" />}
                                     title="Մի քանի ծառայություն"
                                     description="Մի քանի ծառայություն իրար հետևից՝ նույն աշխատակցի մոտ։"
-                                    color="bg-violet-600"
+                                    color="bg-[var(--vz-primary)]"
                                     onClick={() => setBookingMode("multi")}
                                 />
                                 <ModeCard
@@ -2650,20 +2650,20 @@ export function Calendar() {
                                     icon={<Users2 className="h-5 w-5" />}
                                     title="Տարբեր ժամեր կամ մասնագետներ"
                                     description="Յուրաքանչյուր ծառայության համար առանձին աշխատակից և ժամ։"
-                                    color="bg-amber-500"
+                                    color="bg-[var(--vz-highlight)]"
                                     onClick={() => setBookingMode("lines")}
                                 />
                             </div>
                         </section>
 
-                        <section className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-[28px] sm:p-6">
+                        <section className="rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4 shadow-sm sm:rounded-[28px] sm:p-6">
                             <div className="mb-5 flex items-start gap-3">
-                                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-slate-900 text-white shadow-sm">
+                                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-sm">
                                     <Scissors className="h-5 w-5" />
                                 </div>
                                 <div>
-                                    <div className="text-lg font-semibold text-slate-950">Ծառայություններ և ժամեր</div>
-                                    <div className="text-sm text-slate-500">
+                                    <div className="text-lg font-semibold text-[var(--vz-text)]">Ծառայություններ և ժամեր</div>
+                                    <div className="text-sm text-[var(--vz-muted)]">
                                         {bookingMode === "single"
                                             ? "Ընտրիր մեկ ծառայություն և աշխատակցին։"
                                             : bookingMode === "multi"
@@ -2680,7 +2680,7 @@ export function Calendar() {
                                             type="date"
                                             value={draft ? ymd(draft.startsAt) : ymd(new Date())}
                                             onChange={(e) => updateDraftDate(e.target.value)}
-                                            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                                            className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm"
                                         />
                                     </CreateField>
 
@@ -2688,7 +2688,7 @@ export function Calendar() {
                                         <select
                                             value={activeSmartSlotKey}
                                             onChange={(e) => updateDraftTime(e.target.value)}
-                                            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                                            className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm"
                                         >
                                             {!smartSlots.length && <option value="">Հասանելի ժամ չկա</option>}
                                             {smartSlots.map((slot) => (
@@ -2706,7 +2706,7 @@ export function Calendar() {
                                                 setServiceIds(e.target.value ? [Number(e.target.value)] : []);
                                                 setPartySize(1);
                                             }}
-                                            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                                            className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm"
                                         >
                                             <option value="">Ընտրիր...</option>
                                             {services.map((s) => (
@@ -2726,9 +2726,9 @@ export function Calendar() {
                                                     max={selectedServiceCapacity}
                                                     value={partySize}
                                                     onChange={(e) => setPartySize(Math.max(1, Number(e.target.value) || 1))}
-                                                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                                                    className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm"
                                                 />
-                                                <div className="mt-2 text-xs text-slate-500">
+                                                <div className="mt-2 text-xs text-[var(--vz-muted)]">
                                                     Առավելագույնը՝ {selectedServiceCapacity} մասնակից{selectedSmartSlot?.seats_remaining != null ? ` · ընտրված ժամին ազատ՝ ${selectedSmartSlot.seats_remaining}` : ""}
                                                 </div>
                                             </div>
@@ -2740,7 +2740,7 @@ export function Calendar() {
                                             value={staffId}
                                             disabled={isStaff}
                                             onChange={(e) => setStaffId(e.target.value ? Number(e.target.value) : "")}
-                                            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm disabled:bg-slate-50"
+                                            className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm disabled:bg-[var(--vz-surface-2)]"
                                         >
                                             <option value="">Խելացի ընտրել / ցանկացած աշխատակից</option>
                                             {visibleStaff.map((member) => (
@@ -2749,18 +2749,18 @@ export function Calendar() {
                                         </select>
                                     </CreateField>
 
-                                    <div className="rounded-2xl border border-violet-100 bg-violet-50/70 p-4 md:col-span-2">
+                                    <div className="rounded-2xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] p-4 md:col-span-2">
                                         <div className="flex items-start gap-3">
-                                            <CalendarRange className="mt-0.5 h-5 w-5 shrink-0 text-violet-600" />
+                                            <CalendarRange className="mt-0.5 h-5 w-5 shrink-0 text-[var(--vz-accent-text)]" />
                                             <div className="min-w-0 flex-1">
-                                                <div className="font-semibold text-slate-900">Կրկնվող ամրագրում</div>
-                                                <div className="mt-1 text-xs leading-5 text-slate-500">Ստեղծիր նույն ժամով շաբաթական, երկշաբաթյա կամ ամսական այցերի շարք։</div>
+                                                <div className="font-semibold text-[var(--vz-text)]">Կրկնվող ամրագրում</div>
+                                                <div className="mt-1 text-xs leading-5 text-[var(--vz-muted)]">Ստեղծիր նույն ժամով շաբաթական, երկշաբաթյա կամ ամսական այցերի շարք։</div>
                                                 <div className="mt-3 grid gap-3 sm:grid-cols-2">
                                                     <CreateField label="Հաճախականություն">
                                                         <select
                                                             value={recurrenceFrequency}
                                                             onChange={(e) => setRecurrenceFrequency(e.target.value as typeof recurrenceFrequency)}
-                                                            className="w-full rounded-2xl border border-violet-200 bg-white px-4 py-3 text-sm"
+                                                            className="w-full rounded-2xl border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] px-4 py-3 text-sm"
                                                         >
                                                             <option value="none">Չկրկնել</option>
                                                             <option value="weekly">Ամեն շաբաթ</option>
@@ -2776,7 +2776,7 @@ export function Calendar() {
                                                                 max={24}
                                                                 value={recurrenceCount}
                                                                 onChange={(e) => setRecurrenceCount(Math.max(2, Math.min(24, Number(e.target.value) || 2)))}
-                                                                className="w-full rounded-2xl border border-violet-200 bg-white px-4 py-3 text-sm"
+                                                                className="w-full rounded-2xl border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] px-4 py-3 text-sm"
                                                             />
                                                         </CreateField>
                                                     ) : null}
@@ -2807,7 +2807,7 @@ export function Calendar() {
                                                 setServiceIds((prev) => [...prev, v]);
                                                 setTimeout(() => setServicePick(""), 0);
                                             }}
-                                            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                                            className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm"
                                         >
                                             <option value="">Ընտրիր...</option>
                                             {services.map((s) => (
@@ -2826,13 +2826,13 @@ export function Calendar() {
                                                     key={`${id}-${index}`}
                                                     type="button"
                                                     onClick={() => setServiceIds((prev) => prev.filter((_, i) => i !== index))}
-                                                    className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-semibold text-violet-700"
+                                                    className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--vz-accent-text)]"
                                                 >
                                                     {service?.name ?? `#${id}`}
-                                                    <span className="text-violet-400">×</span>
+                                                    <span className="text-[var(--vz-accent-text)]">×</span>
                                                 </button>
                                             );
-                                        }) : <div className="rounded-2xl border border-dashed border-slate-200 px-4 py-3 text-sm text-slate-500">Առայժմ ծառայություն ընտրված չէ։</div>}
+                                        }) : <div className="rounded-2xl border border-dashed border-[var(--vz-line)] px-4 py-3 text-sm text-[var(--vz-muted)]">Առայժմ ծառայություն ընտրված չէ։</div>}
                                     </div>
 
                                     <div className="grid gap-4 md:grid-cols-2">
@@ -2841,14 +2841,14 @@ export function Calendar() {
                                                 type="date"
                                                 value={draft ? ymd(draft.startsAt) : ymd(new Date())}
                                                 onChange={(e) => updateDraftDate(e.target.value)}
-                                                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                                                className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm"
                                             />
                                         </CreateField>
                                         <CreateField label="Սկզբի ժամ">
                                             <select
                                                 value={activeSmartSlotKey}
                                                 onChange={(e) => updateDraftTime(e.target.value)}
-                                                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                                                className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm"
                                             >
                                                 {!smartSlots.length && <option value="">Հասանելի ժամ չկա</option>}
                                                 {smartSlots.map((slot) => (
@@ -2861,17 +2861,17 @@ export function Calendar() {
                                     </div>
 
                                     <div className="grid gap-3 sm:grid-cols-3">
-                                        <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Ծառայություններ</div>
-                                            <div className="mt-1 text-xl font-semibold text-slate-950">{serviceIds.length}</div>
+                                        <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3">
+                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--vz-muted)]">Ծառայություններ</div>
+                                            <div className="mt-1 text-xl font-semibold text-[var(--vz-text)]">{serviceIds.length}</div>
                                         </div>
-                                        <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Տևողություն</div>
-                                            <div className="mt-1 text-xl font-semibold text-slate-950">{selectedServicesMeta.totalDuration || 0} ր</div>
+                                        <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3">
+                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--vz-muted)]">Տևողություն</div>
+                                            <div className="mt-1 text-xl font-semibold text-[var(--vz-text)]">{selectedServicesMeta.totalDuration || 0} ր</div>
                                         </div>
-                                        <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Գին</div>
-                                            <div className="mt-1 text-xl font-semibold text-slate-950">{selectedServicesMeta.totalPrice || 0} AMD</div>
+                                        <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3">
+                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--vz-muted)]">Գին</div>
+                                            <div className="mt-1 text-xl font-semibold text-[var(--vz-text)]">{selectedServicesMeta.totalPrice || 0} AMD</div>
                                         </div>
                                     </div>
 
@@ -2882,7 +2882,7 @@ export function Calendar() {
                                                     value={staffId}
                                                     disabled={isStaff}
                                                     onChange={(e) => setStaffId(e.target.value ? Number(e.target.value) : "")}
-                                                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm disabled:bg-slate-50"
+                                                    className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm disabled:bg-[var(--vz-surface-2)]"
                                                 >
                                                     <option value="">Խելացի ընտրել / ցանկացած աշխատակից</option>
                                                     {visibleStaff.map((member) => (
@@ -2890,7 +2890,7 @@ export function Calendar() {
                                                     ))}
                                                 </select>
                                             </CreateField>
-                                            <div className="rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3 text-sm text-violet-800">
+                                            <div className="rounded-2xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-4 py-3 text-sm text-[var(--vz-accent-text)]">
                                                 Multi mode-ում ընտրված ծառայությունները կստեղծվեն մեկ booking-ի տակ՝ հերթական BookingItem-երով և նույն staff-ով։
                                             </div>
                                             {!!recommendedSmartSlots.length && (
@@ -2904,22 +2904,22 @@ export function Calendar() {
                                         </>
                                     ) : (
                                         <div className="space-y-3">
-                                            <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                                            <div className="rounded-2xl border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-4 py-3 text-sm text-[var(--vz-warning)]">
                                                 Lines mode-ում յուրաքանչյուր ծառայության համար կարող ես փոխել starts_at-ը և staff-ը։ Սա admin-ի advanced տարբերակն է։
                                             </div>
                                             {lineDrafts.map((line, index) => {
                                                 const serviceMeta = serviceById.get(line.service_id);
                                                 return (
-                                                    <div key={line.key} className="rounded-[22px] border border-slate-200 bg-slate-50/70 p-4">
+                                                    <div key={line.key} className="rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
                                                         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                                                             <div>
-                                                                <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-violet-700">
+                                                                <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--vz-accent-text)]">
                                                                     Քայլ {index + 1}
                                                                 </div>
-                                                                <div className="mt-2 text-base font-semibold text-slate-900">{serviceMeta?.name ?? `Service #${line.service_id}`}</div>
-                                                                <div className="mt-1 text-sm text-slate-500">Տևողություն՝ {serviceMeta?.duration_minutes ?? 0} րոպե</div>
+                                                                <div className="mt-2 text-base font-semibold text-[var(--vz-text)]">{serviceMeta?.name ?? `Service #${line.service_id}`}</div>
+                                                                <div className="mt-1 text-sm text-[var(--vz-muted)]">Տևողություն՝ {serviceMeta?.duration_minutes ?? 0} րոպե</div>
                                                             </div>
-                                                            <div className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600">
+                                                            <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-2 text-sm text-[var(--vz-text-secondary)]">
                                                                 {line.starts_at.replace(" ", " · ")}
                                                             </div>
                                                         </div>
@@ -2929,7 +2929,7 @@ export function Calendar() {
                                                                     type="datetime-local"
                                                                     value={line.starts_at.replace(" ", "T")}
                                                                     onChange={(e) => updateLineDraft(line.key, { starts_at: e.target.value.replace("T", " ") })}
-                                                                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                                                                    className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm"
                                                                 />
                                                             </CreateField>
                                                             <CreateField label="Աշխատակից">
@@ -2937,7 +2937,7 @@ export function Calendar() {
                                                                     value={isStaff ? user?.id ?? "" : line.staff_id}
                                                                     disabled={isStaff}
                                                                     onChange={(e) => updateLineDraft(line.key, { staff_id: e.target.value ? Number(e.target.value) : "" })}
-                                                                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm disabled:bg-slate-50"
+                                                                    className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm disabled:bg-[var(--vz-surface-2)]"
                                                                 >
                                                                     <option value="">Ընտրիր...</option>
                                                                     {visibleStaff.map((member) => (
@@ -2955,36 +2955,36 @@ export function Calendar() {
                             )}
                         </section>
 
-                        <section className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                        <section className="rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 shadow-sm sm:p-6">
                             <div className="mb-5 flex items-start gap-3">
-                                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-sky-500 text-slate-900 shadow-sm">
+                                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[var(--vz-primary)] text-[var(--vz-text)] shadow-sm">
                                     <User className="h-5 w-5" />
                                 </div>
                                 <div>
-                                    <div className="text-lg font-semibold text-slate-950">Հաճախորդի տվյալներ</div>
-                                    <div className="text-sm text-slate-500">Պահպանիր ամրագրումը հենց ներսից՝ առանց լրացուցիչ քայլերի։</div>
+                                    <div className="text-lg font-semibold text-[var(--vz-text)]">Հաճախորդի տվյալներ</div>
+                                    <div className="text-sm text-[var(--vz-muted)]">Պահպանիր ամրագրումը հենց ներսից՝ առանց լրացուցիչ քայլերի։</div>
                                 </div>
                             </div>
-                            <div className="mb-4 rounded-[22px] border border-slate-200 bg-slate-50/80 p-4">
-                                <div className="text-sm font-semibold text-slate-900">Հաճախորդների բազայից ընտրել</div>
-                                <div className="mt-1 text-xs leading-5 text-slate-500">Ընտրելիս անունն ու հեռախոսը լցվում են ավտոմատ։</div>
+                            <div className="mb-4 rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
+                                <div className="text-sm font-semibold text-[var(--vz-text)]">Հաճախորդների բազայից ընտրել</div>
+                                <div className="mt-1 text-xs leading-5 text-[var(--vz-muted)]">Ընտրելիս անունն ու հեռախոսը լցվում են ավտոմատ։</div>
                                 <div className="mt-3 space-y-3">
                                     <input
                                         value={clientLookup}
                                         onChange={(e) => setClientLookup(e.target.value)}
-                                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                                        className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm"
                                         placeholder="Փնտրել հաճախորդի անունով կամ հեռախոսով"
                                     />
                                     {selectedClientId ? (
                                         <div className="flex flex-wrap items-center gap-2">
-                                            <span className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">Ընտրված հաճախորդ #{selectedClientId}</span>
+                                            <span className="rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--vz-accent-text)]">Ընտրված հաճախորդ #{selectedClientId}</span>
                                             <button
                                                 type="button"
                                                 onClick={() => {
                                                     setSelectedClientId(null);
                                                     setClientLookup("");
                                                 }}
-                                                className="text-xs font-medium text-slate-500 transition hover:text-slate-900"
+                                                className="text-xs font-medium text-[var(--vz-muted)] transition hover:text-[var(--vz-text)]"
                                             >
                                                 Մաքրել ընտրությունը
                                             </button>
@@ -2996,10 +2996,10 @@ export function Calendar() {
                                                 key={client.id}
                                                 type="button"
                                                 onClick={() => selectClientFromBase(client)}
-                                                className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left transition hover:border-violet-200 hover:bg-violet-50"
+                                                className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-left transition hover:border-[var(--vz-line-strong)] hover:bg-[var(--vz-accent-soft)]"
                                             >
-                                                <div className="font-medium text-slate-900">{client.name}</div>
-                                                <div className="mt-1 text-xs text-slate-500">{client.phone || "Առանց համարի"}</div>
+                                                <div className="font-medium text-[var(--vz-text)]">{client.name}</div>
+                                                <div className="mt-1 text-xs text-[var(--vz-muted)]">{client.phone || "Առանց համարի"}</div>
                                             </button>
                                         ))}
                                     </div>
@@ -3007,15 +3007,15 @@ export function Calendar() {
                             </div>
                             <div className="grid gap-4 md:grid-cols-2">
                                 <CreateField label="Հաճախորդի անուն">
-                                    <input value={clientName} onChange={(e) => { setClientName(e.target.value); if (selectedClientId) setSelectedClientId(null); }} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Օր․ Մարիամ" />
+                                    <input value={clientName} onChange={(e) => { setClientName(e.target.value); if (selectedClientId) setSelectedClientId(null); }} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" placeholder="Օր․ Մարիամ" />
                                 </CreateField>
                                 <CreateField label="Հեռախոս">
-                                    <input value={clientPhone} onChange={(e) => { setClientPhone(e.target.value); if (selectedClientId) setSelectedClientId(null); }} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="+374..." />
+                                    <input value={clientPhone} onChange={(e) => { setClientPhone(e.target.value); if (selectedClientId) setSelectedClientId(null); }} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" placeholder="+374..." />
                                 </CreateField>
                             </div>
                             <div className="mt-4 grid gap-4 md:grid-cols-2">
                                 <CreateField label="Աղբյուր">
-                                    <select value={bookingSource} onChange={(e) => setBookingSource(e.target.value)} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
+                                    <select value={bookingSource} onChange={(e) => setBookingSource(e.target.value)} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
                                         <option value="admin">Ադմին</option>
                                         <option value="website">Կայք</option>
                                         <option value="instagram">Instagram</option>
@@ -3028,21 +3028,21 @@ export function Calendar() {
                                     </select>
                                 </CreateField>
                                 <CreateField label="Նշում">
-                                    <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={4} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Լրացուցիչ նշումներ..." />
+                                    <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={4} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" placeholder="Լրացուցիչ նշումներ..." />
                                 </CreateField>
                             </div>
                             {bookingMode !== "lines" ? (
-                                <details className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                                    <summary className="cursor-pointer text-sm font-semibold text-slate-700">Զեղչ, միավորներ կամ նվերի քարտ</summary>
+                                <details className="mt-4 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
+                                    <summary className="cursor-pointer text-sm font-semibold text-[var(--vz-text-secondary)]">Զեղչ, միավորներ կամ նվերի քարտ</summary>
                                     <div className="mt-4 grid gap-4 md:grid-cols-3">
                                         <CreateField label="Օգտագործել միավորներ">
-                                            <input value={redeemPoints} onChange={(e) => setRedeemPoints(e.target.value)} type="number" min={0} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Օր. 100" />
+                                            <input value={redeemPoints} onChange={(e) => setRedeemPoints(e.target.value)} type="number" min={0} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" placeholder="Օր. 100" />
                                         </CreateField>
                                         <CreateField label="Նվերի քարտի կոդ">
-                                            <input value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value.toUpperCase())} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Օր. GC-AB12CD34" />
+                                            <input value={giftCardCode} onChange={(e) => setGiftCardCode(e.target.value.toUpperCase())} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" placeholder="Օր. GC-AB12CD34" />
                                         </CreateField>
                                         <CreateField label="Նվերի քարտից գումար">
-                                            <input value={giftCardAmount} onChange={(e) => setGiftCardAmount(e.target.value)} type="number" min={0} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Լրիվ կամ մասամբ" />
+                                            <input value={giftCardAmount} onChange={(e) => setGiftCardAmount(e.target.value)} type="number" min={0} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" placeholder="Լրիվ կամ մասամբ" />
                                         </CreateField>
                                     </div>
                                 </details>
@@ -3050,34 +3050,34 @@ export function Calendar() {
                         </section>
                     </div>
 
-                    <aside className="min-w-0 border-t border-slate-200 bg-[#fcfbf8] p-5 sm:p-6 2xl:border-l 2xl:border-t-0">
+                    <aside className="min-w-0 border-t border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-5 sm:p-6 2xl:border-l 2xl:border-t-0">
                         <div className="space-y-4 2xl:sticky 2xl:top-0">
-                            <div className="rounded-[28px] border border-slate-200 bg-white p-5 text-slate-900 shadow-[0_24px_60px_rgba(15,23,42,0.20)]">
-                                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Ամրագրման ամփոփում</div>
+                            <div className="rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 text-[var(--vz-text)] shadow-[0_24px_60px_rgba(15,23,42,0.20)]">
+                                <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--vz-muted)]">Ամրագրման ամփոփում</div>
                                 <div className="mt-3 text-2xl font-semibold tracking-tight">
                                     {bookingMode === "single" ? "Մեկ ծառայություն" : bookingMode === "multi" ? "Մի քանի ծառայություն" : "Առանձին ժամեր կամ մասնագետներ"}
                                 </div>
-                                <div className="mt-2 text-sm leading-6 text-slate-500">
+                                <div className="mt-2 text-sm leading-6 text-[var(--vz-muted)]">
                                     {draft ? `${ymd(draft.startsAt)} · ${hm(draft.startsAt)}` : "Սկզբի ժամ դեռ ընտրված չէ"}
                                 </div>
                                 <div className="mt-5 grid gap-3 sm:grid-cols-2 2xl:grid-cols-1">
-                                    <div className="rounded-2xl border border-slate-200 bg-[#fcfbf8] px-4 py-3">
-                                        <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Ծառայություններ</div>
+                                    <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3">
+                                        <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--vz-muted)]">Ծառայություններ</div>
                                         <div className="mt-1 text-xl font-semibold">{selectedServicesMeta.selected.length}</div>
                                     </div>
-                                    <div className="rounded-2xl border border-slate-200 bg-[#fcfbf8] px-4 py-3">
-                                        <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Ընդհանուր տևողություն</div>
+                                    <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3">
+                                        <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--vz-muted)]">Ընդհանուր տևողություն</div>
                                         <div className="mt-1 text-xl font-semibold">{selectedServicesMeta.totalDuration || 0} ր</div>
                                     </div>
                                     {selectedServiceIsGroup ? (
-                                        <div className="rounded-2xl border border-slate-200 bg-[#fcfbf8] px-4 py-3">
-                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Մասնակիցներ</div>
+                                        <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3">
+                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--vz-muted)]">Մասնակիցներ</div>
                                             <div className="mt-1 text-xl font-semibold">{partySize}</div>
                                         </div>
                                     ) : null}
                                     {recurrenceFrequency !== "none" ? (
-                                        <div className="rounded-2xl border border-slate-200 bg-[#fcfbf8] px-4 py-3">
-                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Կրկնվող այցեր</div>
+                                        <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3">
+                                            <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--vz-muted)]">Կրկնվող այցեր</div>
                                             <div className="mt-1 text-xl font-semibold">{recurrenceCount}</div>
                                         </div>
                                     ) : null}
@@ -3085,12 +3085,12 @@ export function Calendar() {
                             </div>
 
                             {!!recommendedSmartSlots.length && (
-                                <div className="rounded-[28px] border border-emerald-200 bg-gradient-to-r from-emerald-50 via-white to-violet-50 p-5 shadow-sm">
-                                    <div className="flex items-center gap-2 text-sm font-semibold text-emerald-800">
+                                <div className="rounded-[28px] border border-[var(--vz-success-line)] bg-[var(--vz-primary)] from-emerald-50 via-white p-5 shadow-sm">
+                                    <div className="flex items-center gap-2 text-sm font-semibold text-[var(--vz-success)]">
                                         <Sparkles className="h-4 w-4" />
                                         Խելացի ամրագրման առաջարկներ
                                     </div>
-                                    <div className="mt-1 text-sm text-slate-600">
+                                    <div className="mt-1 text-sm text-[var(--vz-text-secondary)]">
                                         Ընտրիր առաջարկված ժամերից մեկը, որ calendar-ում անպետք բաց չմնա։
                                     </div>
                                     <div className="mt-4 space-y-2">
@@ -3102,37 +3102,37 @@ export function Calendar() {
                                                 className={cn(
                                                     "flex w-full items-start justify-between gap-3 rounded-2xl border px-4 py-3 text-left transition",
                                                     activeSmartSlotKey === `${slot.starts_at}|${slot.staff_id ?? "na"}`
-                                                        ? "border-emerald-400 bg-emerald-100"
-                                                        : "border-white/80 bg-white hover:border-emerald-300"
+                                                        ? "border-[var(--vz-success-line)] bg-[var(--vz-success-soft)]"
+                                                        : "border-white/80 bg-[var(--vz-surface)] hover:border-[var(--vz-success-line)]"
                                                 )}
                                             >
                                                 <div>
-                                                    <div className="font-semibold text-slate-900">{slot.starts_at.slice(11, 16)}{!staffId && slot.staff_name ? ` · ${slot.staff_name}` : ""}</div>
-                                                    <div className="mt-1 text-xs text-slate-500">{slot.smart_reason || "Առաջարկվող ժամ"}</div>
+                                                    <div className="font-semibold text-[var(--vz-text)]">{slot.starts_at.slice(11, 16)}{!staffId && slot.staff_name ? ` · ${slot.staff_name}` : ""}</div>
+                                                    <div className="mt-1 text-xs text-[var(--vz-muted)]">{slot.smart_reason || "Առաջարկվող ժամ"}</div>
                                                 </div>
-                                                <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[11px] font-semibold text-slate-900">#{slot.recommendation_rank ?? "★"}</span>
+                                                <span className="rounded-full bg-[var(--vz-success)] px-2 py-0.5 text-[11px] font-semibold text-[var(--vz-text)]">#{slot.recommendation_rank ?? "★"}</span>
                                             </button>
                                         ))}
                                     </div>
                                 </div>
                             )}
 
-                            <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
-                                <div className="text-sm font-semibold text-slate-950">Ընտրված ծառայություններ</div>
+                            <div className="rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 shadow-sm">
+                                <div className="text-sm font-semibold text-[var(--vz-text)]">Ընտրված ծառայություններ</div>
                                 <div className="mt-4 space-y-3">
                                     {selectedServicesMeta.selected.length ? selectedServicesMeta.selected.map((service, index) => {
                                         const line = lineDrafts[index];
                                         const lineStaffName = line ? staffById.get(Number(isStaff ? user?.id : line.staff_id || 0))?.name : undefined;
                                         return (
-                                            <div key={`${service.id}-${index}`} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                            <div key={`${service.id}-${index}`} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3">
                                                 <div className="flex items-start justify-between gap-3">
                                                     <div>
-                                                        <div className="font-medium text-slate-900">{service.name}</div>
-                                                        <div className="mt-1 text-xs text-slate-500">{service.duration_minutes} րոպե</div>
+                                                        <div className="font-medium text-[var(--vz-text)]">{service.name}</div>
+                                                        <div className="mt-1 text-xs text-[var(--vz-muted)]">{service.duration_minutes} րոպե</div>
                                                     </div>
-                                                    {service.price != null ? <div className="text-sm font-semibold text-violet-700">{service.price} AMD</div> : null}
+                                                    {service.price != null ? <div className="text-sm font-semibold text-[var(--vz-accent-text)]">{service.price} AMD</div> : null}
                                                 </div>
-                                                <div className="mt-2 text-xs leading-5 text-slate-500">
+                                                <div className="mt-2 text-xs leading-5 text-[var(--vz-muted)]">
                                                     {bookingMode === "lines"
                                                         ? `${line?.starts_at?.replace(" ", " · ") ?? "Ժամը ընտրված չէ"} · ${lineStaffName ?? "Աշխատակից ընտրված չէ"}`
                                                         : bookingMode === "multi"
@@ -3142,13 +3142,13 @@ export function Calendar() {
                                             </div>
                                         );
                                     }) : (
-                                        <div className="rounded-2xl border border-dashed border-slate-200 px-4 py-5 text-sm text-slate-500">
+                                        <div className="rounded-2xl border border-dashed border-[var(--vz-line)] px-4 py-5 text-sm text-[var(--vz-muted)]">
                                             Ընտրիր ծառայություններ, որ ամփոփումը լրացվի։
                                         </div>
                                     )}
                                 </div>
 
-                                <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-600">
+                                <div className="mt-4 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm leading-6 text-[var(--vz-text-secondary)]">
                                     {bookingMode === "single"
                                         ? "Մեկ ծառայություն՝ մեկ մասնագետի մոտ։"
                                         : bookingMode === "multi"

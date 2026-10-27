@@ -40,10 +40,10 @@ function statusLabel(s: GiftCard['status']) {
 
 function statusTone(s: GiftCard['status']) {
   switch (s) {
-    case 'active': return 'bg-emerald-50 text-emerald-700';
-    case 'redeemed': return 'bg-slate-100 text-slate-700';
-    case 'cancelled': return 'bg-rose-50 text-rose-700';
-    default: return 'bg-slate-100 text-slate-700';
+    case 'active': return 'bg-[var(--vz-success-soft)] text-[var(--vz-success)]';
+    case 'redeemed': return 'bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]';
+    case 'cancelled': return 'bg-[var(--vz-danger-soft)] text-[var(--vz-danger)]';
+    default: return 'bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]';
   }
 }
 
@@ -109,17 +109,17 @@ export function GiftCards() {
 
   return (
     <motion.div {...page} className="admin-page space-y-4">
-      <div className="rounded-[32px] border border-white/70 bg-white/[0.88] p-6 shadow-sm">
+      <div className="rounded-[32px] border border-white/70 bg-[var(--vz-surface)] p-6 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-4 py-2 text-sm font-medium text-violet-700">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-4 py-2 text-sm font-medium text-[var(--vz-accent-text)]">
               <Gift className="h-4 w-4" /> Նվերի քարտեր
             </div>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950">Վաճառք, մնացորդ և պատմություն</h1>
-            <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">Թողարկիր նվերի քարտեր, ստուգիր կոդը, նշիր մարում և պահիր ամբողջ շարժի պատմությունը։</p>
+            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-[var(--vz-text)]">Վաճառք, մնացորդ և պատմություն</h1>
+            <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--vz-text-secondary)]">Թողարկիր նվերի քարտեր, ստուգիր կոդը, նշիր մարում և պահիր ամբողջ շարժի պատմությունը։</p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-[24px] border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-medium text-amber-800">Ընդհանուր մնացորդ՝ {money(totalBalance, 'AMD')}</div>
+            <div className="rounded-[24px] border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-5 py-4 text-sm font-medium text-[var(--vz-warning)]">Ընդհանուր մնացորդ՝ {money(totalBalance, 'AMD')}</div>
             <Button onClick={() => setOpenCreate(true)} className="rounded-2xl"><Plus className="h-4 w-4" /> Ստեղծել քարտ</Button>
           </div>
         </div>
@@ -129,10 +129,10 @@ export function GiftCards() {
         <Card className="rounded-[28px] p-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--vz-muted)]" />
               <Input className="pl-9" placeholder="Փնտրել՝ կոդ / անուն / հեռախոս" value={q} onChange={(e) => setQ(e.target.value)} />
             </div>
-            <select className="h-11 rounded-2xl border border-slate-200 bg-white px-4 text-sm" value={status} onChange={(e) => setStatus(e.target.value)}>
+            <select className="h-11 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 text-sm" value={status} onChange={(e) => setStatus(e.target.value)}>
               <option value="">Բոլորը</option>
               <option value="active">Ակտիվ</option>
               <option value="redeemed">Սպառված</option>
@@ -141,17 +141,17 @@ export function GiftCards() {
           </div>
 
           <div className="mt-6 space-y-3">
-            {listQ.isLoading ? <div className="text-sm text-slate-500">Բեռնում է…</div> : list.map((gc) => (
-              <div key={gc.id} className="rounded-[24px] border border-slate-200 bg-slate-50/70 p-4">
+            {listQ.isLoading ? <div className="text-sm text-[var(--vz-muted)]">Բեռնում է…</div> : list.map((gc) => (
+              <div key={gc.id} className="rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
                 <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                   <div>
                     <div className="flex items-center gap-3">
-                      <div className="font-mono text-sm font-semibold text-slate-900">{gc.code}</div>
+                      <div className="font-mono text-sm font-semibold text-[var(--vz-text)]">{gc.code}</div>
                       <span className={cn('inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold', statusTone(gc.status))}>{statusLabel(gc.status)}</span>
                     </div>
-                    <div className="mt-2 text-sm text-slate-600">{gc.issued_to_name || 'Անուն նշված չէ'} {gc.issued_to_phone ? `· ${gc.issued_to_phone}` : ''}</div>
-                    {gc.issued_to_email ? <div className="mt-1 text-xs text-slate-500">{gc.issued_to_email} · {gc.delivery_status === 'sent' ? 'Ուղարկված է' : gc.delivery_status === 'failed' ? 'Ուղարկումը ձախողվել է' : 'Դեռ չի ուղարկվել'}</div> : null}
-                    <div className="mt-1 text-xs text-slate-500">Սկզբնական՝ {money(gc.initial_amount, gc.currency)} · Մնացորդ՝ {money(gc.balance, gc.currency)}</div>
+                    <div className="mt-2 text-sm text-[var(--vz-text-secondary)]">{gc.issued_to_name || 'Անուն նշված չէ'} {gc.issued_to_phone ? `· ${gc.issued_to_phone}` : ''}</div>
+                    {gc.issued_to_email ? <div className="mt-1 text-xs text-[var(--vz-muted)]">{gc.issued_to_email} · {gc.delivery_status === 'sent' ? 'Ուղարկված է' : gc.delivery_status === 'failed' ? 'Ուղարկումը ձախողվել է' : 'Դեռ չի ուղարկվել'}</div> : null}
+                    <div className="mt-1 text-xs text-[var(--vz-muted)]">Սկզբնական՝ {money(gc.initial_amount, gc.currency)} · Մնացորդ՝ {money(gc.balance, gc.currency)}</div>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Button variant="secondary" onClick={() => setLedgerCard(gc)} className="rounded-2xl"><History className="h-4 w-4" /> Պատմություն</Button>
@@ -167,15 +167,15 @@ export function GiftCards() {
         </Card>
 
         <Card className="rounded-[28px] p-6">
-          <div className="text-lg font-semibold text-slate-900">Կոդի արագ ստուգում</div>
+          <div className="text-lg font-semibold text-[var(--vz-text)]">Կոդի արագ ստուգում</div>
           <div className="mt-4 space-y-3">
             <Input value={lookupCode} onChange={(e) => setLookupCode(e.target.value.toUpperCase())} placeholder="Օր. GC-AB12CD34" />
             <Button onClick={() => lookupQ.mutate(lookupCode)} className="w-full rounded-2xl">Ստուգել քարտը</Button>
-            {lookupQ.isPending ? <div className="text-sm text-slate-500">Ստուգում է…</div> : null}
-            {lookupQ.isError ? <div className="rounded-2xl bg-rose-50 p-3 text-sm text-rose-700">Քարտը չի գտնվել կամ ակտիվ չէ</div> : null}
+            {lookupQ.isPending ? <div className="text-sm text-[var(--vz-muted)]">Ստուգում է…</div> : null}
+            {lookupQ.isError ? <div className="rounded-2xl bg-[var(--vz-danger-soft)] p-3 text-sm text-[var(--vz-danger)]">Քարտը չի գտնվել կամ ակտիվ չէ</div> : null}
             {lookupQ.data ? (
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-                <div className="font-semibold text-slate-900">{lookupQ.data.code}</div>
+              <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4 text-sm text-[var(--vz-text-secondary)]">
+                <div className="font-semibold text-[var(--vz-text)]">{lookupQ.data.code}</div>
                 <div className="mt-1">Մնացորդ՝ {money(lookupQ.data.balance, lookupQ.data.currency)}</div>
                 <div className="mt-1">Ստատուս՝ {statusLabel(lookupQ.data.status)}</div>
               </div>
@@ -220,12 +220,12 @@ function CreateGiftCardModal({ open, onClose, onCreate, loading }: { open: boole
           <Input value={purchasedByPhone} onChange={(e) => setPurchasedByPhone(e.target.value)} placeholder="Գնողի հեռախոս" />
           <Input type="email" value={purchasedByEmail} onChange={(e) => setPurchasedByEmail(e.target.value)} placeholder="Գնողի էլ. փոստ" />
           <div className="space-y-1">
-            <div className="text-xs text-slate-500">Վերջնաժամկետ</div>
+            <div className="text-xs text-[var(--vz-muted)]">Վերջնաժամկետ</div>
             <Input type="date" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} />
           </div>
         </div>
-        <textarea value={deliveryMessage} onChange={(e) => setDeliveryMessage(e.target.value)} rows={3} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Նվերի անձնական հաղորդագրություն" />
-        <label className={cn("flex items-start gap-3 rounded-2xl border px-4 py-3 text-sm", issuedToEmail ? "border-violet-200 bg-violet-50 text-slate-700" : "border-slate-200 bg-slate-50 text-slate-400")}>
+        <textarea value={deliveryMessage} onChange={(e) => setDeliveryMessage(e.target.value)} rows={3} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" placeholder="Նվերի անձնական հաղորդագրություն" />
+        <label className={cn("flex items-start gap-3 rounded-2xl border px-4 py-3 text-sm", issuedToEmail ? "border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] text-[var(--vz-text-secondary)]" : "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-muted)]")}>
           <input className="mt-1" type="checkbox" checked={deliverNow && !!issuedToEmail} disabled={!issuedToEmail} onChange={(e) => setDeliverNow(e.target.checked)} />
           <Send className="mt-0.5 h-4 w-4 shrink-0" />
           <span><span className="block font-semibold">Ստեղծելուց հետո ուղարկել էլ. փոստով</span><span className="mt-1 block text-xs">Քարտի կոդը, գումարը, վերջնաժամկետն ու հաղորդագրությունը կուղարկվեն ստացողին։</span></span>
@@ -262,10 +262,10 @@ function EditGiftCardModal({ giftCard, onClose, onSave, loading }: { giftCard: G
           <Input value={purchasedByName} onChange={(e) => setPurchasedByName(e.target.value)} placeholder="Ով է գնել" />
           <Input value={purchasedByPhone} onChange={(e) => setPurchasedByPhone(e.target.value)} placeholder="Գնողի հեռախոս" />
           <Input type="email" value={purchasedByEmail} onChange={(e) => setPurchasedByEmail(e.target.value)} placeholder="Գնողի էլ. փոստ" />
-          <label className="text-xs text-slate-500">Վերջնաժամկետ<Input className="mt-1" type="date" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} /></label>
-          <label className="text-xs text-slate-500">Կարգավիճակ<select value={status} disabled={giftCard.status === 'redeemed'} onChange={(e) => setStatus(e.target.value as 'active' | 'cancelled')} className="mt-1 h-11 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm disabled:bg-slate-50"><option value="active">Ակտիվ</option><option value="cancelled">Չեղարկված</option></select></label>
+          <label className="text-xs text-[var(--vz-muted)]">Վերջնաժամկետ<Input className="mt-1" type="date" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} /></label>
+          <label className="text-xs text-[var(--vz-muted)]">Կարգավիճակ<select value={status} disabled={giftCard.status === 'redeemed'} onChange={(e) => setStatus(e.target.value as 'active' | 'cancelled')} className="mt-1 h-11 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 text-sm disabled:bg-[var(--vz-surface-2)]"><option value="active">Ակտիվ</option><option value="cancelled">Չեղարկված</option></select></label>
         </div>
-        <textarea value={deliveryMessage} onChange={(e) => setDeliveryMessage(e.target.value)} rows={3} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Նվերի անձնական հաղորդագրություն" />
+        <textarea value={deliveryMessage} onChange={(e) => setDeliveryMessage(e.target.value)} rows={3} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" placeholder="Նվերի անձնական հաղորդագրություն" />
         <Input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Նշումներ" />
         <div className="flex justify-end gap-2">
           <Button variant="secondary" onClick={onClose}>Փակել</Button>
@@ -283,7 +283,7 @@ function RedeemGiftCardModal({ giftCard, onClose, onRedeem, loading }: { giftCar
   return (
     <Modal open={!!giftCard} onClose={onClose} title="Մարել նվերի քարտը">
       <div className="space-y-3">
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">{giftCard.code} · Մնացորդ՝ {money(giftCard.balance, giftCard.currency)}</div>
+        <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-3 text-sm text-[var(--vz-text-secondary)]">{giftCard.code} · Մնացորդ՝ {money(giftCard.balance, giftCard.currency)}</div>
         <Input value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Գումար" />
         <Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Պատճառ" />
         <div className="flex justify-end gap-2">
@@ -302,7 +302,7 @@ function AdjustGiftCardModal({ giftCard, onClose, onAdjust, loading }: { giftCar
   return (
     <Modal open={!!giftCard} onClose={onClose} title="Կարգավորել մնացորդը">
       <div className="space-y-3">
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">{giftCard.code} · Ներկա մնացորդ՝ {money(giftCard.balance, giftCard.currency)}</div>
+        <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-3 text-sm text-[var(--vz-text-secondary)]">{giftCard.code} · Ներկա մնացորդ՝ {money(giftCard.balance, giftCard.currency)}</div>
         <Input value={delta} onChange={(e) => setDelta(e.target.value)} placeholder="Օր. +1000 կամ -1000" />
         <Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Պատճառ" />
         <div className="flex justify-end gap-2">
@@ -318,14 +318,14 @@ function LedgerModal({ card, entries, loading, onClose }: { card: GiftCard | nul
   return (
     <Modal open={!!card} onClose={onClose} title={card ? `${card.code} — պատմություն` : 'Պատմություն'}>
       <div className="space-y-3">
-        {loading ? <div className="text-sm text-slate-500">Բեռնում է…</div> : entries.map((entry) => (
-          <div key={entry.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm">
+        {loading ? <div className="text-sm text-[var(--vz-muted)]">Բեռնում է…</div> : entries.map((entry) => (
+          <div key={entry.id} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-3 text-sm">
             <div className="flex items-center justify-between gap-3">
-              <div className="font-medium text-slate-900">{entry.entry_type}</div>
-              <div className={entry.delta_amount >= 0 ? 'font-semibold text-emerald-700' : 'font-semibold text-rose-700'}>{entry.delta_amount >= 0 ? `+${entry.delta_amount}` : entry.delta_amount}</div>
+              <div className="font-medium text-[var(--vz-text)]">{entry.entry_type}</div>
+              <div className={entry.delta_amount >= 0 ? 'font-semibold text-[var(--vz-success)]' : 'font-semibold text-[var(--vz-danger)]'}>{entry.delta_amount >= 0 ? `+${entry.delta_amount}` : entry.delta_amount}</div>
             </div>
-            <div className="mt-1 text-slate-500">{entry.reason || '—'}</div>
-            <div className="mt-1 text-xs text-slate-400">{new Date(entry.created_at).toLocaleString('hy-AM')}</div>
+            <div className="mt-1 text-[var(--vz-muted)]">{entry.reason || '—'}</div>
+            <div className="mt-1 text-xs text-[var(--vz-muted)]">{new Date(entry.created_at).toLocaleString('hy-AM')}</div>
           </div>
         ))}
       </div>

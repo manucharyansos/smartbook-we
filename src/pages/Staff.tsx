@@ -163,24 +163,24 @@ function roleLabel(role: string, text: Record<string, string>, isHealthcare: boo
 function roleUi(role: string) {
   if (role === "owner") {
     return {
-      cls: "border-violet-200 bg-violet-50 text-violet-700",
+      cls: "border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]",
       icon: <Shield className="h-3.5 w-3.5" />,
     };
   }
   if (role === "manager") {
     return {
-      cls: "border-sky-200 bg-sky-50 text-sky-700",
+      cls: "border-[var(--vz-info-line)] bg-[var(--vz-info-soft)] text-[var(--vz-info)]",
       icon: <Briefcase className="h-3.5 w-3.5" />,
     };
   }
   if (role === "super_admin") {
     return {
-      cls: "border-fuchsia-200 bg-fuchsia-50 text-fuchsia-700",
+      cls: "border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]",
       icon: <Shield className="h-3.5 w-3.5" />,
     };
   }
   return {
-    cls: "border-slate-200 bg-slate-50 text-slate-600",
+    cls: "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]",
     icon: <User className="h-3.5 w-3.5" />,
   };
 }
@@ -194,7 +194,7 @@ function rolePreset(role: StaffRoleForm, text: Record<string, string>, isHealthc
       is_bookable: false,
       icon: Briefcase,
       accent: "from-sky-500 to-cyan-500",
-      soft: "border-sky-200 bg-sky-50 text-sky-700",
+      soft: "border-[var(--vz-info-line)] bg-[var(--vz-info-soft)] text-[var(--vz-info)]",
     };
   }
 
@@ -205,7 +205,7 @@ function rolePreset(role: StaffRoleForm, text: Record<string, string>, isHealthc
     is_bookable: true,
     icon: Sparkles,
     accent: "from-violet-600 to-fuchsia-600",
-    soft: "border-violet-200 bg-violet-50 text-violet-700",
+    soft: "border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]",
   };
 }
 
@@ -510,49 +510,49 @@ export default function Staff() {
 
   return (
     <motion.div {...page} className="admin-page space-y-4">
-      <section className="relative overflow-hidden rounded-[28px] border border-[#d39a43]/25 bg-[radial-gradient(circle_at_91%_10%,rgba(232,194,174,.70),transparent_30%),linear-gradient(135deg,#fffdf9_0%,#f8eee4_68%,#f0ddcf_100%)] p-5 shadow-[0_22px_65px_rgba(70,34,49,.09)] dark:border-[#e7bc6b]/15 dark:bg-[radial-gradient(circle_at_90%_0%,rgba(109,42,99,.34),transparent_32%),linear-gradient(135deg,#2f182e,#1d121f)] sm:p-8">
-        <div className="absolute -bottom-24 -right-16 h-60 w-60 rounded-full border border-[#d39a43]/20" aria-hidden="true" />
+      <section className="relative overflow-hidden rounded-[28px] border border-[var(--vz-line-strong)] bg-[var(--vz-surface-2)] p-5 shadow-[0_22px_65px_rgba(70,34,49,.09)] sm:p-8">
+        <div className="absolute -bottom-24 -right-16 h-60 w-60 rounded-full border border-[var(--vz-line-strong)]" aria-hidden="true" />
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#d39a43]/25 bg-white/65 px-3 py-1.5 text-xs font-bold text-[#6d2a63] backdrop-blur dark:bg-white/[0.08] dark:text-[#efcb87]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line-strong)] bg-white/65 px-3 py-1.5 text-xs font-bold text-[var(--vz-accent-text)] backdrop-blur dark:bg-white/[0.08]">
               {isHealthcare ? <Stethoscope className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
               {isHealthcare ? text.medicalBadge : text.badge}
             </span>
-            <h1 className="mt-4 font-serif text-[2rem] font-semibold tracking-[-.035em] text-[#2b0d35] dark:text-[#fff8f2] sm:text-[2.7rem]">{isHealthcare ? text.medicalTitle : text.title}</h1>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-[#746777] dark:text-[#cbbdca] sm:text-base">{isHealthcare ? text.medicalIntro : text.intro}</p>
+            <h1 className="mt-4 font-serif text-[2rem] font-semibold tracking-[-.035em] text-[var(--vz-accent-text)] sm:text-[2.7rem]">{isHealthcare ? text.medicalTitle : text.title}</h1>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--vz-muted)] sm:text-base">{isHealthcare ? text.medicalIntro : text.intro}</p>
           </div>
-          <button type="button" onClick={openCreate} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#2b0d35] to-[#6d2a63] px-5 text-sm font-bold text-white shadow-[0_14px_30px_rgba(74,22,74,.2)] transition hover:-translate-y-0.5">
+          <button type="button" onClick={openCreate} className="bg-[var(--vz-cover)] inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-bold text-[var(--vz-cover-text)] shadow-[0_14px_30px_rgba(74,22,74,.2)] transition hover:-translate-y-0.5">
             <Plus className="h-4 w-4" />{isHealthcare ? text.addDoctor : text.add}
           </button>
         </div>
       </section>
 
       {usage ? (
-        <Card className="rounded-[24px] border border-[#d39a43]/20 bg-[#fffdf9]/95 p-4 shadow-[0_14px_36px_rgba(70,34,49,.06)] dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90 sm:p-5">
-          <div className="flex flex-wrap items-center gap-3 text-sm text-slate-600">
-            <span className="rounded-full border border-[#d39a43]/25 bg-[#f8eee4] px-3 py-1 font-semibold text-[#6d2a63] dark:bg-white/[0.08] dark:text-[#efcb87]">{settingsQ.data?.plan?.name ?? "Plan"}</span>
-            <span>{text.activeStaff}՝ <strong className="text-slate-950">{usage.active_staff}</strong> / <strong className="text-slate-950">{usage.staff_limit ?? "∞"}</strong></span>
-            <span>{text.services}՝ <strong className="text-slate-950">{usage.services_count}</strong> / <strong className="text-slate-950">{usage.services_limit ?? "∞"}</strong></span>
-            <span>{text.locations}՝ <strong className="text-slate-950">{usage.locations_count}</strong> / <strong className="text-slate-950">{usage.locations_limit}</strong></span>
+        <Card className="rounded-[24px] border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] p-4 shadow-[0_14px_36px_rgba(70,34,49,.06)] sm:p-5">
+          <div className="flex flex-wrap items-center gap-3 text-sm text-[var(--vz-text-secondary)]">
+            <span className="rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-surface-2)] px-3 py-1 font-semibold text-[var(--vz-accent-text)]">{settingsQ.data?.plan?.name ?? "Plan"}</span>
+            <span>{text.activeStaff}՝ <strong className="text-[var(--vz-text)]">{usage.active_staff}</strong> / <strong className="text-[var(--vz-text)]">{usage.staff_limit ?? "∞"}</strong></span>
+            <span>{text.services}՝ <strong className="text-[var(--vz-text)]">{usage.services_count}</strong> / <strong className="text-[var(--vz-text)]">{usage.services_limit ?? "∞"}</strong></span>
+            <span>{text.locations}՝ <strong className="text-[var(--vz-text)]">{usage.locations_count}</strong> / <strong className="text-[var(--vz-text)]">{usage.locations_limit}</strong></span>
           </div>
-          {staffSlotFull ? <div className="mt-3 text-sm text-amber-700">{text.limitReached} <Link to="/app/billing" className="font-semibold underline underline-offset-4">{text.seePlans}</Link></div> : null}
+          {staffSlotFull ? <div className="mt-3 text-sm text-[var(--vz-warning)]">{text.limitReached} <Link to="/app/billing" className="font-semibold underline underline-offset-4">{text.seePlans}</Link></div> : null}
         </Card>
       ) : null}
 
       <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3">
         {[
-          { label: text.activeMembers, value: totals.active, icon: Users, tone: "text-[#6d2a63]" },
-          { label: text.publicMembers, value: totals.publicCount, icon: Globe2, tone: "text-[#a66f28]" },
-          { label: text.bookableMembers, value: totals.bookable, icon: CalendarCheck2, tone: "text-emerald-700" },
+          { label: text.activeMembers, value: totals.active, icon: Users, tone: "text-[var(--vz-accent-text)]" },
+          { label: text.publicMembers, value: totals.publicCount, icon: Globe2, tone: "text-[var(--vz-highlight-text)]" },
+          { label: text.bookableMembers, value: totals.bookable, icon: CalendarCheck2, tone: "text-[var(--vz-success)]" },
         ].map((item) => (
           <motion.div key={item.label} variants={card} initial="initial" animate="animate" transition={cardTransition}>
-            <Card className="rounded-[24px] border border-[#d39a43]/18 bg-[#fffdf9]/95 p-5 shadow-[0_14px_36px_rgba(70,34,49,.06)] dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90">
+            <Card className="rounded-[24px] border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] p-5 shadow-[0_14px_36px_rgba(70,34,49,.06)]">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <div className="text-sm text-slate-500">{item.label}</div>
-                  <div className="mt-2 text-3xl font-semibold text-slate-950">{item.value}</div>
+                  <div className="text-sm text-[var(--vz-muted)]">{item.label}</div>
+                  <div className="mt-2 text-3xl font-semibold text-[var(--vz-text)]">{item.value}</div>
                 </div>
-                <div className={cn("grid h-11 w-11 place-items-center rounded-2xl bg-slate-50", item.tone)}>
+                <div className={cn("grid h-11 w-11 place-items-center rounded-2xl bg-[var(--vz-surface-2)]", item.tone)}>
                   <item.icon className="h-5 w-5" />
                 </div>
               </div>
@@ -562,11 +562,11 @@ export default function Staff() {
       </div>
 
       <motion.div variants={card} initial="initial" animate="animate" transition={cardTransition}>
-        <Card className="rounded-[24px] border border-[#d39a43]/18 bg-[#fffdf9]/95 p-5 shadow-sm dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90">
+        <Card className="rounded-[24px] border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] p-5 shadow-sm">
           <div className="flex flex-col gap-3">
             <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
               <div className="relative w-full max-w-md">
-                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
                 <Input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -578,7 +578,7 @@ export default function Staff() {
                 <select
                   value={selectedLocationId}
                   onChange={(e) => setSelectedLocationId(e.target.value ? Number(e.target.value) : "")}
-                  className="rounded-[22px] border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                  className="rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm text-[var(--vz-text-secondary)] outline-none transition focus:border-[var(--vz-primary)] focus:ring-4 focus:ring-[var(--vz-focus)]"
                 >
                   <option value="">{text.allLocations}</option>
                   {locations.map((location) => (
@@ -588,7 +588,7 @@ export default function Staff() {
               ) : null}
             </div>
 
-            <div className="flex flex-wrap gap-2 text-xs text-slate-500">
+            <div className="flex flex-wrap gap-2 text-xs text-[var(--vz-muted)]">
               <div className="bb-stat-pill">{text.total} {filtered.length} {text.members}</div>
               <div className="bb-stat-pill">{totals.publicCount} {text.publicShort}</div>
               <div className="bb-stat-pill">{totals.bookable} {text.bookableShort}</div>
@@ -598,15 +598,15 @@ export default function Staff() {
       </motion.div>
 
       {staffQ.isError ? (
-        <Card className="rounded-[28px] border border-rose-200 bg-rose-50 p-6 text-rose-800">
+        <Card className="rounded-[28px] border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] p-6 text-[var(--vz-danger)]">
           <div className="font-semibold">{text.loadFailed}</div>
           <p className="mt-1 text-sm leading-6">{getErrorMessage(staffQ.error, text.loadHint)}</p>
-          <div className="mt-4 flex flex-wrap gap-2"><Button variant="secondary" onClick={() => staffQ.refetch()}>{text.retry}</Button><Link to="/app/billing" className="inline-flex items-center rounded-2xl border border-rose-200 bg-white px-4 py-2 text-sm font-semibold">{text.planStatus}</Link></div>
+          <div className="mt-4 flex flex-wrap gap-2"><Button variant="secondary" onClick={() => staffQ.refetch()}>{text.retry}</Button><Link to="/app/billing" className="inline-flex items-center rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-surface)] px-4 py-2 text-sm font-semibold">{text.planStatus}</Link></div>
         </Card>
       ) : staffQ.isLoading ? (
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-[280px] animate-pulse rounded-[28px] border border-slate-200 bg-white/80" />
+            <div key={i} className="h-[280px] animate-pulse rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)]" />
           ))}
         </div>
       ) : (
@@ -630,10 +630,10 @@ export default function Staff() {
 
             return (
               <motion.div key={person.id} variants={card} initial="initial" animate="animate" transition={cardTransition}>
-                <Card className="rounded-[26px] border border-[#d39a43]/18 bg-[#fffdf9]/95 p-5 shadow-[0_16px_42px_rgba(70,34,49,.07)] dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]/90">
+                <Card className="rounded-[26px] border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] p-5 shadow-[0_16px_42px_rgba(70,34,49,.07)]">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex min-w-0 items-start gap-4">
-                      <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[20px] bg-gradient-to-br from-[#2b0d35] to-[#6d2a63] text-white shadow-lg">
+                      <div className="bg-[var(--vz-cover)] relative h-14 w-14 shrink-0 overflow-hidden rounded-[20px] text-[var(--vz-cover-text)] shadow-lg">
                         {person.avatar_url ? (
                           <img src={person.avatar_url} alt={person.name} className="h-full w-full object-cover" />
                         ) : (
@@ -642,7 +642,7 @@ export default function Staff() {
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <h3 className="truncate text-lg font-semibold text-slate-950">{person.name}</h3>
+                        <h3 className="truncate text-lg font-semibold text-[var(--vz-text)]">{person.name}</h3>
                         <div className="mt-2 flex flex-wrap items-center gap-2">
                           <div className={cn("inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium", role.cls)}>
                             {role.icon}
@@ -650,7 +650,7 @@ export default function Staff() {
                           </div>
                           <div className={cn(
                             "inline-flex rounded-full border px-2.5 py-1 text-[11px] font-medium",
-                            person.is_active ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-slate-200 bg-slate-50 text-slate-600"
+                            person.is_active ? "border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] text-[var(--vz-success)]" : "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]"
                           )}>
                             {person.is_active ? text.active : text.inactive}
                           </div>
@@ -673,58 +673,58 @@ export default function Staff() {
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <div className={cn("inline-flex rounded-full border px-2.5 py-1 text-[11px] font-medium", person.show_in_public_team ? "border-violet-200 bg-violet-50 text-violet-700" : "border-slate-200 bg-slate-50 text-slate-500")}>
+                    <div className={cn("inline-flex rounded-full border px-2.5 py-1 text-[11px] font-medium", person.show_in_public_team ? "border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]" : "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-muted)]")}>
                       <Globe2 className="mr-1 h-3.5 w-3.5" />
                       {person.show_in_public_team ? text.publicVisible : text.publicHidden}
                     </div>
-                    <div className={cn("inline-flex rounded-full border px-2.5 py-1 text-[11px] font-medium", person.is_bookable ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-slate-200 bg-slate-50 text-slate-500")}>
+                    <div className={cn("inline-flex rounded-full border px-2.5 py-1 text-[11px] font-medium", person.is_bookable ? "border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] text-[var(--vz-success)]" : "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-muted)]")}>
                       <CalendarCheck2 className="mr-1 h-3.5 w-3.5" />
                       {person.is_bookable ? text.bookingOn : text.bookingOff}
                     </div>
                   </div>
 
-                  <div className="mt-4 space-y-2 text-sm text-slate-500">
+                  <div className="mt-4 space-y-2 text-sm text-[var(--vz-muted)]">
                     <div className="flex items-center gap-2 truncate">
-                      <Mail className="h-4 w-4 shrink-0 text-slate-400" />
+                      <Mail className="h-4 w-4 shrink-0 text-[var(--vz-muted)]" />
                       <span className="truncate">{person.email || text.noEmail}</span>
                     </div>
                     <div className="flex items-center gap-2 truncate">
-                      <Phone className="h-4 w-4 shrink-0 text-slate-400" />
+                      <Phone className="h-4 w-4 shrink-0 text-[var(--vz-muted)]" />
                       <span className="truncate">{person.phone || text.noPhone}</span>
                     </div>
                     <div className="flex items-center gap-2 truncate">
-                      <Phone className="h-4 w-4 shrink-0 text-emerald-500" />
+                      <Phone className="h-4 w-4 shrink-0 text-[var(--vz-success)]" />
                       <span className="truncate">{person.whatsapp_phone || text.noWhatsapp}</span>
                     </div>
                     {person.bio ? (
-                      <div className="rounded-2xl border border-slate-100 bg-slate-50/80 px-3 py-2 text-xs leading-6 text-slate-600">{person.bio}</div>
+                      <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-3 py-2 text-xs leading-6 text-[var(--vz-text-secondary)]">{person.bio}</div>
                     ) : null}
                   </div>
 
                   <div className="mt-5 grid gap-3">
-                    <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
-                      <span className="flex items-center gap-2"><Globe2 className="h-4 w-4 text-violet-500" /> {text.publicSetting}</span>
+                    <label className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]">
+                      <span className="flex items-center gap-2"><Globe2 className="h-4 w-4 text-[var(--vz-accent-text)]" /> {text.publicSetting}</span>
                       <input
                         type="checkbox"
                         checked={person.show_in_public_team}
                         onChange={(e) => updateMut.mutate({ id: person.id, payload: { show_in_public_team: e.target.checked, is_bookable: e.target.checked ? person.is_bookable : false } })}
-                        className="h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500"
+                        className="h-4 w-4 rounded border-[var(--vz-line-strong)] text-[var(--vz-accent-text)] focus:ring-[var(--vz-focus)]"
                       />
                     </label>
 
-                    <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
-                      <span className="flex items-center gap-2"><CalendarCheck2 className="h-4 w-4 text-emerald-500" /> {text.bookingSetting}</span>
+                    <label className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]">
+                      <span className="flex items-center gap-2"><CalendarCheck2 className="h-4 w-4 text-[var(--vz-success)]" /> {text.bookingSetting}</span>
                       <input
                         type="checkbox"
                         checked={person.is_bookable}
                         onChange={(e) => updateMut.mutate({ id: person.id, payload: { is_bookable: e.target.checked, show_in_public_team: e.target.checked ? true : person.show_in_public_team } })}
-                        className="h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500"
+                        className="h-4 w-4 rounded border-[var(--vz-line-strong)] text-[var(--vz-accent-text)] focus:ring-[var(--vz-focus)]"
                       />
                     </label>
                   </div>
 
                   <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                    <label className="flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-violet-200 hover:bg-violet-50">
+                    <label className="flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm font-medium text-[var(--vz-text-secondary)] transition hover:border-[var(--vz-line-strong)] hover:bg-[var(--vz-accent-soft)]">
                       {updateMut.isPending ? <Spinner size={16} /> : <ImagePlus className="h-4 w-4" />}
                       {text.photo}
                       <input
@@ -748,7 +748,7 @@ export default function Staff() {
                           const ok = window.confirm(text.deactivateConfirm.replace("{name}", person.name));
                           if (ok) deactivateMut.mutate(person.id);
                         }}
-                        className="w-full gap-2 rounded-2xl border border-amber-200 text-amber-700 hover:bg-amber-50"
+                        className="w-full gap-2 rounded-2xl border border-[var(--vz-warning-line)] text-[var(--vz-warning)] hover:bg-[var(--vz-warning-soft)]"
                       >
                         <Ban className="h-4 w-4" />
                         {text.deactivate}
@@ -757,7 +757,7 @@ export default function Staff() {
                       <Button
                         variant="secondary"
                         onClick={() => activateMut.mutate(person.id)}
-                        className="w-full gap-2 rounded-2xl border border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                        className="w-full gap-2 rounded-2xl border border-[var(--vz-success-line)] text-[var(--vz-success)] hover:bg-[var(--vz-success-soft)]"
                       >
                         <CheckCircle2 className="h-4 w-4" />
                         {text.activate}
@@ -780,20 +780,20 @@ export default function Staff() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 40 }}
                 onClick={(e) => e.stopPropagation()}
-                className="w-full max-w-3xl rounded-t-[28px] border border-white/20 bg-white/95 p-5 shadow-[0_24px_80px_rgba(15,23,42,0.22)] sm:rounded-[30px] sm:p-8"
+                className="w-full max-w-3xl rounded-t-[28px] border border-white/20 bg-[var(--vz-surface)] p-5 shadow-[0_24px_80px_rgba(15,23,42,0.22)] sm:rounded-[30px] sm:p-8"
               >
                 {/* Mobile drag handle */}
                 <div className="mb-4 flex justify-center sm:hidden">
-                  <div className="h-1 w-10 rounded-full bg-slate-300" />
+                  <div className="h-1 w-10 rounded-full bg-[var(--vz-line-strong)]" />
                 </div>
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                   <div>
-                    <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
+                    <h2 className="text-2xl font-semibold tracking-tight text-[var(--vz-text)]">
                       {mode === "create"
                         ? (isHealthcare ? text.newDoctorTitle : text.newTitle)
                         : (isHealthcare ? text.editDoctorTitle : text.editTitle)}
                     </h2>
-                    <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--vz-muted)]">
                       {mode === "create" ? (isHealthcare ? text.createMedicalIntro : text.createIntro) : text.editIntro}
                     </p>
                   </div>
@@ -818,17 +818,17 @@ export default function Staff() {
                             onClick={() => applyRolePreset(role)}
                             className={cn(
                               "rounded-[24px] border px-4 py-4 text-left transition",
-                              active ? "border-transparent bg-slate-950 text-white shadow-lg" : "border-slate-200 bg-white text-slate-700 hover:border-violet-200 hover:bg-violet-50"
+                              active ? "border-transparent bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-lg" : "border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text-secondary)] hover:border-[var(--vz-line-strong)] hover:bg-[var(--vz-accent-soft)]"
                             )}
                           >
                             <div className="flex items-center justify-between gap-3">
-                              <div className={cn("grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br text-white", preset.accent)}>
+                              <div className={cn("grid h-10 w-10 place-items-center rounded-2xl", active ? "bg-[color-mix(in_srgb,var(--vz-on-primary)_16%,transparent)] text-[var(--vz-on-primary)]" : "bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]")}>
                                 <Icon className="h-4 w-4" />
                               </div>
                               {active ? <CheckCircle2 className="h-4 w-4" /> : null}
                             </div>
                             <div className="mt-3 text-sm font-semibold">{preset.title}</div>
-                            <div className={cn("mt-2 text-xs leading-6", active ? "text-white/75" : "text-slate-500")}>{preset.description}</div>
+                            <div className={cn("mt-2 text-xs leading-6", active ? "text-[var(--vz-on-primary)] opacity-80" : "text-[var(--vz-muted)]")}>{preset.description}</div>
                           </button>
                         );
                       })}
@@ -836,18 +836,18 @@ export default function Staff() {
 
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="sm:col-span-2">
-                        <label className="mb-2 block text-sm font-medium text-slate-700">{text.name}</label>
+                        <label className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">{text.name}</label>
                         <Input value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} />
                       </div>
 
                       {mode === "create" ? (
                         <>
                           <div>
-                            <label className="mb-2 block text-sm font-medium text-slate-700">{text.email}</label>
+                            <label className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">{text.email}</label>
                             <Input type="email" value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} />
                           </div>
                           <div>
-                            <label className="mb-2 block text-sm font-medium text-slate-700">{text.password}</label>
+                            <label className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">{text.password}</label>
                             <div className="relative">
                               <Input
                                 type={showPassword ? "text" : "password"}
@@ -855,7 +855,7 @@ export default function Staff() {
                                 onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))}
                                 className="pr-12"
                               />
-                              <button type="button" onClick={() => setShowPassword((s) => !s)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-violet-700">
+                              <button type="button" onClick={() => setShowPassword((s) => !s)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--vz-muted)] transition hover:text-[var(--vz-accent-text)]">
                                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                               </button>
                             </div>
@@ -864,21 +864,21 @@ export default function Staff() {
                       ) : null}
 
                       <div>
-                        <label className="mb-2 block text-sm font-medium text-slate-700">{text.phone}</label>
+                        <label className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">{text.phone}</label>
                         <Input value={form.phone} onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))} />
                       </div>
 
                       <div>
-                        <label className="mb-2 block text-sm font-medium text-slate-700">WhatsApp</label>
+                        <label className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">WhatsApp</label>
                         <Input value={form.whatsapp_phone} onChange={(e) => setForm((p) => ({ ...p, whatsapp_phone: e.target.value }))} />
                       </div>
 
                       <div>
-                        <label className="mb-2 block text-sm font-medium text-slate-700">{text.branch}</label>
+                        <label className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">{text.branch}</label>
                         <select
                           value={form.location_id}
                           onChange={(e) => setForm((p) => ({ ...p, location_id: e.target.value ? Number(e.target.value) : "" }))}
-                          className="w-full rounded-[22px] border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                          className="w-full rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-4 focus:ring-[var(--vz-focus)]"
                         >
                           {hasMultipleLocations ? <option value="" disabled>{text.chooseBranch}</option> : null}
                           {locations.map((location) => (
@@ -886,17 +886,17 @@ export default function Staff() {
                           ))}
                         </select>
                         {hasMultipleLocations ? (
-                          <p className="mt-2 text-xs text-slate-500">{text.branchHint}</p>
+                          <p className="mt-2 text-xs text-[var(--vz-muted)]">{text.branchHint}</p>
                         ) : null}
                       </div>
 
                       <div className="sm:col-span-2">
-                        <label className="mb-2 block text-sm font-medium text-slate-700">{text.bio}</label>
+                        <label className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">{text.bio}</label>
                         <textarea
                           value={form.bio}
                           onChange={(e) => setForm((p) => ({ ...p, bio: e.target.value }))}
                           rows={4}
-                          className="w-full rounded-[22px] border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+                          className="w-full rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-4 focus:ring-[var(--vz-focus)]"
                           placeholder={text.bioPlaceholder}
                         />
                       </div>
@@ -904,72 +904,72 @@ export default function Staff() {
                   </div>
 
                   <div className="space-y-4">
-                    <div className="rounded-[26px] border border-slate-200 bg-slate-50/80 p-5">
-                      <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                        <Info className="h-4 w-4 text-violet-500" />
+                    <div className="rounded-[26px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-5">
+                      <div className="flex items-center gap-2 text-sm font-medium text-[var(--vz-text-secondary)]">
+                        <Info className="h-4 w-4 text-[var(--vz-accent-text)]" />
                         {text.accessTitle}
                       </div>
-                      <p className="mt-2 text-sm leading-6 text-slate-500">
+                      <p className="mt-2 text-sm leading-6 text-[var(--vz-muted)]">
                         {text.accessText}
                       </p>
 
                       <div className="mt-4 grid gap-3">
-                        <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
-                          <span className="flex items-center gap-2"><Globe2 className="h-4 w-4 text-violet-500" /> {text.publicSetting}</span>
+                        <label className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]">
+                          <span className="flex items-center gap-2"><Globe2 className="h-4 w-4 text-[var(--vz-accent-text)]" /> {text.publicSetting}</span>
                           <input
                             type="checkbox"
                             checked={form.show_in_public_team}
                             onChange={(e) => setForm((p) => ({ ...p, show_in_public_team: e.target.checked, is_bookable: e.target.checked ? p.is_bookable : false }))}
-                            className="h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500"
+                            className="h-4 w-4 rounded border-[var(--vz-line-strong)] text-[var(--vz-accent-text)] focus:ring-[var(--vz-focus)]"
                           />
                         </label>
 
-                        <label className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
-                          <span className="flex items-center gap-2"><CalendarCheck2 className="h-4 w-4 text-emerald-500" /> {text.bookingSetting}</span>
+                        <label className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]">
+                          <span className="flex items-center gap-2"><CalendarCheck2 className="h-4 w-4 text-[var(--vz-success)]" /> {text.bookingSetting}</span>
                           <input
                             type="checkbox"
                             checked={form.is_bookable}
                             onChange={(e) => setForm((p) => ({ ...p, is_bookable: e.target.checked, show_in_public_team: e.target.checked ? true : p.show_in_public_team }))}
-                            className="h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500"
+                            className="h-4 w-4 rounded border-[var(--vz-line-strong)] text-[var(--vz-accent-text)] focus:ring-[var(--vz-focus)]"
                           />
                         </label>
                       </div>
                     </div>
 
-                    <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-sm">
-                      <div className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                        <Star className="h-4 w-4 text-amber-500" />
+                    <div className="rounded-[26px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 shadow-sm">
+                      <div className="flex items-center gap-2 text-sm font-medium text-[var(--vz-text-secondary)]">
+                        <Star className="h-4 w-4 text-[var(--vz-warning)]" />
                         {text.preview}
                       </div>
-                      <div className="mt-4 rounded-[22px] border border-slate-100 bg-slate-50/80 p-4">
-                        <div className="text-base font-semibold text-slate-900">{form.name || text.nameMissing}</div>
-                        <div className="mt-1 text-sm text-slate-500">{currentPreset.title}</div>
+                      <div className="mt-4 rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
+                        <div className="text-base font-semibold text-[var(--vz-text)]">{form.name || text.nameMissing}</div>
+                        <div className="mt-1 text-sm text-[var(--vz-muted)]">{currentPreset.title}</div>
                         <div className="mt-3 flex flex-wrap gap-2">
-                          <span className={cn("inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium", form.show_in_public_team ? "border-violet-200 bg-violet-50 text-violet-700" : "border-slate-200 bg-slate-50 text-slate-500")}>
+                          <span className={cn("inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium", form.show_in_public_team ? "border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]" : "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-muted)]")}>
                             <Globe2 className="h-3.5 w-3.5" /> {form.show_in_public_team ? text.publicVisible : text.publicHidden}
                           </span>
-                          <span className={cn("inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium", form.is_bookable ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-slate-200 bg-slate-50 text-slate-500")}>
+                          <span className={cn("inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium", form.is_bookable ? "border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] text-[var(--vz-success)]" : "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-muted)]")}>
                             <CalendarCheck2 className="h-3.5 w-3.5" /> {form.is_bookable ? text.bookingOn : text.bookingOff}
                           </span>
-                          <span className="inline-flex items-center gap-1 rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-[11px] font-medium text-sky-700">
+                          <span className="inline-flex items-center gap-1 rounded-full border border-[var(--vz-info-line)] bg-[var(--vz-info-soft)] px-2.5 py-1 text-[11px] font-medium text-[var(--vz-info)]">
                             {form.location_id === "" ? text.allBranches : (locationNameById.get(Number(form.location_id)) ?? `#${form.location_id}`)}
                           </span>
                         </div>
-                        {form.bio ? <div className="mt-3 text-sm leading-6 text-slate-500">{form.bio}</div> : null}
+                        {form.bio ? <div className="mt-3 text-sm leading-6 text-[var(--vz-muted)]">{form.bio}</div> : null}
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {formError ? (
-                  <div className="mt-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{formError}</div>
+                  <div className="mt-5 rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-sm text-[var(--vz-danger)]">{formError}</div>
                 ) : null}
 
                 {mode === "create" && form.role === "staff" && staffSlotFull ? (
-                  <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">{text.staffSlotFull} <Link to="/app/billing" className="font-semibold underline underline-offset-4">{text.seePlans}</Link></div>
+                  <div className="mt-3 rounded-2xl border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-4 py-3 text-sm text-[var(--vz-warning)]">{text.staffSlotFull} <Link to="/app/billing" className="font-semibold underline underline-offset-4">{text.seePlans}</Link></div>
                 ) : null}
 
-                <div className="mt-6 flex flex-col-reverse gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:justify-end">
+                <div className="mt-6 flex flex-col-reverse gap-3 border-t border-[var(--vz-line)] pt-4 sm:flex-row sm:justify-end">
                   <Button variant="secondary" onClick={closePanel} className="rounded-2xl">{text.close}</Button>
                   <Button onClick={submit} disabled={isSubmitting || (mode === "create" && form.role === "staff" && staffSlotFull)} className="rounded-2xl">
                     {isSubmitting ? <Spinner size={16} /> : mode === "create" ? text.create : text.save}
@@ -990,35 +990,35 @@ export default function Staff() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 28, scale: 0.98 }}
                 onClick={(event) => event.stopPropagation()}
-                className="w-full max-w-4xl rounded-t-[30px] border border-white/30 bg-white/95 p-5 shadow-[0_28px_90px_rgba(31,15,36,0.24)] sm:rounded-[32px] sm:p-7"
+                className="w-full max-w-4xl rounded-t-[30px] border border-white/30 bg-[var(--vz-surface)] p-5 shadow-[0_28px_90px_rgba(31,15,36,0.24)] sm:rounded-[32px] sm:p-7"
               >
-                <div className="flex items-start justify-between gap-4 border-b border-slate-200 pb-5">
+                <div className="flex items-start justify-between gap-4 border-b border-[var(--vz-line)] pb-5">
                   <div>
-                    <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800"><Clock3 className="h-3.5 w-3.5" /> {text.scheduleBadge}</div>
-                    <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">{schedulePerson.name}</h2>
-                    <p className="mt-1 text-sm leading-6 text-slate-500">{text.scheduleText}</p>
+                    <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-3 py-1 text-xs font-semibold text-[var(--vz-warning)]"><Clock3 className="h-3.5 w-3.5" /> {text.scheduleBadge}</div>
+                    <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[var(--vz-text)]">{schedulePerson.name}</h2>
+                    <p className="mt-1 text-sm leading-6 text-[var(--vz-muted)]">{text.scheduleText}</p>
                   </div>
-                  <button type="button" onClick={closeSchedule} disabled={scheduleSaving} className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50" aria-label={text.close}><X className="h-4 w-4" /></button>
+                  <button type="button" onClick={closeSchedule} disabled={scheduleSaving} className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-muted)] transition hover:bg-[var(--vz-surface-2)]" aria-label={text.close}><X className="h-4 w-4" /></button>
                 </div>
 
-                {scheduleError ? <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{scheduleError}</div> : null}
+                {scheduleError ? <div className="mt-4 rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-sm text-[var(--vz-danger)]">{scheduleError}</div> : null}
 
                 {scheduleLoading ? (
-                  <div className="grid min-h-[280px] place-items-center text-sm text-slate-500"><span className="inline-flex items-center gap-2"><Spinner size={16} /> {text.scheduleLoading}</span></div>
+                  <div className="grid min-h-[280px] place-items-center text-sm text-[var(--vz-muted)]"><span className="inline-flex items-center gap-2"><Spinner size={16} /> {text.scheduleLoading}</span></div>
                 ) : (
                   <div className="mt-5 grid gap-3">
                     {scheduleDays.map((day) => (
-                      <div key={day.weekday} className="grid gap-3 rounded-[22px] border border-slate-200 bg-slate-50/70 p-4 lg:grid-cols-[150px_104px_repeat(4,minmax(105px,1fr))] lg:items-end">
+                      <div key={day.weekday} className="grid gap-3 rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4 lg:grid-cols-[150px_104px_repeat(4,minmax(105px,1fr))] lg:items-end">
                         <div>
-                          <div className="text-sm font-semibold text-slate-900">{dayNames[locale][day.weekday - 1]}</div>
-                          <div className="mt-1 text-xs text-slate-500">{day.is_closed ? text.closedDay : text.workDay}</div>
+                          <div className="text-sm font-semibold text-[var(--vz-text)]">{dayNames[locale][day.weekday - 1]}</div>
+                          <div className="mt-1 text-xs text-[var(--vz-muted)]">{day.is_closed ? text.closedDay : text.workDay}</div>
                         </div>
-                        <label className="inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-slate-600">
+                        <label className="inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-[var(--vz-text-secondary)]">
                           <input
                             type="checkbox"
                             checked={day.is_closed}
                             onChange={(event) => updateScheduleDay(day.weekday, { is_closed: event.target.checked, start: event.target.checked ? null : (day.start || "09:00"), end: event.target.checked ? null : (day.end || "18:00") })}
-                            className="h-4 w-4 rounded border-slate-300 text-violet-700 focus:ring-violet-500"
+                            className="h-4 w-4 rounded border-[var(--vz-line-strong)] text-[var(--vz-accent-text)] focus:ring-[var(--vz-focus)]"
                           />
                           {text.closed}
                         </label>
@@ -1028,14 +1028,14 @@ export default function Staff() {
                           { key: "break_start", label: text.breakStart, value: day.break_start },
                           { key: "break_end", label: text.breakEnd, value: day.break_end },
                         ] as const).map((field) => (
-                          <label key={field.key} className="grid gap-1.5 text-[11px] font-semibold text-slate-500">
+                          <label key={field.key} className="grid gap-1.5 text-[11px] font-semibold text-[var(--vz-muted)]">
                             {field.label}
                             <input
                               type="time"
                               value={field.value ?? ""}
                               disabled={day.is_closed}
                               onChange={(event) => updateScheduleDay(day.weekday, { [field.key]: event.target.value || null } as Partial<ScheduleDay>)}
-                              className="min-h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-800 outline-none disabled:cursor-not-allowed disabled:opacity-45"
+                              className="min-h-10 w-full rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 text-sm text-[var(--vz-text)] outline-none disabled:cursor-not-allowed disabled:opacity-45"
                             />
                           </label>
                         ))}
@@ -1044,7 +1044,7 @@ export default function Staff() {
                   </div>
                 )}
 
-                <div className="mt-6 flex flex-col-reverse gap-3 border-t border-slate-200 pt-5 sm:flex-row sm:justify-end">
+                <div className="mt-6 flex flex-col-reverse gap-3 border-t border-[var(--vz-line)] pt-5 sm:flex-row sm:justify-end">
                   <Button variant="secondary" onClick={closeSchedule} disabled={scheduleSaving} className="rounded-2xl">{text.close}</Button>
                   <Button onClick={saveSchedule} disabled={scheduleLoading || scheduleSaving || scheduleDays.length !== 7} className="gap-2 rounded-2xl">
                     {scheduleSaving ? <Spinner size={16} /> : <Clock3 className="h-4 w-4" />}

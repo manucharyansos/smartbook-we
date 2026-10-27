@@ -87,55 +87,55 @@ export default function UnifiedLogin() {
       sideTitle="Բարի վերադարձ"
       sideText="Business-ը կարող է մուտք գործել email-ով, client-ը՝ email կամ հեռախոսահամարով։"
       footer={
-        <div className="flex flex-col items-center justify-between gap-3 text-sm text-slate-500 sm:flex-row">
-          <Link to="/forgot-password" className="font-medium text-slate-600 hover:text-violet-700">Մոռացե՞լ եք գաղտնաբառը</Link>
+        <div className="flex flex-col items-center justify-between gap-3 text-sm text-[var(--vz-muted)] sm:flex-row">
+          <Link to="/forgot-password" className="font-medium text-[var(--vz-text-secondary)] hover:text-[var(--vz-accent-text)]">Մոռացե՞լ եք գաղտնաբառը</Link>
           <div>
             Չունե՞ս հաշիվ {" "}
-            <Link to="/register" className="font-medium text-violet-700 hover:text-violet-600">Գրանցվել</Link>
+            <Link to="/register" className="font-medium text-[var(--vz-accent-text)] hover:text-[var(--vz-accent-text)]">Գրանցվել</Link>
           </div>
         </div>
       }
     >
       <motion.form variants={staggerContainer(0.08)} initial="hidden" animate="show" onSubmit={submit} className="space-y-5">
-        <motion.div variants={fadeUp} className="grid grid-cols-2 gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-1">
-          <Link to="/business/login" className="rounded-xl px-3 py-2 text-center text-sm font-medium text-slate-600 transition hover:bg-white hover:text-slate-900">Business</Link>
-          <Link to="/client/login" className="rounded-xl px-3 py-2 text-center text-sm font-medium text-slate-600 transition hover:bg-white hover:text-slate-900">Client</Link>
+        <motion.div variants={fadeUp} className="grid grid-cols-2 gap-3 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-1">
+          <Link to="/business/login" className="rounded-xl px-3 py-2 text-center text-sm font-medium text-[var(--vz-text-secondary)] transition hover:bg-[var(--vz-surface)] hover:text-[var(--vz-text)]">Business</Link>
+          <Link to="/client/login" className="rounded-xl px-3 py-2 text-center text-sm font-medium text-[var(--vz-text-secondary)] transition hover:bg-[var(--vz-surface)] hover:text-[var(--vz-text)]">Client</Link>
         </motion.div>
 
         {error ? (
-          <motion.div variants={fadeUp} className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+          <motion.div variants={fadeUp} className="rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-sm text-[var(--vz-danger)]">
             {error}
           </motion.div>
         ) : null}
 
         <motion.div variants={fadeUp}>
-          <label className="mb-2 block text-sm font-medium text-slate-700">Email կամ հեռախոս</label>
+          <label className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">Email կամ հեռախոս</label>
           <div className="relative">
-            <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
             <input
               value={identity}
               onChange={(e) => setIdentity(e.target.value)}
               placeholder="owner@mail.com կամ +374..."
-              className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-10 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+              className="h-12 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] pl-11 pr-10 text-sm text-[var(--vz-text)] outline-none transition focus:border-[var(--vz-primary)] focus:ring-4 focus:ring-[var(--vz-focus)]"
               required
             />
-            <Phone className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-300" />
+            <Phone className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
           </div>
         </motion.div>
 
         <motion.div variants={fadeUp}>
-          <label className="mb-2 block text-sm font-medium text-slate-700">Գաղտնաբառ</label>
+          <label className="mb-2 block text-sm font-medium text-[var(--vz-text-secondary)]">Գաղտնաբառ</label>
           <div className="relative">
-            <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Lock className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
             <input
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-12 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
+              className="h-12 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] pl-11 pr-12 text-sm text-[var(--vz-text)] outline-none transition focus:border-[var(--vz-primary)] focus:ring-4 focus:ring-[var(--vz-focus)]"
               required
             />
-            <button type="button" onClick={() => setShowPassword((s) => !s)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-violet-700">
+            <button type="button" onClick={() => setShowPassword((s) => !s)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--vz-muted)] transition hover:text-[var(--vz-accent-text)]">
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
@@ -146,7 +146,7 @@ export default function UnifiedLogin() {
           type="submit"
           disabled={loading}
           className={cn(
-            "inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-violet-600 px-5 text-sm font-medium text-white transition hover:bg-violet-700",
+            "inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[var(--vz-primary)] px-5 text-sm font-medium text-[var(--vz-on-primary)] transition hover:bg-[var(--vz-primary-hover)]",
             loading && "cursor-not-allowed opacity-70"
           )}
         >

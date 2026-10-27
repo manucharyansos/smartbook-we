@@ -27,6 +27,9 @@ import "./vizit-design-system.css";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AppErrorBoundary } from "./components/AppErrorBoundary";
+import { installArmenianDateFallback } from "./lib/intlHyFallback";
+
+installArmenianDateFallback();
 
 // If a deployment replaces hashed chunks while an older tab is still open,
 // refresh once so the router loads the current asset manifest. The cooldown

@@ -50,7 +50,7 @@ export default function ClientVerifyEmail() {
     >
       <motion.div variants={fadeUp} initial="hidden" animate="show" className="space-y-5">
         {error ? (
-          <div role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-5 text-rose-800">
+          <div role="alert" className="rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] p-5 text-[var(--vz-danger)]">
             <div className="flex items-start gap-3">
               <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
               <div>
@@ -59,20 +59,20 @@ export default function ClientVerifyEmail() {
               </div>
             </div>
             <div className="mt-5 flex flex-wrap gap-3">
-              <Link to="/client/cabinet" className="rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white">Բացել հաշիվը</Link>
-              <Link to="/client/login" className="rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Կրկին մուտք գործել</Link>
+              <Link to="/client/cabinet" className="rounded-2xl bg-[var(--vz-primary)] px-4 py-2.5 text-sm font-medium text-[var(--vz-on-primary)]">Բացել հաշիվը</Link>
+              <Link to="/client/login" className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-2.5 text-sm font-medium text-[var(--vz-text-secondary)]">Կրկին մուտք գործել</Link>
             </div>
           </div>
         ) : (
-          <div className="rounded-2xl border border-violet-100 bg-violet-50 p-5 text-violet-950">
+          <div className="rounded-2xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] p-5 text-violet-950">
             <div className="flex items-start gap-3">
               <div className="relative mt-0.5">
-                <MailCheck className="h-6 w-6 text-violet-700" />
-                <LoaderCircle className="absolute -right-2 -top-2 h-3.5 w-3.5 animate-spin text-violet-500" />
+                <MailCheck className="h-6 w-6 text-[var(--vz-accent-text)]" />
+                <LoaderCircle className="absolute -right-2 -top-2 h-3.5 w-3.5 animate-spin text-[var(--vz-accent-text)]" />
               </div>
               <div>
                 <div className="font-semibold">Հաստատում ենք email հասցեն…</div>
-                <p className="mt-1 text-sm leading-6 text-violet-800">Մի փակիր էջը․ ավարտից հետո ինքնաշխատ կբացվի քո ամրագրումների էջը։</p>
+                <p className="mt-1 text-sm leading-6 text-[var(--vz-accent-text)]">Մի փակիր էջը․ ավարտից հետո ինքնաշխատ կբացվի քո ամրագրումների էջը։</p>
               </div>
             </div>
           </div>

@@ -44,15 +44,15 @@ function formatDateLabel(date: string) {
 
 function MetricTile({ label, value, tone = "default" }: { label: string; value: string | number; tone?: "default" | "amber" | "sky" | "emerald" }) {
     const toneClass = {
-        default: "border-slate-200 bg-slate-50 text-slate-950",
-        amber: "border-amber-200 bg-amber-50 text-amber-700",
-        sky: "border-sky-200 bg-sky-50 text-sky-700",
-        emerald: "border-emerald-200 bg-emerald-50 text-emerald-700",
+        default: "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-text)]",
+        amber: "border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] text-[var(--vz-warning)]",
+        sky: "border-[var(--vz-info-line)] bg-[var(--vz-info-soft)] text-[var(--vz-info)]",
+        emerald: "border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] text-[var(--vz-success)]",
     }[tone];
 
     return (
         <div className={cn("rounded-2xl border px-4 py-3", toneClass)}>
-            <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">{label}</div>
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--vz-muted)]">{label}</div>
             <div className="mt-1 text-lg font-semibold">{value}</div>
         </div>
     );
@@ -63,37 +63,37 @@ function bookingStatusUi(status: Booking["status"]) {
         case "pending":
             return {
                 label: "Սպասում է",
-                chip: "border-amber-200 bg-amber-50 text-amber-700",
-                card: "border-amber-200/70 bg-gradient-to-r from-amber-50 to-yellow-50",
-                dot: "bg-amber-400",
+                chip: "border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] text-[var(--vz-warning)]",
+                card: "bg-[var(--vz-highlight-soft)] border-[var(--vz-warning-line)]",
+                dot: "bg-[var(--vz-highlight)]",
             };
         case "confirmed":
             return {
                 label: "Հաստատված",
-                chip: "border-sky-200 bg-sky-50 text-sky-700",
-                card: "border-sky-200/70 bg-gradient-to-r from-sky-50 to-indigo-50",
-                dot: "bg-sky-500",
+                chip: "border-[var(--vz-info-line)] bg-[var(--vz-info-soft)] text-[var(--vz-info)]",
+                card: "border-[var(--vz-info-line)] bg-[var(--vz-primary)]",
+                dot: "bg-[var(--vz-primary)]",
             };
         case "done":
             return {
                 label: "Կատարված",
-                chip: "border-emerald-200 bg-emerald-50 text-emerald-700",
-                card: "border-emerald-200/70 bg-gradient-to-r from-emerald-50 to-green-50",
-                dot: "bg-emerald-500",
+                chip: "border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] text-[var(--vz-success)]",
+                card: "bg-[var(--vz-accent-soft)] border-[var(--vz-success-line)]",
+                dot: "bg-[var(--vz-success)]",
             };
         case "cancelled":
             return {
                 label: "Չեղարկված",
-                chip: "border-slate-200 bg-slate-50 text-slate-600",
-                card: "border-slate-200/70 bg-gradient-to-r from-slate-50 to-gray-50 opacity-80",
-                dot: "bg-slate-400",
+                chip: "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]",
+                card: "bg-[var(--vz-surface-2)] border-[var(--vz-line)] opacity-80",
+                dot: "bg-[var(--vz-line-strong)]",
             };
         default:
             return {
                 label: status,
-                chip: "border-slate-200 bg-slate-50 text-slate-600",
-                card: "border-slate-200/70 bg-white",
-                dot: "bg-slate-400",
+                chip: "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]",
+                card: "border-[var(--vz-line)] bg-[var(--vz-surface)]",
+                dot: "bg-[var(--vz-line-strong)]",
             };
     }
 }
@@ -185,32 +185,32 @@ export function DayView({
     const dayConfirmed = dayBookings.filter((booking) => booking.status === "confirmed").length;
 
     return (
-        <div className={cn("border border-white/70 bg-white/95 shadow-sm", compact ? "rounded-[26px] p-3" : "rounded-[30px] p-4 sm:p-5")}>
+        <div className={cn("border border-white/70 bg-[var(--vz-surface)] shadow-sm", compact ? "rounded-[26px] p-3" : "rounded-[30px] p-4 sm:p-5")}>
             <div className={cn("flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between", compact ? "mb-3" : "mb-5")}>
                 <div>
                     {!compact ? (
-                        <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-medium text-violet-700">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-1.5 text-xs font-medium text-[var(--vz-accent-text)]">
                             <CalendarDays className="h-3.5 w-3.5" />
                             Օրվա տեսք
                         </div>
                     ) : null}
-                    <h3 className={cn("font-semibold tracking-tight text-slate-950", compact ? "text-base" : "mt-3 text-xl")}>
+                    <h3 className={cn("font-semibold tracking-tight text-[var(--vz-text)]", compact ? "text-base" : "mt-3 text-xl")}>
                         {compact ? date : formatDateLabel(date)}
                     </h3>
                     {locationLabel ? (
-                        <div className={cn("inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600", compact ? "mt-1" : "mt-2")}>
+                        <div className={cn("inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-1.5 text-xs font-medium text-[var(--vz-text-secondary)]", compact ? "mt-1" : "mt-2")}>
                             {locationLabel}
                         </div>
                     ) : null}
                 </div>
 
 {compact ? (
-                    <div className="flex flex-wrap gap-2 text-[11px] font-medium text-slate-600">
-                        <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5">{dayBookings.length} booking</span>
-                        <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5">{dayBlocks.length} block</span>
+                    <div className="flex flex-wrap gap-2 text-[11px] font-medium text-[var(--vz-text-secondary)]">
+                        <span className="rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-3 py-1.5">{dayBookings.length} booking</span>
+                        <span className="rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-3 py-1.5">{dayBlocks.length} block</span>
                     </div>
                 ) : (
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-600">
+                    <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-2 text-sm text-[var(--vz-text-secondary)]">
                         {dayBookings.length} ամրագրում • {dayBlocks.length} block
                     </div>
                 )}
@@ -226,24 +226,24 @@ export function DayView({
                     </div>
 
                     {(dayBookings.length || dayBlocks.length) ? (
-                        <div className="mb-5 space-y-3 rounded-[28px] border border-slate-200 bg-[linear-gradient(180deg,#f8fafc_0%,#ffffff_100%)] p-4">
+                        <div className="mb-5 space-y-3 rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
                     <div className="flex items-center justify-between gap-3">
-                        <div className="text-sm font-semibold text-slate-950">Օրվա agenda</div>
-                        <div className="text-xs text-slate-500">Միևնույն ամփոփումը, ինչ desktop-ում</div>
+                        <div className="text-sm font-semibold text-[var(--vz-text)]">Օրվա agenda</div>
+                        <div className="text-xs text-[var(--vz-muted)]">Միևնույն ամփոփումը, ինչ desktop-ում</div>
                     </div>
                     {dayBlocks.map((block) => (
                         <button
                             key={`agenda-block-${block.id}`}
                             type="button"
                             onClick={() => onBlockClick?.(block)}
-                            className="flex w-full items-start gap-3 rounded-2xl border border-rose-200 bg-gradient-to-r from-rose-50 to-orange-50 px-4 py-3 text-left"
+                            className="bg-[var(--vz-danger-soft)] flex w-full items-start gap-3 rounded-2xl border border-[var(--vz-danger-line)] px-4 py-3 text-left"
                         >
-                            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white text-rose-500 shadow-sm">
+                            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--vz-surface)] text-[var(--vz-danger)] shadow-sm">
                                 <Ban className="h-4 w-4" />
                             </div>
                             <div className="min-w-0 flex-1">
-                                <div className="font-semibold text-slate-900">{block.reason || "Փակ է"}</div>
-                                <div className="mt-1 text-sm text-slate-600">{block.starts_at.slice(11, 16)} – {block.ends_at.slice(11, 16)}</div>
+                                <div className="font-semibold text-[var(--vz-text)]">{block.reason || "Փակ է"}</div>
+                                <div className="mt-1 text-sm text-[var(--vz-text-secondary)]">{block.starts_at.slice(11, 16)} – {block.ends_at.slice(11, 16)}</div>
                             </div>
                         </button>
                     ))}
@@ -259,27 +259,27 @@ export function DayView({
                                     bookingUi.card
                                 )}
                             >
-                                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white text-slate-700 shadow-sm">
+                                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--vz-surface)] text-[var(--vz-text-secondary)] shadow-sm">
                                     <Clock3 className="h-4 w-4" />
                                 </div>
                                 <div className="min-w-0 flex-1">
                                     <div className="flex flex-wrap items-center gap-2">
                                         <span className={cn("h-2.5 w-2.5 rounded-full", bookingUi.dot)} />
-                                        <div className="truncate font-semibold text-slate-900">{booking.client_name}</div>
+                                        <div className="truncate font-semibold text-[var(--vz-text)]">{booking.client_name}</div>
                                         <span className={cn("rounded-full border px-2.5 py-1 text-[11px] font-medium", bookingUi.chip)}>{bookingUi.label}</span>
                                     </div>
-                                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-sm text-slate-600">
+                                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-sm text-[var(--vz-text-secondary)]">
                                         <div className="inline-flex items-center gap-2">
-                                            <Clock3 className="h-3.5 w-3.5 text-slate-400" />
+                                            <Clock3 className="h-3.5 w-3.5 text-[var(--vz-muted)]" />
                                             {booking.starts_at.slice(11, 16)} – {booking.ends_at.slice(11, 16)}
                                         </div>
                                         <div className="inline-flex items-center gap-2">
-                                            <Scissors className="h-3.5 w-3.5 text-slate-400" />
+                                            <Scissors className="h-3.5 w-3.5 text-[var(--vz-muted)]" />
                                             {serviceName(booking.service_id)}
                                         </div>
                                         {booking.staff_id ? (
                                             <div className="inline-flex items-center gap-2">
-                                                <User className="h-3.5 w-3.5 text-slate-400" />
+                                                <User className="h-3.5 w-3.5 text-[var(--vz-muted)]" />
                                                 {staffName(booking.staff_id)}
                                             </div>
                                         ) : null}
@@ -296,8 +296,8 @@ export function DayView({
             <div className={cn("space-y-3", compact && "space-y-2")}>
 {!compact ? (
                     <div className="flex items-center justify-between gap-3 pb-1">
-                        <div className="text-sm font-semibold text-slate-950">Ժամային ցանց</div>
-                        <div className="text-xs text-slate-500">Նմանեցված desktop agenda-ին</div>
+                        <div className="text-sm font-semibold text-[var(--vz-text)]">Ժամային ցանց</div>
+                        <div className="text-xs text-[var(--vz-muted)]">Նմանեցված desktop agenda-ին</div>
                     </div>
                 ) : null}
                 {slots.map((slot, idx) => {
@@ -319,7 +319,7 @@ export function DayView({
                             transition={{ delay: idx * 0.01, duration: 0.22 }}
                             className={cn("grid gap-3", compact ? "grid-cols-[48px_1fr]" : "grid-cols-[72px_1fr]")}
                         >
-                            <div className={cn("text-right font-medium text-slate-500", compact ? "pt-1.5 text-[11px]" : "pt-2 text-sm")}>
+                            <div className={cn("text-right font-medium text-[var(--vz-muted)]", compact ? "pt-1.5 text-[11px]" : "pt-2 text-sm")}>
                                 {slot}
                             </div>
 
@@ -328,19 +328,19 @@ export function DayView({
                                     <button
                                         type="button"
                                         onClick={() => onSelectSlot?.(date, slot)}
-                                        className={cn("group flex w-full items-center justify-between border border-dashed border-slate-200 bg-slate-50/70 text-left transition hover:border-violet-300 hover:bg-violet-50", compact ? "min-h-[42px] rounded-[18px] px-3 py-2.5" : "min-h-[54px] rounded-2xl px-4 py-3")}
+                                        className={cn("group flex w-full items-center justify-between border border-dashed border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-left transition hover:border-[var(--vz-primary)] hover:bg-[var(--vz-accent-soft)]", compact ? "min-h-[42px] rounded-[18px] px-3 py-2.5" : "min-h-[54px] rounded-2xl px-4 py-3")}
                                     >
                                         <div className="flex items-center gap-3">
-<div className={cn("grid place-items-center bg-white text-violet-600 shadow-sm", compact ? "h-8 w-8 rounded-lg" : "h-9 w-9 rounded-xl")}>
+<div className={cn("grid place-items-center bg-[var(--vz-surface)] text-[var(--vz-accent-text)] shadow-sm", compact ? "h-8 w-8 rounded-lg" : "h-9 w-9 rounded-xl")}>
                                                 <Plus className="h-4 w-4" />
                                             </div>
                                             <div>
-<div className={cn("font-medium text-slate-800", compact ? "text-[13px]" : "text-sm")}>Ազատ slot</div>
-                                                {!compact ? <div className="text-xs text-slate-500">Tap արա՝ նոր ամրագրում ստեղծելու համար</div> : null}
+<div className={cn("font-medium text-[var(--vz-text)]", compact ? "text-[13px]" : "text-sm")}>Ազատ slot</div>
+                                                {!compact ? <div className="text-xs text-[var(--vz-muted)]">Tap արա՝ նոր ամրագրում ստեղծելու համար</div> : null}
                                             </div>
                                         </div>
 
-{!compact ? <span className="text-xs font-medium text-violet-700 opacity-0 transition group-hover:opacity-100 sm:opacity-100">Ավելացնել</span> : null}
+{!compact ? <span className="text-xs font-medium text-[var(--vz-accent-text)] opacity-0 transition group-hover:opacity-100 sm:opacity-100">Ավելացնել</span> : null}
                                     </button>
                                 ) : null}
 
@@ -351,27 +351,27 @@ export function DayView({
                                             <button
                                                 type="button"
                                                 onClick={() => onBlockClick?.(block)}
-                                                className={cn("flex w-full items-start gap-3 border border-rose-200 bg-gradient-to-r from-rose-50 to-orange-50 text-left transition hover:shadow-sm", compact ? "rounded-[18px] px-3 py-3" : "rounded-2xl px-4 py-4")}
+                                                className={cn("bg-[var(--vz-danger-soft)] flex w-full items-start gap-3 border border-[var(--vz-danger-line)] text-left transition hover:shadow-sm", compact ? "rounded-[18px] px-3 py-3" : "rounded-2xl px-4 py-4")}
                                             >
-<div className={cn("grid shrink-0 place-items-center bg-white text-rose-500 shadow-sm", compact ? "h-8 w-8 rounded-lg" : "h-10 w-10 rounded-xl")}>
+<div className={cn("grid shrink-0 place-items-center bg-[var(--vz-surface)] text-[var(--vz-danger)] shadow-sm", compact ? "h-8 w-8 rounded-lg" : "h-10 w-10 rounded-xl")}>
                                                     <Ban className="h-4 w-4" />
                                                 </div>
 
                                                 <div className="min-w-0 flex-1">
                                                     <div className="flex flex-wrap items-center gap-2">
-                                                        <div className="font-semibold text-slate-900">
+                                                        <div className="font-semibold text-[var(--vz-text)]">
                                                             {block.reason || "Փակ է"}
                                                         </div>
-                                                        <span className="rounded-full border border-rose-200 bg-white px-2.5 py-1 text-[11px] font-medium text-rose-700">
+                                                        <span className="rounded-full border border-[var(--vz-danger-line)] bg-[var(--vz-surface)] px-2.5 py-1 text-[11px] font-medium text-[var(--vz-danger)]">
                                                             Block
                                                         </span>
                                                     </div>
 
-                                                    <div className="mt-1 text-sm text-slate-600">
+                                                    <div className="mt-1 text-sm text-[var(--vz-text-secondary)]">
                                                         {block.starts_at.slice(11, 16)} – {block.ends_at.slice(11, 16)}
                                                     </div>
 
-{!compact ? <div className="mt-2 text-xs text-slate-500">Tap արա՝ block-ը ջնջելու համար</div> : null}
+{!compact ? <div className="mt-2 text-xs text-[var(--vz-muted)]">Tap արա՝ block-ը ջնջելու համար</div> : null}
                                                 </div>
                                             </button>
                                         );
@@ -391,14 +391,14 @@ export function DayView({
                                                     bookingUi?.card
                                                 )}
                                             >
-<div className={cn("grid shrink-0 place-items-center bg-white text-slate-700 shadow-sm", compact ? "h-8 w-8 rounded-lg" : "h-10 w-10 rounded-xl")}>
+<div className={cn("grid shrink-0 place-items-center bg-[var(--vz-surface)] text-[var(--vz-text-secondary)] shadow-sm", compact ? "h-8 w-8 rounded-lg" : "h-10 w-10 rounded-xl")}>
                                                     <Clock3 className="h-4 w-4" />
                                                 </div>
 
                                                 <div className="min-w-0 flex-1">
                                                     <div className="flex flex-wrap items-center gap-2">
                                                         <span className={cn("h-2.5 w-2.5 rounded-full", bookingUi?.dot)} />
-                                                        <div className="truncate font-semibold text-slate-900">
+                                                        <div className="truncate font-semibold text-[var(--vz-text)]">
                                                             {booking.client_name}
                                                         </div>
                                                         <span
@@ -411,28 +411,28 @@ export function DayView({
                                                         </span>
                                                     </div>
 
-<div className={cn("mt-2 flex flex-wrap text-slate-600", compact ? "gap-x-3 gap-y-1 text-[12px]" : "gap-x-4 gap-y-2 text-sm")}>
+<div className={cn("mt-2 flex flex-wrap text-[var(--vz-text-secondary)]", compact ? "gap-x-3 gap-y-1 text-[12px]" : "gap-x-4 gap-y-2 text-sm")}>
                                                         <div className="inline-flex items-center gap-2">
-                                                            <Clock3 className="h-3.5 w-3.5 text-slate-400" />
+                                                            <Clock3 className="h-3.5 w-3.5 text-[var(--vz-muted)]" />
                                                             {booking.starts_at.slice(11, 16)} – {booking.ends_at.slice(11, 16)}
                                                         </div>
 
                                                         <div className="inline-flex items-center gap-2">
-                                                            <Scissors className="h-3.5 w-3.5 text-slate-400" />
+                                                            <Scissors className="h-3.5 w-3.5 text-[var(--vz-muted)]" />
                                                             {serviceName(booking.service_id)}
                                                         </div>
 
                                                         {booking.staff_id ? (
                                                             <div className="inline-flex items-center gap-2">
-                                                                <User className="h-3.5 w-3.5 text-slate-400" />
+                                                                <User className="h-3.5 w-3.5 text-[var(--vz-muted)]" />
                                                                 {staffName(booking.staff_id)}
                                                             </div>
                                                         ) : null}
 
-{!compact ? <div className="inline-flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-slate-400" />{booking.client_phone}</div> : null}
+{!compact ? <div className="inline-flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-[var(--vz-muted)]" />{booking.client_phone}</div> : null}
                                                     </div>
 
-{!compact && (!canSeeAll && booking.staff_id ? null : (booking.notes ? <div className="mt-2 line-clamp-2 text-xs text-slate-500">{booking.notes}</div> : null))}
+{!compact && (!canSeeAll && booking.staff_id ? null : (booking.notes ? <div className="mt-2 line-clamp-2 text-xs text-[var(--vz-muted)]">{booking.notes}</div> : null))}
                                                 </div>
                                             </button>
                                         );

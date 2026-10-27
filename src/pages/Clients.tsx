@@ -83,15 +83,15 @@ function formatMoney(value: number | null | undefined, locale: Locale) {
 function deliveryTone(status?: string | null) {
   switch (status) {
     case "delivered":
-      return "bg-emerald-50 text-emerald-700";
+      return "bg-[var(--vz-success-soft)] text-[var(--vz-success)]";
     case "queued":
-      return "bg-amber-50 text-amber-700";
+      return "bg-[var(--vz-warning-soft)] text-[var(--vz-warning)]";
     case "skipped":
-      return "bg-slate-100 text-slate-600";
+      return "bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]";
     case "failed":
-      return "bg-rose-50 text-rose-700";
+      return "bg-[var(--vz-danger-soft)] text-[var(--vz-danger)]";
     default:
-      return "bg-sky-50 text-sky-700";
+      return "bg-[var(--vz-info-soft)] text-[var(--vz-info)]";
   }
 }
 
@@ -99,15 +99,15 @@ function deliveryTone(status?: string | null) {
 
 function SummaryCard({ label, value, icon: Icon }: { label: string; value: string; icon: typeof Contact }) {
   return (
-    <Card className="h-full min-h-[150px] rounded-[22px] border border-slate-200 bg-white/95 p-4 shadow-sm sm:min-h-[156px] sm:p-5">
+    <Card className="h-full min-h-[150px] rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4 shadow-sm sm:min-h-[156px] sm:p-5">
       <div className="flex h-full flex-col justify-between gap-4">
         <div className="flex min-h-[48px] items-start justify-between gap-2">
-          <div className="max-w-[calc(100%-48px)] text-[13px] font-medium leading-5 text-slate-500 sm:text-sm">{label}</div>
-          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-violet-500/15 to-fuchsia-500/15 text-violet-600 sm:h-11 sm:w-11 sm:rounded-2xl">
+          <div className="max-w-[calc(100%-48px)] text-[13px] font-medium leading-5 text-[var(--vz-muted)] sm:text-sm">{label}</div>
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--vz-primary)] text-[var(--vz-accent-text)] sm:h-11 sm:w-11 sm:rounded-2xl">
             <Icon className="h-5 w-5" />
           </div>
         </div>
-        <div className="text-[28px] font-semibold leading-none tracking-tight text-slate-950 sm:text-3xl">{value}</div>
+        <div className="text-[28px] font-semibold leading-none tracking-tight text-[var(--vz-text)] sm:text-3xl">{value}</div>
       </div>
     </Card>
   );
@@ -150,12 +150,12 @@ const emptyForm: FormState = {
 };
 
 function StatusPill({ client, text }: { client: ClientRow; text: Record<string, string> }) {
-  if (client.is_blacklisted) return <span className="rounded-full bg-rose-50 px-2.5 py-1 text-[11px] font-semibold text-rose-700">{text.statusBlacklist}</span>;
-  if (client.is_vip) return <span className="rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-700">VIP</span>;
-  if (client.status_segment === "lost") return <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-600">{text.statusLost}</span>;
-  if (client.status_segment === "returning") return <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">{text.statusReturning}</span>;
-  if (client.status_segment === "new") return <span className="rounded-full bg-sky-50 px-2.5 py-1 text-[11px] font-semibold text-sky-700">{text.statusNew}</span>;
-  if (client.status_segment === "upcoming") return <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[11px] font-semibold text-violet-700">{text.statusUpcoming}</span>;
+  if (client.is_blacklisted) return <span className="rounded-full bg-[var(--vz-danger-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-danger)]">{text.statusBlacklist}</span>;
+  if (client.is_vip) return <span className="rounded-full bg-[var(--vz-warning-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-warning)]">VIP</span>;
+  if (client.status_segment === "lost") return <span className="rounded-full bg-[var(--vz-surface-2)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-text-secondary)]">{text.statusLost}</span>;
+  if (client.status_segment === "returning") return <span className="rounded-full bg-[var(--vz-success-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-success)]">{text.statusReturning}</span>;
+  if (client.status_segment === "new") return <span className="rounded-full bg-[var(--vz-info-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-info)]">{text.statusNew}</span>;
+  if (client.status_segment === "upcoming") return <span className="rounded-full bg-[var(--vz-accent-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-accent-text)]">{text.statusUpcoming}</span>;
   return null;
 }
 
@@ -411,33 +411,33 @@ export default function Clients() {
         <SummaryCard label={text.blocked} value={String(summary.blacklisted)} icon={ShieldBan} />
       </div>
 
-      <Card className="rounded-[30px] border border-white/70 bg-white/90 p-5 shadow-sm sm:p-6">
+      <Card className="rounded-[30px] border border-white/70 bg-[var(--vz-surface)] p-5 shadow-sm sm:p-6">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <div className="text-lg font-semibold text-slate-950">{text.filters}</div>
-            <div className="text-sm text-slate-500">{text.filtersText}</div>
+            <div className="text-lg font-semibold text-[var(--vz-text)]">{text.filters}</div>
+            <div className="text-sm text-[var(--vz-muted)]">{text.filtersText}</div>
           </div>
           <div className="relative w-full lg:max-w-sm">
-            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
             <Input value={search} onChange={(e) => { setSearch(e.target.value); setPageNumber(1); }} className="pl-11" placeholder={text.search} />
           </div>
         </div>
 
         <div className="mt-3 grid gap-2 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
-          <select value={segment} onChange={(e) => { setSegment(e.target.value); setPageNumber(1); }} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
+          <select value={segment} onChange={(e) => { setSegment(e.target.value); setPageNumber(1); }} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
             <option value="">{text.allSegments}</option>
             <option value="vip">VIP</option>
             <option value="blacklist">Blacklist</option>
             <option value="grouped">{text.grouped}</option>
           </select>
-          <select value={status} onChange={(e) => { setStatus(e.target.value); setPageNumber(1); }} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
+          <select value={status} onChange={(e) => { setStatus(e.target.value); setPageNumber(1); }} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
             <option value="">{text.allStatuses}</option>
             <option value="new">{text.statusNew}</option>
             <option value="returning">{text.returning}</option>
             <option value="lost">{text.lost}</option>
             <option value="upcoming">{text.upcoming}</option>
           </select>
-          <select value={group} onChange={(e) => { setGroup(e.target.value); setPageNumber(1); }} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
+          <select value={group} onChange={(e) => { setGroup(e.target.value); setPageNumber(1); }} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
             <option value="">{text.allGroups}</option>
             {groupCounts.map((row) => <option key={row.group_name} value={row.group_name}>{row.group_name} ({row.total})</option>)}
           </select>
@@ -447,7 +447,7 @@ export default function Clients() {
         {groupCounts.length ? (
           <div className="mt-4 flex flex-wrap gap-2">
             {groupCounts.slice(0, 8).map((row) => (
-              <button key={row.group_name} type="button" onClick={() => { setGroup(row.group_name); setPageNumber(1); }} className={cn("rounded-full px-3 py-1.5 text-xs font-medium transition", group === row.group_name ? "bg-violet-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}>{row.group_name} · {row.total}</button>
+              <button key={row.group_name} type="button" onClick={() => { setGroup(row.group_name); setPageNumber(1); }} className={cn("rounded-full px-3 py-1.5 text-xs font-medium transition", group === row.group_name ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)]" : "bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)] hover:bg-[var(--vz-surface-pressed)]")}>{row.group_name} · {row.total}</button>
             ))}
           </div>
         ) : null}
@@ -455,15 +455,15 @@ export default function Clients() {
 
       <div className="grid gap-4 sm:gap-6 xl:grid-cols-[1.05fr_0.95fr]">
         <motion.div variants={card} initial="initial" animate="animate" transition={cardTransition}>
-          <Card className="rounded-[30px] border border-white/70 bg-white/90 p-5 shadow-sm sm:p-6">
+          <Card className="rounded-[30px] border border-white/70 bg-[var(--vz-surface)] p-5 shadow-sm sm:p-6">
             <div>
-              <div className="text-lg font-semibold text-slate-950">{isHealthcare ? text.list : text.genericList}</div>
-              <div className="text-sm text-slate-500">{isHealthcare ? text.listText : text.genericListText}</div>
+              <div className="text-lg font-semibold text-[var(--vz-text)]">{isHealthcare ? text.list : text.genericList}</div>
+              <div className="text-sm text-[var(--vz-muted)]">{isHealthcare ? text.listText : text.genericListText}</div>
             </div>
 
             <div className="mt-5 space-y-3">
               {clientsQ.isLoading ? (
-                <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-5 text-sm text-slate-500"><Spinner size={16} /> {text.loading}</div>
+                <div className="flex items-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-5 text-sm text-[var(--vz-muted)]"><Spinner size={16} /> {text.loading}</div>
               ) : clients.length === 0 ? (
                 <EmptyState icon={Contact} title={isHealthcare ? text.empty : text.genericEmpty} description={text.emptyText} />
               ) : clients.map((client) => (
@@ -473,36 +473,36 @@ export default function Clients() {
                   onClick={() => setSelectedClientId(client.id)}
                   className={cn(
                     "w-full rounded-[26px] border p-4 text-left transition",
-                    selectedClient === client.id ? "border-violet-200 bg-violet-50/70 shadow-sm" : "border-slate-200 bg-white hover:border-violet-200 hover:bg-violet-50/40"
+                    selectedClient === client.id ? "border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] shadow-sm" : "border-[var(--vz-line)] bg-[var(--vz-surface)] hover:border-[var(--vz-line-strong)] hover:bg-[var(--vz-accent-soft)]"
                   )}
                 >
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <div className="font-semibold text-slate-950">{client.name}</div>
+                        <div className="font-semibold text-[var(--vz-text)]">{client.name}</div>
                         <StatusPill client={client} text={text} />
-                        {client.group_name ? <span className="rounded-full bg-sky-50 px-2.5 py-1 text-[11px] font-semibold text-sky-700">{client.group_name}</span> : null}
+                        {client.group_name ? <span className="rounded-full bg-[var(--vz-info-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-info)]">{client.group_name}</span> : null}
                       </div>
-                      <div className="mt-1 flex flex-wrap items-center gap-3 text-sm text-slate-500">
+                      <div className="mt-1 flex flex-wrap items-center gap-3 text-sm text-[var(--vz-muted)]">
                         <span className="inline-flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {client.phone || "—"}</span>
                         {client.email ? <span className="inline-flex items-center gap-1"><Mail className="h-3.5 w-3.5" /> {client.email}</span> : null}
                       </div>
                     </div>
-                    <div className="grid gap-1 text-left text-xs text-slate-500 sm:min-w-[140px] sm:text-right">
+                    <div className="grid gap-1 text-left text-xs text-[var(--vz-muted)] sm:min-w-[140px] sm:text-right">
                       <div>{client.bookings_count ?? 0} {text.visit}</div>
                       <div>{formatMoney(client.total_spent, locale)} {text.amd}</div>
                     </div>
                   </div>
-                  <div className="mt-3 grid gap-2 text-xs text-slate-500 sm:grid-cols-2">
-                    <div>{text.lastVisit}՝ <span className="font-medium text-slate-700">{formatDateTime(client.last_booking_at, locale)}</span></div>
-                    <div>{text.nextVisit}՝ <span className="font-medium text-slate-700">{formatDateTime(client.next_booking_at, locale)}</span></div>
+                  <div className="mt-3 grid gap-2 text-xs text-[var(--vz-muted)] sm:grid-cols-2">
+                    <div>{text.lastVisit}՝ <span className="font-medium text-[var(--vz-text-secondary)]">{formatDateTime(client.last_booking_at, locale)}</span></div>
+                    <div>{text.nextVisit}՝ <span className="font-medium text-[var(--vz-text-secondary)]">{formatDateTime(client.next_booking_at, locale)}</span></div>
                   </div>
                 </button>
               ))}
             </div>
 
             {(clientsQ.data?.last_page ?? 1) > 1 ? (
-              <div className="mt-5 flex items-center justify-between gap-3 border-t border-slate-100 pt-4 text-sm text-slate-500">
+              <div className="mt-5 flex items-center justify-between gap-3 border-t border-[var(--vz-line)] pt-4 text-sm text-[var(--vz-muted)]">
                 <div>{text.page} {clientsQ.data?.current_page} / {clientsQ.data?.last_page}</div>
                 <div className="flex items-center gap-2">
                   <Button variant="secondary" size="sm" disabled={(clientsQ.data?.current_page ?? 1) <= 1} onClick={() => setPageNumber((p) => Math.max(1, p - 1))}>{text.previous}</Button>
@@ -514,23 +514,23 @@ export default function Clients() {
         </motion.div>
 
         <motion.div variants={card} initial="initial" animate="animate" transition={cardTransition}>
-          <Card className="rounded-[30px] border border-white/70 bg-white/90 p-5 shadow-sm sm:p-6">
+          <Card className="rounded-[30px] border border-white/70 bg-[var(--vz-surface)] p-5 shadow-sm sm:p-6">
             {clientQ.isLoading ? (
-              <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-5 text-sm text-slate-500"><Spinner size={16} /> {text.loading}</div>
+              <div className="flex items-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-5 text-sm text-[var(--vz-muted)]"><Spinner size={16} /> {text.loading}</div>
             ) : clientQ.data ? (
               <>
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <div className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{isHealthcare ? text.profile : text.genericProfile}</div>
+                    <div className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--vz-muted)]">{isHealthcare ? text.profile : text.genericProfile}</div>
                     <div className="mt-2 flex flex-wrap items-center gap-2">
-                      <div className="text-2xl font-semibold tracking-tight text-slate-950">{clientQ.data.name}</div>
+                      <div className="text-2xl font-semibold tracking-tight text-[var(--vz-text)]">{clientQ.data.name}</div>
                       <StatusPill client={clientQ.data} text={text} />
-                      {clientQ.data.group_name ? <span className="rounded-full bg-sky-50 px-2.5 py-1 text-[11px] font-semibold text-sky-700">{clientQ.data.group_name}</span> : null}
+                      {clientQ.data.group_name ? <span className="rounded-full bg-[var(--vz-info-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-info)]">{clientQ.data.group_name}</span> : null}
                     </div>
-                    <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-slate-500">
+                    <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-[var(--vz-muted)]">
                       <span className="inline-flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> {clientQ.data.phone || "—"}</span>
                       {clientQ.data.email ? <span className="inline-flex items-center gap-1"><Mail className="h-3.5 w-3.5" /> {clientQ.data.email}</span> : null}
-                      <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold", clientQ.data.marketing_opt_in ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500")}>
+                      <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold", clientQ.data.marketing_opt_in ? "bg-[var(--vz-success-soft)] text-[var(--vz-success)]" : "bg-[var(--vz-surface-2)] text-[var(--vz-muted)]")}>
                         <Mail className="h-3.5 w-3.5" /> {clientQ.data.marketing_opt_in ? text.marketingAllowed : text.marketingBlocked}
                       </span>
                     </div>
@@ -539,132 +539,132 @@ export default function Clients() {
                 </div>
 
                 <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                    <div className="text-xs uppercase tracking-wide text-slate-400">{text.totalVisits}</div>
-                    <div className="mt-1 text-xl font-semibold text-slate-950">{clientQ.data.bookings_count ?? 0}</div>
+                  <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3">
+                    <div className="text-xs uppercase tracking-wide text-[var(--vz-muted)]">{text.totalVisits}</div>
+                    <div className="mt-1 text-xl font-semibold text-[var(--vz-text)]">{clientQ.data.bookings_count ?? 0}</div>
                   </div>
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                    <div className="text-xs uppercase tracking-wide text-slate-400">{text.totalSpent}</div>
-                    <div className="mt-1 text-xl font-semibold text-slate-950">{formatMoney(clientQ.data.total_spent, locale)} {text.amd}</div>
+                  <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3">
+                    <div className="text-xs uppercase tracking-wide text-[var(--vz-muted)]">{text.totalSpent}</div>
+                    <div className="mt-1 text-xl font-semibold text-[var(--vz-text)]">{formatMoney(clientQ.data.total_spent, locale)} {text.amd}</div>
                   </div>
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                    <div className="text-xs uppercase tracking-wide text-slate-400">{text.avgTicket}</div>
-                    <div className="mt-1 text-xl font-semibold text-slate-950">{formatMoney(clientQ.data.crm?.avg_ticket, locale)} {text.amd}</div>
+                  <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3">
+                    <div className="text-xs uppercase tracking-wide text-[var(--vz-muted)]">{text.avgTicket}</div>
+                    <div className="mt-1 text-xl font-semibold text-[var(--vz-text)]">{formatMoney(clientQ.data.crm?.avg_ticket, locale)} {text.amd}</div>
                   </div>
                 </div>
 
                 <div className="mt-4 grid gap-3 sm:grid-cols-2 2xl:grid-cols-4">
                   {!isRental && <>
-                  <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                    <div className="text-[11px] uppercase tracking-wide text-slate-400">{text.favoriteService}</div>
-                    <div className="mt-1 text-sm font-semibold text-slate-900">{clientQ.data.crm?.favorite_service_name || "—"}</div>
+                  <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 shadow-sm">
+                    <div className="text-[11px] uppercase tracking-wide text-[var(--vz-muted)]">{text.favoriteService}</div>
+                    <div className="mt-1 text-sm font-semibold text-[var(--vz-text)]">{clientQ.data.crm?.favorite_service_name || "—"}</div>
                   </div>
-                  <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                    <div className="text-[11px] uppercase tracking-wide text-slate-400">{isHealthcare ? text.favoriteDoctor : text.favoriteStaff}</div>
-                    <div className="mt-1 text-sm font-semibold text-slate-900">{clientQ.data.crm?.favorite_staff_name || "—"}</div>
+                  <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 shadow-sm">
+                    <div className="text-[11px] uppercase tracking-wide text-[var(--vz-muted)]">{isHealthcare ? text.favoriteDoctor : text.favoriteStaff}</div>
+                    <div className="mt-1 text-sm font-semibold text-[var(--vz-text)]">{clientQ.data.crm?.favorite_staff_name || "—"}</div>
                   </div>
                   </>}
-                  <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                    <div className="text-[11px] uppercase tracking-wide text-slate-400">{text.source}</div>
-                    <div className="mt-1 text-sm font-semibold text-slate-900">{clientQ.data.crm?.favorite_source || "—"}</div>
+                  <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 shadow-sm">
+                    <div className="text-[11px] uppercase tracking-wide text-[var(--vz-muted)]">{text.source}</div>
+                    <div className="mt-1 text-sm font-semibold text-[var(--vz-text)]">{clientQ.data.crm?.favorite_source || "—"}</div>
                   </div>
-                  <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                    <div className="text-[11px] uppercase tracking-wide text-slate-400">{text.account}</div>
-                    <div className="mt-1 text-sm font-semibold text-slate-900">{clientQ.data.crm?.linked_account ? text.linked : text.notLinked}</div>
+                  <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 shadow-sm">
+                    <div className="text-[11px] uppercase tracking-wide text-[var(--vz-muted)]">{text.account}</div>
+                    <div className="mt-1 text-sm font-semibold text-[var(--vz-text)]">{clientQ.data.crm?.linked_account ? text.linked : text.notLinked}</div>
                   </div>
                 </div>
 
                 <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3">
-                    <div className="text-[11px] uppercase tracking-wide text-emerald-700">{text.completed}</div>
-                    <div className="mt-1 text-xl font-semibold text-emerald-900">{clientQ.data.crm?.completed_count ?? 0}</div>
+                  <div className="rounded-2xl border border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] px-4 py-3">
+                    <div className="text-[11px] uppercase tracking-wide text-[var(--vz-success)]">{text.completed}</div>
+                    <div className="mt-1 text-xl font-semibold text-[var(--vz-success)]">{clientQ.data.crm?.completed_count ?? 0}</div>
                   </div>
-                  <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
-                    <div className="text-[11px] uppercase tracking-wide text-amber-700">{text.cancellations}</div>
-                    <div className="mt-1 text-xl font-semibold text-amber-900">{clientQ.data.crm?.cancelled_count ?? 0}</div>
+                  <div className="rounded-2xl border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-4 py-3">
+                    <div className="text-[11px] uppercase tracking-wide text-[var(--vz-warning)]">{text.cancellations}</div>
+                    <div className="mt-1 text-xl font-semibold text-[var(--vz-warning)]">{clientQ.data.crm?.cancelled_count ?? 0}</div>
                   </div>
-                  <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3">
-                    <div className="text-[11px] uppercase tracking-wide text-rose-700">{text.noShow}</div>
-                    <div className="mt-1 text-xl font-semibold text-rose-900">{clientQ.data.crm?.no_show_count ?? 0}</div>
+                  <div className="rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3">
+                    <div className="text-[11px] uppercase tracking-wide text-[var(--vz-danger)]">{text.noShow}</div>
+                    <div className="mt-1 text-xl font-semibold text-[var(--vz-danger)]">{clientQ.data.crm?.no_show_count ?? 0}</div>
                   </div>
                 </div>
 
                 {(clientQ.data.blacklist_reason || clientQ.data.notes) ? (
                   <div className="mt-4 grid gap-4 2xl:grid-cols-2">
                     {clientQ.data.blacklist_reason ? (
-                      <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                      <div className="rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-sm text-[var(--vz-danger)]">
                         <div className="font-semibold">{text.blockReason}</div>
                         <div className="mt-1">{clientQ.data.blacklist_reason}</div>
                       </div>
                     ) : null}
                     {clientQ.data.notes ? (
-                      <div className="rounded-[24px] border border-slate-200 bg-white px-4 py-4 text-sm leading-6 text-slate-600">{clientQ.data.notes}</div>
+                      <div className="rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-4 text-sm leading-6 text-[var(--vz-text-secondary)]">{clientQ.data.notes}</div>
                     ) : null}
                   </div>
                 ) : null}
 
                 {(clientQ.data.birth_date || clientQ.data.blood_type || clientQ.data.allergies || clientQ.data.medical_history || clientQ.data.emergency_contact_name || clientQ.data.emergency_contact_phone) ? (
-                  <div className="mt-4 rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
-                    <div className="text-sm font-semibold text-slate-950">{text.medicalCard}</div>
+                  <div className="mt-4 rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 shadow-sm">
+                    <div className="text-sm font-semibold text-[var(--vz-text)]">{text.medicalCard}</div>
                     <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                      <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700"><span className="text-slate-400">{text.birthDate}</span><div className="mt-1 font-semibold text-slate-900">{clientQ.data.birth_date || "—"}</div></div>
-                      <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700"><span className="text-slate-400">{text.bloodType}</span><div className="mt-1 font-semibold text-slate-900">{clientQ.data.blood_type || "—"}</div></div>
-                      <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700"><span className="text-slate-400">{text.allergies}</span><div className="mt-1 font-semibold text-slate-900">{clientQ.data.allergies || "—"}</div></div>
-                      <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700"><span className="text-slate-400">{text.emergency}</span><div className="mt-1 font-semibold text-slate-900">{clientQ.data.emergency_contact_name || "—"} {clientQ.data.emergency_contact_phone ? `· ${clientQ.data.emergency_contact_phone}` : ""}</div></div>
+                      <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]"><span className="text-[var(--vz-muted)]">{text.birthDate}</span><div className="mt-1 font-semibold text-[var(--vz-text)]">{clientQ.data.birth_date || "—"}</div></div>
+                      <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]"><span className="text-[var(--vz-muted)]">{text.bloodType}</span><div className="mt-1 font-semibold text-[var(--vz-text)]">{clientQ.data.blood_type || "—"}</div></div>
+                      <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]"><span className="text-[var(--vz-muted)]">{text.allergies}</span><div className="mt-1 font-semibold text-[var(--vz-text)]">{clientQ.data.allergies || "—"}</div></div>
+                      <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]"><span className="text-[var(--vz-muted)]">{text.emergency}</span><div className="mt-1 font-semibold text-[var(--vz-text)]">{clientQ.data.emergency_contact_name || "—"} {clientQ.data.emergency_contact_phone ? `· ${clientQ.data.emergency_contact_phone}` : ""}</div></div>
                     </div>
-                    {clientQ.data.medical_history ? <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-700"><div className="text-slate-400">{text.medicalHistory}</div><div className="mt-1 font-medium text-slate-900">{clientQ.data.medical_history}</div></div> : null}
+                    {clientQ.data.medical_history ? <div className="mt-3 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm leading-6 text-[var(--vz-text-secondary)]"><div className="text-[var(--vz-muted)]">{text.medicalHistory}</div><div className="mt-1 font-medium text-[var(--vz-text)]">{clientQ.data.medical_history}</div></div> : null}
                   </div>
                 ) : null}
 
                 <div className="mt-6 grid gap-4 2xl:grid-cols-2">
-                  <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
-                    <div className="flex items-center gap-2 text-sm font-semibold text-slate-950"><NotebookPen className="h-4 w-4 text-violet-600" /> {text.notes}</div>
+                  <div className="rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 shadow-sm">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-[var(--vz-text)]"><NotebookPen className="h-4 w-4 text-[var(--vz-accent-text)]" /> {text.notes}</div>
                     {canManage ? (
-                      <div className="mt-4 space-y-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                      <div className="mt-4 space-y-3 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
                         <div className="grid gap-3 xl:grid-cols-[1fr_auto_auto]">
-                          <select value={noteType} onChange={(e) => setNoteType(e.target.value)} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
+                          <select value={noteType} onChange={(e) => setNoteType(e.target.value)} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
                             <option value="general">{text.general}</option>
                             <option value="visit">{text.visitNote}</option>
                             <option value="medical">{text.medical}</option>
                           </select>
-                          <label className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"><input type="checkbox" checked={notePinned} onChange={(e) => setNotePinned(e.target.checked)} /> <Pin className="h-4 w-4 text-amber-500" /> {text.pin}</label>
+                          <label className="inline-flex items-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]"><input type="checkbox" checked={notePinned} onChange={(e) => setNotePinned(e.target.checked)} /> <Pin className="h-4 w-4 text-[var(--vz-warning)]" /> {text.pin}</label>
                           <Button onClick={submitClientNote} loading={createNoteMut.isPending}>{text.add}</Button>
                         </div>
-                        <textarea value={noteBody} onChange={(e) => setNoteBody(e.target.value)} rows={3} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder={text.notePlaceholder} />
+                        <textarea value={noteBody} onChange={(e) => setNoteBody(e.target.value)} rows={3} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" placeholder={text.notePlaceholder} />
                       </div>
                     ) : null}
                     <div className="mt-4 space-y-3">
                       {(clientQ.data.recent_notes ?? []).length ? (clientQ.data.recent_notes ?? []).map((note) => (
-                        <div key={note.id} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                        <div key={note.id} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3">
                           <div className="flex items-start justify-between gap-3">
                             <div>
                               <div className="flex flex-wrap items-center gap-2">
-                                {note.is_pinned ? <span className="rounded-full bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-700">{text.pinned}</span> : null}
-                                <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[11px] font-semibold text-violet-700">{note.note_type || 'general'}</span>
-                                <span className="text-xs text-slate-400">{formatDateTime(note.created_at, locale)}</span>
+                                {note.is_pinned ? <span className="rounded-full bg-[var(--vz-warning-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-warning)]">{text.pinned}</span> : null}
+                                <span className="rounded-full bg-[var(--vz-accent-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-accent-text)]">{note.note_type || 'general'}</span>
+                                <span className="text-xs text-[var(--vz-muted)]">{formatDateTime(note.created_at, locale)}</span>
                               </div>
-                              <div className="mt-2 text-sm leading-6 text-slate-700">{note.body}</div>
-                              {note.author_name ? <div className="mt-1 text-xs text-slate-400">{note.author_name}</div> : null}
+                              <div className="mt-2 text-sm leading-6 text-[var(--vz-text-secondary)]">{note.body}</div>
+                              {note.author_name ? <div className="mt-1 text-xs text-[var(--vz-muted)]">{note.author_name}</div> : null}
                             </div>
-                            {canManage ? <button type="button" onClick={() => selectedClient && deleteNoteMut.mutate({ clientId: selectedClient, noteId: note.id })} className="rounded-full border border-slate-200 p-2 text-slate-400 transition hover:border-rose-200 hover:text-rose-600"><Trash2 className="h-4 w-4" /></button> : null}
+                            {canManage ? <button type="button" onClick={() => selectedClient && deleteNoteMut.mutate({ clientId: selectedClient, noteId: note.id })} className="rounded-full border border-[var(--vz-line)] p-2 text-[var(--vz-muted)] transition hover:border-[var(--vz-danger-line)] hover:text-[var(--vz-danger)]"><Trash2 className="h-4 w-4" /></button> : null}
                           </div>
                         </div>
-                      )) : <div className="rounded-2xl border border-dashed border-slate-200 px-4 py-5 text-sm text-slate-500">{text.noNotes}</div>}
+                      )) : <div className="rounded-2xl border border-dashed border-[var(--vz-line)] px-4 py-5 text-sm text-[var(--vz-muted)]">{text.noNotes}</div>}
                     </div>
                   </div>
 
-                  <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
-                    <div className="flex items-center gap-2 text-sm font-semibold text-slate-950"><BellRing className="h-4 w-4 text-sky-600" /> {text.reminders}</div>
+                  <div className="rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 shadow-sm">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-[var(--vz-text)]"><BellRing className="h-4 w-4 text-[var(--vz-info)]" /> {text.reminders}</div>
                     {canManage ? (
-                      <div className="mt-4 space-y-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                      <div className="mt-4 space-y-3 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
                         <div className="grid gap-3 md:grid-cols-2">
                           <Input value={reminderTitle} onChange={(e) => setReminderTitle(e.target.value)} placeholder={text.reminderPlaceholder} />
-                          <input type="datetime-local" value={reminderAt} onChange={(e) => setReminderAt(e.target.value)} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" />
-                          <select value={reminderChannel} onChange={(e) => setReminderChannel(e.target.value)} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
+                          <input type="datetime-local" value={reminderAt} onChange={(e) => setReminderAt(e.target.value)} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" />
+                          <select value={reminderChannel} onChange={(e) => setReminderChannel(e.target.value)} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
                             <option value="internal">{text.internal}</option>
                             <option value="email">Email</option>
                           </select>
-                          <select value={String(reminderLeadMinutes)} onChange={(e) => setReminderLeadMinutes(Number(e.target.value) || 0)} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
+                          <select value={String(reminderLeadMinutes)} onChange={(e) => setReminderLeadMinutes(Number(e.target.value) || 0)} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
                             <option value="0">{text.atTime}</option>
                             <option value="15">{text.min15}</option>
                             <option value="30">{text.min30}</option>
@@ -685,36 +685,36 @@ export default function Clients() {
                               className={cn(
                                 "rounded-full border px-3 py-1.5 text-xs font-semibold transition",
                                 reminderNotifyVia.includes(item.key)
-                                  ? "border-violet-300 bg-violet-50 text-violet-700"
-                                  : "border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-700"
+                                  ? "border-[var(--vz-primary)] bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]"
+                                  : "border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-muted)] hover:border-[var(--vz-line-strong)] hover:text-[var(--vz-text-secondary)]"
                               )}
                             >
                               {item.label}
                             </button>
                           ))}
-                          <label className="ml-auto inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600">
+                          <label className="ml-auto inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-1.5 text-xs font-semibold text-[var(--vz-text-secondary)]">
                             <input type="checkbox" checked={reminderEnabled} onChange={(e) => setReminderEnabled(e.target.checked)} />
                             {text.activeReminder}
                           </label>
                         </div>
-                        <textarea value={reminderNote} onChange={(e) => setReminderNote(e.target.value)} rows={2} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder={text.details} />
+                        <textarea value={reminderNote} onChange={(e) => setReminderNote(e.target.value)} rows={2} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" placeholder={text.details} />
                         <Button onClick={submitClientReminder} loading={createReminderMut.isPending}>{text.createReminder}</Button>
                       </div>
                     ) : null}
                     <div className="mt-4 space-y-3">
                       {(clientQ.data.reminders ?? []).length ? (clientQ.data.reminders ?? []).map((reminder) => (
-                        <div key={reminder.id} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                        <div key={reminder.id} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3">
                           <div className="flex items-start justify-between gap-3">
                             <div>
-                              <div className="font-medium text-slate-900">{reminder.title}</div>
-                              <div className="mt-1 text-xs text-slate-500">{formatDateTime(reminder.remind_at, locale)} · {reminder.channel || text.internal}</div>
-                              {reminder.note ? <div className="mt-2 text-sm leading-6 text-slate-700">{reminder.note}</div> : null}
+                              <div className="font-medium text-[var(--vz-text)]">{reminder.title}</div>
+                              <div className="mt-1 text-xs text-[var(--vz-muted)]">{formatDateTime(reminder.remind_at, locale)} · {reminder.channel || text.internal}</div>
+                              {reminder.note ? <div className="mt-2 text-sm leading-6 text-[var(--vz-text-secondary)]">{reminder.note}</div> : null}
                               <div className="mt-3 flex flex-wrap gap-2">
                                 {(reminder.notify_via ?? []).map((channel) => (
-                                  <span key={channel} className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600">{channel}</span>
+                                  <span key={channel} className="rounded-full bg-[var(--vz-surface)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-text-secondary)]">{channel}</span>
                                 ))}
-                                {reminder.lead_minutes ? <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600">{reminder.lead_minutes} {text.minBefore}</span> : null}
-                                {reminder.is_enabled === false ? <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-500">{text.disabled}</span> : null}
+                                {reminder.lead_minutes ? <span className="rounded-full bg-[var(--vz-surface)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-text-secondary)]">{reminder.lead_minutes} {text.minBefore}</span> : null}
+                                {reminder.is_enabled === false ? <span className="rounded-full bg-[var(--vz-surface-2)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-muted)]">{text.disabled}</span> : null}
                               </div>
                               {(reminder.deliveries ?? []).length ? (
                                 <div className="mt-3 flex flex-wrap gap-2">
@@ -727,54 +727,54 @@ export default function Clients() {
                               ) : null}
                             </div>
                             <div className="flex flex-wrap items-center justify-end gap-2">
-                              <span className={cn("rounded-full px-2.5 py-1 text-[11px] font-semibold", reminder.status === 'done' ? 'bg-emerald-50 text-emerald-700' : reminder.status === 'canceled' ? 'bg-rose-50 text-rose-700' : reminder.status === 'queued' ? 'bg-amber-50 text-amber-700' : 'bg-sky-50 text-sky-700')}>{reminder.status || 'pending'}</span>
+                              <span className={cn("rounded-full px-2.5 py-1 text-[11px] font-semibold", reminder.status === 'done' ? 'bg-[var(--vz-success-soft)] text-[var(--vz-success)]' : reminder.status === 'canceled' ? 'bg-[var(--vz-danger-soft)] text-[var(--vz-danger)]' : reminder.status === 'queued' ? 'bg-[var(--vz-warning-soft)] text-[var(--vz-warning)]' : 'bg-[var(--vz-info-soft)] text-[var(--vz-info)]')}>{reminder.status || 'pending'}</span>
                               {canManage && reminder.status !== 'done' ? <Button variant="secondary" size="sm" onClick={() => selectedClient && updateReminderMut.mutate({ clientId: selectedClient, reminderId: reminder.id, status: 'done' })}>{text.markDone}</Button> : null}
                               {canManage ? <Button variant="secondary" size="sm" loading={dispatchReminderMut.isPending} onClick={() => selectedClient && dispatchReminderMut.mutate({ clientId: selectedClient, reminderId: reminder.id })}>{text.sendNow}</Button> : null}
-                              {canManage ? <button type="button" onClick={() => selectedClient && deleteReminderMut.mutate({ clientId: selectedClient, reminderId: reminder.id })} className="rounded-full border border-slate-200 p-2 text-slate-400 transition hover:border-rose-200 hover:text-rose-600"><Trash2 className="h-4 w-4" /></button> : null}
+                              {canManage ? <button type="button" onClick={() => selectedClient && deleteReminderMut.mutate({ clientId: selectedClient, reminderId: reminder.id })} className="rounded-full border border-[var(--vz-line)] p-2 text-[var(--vz-muted)] transition hover:border-[var(--vz-danger-line)] hover:text-[var(--vz-danger)]"><Trash2 className="h-4 w-4" /></button> : null}
                             </div>
                           </div>
                         </div>
-                      )) : <div className="rounded-2xl border border-dashed border-slate-200 px-4 py-5 text-sm text-slate-500">{text.noReminders}</div>}
+                      )) : <div className="rounded-2xl border border-dashed border-[var(--vz-line)] px-4 py-5 text-sm text-[var(--vz-muted)]">{text.noReminders}</div>}
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-6 rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-950"><History className="h-4 w-4 text-slate-700" /> {text.timeline}</div>
+                <div className="mt-6 rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 shadow-sm">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-[var(--vz-text)]"><History className="h-4 w-4 text-[var(--vz-text-secondary)]" /> {text.timeline}</div>
                   <div className="mt-4 space-y-3">
                     {(clientQ.data.timeline ?? []).length ? (clientQ.data.timeline ?? []).map((item) => (
-                      <div key={item.id} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                      <div key={item.id} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3">
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <div className="flex flex-wrap items-center gap-2">
-                              <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700">{item.type}</span>
-                              {item.status ? <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[11px] font-semibold text-violet-700">{item.status}</span> : null}
+                              <span className="rounded-full bg-[var(--vz-surface)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-text-secondary)]">{item.type}</span>
+                              {item.status ? <span className="rounded-full bg-[var(--vz-accent-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-accent-text)]">{item.status}</span> : null}
                             </div>
-                            <div className="mt-2 font-medium text-slate-900">{item.title}</div>
-                            {item.subtitle ? <div className="mt-1 text-xs text-slate-500">{item.subtitle}</div> : null}
-                            {item.body ? <div className="mt-2 text-sm leading-6 text-slate-700">{item.body}</div> : null}
+                            <div className="mt-2 font-medium text-[var(--vz-text)]">{item.title}</div>
+                            {item.subtitle ? <div className="mt-1 text-xs text-[var(--vz-muted)]">{item.subtitle}</div> : null}
+                            {item.body ? <div className="mt-2 text-sm leading-6 text-[var(--vz-text-secondary)]">{item.body}</div> : null}
                           </div>
-                          <div className="text-xs text-slate-400">{formatDateTime(item.occurred_at, locale)}</div>
+                          <div className="text-xs text-[var(--vz-muted)]">{formatDateTime(item.occurred_at, locale)}</div>
                         </div>
                       </div>
-                    )) : <div className="rounded-2xl border border-dashed border-slate-200 px-4 py-5 text-sm text-slate-500">{text.emptyTimeline}</div>}
+                    )) : <div className="rounded-2xl border border-dashed border-[var(--vz-line)] px-4 py-5 text-sm text-[var(--vz-muted)]">{text.emptyTimeline}</div>}
                   </div>
                 </div>
 
                 <div className="mt-6">
-                  <div className="text-sm font-semibold text-slate-950">{text.recentBookings}</div>
+                  <div className="text-sm font-semibold text-[var(--vz-text)]">{text.recentBookings}</div>
                   <div className="mt-3 space-y-3">
                     {(clientBookingsQ.data?.data ?? []).length ? (clientBookingsQ.data?.data ?? []).map((booking) => (
-                      <div key={booking.id} className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                      <div key={booking.id} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3">
                         <div className="flex items-start justify-between gap-3">
                           <div>
-                            <div className="font-medium text-slate-900">{isRental ? (user?.business_name || rentalCopy[locale].space) : booking.service_name ?? booking.service?.name ?? `${text.service} #${booking.service_id}`}</div>
-                            <div className="mt-1 text-xs text-slate-500">{formatDateTime(booking.starts_at, locale)}{!isRental && <> · {booking.staff_name ?? booking.staff?.name ?? "—"}</>}</div>
+                            <div className="font-medium text-[var(--vz-text)]">{isRental ? (user?.business_name || rentalCopy[locale].space) : booking.service_name ?? booking.service?.name ?? `${text.service} #${booking.service_id}`}</div>
+                            <div className="mt-1 text-xs text-[var(--vz-muted)]">{formatDateTime(booking.starts_at, locale)}{!isRental && <> · {booking.staff_name ?? booking.staff?.name ?? "—"}</>}</div>
                           </div>
-                          <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-semibold text-slate-600">{booking.status}</span>
+                          <span className="rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-text-secondary)]">{booking.status}</span>
                         </div>
                       </div>
-                    )) : <div className="rounded-2xl border border-dashed border-slate-200 px-4 py-5 text-sm text-slate-500">{text.noBookings}</div>}
+                    )) : <div className="rounded-2xl border border-dashed border-[var(--vz-line)] px-4 py-5 text-sm text-[var(--vz-muted)]">{text.noBookings}</div>}
                   </div>
                 </div>
               </>
@@ -788,81 +788,81 @@ export default function Clients() {
       <Modal open={open} onClose={() => setOpen(false)} title={editing ? (isHealthcare ? text.editPatient : text.editClient) : (isHealthcare ? text.newPatient : text.newClient)}>
         <div className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
-            <label className="text-sm text-slate-600">
+            <label className="text-sm text-[var(--vz-text-secondary)]">
               {text.name}
               <Input className="mt-1" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} placeholder={text.namePlaceholder} />
             </label>
-            <label className="text-sm text-slate-600">
+            <label className="text-sm text-[var(--vz-text-secondary)]">
               {text.phone}
               <Input className="mt-1" value={form.phone} onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))} placeholder="+374..." />
             </label>
-            <label className="text-sm text-slate-600">
+            <label className="text-sm text-[var(--vz-text-secondary)]">
               {text.email}
               <Input className="mt-1" value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} placeholder="name@example.com" />
             </label>
-            <label className="text-sm text-slate-600">
+            <label className="text-sm text-[var(--vz-text-secondary)]">
               {text.group}
               <Input className="mt-1" value={form.group_name} onChange={(e) => setForm((p) => ({ ...p, group_name: e.target.value }))} placeholder={text.groupPlaceholder} />
             </label>
-            <label className="text-sm text-slate-600">
+            <label className="text-sm text-[var(--vz-text-secondary)]">
               {text.birthDate}
               <Input className="mt-1" type="date" value={form.birth_date} onChange={(e) => setForm((p) => ({ ...p, birth_date: e.target.value }))} />
             </label>
-            <label className="text-sm text-slate-600">
+            <label className="text-sm text-[var(--vz-text-secondary)]">
               {text.bloodType}
-              <select value={form.blood_type} onChange={(e) => setForm((p) => ({ ...p, blood_type: e.target.value }))} className="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
+              <select value={form.blood_type} onChange={(e) => setForm((p) => ({ ...p, blood_type: e.target.value }))} className="mt-1 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
                 <option value="">{text.select}</option>
                 {['A+','A-','B+','B-','AB+','AB-','O+','O-'].map((type) => <option key={type} value={type}>{type}</option>)}
               </select>
             </label>
-            <label className="text-sm text-slate-600">
+            <label className="text-sm text-[var(--vz-text-secondary)]">
               {text.emergencyName}
               <Input className="mt-1" value={form.emergency_contact_name} onChange={(e) => setForm((p) => ({ ...p, emergency_contact_name: e.target.value }))} placeholder={text.nameShort} />
             </label>
-            <label className="text-sm text-slate-600">
+            <label className="text-sm text-[var(--vz-text-secondary)]">
               {text.emergencyPhone}
               <Input className="mt-1" value={form.emergency_contact_phone} onChange={(e) => setForm((p) => ({ ...p, emergency_contact_phone: e.target.value }))} placeholder="+374..." />
             </label>
           </div>
 
           <div className="grid gap-3 md:grid-cols-2">
-            <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+            <label className="flex items-center gap-3 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]">
               <input type="checkbox" checked={form.is_vip} onChange={(e) => setForm((p) => ({ ...p, is_vip: e.target.checked }))} />
-              <Star className="h-4 w-4 text-amber-500" /> {isHealthcare ? text.vipPatient : text.vipClient}
+              <Star className="h-4 w-4 text-[var(--vz-warning)]" /> {isHealthcare ? text.vipPatient : text.vipClient}
             </label>
-            <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+            <label className="flex items-center gap-3 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]">
               <input type="checkbox" checked={form.is_blacklisted} onChange={(e) => setForm((p) => ({ ...p, is_blacklisted: e.target.checked }))} />
-              <AlertTriangle className="h-4 w-4 text-rose-500" /> {text.blacklist}
+              <AlertTriangle className="h-4 w-4 text-[var(--vz-danger)]" /> {text.blacklist}
             </label>
           </div>
 
-          <label className="flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/70 px-4 py-3 text-sm text-slate-700">
+          <label className="flex items-start gap-3 rounded-2xl border border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]">
             <input className="mt-1" type="checkbox" checked={form.marketing_opt_in} onChange={(e) => setForm((p) => ({ ...p, marketing_opt_in: e.target.checked }))} />
-            <Mail className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+            <Mail className="mt-0.5 h-4 w-4 shrink-0 text-[var(--vz-success)]" />
             <span>
-              <span className="block font-semibold text-slate-900">{text.marketingConsent}</span>
-              <span className="mt-1 block text-xs leading-5 text-slate-500">{text.marketingConsentHint}</span>
+              <span className="block font-semibold text-[var(--vz-text)]">{text.marketingConsent}</span>
+              <span className="mt-1 block text-xs leading-5 text-[var(--vz-muted)]">{text.marketingConsentHint}</span>
             </span>
           </label>
 
           {form.is_blacklisted ? (
-            <label className="block text-sm text-slate-600">
+            <label className="block text-sm text-[var(--vz-text-secondary)]">
               {text.reason}
-              <textarea value={form.blacklist_reason} onChange={(e) => setForm((p) => ({ ...p, blacklist_reason: e.target.value }))} rows={3} className="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none ring-0 transition focus:border-violet-300" placeholder={text.reasonPlaceholder} />
+              <textarea value={form.blacklist_reason} onChange={(e) => setForm((p) => ({ ...p, blacklist_reason: e.target.value }))} rows={3} className="mt-1 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm outline-none ring-0 transition focus:border-[var(--vz-primary)]" placeholder={text.reasonPlaceholder} />
             </label>
           ) : null}
 
-          <label className="block text-sm text-slate-600">
+          <label className="block text-sm text-[var(--vz-text-secondary)]">
             {text.allergies}
-            <textarea value={form.allergies} onChange={(e) => setForm((p) => ({ ...p, allergies: e.target.value }))} rows={3} className="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none ring-0 transition focus:border-violet-300" placeholder={text.allergiesPlaceholder} />
+            <textarea value={form.allergies} onChange={(e) => setForm((p) => ({ ...p, allergies: e.target.value }))} rows={3} className="mt-1 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm outline-none ring-0 transition focus:border-[var(--vz-primary)]" placeholder={text.allergiesPlaceholder} />
           </label>
-          <label className="block text-sm text-slate-600">
+          <label className="block text-sm text-[var(--vz-text-secondary)]">
             {text.medicalHistory}
-            <textarea value={form.medical_history} onChange={(e) => setForm((p) => ({ ...p, medical_history: e.target.value }))} rows={3} className="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none ring-0 transition focus:border-violet-300" placeholder={text.historyPlaceholder} />
+            <textarea value={form.medical_history} onChange={(e) => setForm((p) => ({ ...p, medical_history: e.target.value }))} rows={3} className="mt-1 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm outline-none ring-0 transition focus:border-[var(--vz-primary)]" placeholder={text.historyPlaceholder} />
           </label>
-          <label className="block text-sm text-slate-600">
+          <label className="block text-sm text-[var(--vz-text-secondary)]">
             {text.note}
-            <textarea value={form.notes} onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))} rows={4} className="mt-1 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none ring-0 transition focus:border-violet-300" placeholder={text.profileNotePlaceholder} />
+            <textarea value={form.notes} onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))} rows={4} className="mt-1 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm outline-none ring-0 transition focus:border-[var(--vz-primary)]" placeholder={text.profileNotePlaceholder} />
           </label>
           <div className="flex justify-end gap-2 pt-2">
             <Button variant="secondary" onClick={() => setOpen(false)}>{text.close}</Button>

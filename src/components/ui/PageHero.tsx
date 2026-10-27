@@ -20,9 +20,9 @@ export function PageHero({ eyebrow, title, description, actions, className }: Pa
       <div className="flex flex-col gap-3 sm:gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div className="min-w-0">
           {eyebrow ? <div className="bb-eyebrow">{eyebrow}</div> : null}
-          <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 sm:mt-5 sm:text-4xl">{title}</h1>
+          <h1 className="mt-3 text-2xl font-semibold tracking-tight text-[var(--vz-text)] sm:mt-5 sm:text-4xl">{title}</h1>
           {description ? (
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:mt-3 sm:leading-7">{description}</p>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--vz-text-secondary)] sm:mt-3 sm:leading-7">{description}</p>
           ) : null}
         </div>
 

@@ -28,14 +28,14 @@ export default function MarketingUnsubscribe() {
   const invalid = !delivery || !token;
 
   return (
-    <main className="grid min-h-screen place-items-center bg-gradient-to-br from-violet-50 via-white to-fuchsia-50 p-4">
-      <Card className="w-full max-w-lg border border-violet-100 bg-white p-8 text-center shadow-xl">
-        <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-violet-100 text-violet-700">{done ? <CheckCircle2 className="h-7 w-7" /> : <MailX className="h-7 w-7" />}</div>
-        <h1 className="mt-5 text-2xl font-semibold text-slate-950">{done ? text.done : text.title}</h1>
-        {!done ? <p className="mt-3 text-sm leading-6 text-slate-600">{invalid ? text.invalid : text.text}</p> : null}
+    <main className="bg-[var(--vz-accent-soft)] grid min-h-screen place-items-center p-4">
+      <Card className="w-full max-w-lg border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] p-8 text-center shadow-xl">
+        <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]">{done ? <CheckCircle2 className="h-7 w-7" /> : <MailX className="h-7 w-7" />}</div>
+        <h1 className="mt-5 text-2xl font-semibold text-[var(--vz-text)]">{done ? text.done : text.title}</h1>
+        {!done ? <p className="mt-3 text-sm leading-6 text-[var(--vz-text-secondary)]">{invalid ? text.invalid : text.text}</p> : null}
         {!done && !invalid ? <Button className="mt-6 w-full" loading={mutation.isPending} onClick={() => mutation.mutate()}>{text.action}</Button> : null}
-        {mutation.isError ? <p className="mt-4 text-sm text-rose-600">{text.invalid}</p> : null}
-        <Link to="/" className="mt-6 inline-block text-sm font-medium text-violet-700 hover:underline">{text.home}</Link>
+        {mutation.isError ? <p className="mt-4 text-sm text-[var(--vz-danger)]">{text.invalid}</p> : null}
+        <Link to="/" className="mt-6 inline-block text-sm font-medium text-[var(--vz-accent-text)] hover:underline">{text.home}</Link>
       </Card>
     </main>
   );

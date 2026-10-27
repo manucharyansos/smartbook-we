@@ -23,7 +23,7 @@ export default function AuthHub({ mode }: Props) {
       sideTitle="Մեկ product, բայց երկու հստակ ճանապարհ"
       sideText="Բիզնեսը ստանում է trial, pricing և onboarding flow, իսկ հաճախորդը՝ արագ register/login և իր cabinet-ը։"
       footer={
-        <div className="text-center text-sm text-slate-500">
+        <div className="text-center text-sm text-[var(--vz-muted)]">
           {isRegister ? "Արդեն ունե՞ս հաշիվ" : "Առաջին անգամ ե՞ս այստեղ"}{" "}
           <Link to={isRegister ? "/login" : "/register"} className="font-medium text-[var(--vz-brand-text)] hover:text-[var(--vz-brand-text)]">
             {isRegister ? "Մուտքի ընտրություն" : "Գրանցման ընտրություն"}
@@ -39,12 +39,12 @@ export default function AuthHub({ mode }: Props) {
                 <BriefcaseBusiness className="h-5 w-5" />
               </div>
               <div>
-                <div className="text-base font-semibold text-slate-900">Բիզնես</div>
-                <div className="text-sm text-slate-500">Սրահ, clinic, spa, massage, wellness</div>
+                <div className="text-base font-semibold text-[var(--vz-text)]">Բիզնես</div>
+                <div className="text-sm text-[var(--vz-muted)]">Սրահ, clinic, spa, massage, wellness</div>
               </div>
             </div>
 
-            <div className="mt-4 space-y-2 text-sm leading-7 text-slate-600">
+            <div className="mt-4 space-y-2 text-sm leading-7 text-[var(--vz-text-secondary)]">
               <div>• 14 օր անվճար փորձարկում կամ պլանի ընտրություն</div>
               <div>• Calendar, թիմ, public booking, analytics</div>
               <div>• Owner/manager անսահմանափակ, plan-ը՝ միայն staff count-ով</div>
@@ -55,7 +55,7 @@ export default function AuthHub({ mode }: Props) {
                 {isRegister ? "Start trial" : "Business login"}
                 <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link to={isRegister ? "/pricing" : "/business/register?entry=plan"} className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700">
+              <Link to={isRegister ? "/pricing" : "/business/register?entry=plan"} className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm font-medium text-[var(--vz-text-secondary)]">
                 {isRegister ? "Choose plan" : "Ստեղծել business հաշիվ"}
               </Link>
             </div>
@@ -69,27 +69,27 @@ export default function AuthHub({ mode }: Props) {
 
           <motion.div variants={scaleIn} {...hoverLift} className="vizit-auth-choice-card rounded-2xl border p-5 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-slate-900 text-white">
+              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[var(--vz-primary)] text-[var(--vz-on-primary)]">
                 <UserRound className="h-5 w-5" />
               </div>
               <div>
-                <div className="text-base font-semibold text-slate-900">Հաճախորդ</div>
-                <div className="text-sm text-slate-500">Քո booking history-ն ու upcoming այցերը մեկ տեղում</div>
+                <div className="text-base font-semibold text-[var(--vz-text)]">Հաճախորդ</div>
+                <div className="text-sm text-[var(--vz-muted)]">Քո booking history-ն ու upcoming այցերը մեկ տեղում</div>
               </div>
             </div>
 
-            <div className="mt-4 space-y-2 text-sm leading-7 text-slate-600">
+            <div className="mt-4 space-y-2 text-sm leading-7 text-[var(--vz-text-secondary)]">
               <div>• Արագ email/phone register</div>
               <div>• Upcoming և past bookings cabinet-ում</div>
               <div>• Social sign-in-ը պատրաստ է integration-ready վիճակում</div>
             </div>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <Link to={isRegister ? "/client/register" : "/client/login"} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-3 text-sm font-medium text-white">
+              <Link to={isRegister ? "/client/register" : "/client/login"} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[var(--vz-primary)] px-4 py-3 text-sm font-medium text-[var(--vz-on-primary)]">
                 {isRegister ? "Client register" : "Client login"}
                 <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link to={isRegister ? "/client/login" : "/client/register"} className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700">
+              <Link to={isRegister ? "/client/login" : "/client/register"} className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm font-medium text-[var(--vz-text-secondary)]">
                 {isRegister ? "Already have an account" : "Ստեղծել հաճախորդի հաշիվ"}
               </Link>
             </div>
@@ -98,11 +98,11 @@ export default function AuthHub({ mode }: Props) {
 
         <motion.div variants={fadeUp} className="vizit-auth-choice-note rounded-2xl border p-4 text-sm leading-7">
           <div className="flex items-start gap-3">
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white text-[var(--vz-brand-text)] shadow-sm">
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--vz-surface)] text-[var(--vz-brand-text)] shadow-sm">
               <CalendarHeart className="h-5 w-5" />
             </div>
             <div>
-              <div className="font-medium text-slate-900">Ինչու՞ է սա կարևոր</div>
+              <div className="font-medium text-[var(--vz-text)]">Ինչու՞ է սա կարևոր</div>
               <div className="mt-1">
                 Երբ business և client հոսքերը հստակ բաժանված են, մարդիկ արագ հասկանում են իրենց ճանապարհը, conversion-ը բարձրանում է,
                 իսկ product-ը զգացվում է ավելի պրոֆեսիոնալ։

@@ -149,7 +149,7 @@ function SectionCard({
   return (
       <Card
           className={cn(
-              "rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_60px_rgba(124,58,237,0.06)]",
+              "rounded-[32px] border border-[var(--vz-line)] bg-[var(--vz-surface)] shadow-[0_18px_60px_rgba(124,58,237,0.06)]",
               className
           )}
       >
@@ -171,14 +171,14 @@ function InputShell({
 }) {
   return (
       <div>
-        <label className="mb-2 block text-sm font-medium text-slate-800">
+        <label className="mb-2 block text-sm font-medium text-[var(--vz-text)]">
         <span className="flex items-center gap-2">
           {icon}
           {label}
         </span>
         </label>
         {children}
-        {hint && <div className="mt-1 text-xs text-slate-500">{hint}</div>}
+        {hint && <div className="mt-1 text-xs text-[var(--vz-muted)]">{hint}</div>}
       </div>
   );
 }
@@ -470,31 +470,31 @@ export default function BusinessSettingsPage() {
           <motion.div
               initial={{ opacity: 0, y: -14 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-[28px] border border-[#d39a43]/24 bg-[radial-gradient(circle_at_90%_0%,rgba(232,194,174,.62),transparent_34%),linear-gradient(135deg,#fffdf9,#f8eee4)] p-5 shadow-[0_20px_58px_rgba(70,34,49,.08)] dark:border-[#e7bc6b]/15 dark:bg-[radial-gradient(circle_at_90%_0%,rgba(109,42,99,.34),transparent_34%),linear-gradient(135deg,#2f182e,#1d121f)] sm:p-7"
+              className="rounded-[28px] border border-[var(--vz-line-strong)] bg-[var(--vz-surface-2)] p-5 shadow-[0_20px_58px_rgba(70,34,49,.08)] sm:p-7"
           >
             <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-end 2xl:justify-between">
               <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
+                <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--vz-accent-text)]">
                   <Sparkles className="h-4 w-4" />
                   {isHealthcare ? text.medicalBadge : text.badge}
                 </div>
-                <h1 className="mt-4 font-serif text-3xl font-semibold tracking-tight text-slate-950">{text.title}</h1>
-                <p className="mt-2 text-sm leading-7 text-slate-600">
+                <h1 className="mt-4 font-serif text-3xl font-semibold tracking-tight text-[var(--vz-text)]">{text.title}</h1>
+                <p className="mt-2 text-sm leading-7 text-[var(--vz-text-secondary)]">
                   {isHealthcare ? text.medicalIntro : text.intro}
                 </p>
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
                 {bookingLink && (
-                    <div className="hidden items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs text-slate-500 md:flex">
-                      <LinkIcon size={14} className="text-violet-600" />
+                    <div className="hidden items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-2 text-xs text-[var(--vz-muted)] md:flex">
+                      <LinkIcon size={14} className="text-[var(--vz-accent-text)]" />
                       <span>{bookingLink}</span>
                       <button
                         type="button"
                         onClick={copyBookingLink}
-                        className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-semibold text-slate-700"
+                        className="inline-flex items-center gap-1 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-2 py-1 text-[11px] font-semibold text-[var(--vz-text-secondary)]"
                       >
-                        {copiedLink ? <CheckCircle2 size={12} className="text-emerald-600" /> : <Copy size={12} />}
+                        {copiedLink ? <CheckCircle2 size={12} className="text-[var(--vz-success)]" /> : <Copy size={12} />}
                         {copiedLink ? text.copied : text.copy}
                       </button>
                     </div>
@@ -528,18 +528,18 @@ export default function BusinessSettingsPage() {
             <SectionCard className="p-4 sm:p-6 md:p-7">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-xl font-semibold text-slate-950">{text.branding}</h2>
-                  <p className="mt-1 text-sm text-slate-500">{text.brandingText}</p>
+                  <h2 className="text-xl font-semibold text-[var(--vz-text)]">{text.branding}</h2>
+                  <p className="mt-1 text-sm text-[var(--vz-muted)]">{text.brandingText}</p>
                 </div>
               </div>
 
               <div className="mt-5 grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
                 <div className="space-y-4">
-                  <InputShell label={text.shortDescription} icon={<Sparkles className="h-4 w-4 text-violet-500" />}>
-                    <textarea value={form.short_description ?? ""} onChange={(e) => setForm((p) => ({ ...p, short_description: e.target.value }))} className="min-h-[96px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100" />
+                  <InputShell label={text.shortDescription} icon={<Sparkles className="h-4 w-4 text-[var(--vz-accent-text)]" />}>
+                    <textarea value={form.short_description ?? ""} onChange={(e) => setForm((p) => ({ ...p, short_description: e.target.value }))} className="min-h-[96px] w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-4 focus:ring-[var(--vz-focus)]" />
                   </InputShell>
-                  <InputShell label={text.fullDescription} icon={<Globe className="h-4 w-4 text-violet-500" />}>
-                    <textarea value={form.description ?? ""} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} className="min-h-[140px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100" />
+                  <InputShell label={text.fullDescription} icon={<Globe className="h-4 w-4 text-[var(--vz-accent-text)]" />}>
+                    <textarea value={form.description ?? ""} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} className="min-h-[140px] w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-4 focus:ring-[var(--vz-focus)]" />
                   </InputShell>
                   <div className="grid gap-3 sm:grid-cols-2">
                     {([
@@ -550,28 +550,28 @@ export default function BusinessSettingsPage() {
                       ["show_staff", isHealthcare ? text.showDoctors : text.showStaff],
                       ["show_services", text.showServices],
                     ] as const).map(([key, label]) => (
-                      <label key={key} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm transition hover:border-violet-200 hover:bg-violet-50/40">
+                      <label key={key} className="flex items-center gap-3 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm text-[var(--vz-text-secondary)] shadow-sm transition hover:border-[var(--vz-line-strong)] hover:bg-[var(--vz-accent-soft)]">
                         <input type="checkbox" checked={Boolean(form[key])} onChange={(e) => setForm((p) => ({ ...p, [key]: e.target.checked }))} />
                         <span>{label}</span>
                       </label>
                     ))}
                   </div>
 
-                  <div className="rounded-[28px] border border-slate-200 bg-slate-50/70 p-4">
-                    <div className="text-sm font-semibold text-slate-900">{text.social}</div>
-                    <div className="mt-1 text-xs leading-5 text-slate-500">{text.socialText}</div>
+                  <div className="rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
+                    <div className="text-sm font-semibold text-[var(--vz-text)]">{text.social}</div>
+                    <div className="mt-1 text-xs leading-5 text-[var(--vz-muted)]">{text.socialText}</div>
                     <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                      <InputShell label={text.instagram} icon={<LinkIcon className="h-4 w-4 text-violet-500" />}>
-                        <input value={form.instagram_url ?? ""} onChange={(e) => setForm((p) => ({ ...p, instagram_url: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="https://instagram.com/..." />
+                      <InputShell label={text.instagram} icon={<LinkIcon className="h-4 w-4 text-[var(--vz-accent-text)]" />}>
+                        <input value={form.instagram_url ?? ""} onChange={(e) => setForm((p) => ({ ...p, instagram_url: e.target.value }))} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" placeholder="https://instagram.com/..." />
                       </InputShell>
-                      <InputShell label={text.facebook} icon={<LinkIcon className="h-4 w-4 text-violet-500" />}>
-                        <input value={form.facebook_url ?? ""} onChange={(e) => setForm((p) => ({ ...p, facebook_url: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="https://facebook.com/..." />
+                      <InputShell label={text.facebook} icon={<LinkIcon className="h-4 w-4 text-[var(--vz-accent-text)]" />}>
+                        <input value={form.facebook_url ?? ""} onChange={(e) => setForm((p) => ({ ...p, facebook_url: e.target.value }))} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" placeholder="https://facebook.com/..." />
                       </InputShell>
-                      <InputShell label={text.whatsapp} icon={<Phone className="h-4 w-4 text-violet-500" />}>
-                        <input value={form.whatsapp_phone ?? ""} onChange={(e) => setForm((p) => ({ ...p, whatsapp_phone: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="+374..." />
+                      <InputShell label={text.whatsapp} icon={<Phone className="h-4 w-4 text-[var(--vz-accent-text)]" />}>
+                        <input value={form.whatsapp_phone ?? ""} onChange={(e) => setForm((p) => ({ ...p, whatsapp_phone: e.target.value }))} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" placeholder="+374..." />
                       </InputShell>
-                      <InputShell label={text.messenger} icon={<LinkIcon className="h-4 w-4 text-violet-500" />}>
-                        <input value={form.messenger_url ?? ""} onChange={(e) => setForm((p) => ({ ...p, messenger_url: e.target.value }))} className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="https://m.me/..." />
+                      <InputShell label={text.messenger} icon={<LinkIcon className="h-4 w-4 text-[var(--vz-accent-text)]" />}>
+                        <input value={form.messenger_url ?? ""} onChange={(e) => setForm((p) => ({ ...p, messenger_url: e.target.value }))} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" placeholder="https://m.me/..." />
                       </InputShell>
                     </div>
                     <TelegramConnectionCard className="mt-4" variant="settings" />
@@ -580,33 +580,33 @@ export default function BusinessSettingsPage() {
 
                 <div className="space-y-4">
                   <div>
-                    <div className="mb-2 text-sm font-medium text-slate-800">{text.logo}</div>
-                    <div className="flex items-center gap-4 rounded-[28px] border border-slate-200 bg-slate-50/70 p-4">
-                      <div className="h-20 w-20 overflow-hidden rounded-3xl bg-white shadow-sm ring-4 ring-white">{form.logo_url ? <img src={form.logo_url} alt="logo" className="h-full w-full object-cover" /> : <div className="grid h-full w-full place-items-center text-slate-400">Logo</div>}</div>
+                    <div className="mb-2 text-sm font-medium text-[var(--vz-text)]">{text.logo}</div>
+                    <div className="flex items-center gap-4 rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
+                      <div className="h-20 w-20 overflow-hidden rounded-3xl bg-[var(--vz-surface)] shadow-sm ring-4 ring-white">{form.logo_url ? <img src={form.logo_url} alt="logo" className="h-full w-full object-cover" /> : <div className="grid h-full w-full place-items-center text-[var(--vz-muted)]">Logo</div>}</div>
                       <div className="space-y-2">
-                        <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm">
+                        <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-2.5 text-sm font-medium text-[var(--vz-text-secondary)] shadow-sm">
                           {text.uploadLogo}
                           <input type="file" accept="image/*" className="hidden" onChange={async (e) => { const file = e.target.files?.[0]; if (!file) return; const url = await uploadMedia(file, 'branding'); setForm((p) => ({ ...p, logo_url: url })); e.currentTarget.value = ''; }} />
                         </label>
-                        <div className="text-xs text-slate-500">{text.logoHint}</div>
+                        <div className="text-xs text-[var(--vz-muted)]">{text.logoHint}</div>
                       </div>
                     </div>
                   </div>
                   <div>
-                    <div className="mb-2 text-sm font-medium text-slate-800">{text.cover}</div>
-                    <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-slate-50/70 p-3">
-                      <div className="h-40 overflow-hidden rounded-3xl bg-white shadow-sm">{form.cover_url ? <img src={form.cover_url} alt="banner" className="h-full w-full object-cover" /> : <div className="grid h-full w-full place-items-center text-slate-400">{text.coverPreview}</div>}</div>
-                      <label className="mt-3 inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm">
+                    <div className="mb-2 text-sm font-medium text-[var(--vz-text)]">{text.cover}</div>
+                    <div className="overflow-hidden rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-3">
+                      <div className="h-40 overflow-hidden rounded-3xl bg-[var(--vz-surface)] shadow-sm">{form.cover_url ? <img src={form.cover_url} alt="banner" className="h-full w-full object-cover" /> : <div className="grid h-full w-full place-items-center text-[var(--vz-muted)]">{text.coverPreview}</div>}</div>
+                      <label className="mt-3 inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-2.5 text-sm font-medium text-[var(--vz-text-secondary)] shadow-sm">
                         {text.uploadCover}
                         <input type="file" accept="image/*" className="hidden" onChange={async (e) => { const file = e.target.files?.[0]; if (!file) return; const url = await uploadMedia(file, 'branding'); setForm((p) => ({ ...p, cover_url: url })); e.currentTarget.value = ''; }} />
                       </label>
                     </div>
                   </div>
 
-                  <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-slate-950 text-white shadow-[0_20px_60px_rgba(15,23,42,0.16)]">
-                    <div className="relative h-44 bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.4),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(56,189,248,0.35),transparent_35%),linear-gradient(135deg,#0f172a_0%,#111827_100%)]">
+                  <div className="overflow-hidden rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-[0_20px_60px_rgba(15,23,42,0.16)]">
+                    <div className="relative h-44 bg-[var(--vz-surface-2)]">
                       {form.cover_url ? <img src={form.cover_url} alt="preview banner" className="absolute inset-0 h-full w-full object-cover opacity-35" /> : null}
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/55 to-transparent" />
+                      <div className="bg-[var(--vz-cover)] absolute inset-0" />
                       <div className="absolute inset-x-0 bottom-0 flex items-end gap-4 p-5">
                         <div className="h-16 w-16 overflow-hidden rounded-[22px] border border-white/20 bg-white/10 backdrop-blur">
                           {form.logo_url ? <img src={form.logo_url} alt="preview logo" className="h-full w-full object-cover" /> : <div className="grid h-full w-full place-items-center text-sm text-white/70">Logo</div>}
@@ -638,13 +638,13 @@ export default function BusinessSettingsPage() {
                 <SectionCard className="overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.10),transparent_35%),white] p-0">
                   <div className="grid gap-0 xl:grid-cols-[1.2fr_0.8fr]">
                     <div className="p-4 sm:p-6 md:p-7">
-                      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
-                        <Crown size={14} className="text-violet-600" />
+                      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--vz-accent-text)]">
+                        <Crown size={14} className="text-[var(--vz-accent-text)]" />
                         {text.billingBadge}
                       </div>
 
-                      <h2 className="text-2xl font-semibold text-slate-950">{text.billingTitle}</h2>
-                      <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600">
+                      <h2 className="text-2xl font-semibold text-[var(--vz-text)]">{text.billingTitle}</h2>
+                      <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--vz-text-secondary)]">
                         {text.billingText}
                       </p>
 
@@ -652,7 +652,7 @@ export default function BusinessSettingsPage() {
                         <Link to="/app/billing">
                           <button
                               type="button"
-                              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/20"
+                              className="inline-flex items-center gap-2 rounded-2xl bg-[var(--vz-primary)] px-5 py-3 text-sm font-semibold text-[var(--vz-on-primary)] shadow-lg"
                           >
                             {text.openBilling}
                             <ArrowRight size={16} />
@@ -661,22 +661,22 @@ export default function BusinessSettingsPage() {
                       </div>
                     </div>
 
-                    <div className="border-t border-slate-200 bg-slate-50/60 p-6 lg:border-l lg:border-t-0">
-                      <div className="text-xs font-semibold tracking-[0.18em] text-slate-400">{text.quickNote}</div>
+                    <div className="border-t border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-6 lg:border-l lg:border-t-0">
+                      <div className="text-xs font-semibold tracking-[0.18em] text-[var(--vz-muted)]">{text.quickNote}</div>
                       <div className="mt-4 space-y-3">
-                        <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                          <div className="text-sm font-semibold text-slate-950">{text.ownerOnly}</div>
-                          <div className="mt-1 text-xs text-slate-500">{text.ownerOnlyText}</div>
+                        <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4">
+                          <div className="text-sm font-semibold text-[var(--vz-text)]">{text.ownerOnly}</div>
+                          <div className="mt-1 text-xs text-[var(--vz-muted)]">{text.ownerOnlyText}</div>
                         </div>
 
-                        <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                          <div className="text-sm font-semibold text-slate-950">{text.hosted}</div>
-                          <div className="mt-1 text-xs text-slate-500">{text.hostedText}</div>
+                        <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4">
+                          <div className="text-sm font-semibold text-[var(--vz-text)]">{text.hosted}</div>
+                          <div className="mt-1 text-xs text-[var(--vz-muted)]">{text.hostedText}</div>
                         </div>
 
-                        <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                          <div className="text-sm font-semibold text-slate-950">{text.annual}</div>
-                          <div className="mt-1 text-xs text-slate-500">{text.annualText}</div>
+                        <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4">
+                          <div className="text-sm font-semibold text-[var(--vz-text)]">{text.annual}</div>
+                          <div className="mt-1 text-xs text-[var(--vz-muted)]">{text.annualText}</div>
                         </div>
                       </div>
                     </div>
@@ -686,13 +686,13 @@ export default function BusinessSettingsPage() {
           )}
 
           {settingsQ.error && (
-              <div className="rounded-2xl border border-rose-200 bg-rose-50/70 p-4 text-sm text-rose-600">
+              <div className="rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] p-4 text-sm text-[var(--vz-danger)]">
                 {getErrorMessage(settingsQ.error, text.settingsLoadFailed)}
               </div>
           )}
 
           {scheduleQ.error && (
-              <div className="rounded-2xl border border-rose-200 bg-rose-50/70 p-4 text-sm text-rose-600">
+              <div className="rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] p-4 text-sm text-[var(--vz-danger)]">
                 {getErrorMessage(scheduleQ.error, text.scheduleLoadFailed)}
               </div>
           )}
@@ -701,13 +701,13 @@ export default function BusinessSettingsPage() {
               <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
                 {[1, 2].map((i) => (
                     <SectionCard key={i} className="p-6">
-                      <div className="flex items-center gap-2 text-slate-500">
+                      <div className="flex items-center gap-2 text-[var(--vz-muted)]">
                         <Spinner />
                         {text.loading}
                       </div>
                       <div className="mt-4 space-y-3">
                         {Array.from({ length: 5 }).map((_, j) => (
-                            <div key={j} className="h-12 animate-pulse rounded-2xl bg-slate-100" />
+                            <div key={j} className="h-12 animate-pulse rounded-2xl bg-[var(--vz-surface-2)]" />
                         ))}
                       </div>
                     </SectionCard>
@@ -719,30 +719,30 @@ export default function BusinessSettingsPage() {
                   <SectionCard className="p-6">
                     <div className="mb-6 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-2">
-                        <MapPin size={18} className="text-violet-600" />
-                        <div className="text-lg font-semibold text-slate-950">{text.general}</div>
+                        <MapPin size={18} className="text-[var(--vz-accent-text)]" />
+                        <div className="text-lg font-semibold text-[var(--vz-text)]">{text.general}</div>
                       </div>
 
-                      <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500">
+                      <div className="rounded-full bg-[var(--vz-surface-2)] px-3 py-1 text-xs font-medium text-[var(--vz-muted)]">
                         {canEdit ? text.editable : text.readOnly}
                       </div>
                     </div>
 
                     <div className="space-y-4">
-                      <InputShell label={text.phone} icon={<Phone size={14} className="text-violet-600" />}>
+                      <InputShell label={text.phone} icon={<Phone size={14} className="text-[var(--vz-accent-text)]" />}>
                         <input
                             disabled={!canEdit}
-                            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100 disabled:bg-slate-50"
+                            className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
                             value={form.phone ?? ""}
                             onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))}
                             placeholder={text.phonePlaceholder}
                         />
                       </InputShell>
 
-                      <InputShell label={text.bookingStep} icon={<Clock size={14} className="text-violet-600" />} hint={text.bookingStepHint}>
+                      <InputShell label={text.bookingStep} icon={<Clock size={14} className="text-[var(--vz-accent-text)]" />} hint={text.bookingStepHint}>
                         <select
                             disabled={!canEdit}
-                            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100 disabled:bg-slate-50"
+                            className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
                             value={Number(form.slot_step_minutes ?? 15)}
                             onChange={(e) => setForm((p) => ({ ...p, slot_step_minutes: Number(e.target.value) }))}
                         >
@@ -754,23 +754,23 @@ export default function BusinessSettingsPage() {
                         </select>
                       </InputShell>
 
-                      <InputShell label={text.primaryAddress} icon={<MapPin size={14} className="text-violet-600" />}>
+                      <InputShell label={text.primaryAddress} icon={<MapPin size={14} className="text-[var(--vz-accent-text)]" />}>
                         <input
                             disabled={!canEdit}
-                            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100 disabled:bg-slate-50"
+                            className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
                             value={form.address ?? ""}
                             onChange={(e) => setForm((p) => ({ ...p, address: e.target.value }))}
                             placeholder={text.addressPlaceholder}
                         />
                       </InputShell>
 
-                      <div className="rounded-[24px] border border-slate-200 bg-slate-50/70 p-4">
+                      <div className="rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                           <div>
-                            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-                              <Building2 className="h-4 w-4 text-violet-600" /> {text.branches}
+                            <div className="flex items-center gap-2 text-sm font-semibold text-[var(--vz-text)]">
+                              <Building2 className="h-4 w-4 text-[var(--vz-accent-text)]" /> {text.branches}
                             </div>
-                            <div className="mt-1 text-xs leading-5 text-slate-500">
+                            <div className="mt-1 text-xs leading-5 text-[var(--vz-muted)]">
                               {text.branchesText.replace("{limit}", String(locationLimit))}
                             </div>
                           </div>
@@ -778,12 +778,12 @@ export default function BusinessSettingsPage() {
                             <button
                               type="button"
                               onClick={startLocationCreate}
-                              className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm"
+                              className="inline-flex items-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-2.5 text-sm font-medium text-[var(--vz-text-secondary)] shadow-sm"
                             >
                               <Plus className="h-4 w-4" /> {text.addAddress}
                             </button>
                           ) : (
-                            <div className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-500">
+                            <div className="rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-1 text-xs font-medium text-[var(--vz-muted)]">
                               {locations.length}/{locationLimit} {text.address.toLowerCase()}
                             </div>
                           )}
@@ -791,29 +791,29 @@ export default function BusinessSettingsPage() {
 
                         <div className="mt-4 space-y-3">
                           {locations.map((location) => (
-                            <div key={location.id} className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm">
+                            <div key={location.id} className="rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4 shadow-sm">
                               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                                 <div className="space-y-1">
                                   <div className="flex flex-wrap items-center gap-2">
-                                    <div className="text-sm font-semibold text-slate-900">{location.name || `${text.address} ${location.sort_order}`}</div>
-                                    {location.is_primary ? <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">{text.primary}</span> : null}
+                                    <div className="text-sm font-semibold text-[var(--vz-text)]">{location.name || `${text.address} ${location.sort_order}`}</div>
+                                    {location.is_primary ? <span className="rounded-full border border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-success)]">{text.primary}</span> : null}
                                   </div>
-                                  <div className="text-sm leading-6 text-slate-600">{location.address}</div>
-                                  {location.phone ? <div className="text-xs text-slate-500">{location.phone}</div> : null}
+                                  <div className="text-sm leading-6 text-[var(--vz-text-secondary)]">{location.address}</div>
+                                  {location.phone ? <div className="text-xs text-[var(--vz-muted)]">{location.phone}</div> : null}
                                   {location.latitude != null && location.longitude != null ? (
-                                    <div className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-violet-100 bg-violet-50 px-2.5 py-1 text-[11px] font-medium text-violet-700">
+                                    <div className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-2.5 py-1 text-[11px] font-medium text-[var(--vz-accent-text)]">
                                       <MapPin className="h-3 w-3" /> {text.mapSet}
                                     </div>
                                   ) : (
-                                    <div className="mt-2 text-[11px] font-medium text-amber-700">{text.mapMissing}</div>
+                                    <div className="mt-2 text-[11px] font-medium text-[var(--vz-warning)]">{text.mapMissing}</div>
                                   )}
                                 </div>
                                 {canEdit ? (
                                   <div className="flex items-center gap-2">
-                                    <button type="button" onClick={() => startLocationEdit(location)} className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600">
+                                    <button type="button" onClick={() => startLocationEdit(location)} className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text-secondary)]">
                                       <Pencil className="h-4 w-4" />
                                     </button>
-                                    <button type="button" disabled={locations.length <= 1 || deleteLocationMut.isPending} onClick={() => deleteLocationMut.mutate(location.id)} className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-rose-200 bg-white text-rose-500 disabled:opacity-50">
+                                    <button type="button" disabled={locations.length <= 1 || deleteLocationMut.isPending} onClick={() => deleteLocationMut.mutate(location.id)} className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-surface)] text-[var(--vz-danger)] disabled:opacity-50">
                                       <Trash2 className="h-4 w-4" />
                                     </button>
                                   </div>
@@ -824,14 +824,14 @@ export default function BusinessSettingsPage() {
                         </div>
 
                         {mapLocation && mapCoordinates ? (
-                          <div id="business-location-map" className="mt-4 scroll-mt-24 overflow-hidden rounded-[22px] border border-violet-200 bg-white shadow-sm">
-                            <div className="border-b border-slate-200 bg-gradient-to-r from-violet-50 to-cyan-50 px-4 py-4">
+                          <div id="business-location-map" className="mt-4 scroll-mt-24 overflow-hidden rounded-[22px] border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] shadow-sm">
+                            <div className="border-b border-[var(--vz-line)] bg-[var(--vz-primary)] px-4 py-4">
                               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                 <div>
-                                  <div className="flex items-center gap-2 text-base font-semibold text-slate-950">
-                                    <MapPin className="h-5 w-5 text-violet-600" /> {text.mapTitle}
+                                  <div className="flex items-center gap-2 text-base font-semibold text-[var(--vz-text)]">
+                                    <MapPin className="h-5 w-5 text-[var(--vz-accent-text)]" /> {text.mapTitle}
                                   </div>
-                                  <div className="mt-1 text-xs leading-5 text-slate-600">
+                                  <div className="mt-1 text-xs leading-5 text-[var(--vz-text-secondary)]">
                                     {text.mapText}
                                   </div>
                                 </div>
@@ -839,7 +839,7 @@ export default function BusinessSettingsPage() {
                                   <select
                                     value={mapLocation.id}
                                     onChange={(event) => setSelectedMapLocationId(Number(event.target.value))}
-                                    className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none"
+                                    className="rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2.5 text-sm text-[var(--vz-text-secondary)] outline-none"
                                   >
                                     {locations.map((location) => (
                                       <option key={location.id} value={location.id}>
@@ -865,8 +865,8 @@ export default function BusinessSettingsPage() {
                                 }))}
                               />
                               <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                                <div className="text-xs leading-5 text-slate-500">
-                                  {text.selectedAddress}՝ <span className="font-medium text-slate-700">{mapLocation.address || text.noAddress}</span>
+                                <div className="text-xs leading-5 text-[var(--vz-muted)]">
+                                  {text.selectedAddress}՝ <span className="font-medium text-[var(--vz-text-secondary)]">{mapLocation.address || text.noAddress}</span>
                                 </div>
                                 <Button
                                   type="button"
@@ -882,21 +882,21 @@ export default function BusinessSettingsPage() {
                         ) : null}
 
                         {isLocationEditorOpen ? (
-                          <div className="mt-4 rounded-[22px] border border-violet-200 bg-white p-4 shadow-sm">
-                            <div className="text-sm font-semibold text-slate-900">{editingLocationId ? text.editAddress : text.newAddress}</div>
+                          <div className="mt-4 rounded-[22px] border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] p-4 shadow-sm">
+                            <div className="text-sm font-semibold text-[var(--vz-text)]">{editingLocationId ? text.editAddress : text.newAddress}</div>
                             <div className="mt-4 grid gap-3 sm:grid-cols-2">
                               <input
                                 value={locationDraft.name}
                                 onChange={(e) => setLocationDraft((prev) => ({ ...prev, name: e.target.value }))}
                                 disabled={!canEdit}
-                                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100 disabled:bg-slate-50"
+                                className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
                                 placeholder={text.locationNamePlaceholder}
                               />
                               <input
                                 value={locationDraft.phone}
                                 onChange={(e) => setLocationDraft((prev) => ({ ...prev, phone: e.target.value }))}
                                 disabled={!canEdit}
-                                className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100 disabled:bg-slate-50"
+                                className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
                                 placeholder={text.phone}
                               />
                             </div>
@@ -904,10 +904,10 @@ export default function BusinessSettingsPage() {
                               value={locationDraft.address}
                               onChange={(e) => setLocationDraft((prev) => ({ ...prev, address: e.target.value }))}
                               disabled={!canEdit}
-                              className="mt-3 min-h-[96px] w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100 disabled:bg-slate-50"
+                              className="mt-3 min-h-[96px] w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
                               placeholder={text.fullAddress}
                             />
-                            <label className="mt-3 inline-flex items-center gap-2 text-sm text-slate-600">
+                            <label className="mt-3 inline-flex items-center gap-2 text-sm text-[var(--vz-text-secondary)]">
                               <input type="checkbox" checked={locationDraft.is_primary} onChange={(e) => setLocationDraft((prev) => ({ ...prev, is_primary: e.target.checked }))} />
                               {text.makePrimary}
                             </label>
@@ -922,7 +922,7 @@ export default function BusinessSettingsPage() {
                           <button
                             type="button"
                             onClick={startLocationCreate}
-                            className="mt-4 flex w-full items-center justify-center gap-2 rounded-[22px] border border-dashed border-slate-300 bg-white px-4 py-4 text-sm font-medium text-slate-600 transition hover:border-violet-300 hover:text-violet-700"
+                            className="mt-4 flex w-full items-center justify-center gap-2 rounded-[22px] border border-dashed border-[var(--vz-line-strong)] bg-[var(--vz-surface)] px-4 py-4 text-sm font-medium text-[var(--vz-text-secondary)] transition hover:border-[var(--vz-primary)] hover:text-[var(--vz-accent-text)]"
                           >
                             <Plus className="h-4 w-4" /> {text.addAnother}
                           </button>
@@ -931,12 +931,12 @@ export default function BusinessSettingsPage() {
 
                       <InputShell
                           label={text.timezone}
-                          icon={<Globe size={14} className="text-violet-600" />}
+                          icon={<Globe size={14} className="text-[var(--vz-accent-text)]" />}
                           hint={text.timezoneHint}
                       >
                         <select
                             disabled={!canEdit}
-                            className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100 disabled:bg-slate-50"
+                            className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
                             value={form.timezone ?? "Asia/Yerevan"}
                             onChange={(e) => setForm((p) => ({ ...p, timezone: e.target.value }))}
                         >
@@ -948,21 +948,21 @@ export default function BusinessSettingsPage() {
                       </InputShell>
 
                       <div className="grid grid-cols-2 gap-4">
-                        <InputShell label={text.workStart} icon={<Clock size={14} className="text-violet-600" />}>
+                        <InputShell label={text.workStart} icon={<Clock size={14} className="text-[var(--vz-accent-text)]" />}>
                           <input
                               type="time"
                               disabled={!canEdit}
-                              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100 disabled:bg-slate-50"
+                              className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
                               value={form.work_start ?? "09:00"}
                               onChange={(e) => setForm((p) => ({ ...p, work_start: e.target.value }))}
                           />
                         </InputShell>
 
-                        <InputShell label={text.workEnd} icon={<Clock size={14} className="text-violet-600" />}>
+                        <InputShell label={text.workEnd} icon={<Clock size={14} className="text-[var(--vz-accent-text)]" />}>
                           <input
                               type="time"
                               disabled={!canEdit}
-                              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100 disabled:bg-slate-50"
+                              className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
                               value={form.work_end ?? "18:00"}
                               onChange={(e) => setForm((p) => ({ ...p, work_end: e.target.value }))}
                           />
@@ -971,14 +971,14 @@ export default function BusinessSettingsPage() {
                     </div>
 
                     {bookingLink && (
-                        <div className="mt-6 rounded-[24px] border border-slate-200 bg-slate-50 p-4">
+                        <div className="mt-6 rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
                           <div className="flex items-center justify-between gap-3">
                             <div>
-                              <div className="text-xs font-medium text-slate-500">{text.publicBookingLink}</div>
-                              <div className="mt-1 break-all text-sm text-slate-900">{bookingLink}</div>
+                              <div className="text-xs font-medium text-[var(--vz-muted)]">{text.publicBookingLink}</div>
+                              <div className="mt-1 break-all text-sm text-[var(--vz-text)]">{bookingLink}</div>
                             </div>
-                            <button type="button" onClick={copyBookingLink} className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700">
-                              {copiedLink ? <CheckCircle2 size={14} className="text-emerald-600" /> : <Copy size={14} />}
+                            <button type="button" onClick={copyBookingLink} className="inline-flex items-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-xs font-semibold text-[var(--vz-text-secondary)]">
+                              {copiedLink ? <CheckCircle2 size={14} className="text-[var(--vz-success)]" /> : <Copy size={14} />}
                               {copiedLink ? text.copied : text.copy}
                             </button>
                           </div>
@@ -991,11 +991,11 @@ export default function BusinessSettingsPage() {
                   <SectionCard className="p-6">
                     <div className="mb-6 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-2">
-                        <CalendarDays size={18} className="text-violet-600" />
-                        <div className="text-lg font-semibold text-slate-950">{text.weeklySchedule}</div>
+                        <CalendarDays size={18} className="text-[var(--vz-accent-text)]" />
+                        <div className="text-lg font-semibold text-[var(--vz-text)]">{text.weeklySchedule}</div>
                       </div>
 
-                      <div className="text-xs text-slate-500">{text.breakOptional}</div>
+                      <div className="text-xs text-[var(--vz-muted)]">{text.breakOptional}</div>
                     </div>
 
                     <div className="max-h-[640px] space-y-3 overflow-y-auto pr-2">
@@ -1012,14 +1012,14 @@ export default function BusinessSettingsPage() {
                                 className={cn(
                                     "rounded-2xl border p-4 transition-all",
                                     d.is_closed
-                                        ? "border-slate-200 bg-slate-50"
-                                        : "border-slate-200 bg-white hover:border-violet-300"
+                                        ? "border-[var(--vz-line)] bg-[var(--vz-surface-2)]"
+                                        : "border-[var(--vz-line)] bg-[var(--vz-surface)] hover:border-[var(--vz-primary)]"
                                 )}
                             >
                               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                <div className="font-medium text-slate-900">{w.label}</div>
+                                <div className="font-medium text-[var(--vz-text)]">{w.label}</div>
 
-                                <label className="inline-flex items-center gap-2 text-sm text-slate-600">
+                                <label className="inline-flex items-center gap-2 text-sm text-[var(--vz-text-secondary)]">
                                   <input
                                       disabled={!canEdit}
                                       type="checkbox"
@@ -1031,7 +1031,7 @@ export default function BusinessSettingsPage() {
                                               )
                                           )
                                       }
-                                      className="h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-200"
+                                      className="h-4 w-4 rounded border-[var(--vz-line-strong)] text-[var(--vz-accent-text)] focus:ring-[var(--vz-focus)]"
                                   />
                                   {text.open}
                                 </label>
@@ -1040,11 +1040,11 @@ export default function BusinessSettingsPage() {
                               {!d.is_closed && (
                                   <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
                                     <div>
-                                      <label className="mb-1 block text-xs text-slate-500">{text.start}</label>
+                                      <label className="mb-1 block text-xs text-[var(--vz-muted)]">{text.start}</label>
                                       <input
                                           disabled={!canEdit}
                                           type="time"
-                                          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100 disabled:bg-slate-50"
+                                          className="w-full rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
                                           value={d.start ?? "09:00"}
                                           onChange={(e) =>
                                               setDays((prev) =>
@@ -1055,11 +1055,11 @@ export default function BusinessSettingsPage() {
                                     </div>
 
                                     <div>
-                                      <label className="mb-1 block text-xs text-slate-500">{text.end}</label>
+                                      <label className="mb-1 block text-xs text-[var(--vz-muted)]">{text.end}</label>
                                       <input
                                           disabled={!canEdit}
                                           type="time"
-                                          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100 disabled:bg-slate-50"
+                                          className="w-full rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
                                           value={d.end ?? "18:00"}
                                           onChange={(e) =>
                                               setDays((prev) =>
@@ -1069,14 +1069,14 @@ export default function BusinessSettingsPage() {
                                       />
                                     </div>
 
-                                    <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                                      <div className="mb-2 text-xs text-slate-500">{text.break}</div>
+                                    <div className="rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-3">
+                                      <div className="mb-2 text-xs text-[var(--vz-muted)]">{text.break}</div>
 
                                       <div className="grid grid-cols-2 gap-2">
                                         <input
                                             disabled={!canEdit}
                                             type="time"
-                                            className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-sm outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100 disabled:bg-slate-50"
+                                            className="w-full rounded-lg border border-[var(--vz-line)] bg-[var(--vz-surface)] px-2 py-1.5 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
                                             value={d.break_start ?? ""}
                                             onChange={(e) =>
                                                 setDays((prev) =>
@@ -1089,7 +1089,7 @@ export default function BusinessSettingsPage() {
                                         <input
                                             disabled={!canEdit}
                                             type="time"
-                                            className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-sm outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100 disabled:bg-slate-50"
+                                            className="w-full rounded-lg border border-[var(--vz-line)] bg-[var(--vz-surface)] px-2 py-1.5 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
                                             value={d.break_end ?? ""}
                                             onChange={(e) =>
                                                 setDays((prev) =>
@@ -1103,7 +1103,7 @@ export default function BusinessSettingsPage() {
 
                                       <button
                                           disabled={!canEdit}
-                                          className="mt-2 text-xs text-slate-500 transition hover:text-violet-700 disabled:opacity-50"
+                                          className="mt-2 text-xs text-[var(--vz-muted)] transition hover:text-[var(--vz-accent-text)] disabled:opacity-50"
                                           onClick={() =>
                                               setDays((prev) =>
                                                   prev.map((x) =>

@@ -59,14 +59,14 @@ export function EditBookingModal({ open, booking, onClose, onSaved }: EditBookin
     return (
         <Modal open={open} onClose={onClose} title="Թարմացնել ամրագրման ժամը">
             {!booking ? (
-                <div className="text-gray-600">Booking չկա</div>
+                <div className="text-[var(--vz-text-secondary)]">Booking չկա</div>
             ) : (
                 <div className="space-y-3">
-                    <div className="rounded-2xl border bg-gray-50 p-3">
+                    <div className="rounded-2xl border bg-[var(--vz-surface-2)] p-3">
                         <div className="font-semibold">{booking.client_name}</div>
-                        <div className="text-sm text-gray-600">{booking.starts_at.slice(0, 10)}</div>
+                        <div className="text-sm text-[var(--vz-text-secondary)]">{booking.starts_at.slice(0, 10)}</div>
                         {booking.service_name && (
-                            <div className="text-xs text-gray-500 mt-1">{booking.service_name}</div>
+                            <div className="text-xs text-[var(--vz-muted)] mt-1">{booking.service_name}</div>
                         )}
                     </div>
 
@@ -92,12 +92,12 @@ export function EditBookingModal({ open, booking, onClose, onSaved }: EditBookin
                         </label>
                     </div>
 
-                    {error && <div className="text-sm text-red-600">{error}</div>}
+                    {error && <div className="text-sm text-[var(--vz-danger)]">{error}</div>}
 
                     <div className="flex justify-end gap-2 pt-1">
                         <button
                             type="button"
-                            className="px-4 py-2 rounded-2xl border bg-white hover:bg-gray-50"
+                            className="px-4 py-2 rounded-2xl border bg-[var(--vz-surface)] hover:bg-[var(--vz-surface-2)]"
                             onClick={onClose}
                         >
                             Փակել
@@ -105,7 +105,7 @@ export function EditBookingModal({ open, booking, onClose, onSaved }: EditBookin
                         <button
                             type="button"
                             disabled={updateMutation.isPending}
-                            className="px-4 py-2 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
+                            className="px-4 py-2 rounded-2xl bg-[var(--vz-primary)] text-[var(--vz-on-primary)] hover:bg-[var(--vz-primary-hover)] disabled:opacity-60"
                             onClick={handleSave}
                         >
                             {updateMutation.isPending ? "Պահպանում..." : "Պահպանել"}

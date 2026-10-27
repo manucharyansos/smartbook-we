@@ -42,9 +42,9 @@ const providerMeta: Record<
 > = {
   google: {
     label: "Google",
-    bg: "bg-white",
-    border: "border-slate-200",
-    text: "text-slate-800",
+    bg: "bg-[var(--vz-surface)]",
+    border: "border-[var(--vz-line)]",
+    text: "text-[var(--vz-text)]",
   },
   facebook: {
     label: "Facebook",
@@ -232,8 +232,8 @@ export default function SocialAuthButtons({
   return (
     <motion.div variants={fadeUp} className={cn("space-y-4", className)}>
       <div className="relative">
-        <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-slate-200" />
-        <div className="vizit-social-separator relative mx-auto w-fit rounded-full bg-white px-3 text-xs font-medium text-slate-600">
+        <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-[var(--vz-surface-pressed)]" />
+        <div className="vizit-social-separator relative mx-auto w-fit rounded-full bg-[var(--vz-surface)] px-3 text-xs font-medium text-[var(--vz-text-secondary)]">
           {text.or}
         </div>
       </div>
@@ -255,7 +255,7 @@ export default function SocialAuthButtons({
                 item.bg,
                 item.border,
                 item.text,
-                provider === "google" && "hover:border-violet-200 hover:bg-violet-50/40",
+                provider === "google" && "hover:border-[var(--vz-line-strong)] hover:bg-[var(--vz-accent-soft)]",
                 provider === "facebook" && "hover:opacity-95",
                 disabled && "cursor-not-allowed opacity-50",
               )}
@@ -264,7 +264,7 @@ export default function SocialAuthButtons({
                 className={cn(
                   "grid h-7 w-7 place-items-center rounded-full",
                   provider === "google"
-                    ? "bg-white"
+                    ? "bg-[var(--vz-surface)]"
                     : "bg-white/20 text-white",
                 )}
               >
@@ -280,12 +280,12 @@ export default function SocialAuthButtons({
       </div>
 
       {needsBusinessProfile && !hasBusinessProfile ? (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-6 text-amber-800">
+        <div className="rounded-2xl border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-4 py-3 text-xs leading-6 text-[var(--vz-warning)]">
           {text.profileRequired}
         </div>
       ) : null}
       {mode === "register" && !legalAccepted ? (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-6 text-amber-800">
+        <div className="rounded-2xl border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-4 py-3 text-xs leading-6 text-[var(--vz-warning)]">
           {text.legalRequired}
         </div>
       ) : null}

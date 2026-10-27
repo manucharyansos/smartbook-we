@@ -47,14 +47,14 @@ function formatDateTime(value?: string | null) {
 
 function StatCard({ icon: Icon, label, value, sub }: { icon: LucideIcon; label: string; value: string | number; sub?: string }) {
   return (
-    <Card className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
+    <Card className="rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <div className="text-sm text-slate-500">{label}</div>
-          <div className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">{value}</div>
-          {sub ? <div className="mt-2 text-xs text-slate-500">{sub}</div> : null}
+          <div className="text-sm text-[var(--vz-muted)]">{label}</div>
+          <div className="mt-3 text-3xl font-semibold tracking-tight text-[var(--vz-text)]">{value}</div>
+          {sub ? <div className="mt-2 text-xs text-[var(--vz-muted)]">{sub}</div> : null}
         </div>
-        <div className="grid h-12 w-12 place-items-center rounded-2xl bg-violet-50 text-violet-700"><Icon className="h-5 w-5" /></div>
+        <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]"><Icon className="h-5 w-5" /></div>
       </div>
     </Card>
   );
@@ -87,29 +87,29 @@ export default function Analytics() {
 
   return (
     <motion.div {...page} className="admin-page space-y-4">
-      <div className="rounded-[22px] border border-slate-200 bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.10),transparent_35%),white] p-5 shadow-[0_12px_34px_rgba(15,23,42,0.055)] sm:p-6">
+      <div className="rounded-[22px] border border-[var(--vz-line)] bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.10),transparent_35%),white] p-5 shadow-[0_12px_34px_rgba(15,23,42,0.055)] sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--vz-accent-text)]">
               <BarChart3 className="h-4 w-4" /> Խորացված վերլուծություն
             </div>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950">Անալիտիկա</h1>
-            <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">Եկամուտ, աղբյուրներ, վերադարձող և կորցրած հաճախորդներ, VIP-ներ ու սև ցուցակ՝ մեկ էջում։</p>
+            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-[var(--vz-text)]">Անալիտիկա</h1>
+            <p className="mt-2 max-w-3xl text-sm leading-7 text-[var(--vz-text-secondary)]">Եկամուտ, աղբյուրներ, վերադարձող և կորցրած հաճախորդներ, VIP-ներ ու սև ցուցակ՝ մեկ էջում։</p>
           </div>
           <div className="grid gap-2 grid-cols-1 xs:grid-cols-3 sm:grid-cols-3">
-            <select value={days} onChange={(e) => setDays(Number(e.target.value))} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
+            <select value={days} onChange={(e) => setDays(Number(e.target.value))} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
               <option value={7}>7 օր</option>
               <option value={30}>30 օր</option>
               <option value={90}>90 օր</option>
             </select>
-            <select value={months} onChange={(e) => setMonths(Number(e.target.value))} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm">
+            <select value={months} onChange={(e) => setMonths(Number(e.target.value))} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
               <option value={6}>6 ամիս</option>
               <option value={12}>12 ամիս</option>
               <option value={24}>24 ամիս</option>
             </select>
             <div className="relative">
-              <Filter className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <select value={source} onChange={(e) => setSource(e.target.value)} className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm">
+              <Filter className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--vz-muted)]" />
+              <select value={source} onChange={(e) => setSource(e.target.value)} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] py-3 pl-11 pr-4 text-sm">
                 {sourceOptions.map((item) => <option key={item.value || "all"} value={item.value}>{item.label}</option>)}
               </select>
             </div>
@@ -140,9 +140,9 @@ export default function Analytics() {
       </div>
 
       <div className="grid gap-4 sm:gap-6 xl:grid-cols-[1.5fr_1fr]">
-        <Card className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="text-lg font-semibold text-slate-950">Եկամտի դինամիկա</div>
-          <div className="mt-2 text-sm text-slate-500">Եկամուտ + ամրագրումներ ըստ ամիսների</div>
+        <Card className="rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-sm">
+          <div className="text-lg font-semibold text-[var(--vz-text)]">Եկամտի դինամիկա</div>
+          <div className="mt-2 text-sm text-[var(--vz-muted)]">Եկամուտ + ամրագրումներ ըստ ամիսների</div>
           <div className="mt-6 h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={revenueData}>
@@ -158,9 +158,9 @@ export default function Analytics() {
           </div>
         </Card>
 
-        <Card className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="text-lg font-semibold text-slate-950">Ամրագրման աղբյուրներ</div>
-          <div className="mt-2 text-sm text-slate-500">Որտեղից են գալիս booking-ները</div>
+        <Card className="rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-sm">
+          <div className="text-lg font-semibold text-[var(--vz-text)]">Ամրագրման աղբյուրներ</div>
+          <div className="mt-2 text-sm text-[var(--vz-muted)]">Որտեղից են գալիս booking-ները</div>
           <div className="mt-6 h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -175,9 +175,9 @@ export default function Analytics() {
       </div>
 
       <div className="grid gap-4 sm:gap-6 xl:grid-cols-2">
-        <Card className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="text-lg font-semibold text-slate-950">Թոփ ծառայություններ</div>
-          <div className="mt-2 text-sm text-slate-500">{days} օրվա կտրվածքով</div>
+        <Card className="rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-sm">
+          <div className="text-lg font-semibold text-[var(--vz-text)]">Թոփ ծառայություններ</div>
+          <div className="mt-2 text-sm text-[var(--vz-muted)]">{days} օրվա կտրվածքով</div>
           <div className="mt-6 h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={servicesQ.data?.top ?? []} layout="vertical" margin={{ left: 24 }}>
@@ -191,18 +191,18 @@ export default function Analytics() {
           </div>
         </Card>
 
-        <Card className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="text-lg font-semibold text-slate-950">Մասնագետների արդյունքները</div>
-          <div className="mt-2 text-sm text-slate-500">Թիմի բեռնվածությունն ու եկամուտը ըստ աշխատակցի</div>
+        <Card className="rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-sm">
+          <div className="text-lg font-semibold text-[var(--vz-text)]">Մասնագետների արդյունքները</div>
+          <div className="mt-2 text-sm text-[var(--vz-muted)]">Թիմի բեռնվածությունն ու եկամուտը ըստ աշխատակցի</div>
           <div className="mt-6 space-y-3">
             {(staffQ.data?.rows ?? []).slice(0, 8).map((row) => (
-              <div key={row.staff_id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <div key={row.staff_id} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <div className="font-medium text-slate-900">{row.staff_name}</div>
-                    <div className="mt-1 text-xs text-slate-500">{row.bookings} ամրագրում</div>
+                    <div className="font-medium text-[var(--vz-text)]">{row.staff_name}</div>
+                    <div className="mt-1 text-xs text-[var(--vz-muted)]">{row.bookings} ամրագրում</div>
                   </div>
-                  <div className="text-sm font-semibold text-violet-700">{formatMoney(row.revenue, currency)}</div>
+                  <div className="text-sm font-semibold text-[var(--vz-accent-text)]">{formatMoney(row.revenue, currency)}</div>
                 </div>
               </div>
             ))}
@@ -211,33 +211,33 @@ export default function Analytics() {
       </div>
 
       <div className="grid gap-4 sm:gap-6 xl:grid-cols-2">
-        <Card className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center gap-2 text-lg font-semibold text-slate-950"><Layers3 className="h-5 w-5 text-violet-600" /> Հաճախորդների խմբեր</div>
-          <div className="mt-2 text-sm text-slate-500">VIP, խմբեր և կարգավիճակների վերլուծություն</div>
+        <Card className="rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-sm">
+          <div className="flex items-center gap-2 text-lg font-semibold text-[var(--vz-text)]"><Layers3 className="h-5 w-5 text-[var(--vz-accent-text)]" /> Հաճախորդների խմբեր</div>
+          <div className="mt-2 text-sm text-[var(--vz-muted)]">VIP, խմբեր և կարգավիճակների վերլուծություն</div>
           <div className="mt-5 space-y-3">
             {(clientsQ.data?.group_rows ?? []).length ? (clientsQ.data?.group_rows ?? []).map((row) => (
-              <div key={row.group_name} className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <div className="font-medium text-slate-900">{row.group_name}</div>
-                <div className="text-sm text-slate-600">{row.clients} հաճախորդ</div>
+              <div key={row.group_name} className="flex items-center justify-between rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3">
+                <div className="font-medium text-[var(--vz-text)]">{row.group_name}</div>
+                <div className="text-sm text-[var(--vz-text-secondary)]">{row.clients} հաճախորդ</div>
               </div>
-            )) : <div className="rounded-2xl border border-dashed border-slate-200 px-4 py-6 text-sm text-slate-500">Խմբավորված հաճախորդներ դեռ չկան։</div>}
+            )) : <div className="rounded-2xl border border-dashed border-[var(--vz-line)] px-4 py-6 text-sm text-[var(--vz-muted)]">Խմբավորված հաճախորդներ դեռ չկան։</div>}
 
             <div className="grid gap-3 pt-2 sm:grid-cols-2">
-              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
-                <div className="text-xs font-semibold uppercase tracking-wide text-amber-700">VIP</div>
-                <div className="mt-1 text-2xl font-semibold text-amber-900">{clientsQ.data?.vip_clients ?? 0}</div>
+              <div className="rounded-2xl border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-4 py-3">
+                <div className="text-xs font-semibold uppercase tracking-wide text-[var(--vz-warning)]">VIP</div>
+                <div className="mt-1 text-2xl font-semibold text-[var(--vz-warning)]">{clientsQ.data?.vip_clients ?? 0}</div>
               </div>
-              <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3">
-                <div className="text-xs font-semibold uppercase tracking-wide text-rose-700">Blacklist</div>
-                <div className="mt-1 text-2xl font-semibold text-rose-900">{clientsQ.data?.blacklisted_clients ?? 0}</div>
+              <div className="rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3">
+                <div className="text-xs font-semibold uppercase tracking-wide text-[var(--vz-danger)]">Blacklist</div>
+                <div className="mt-1 text-2xl font-semibold text-[var(--vz-danger)]">{clientsQ.data?.blacklisted_clients ?? 0}</div>
               </div>
             </div>
           </div>
         </Card>
 
-        <Card className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="text-lg font-semibold text-slate-950">Booking statuses</div>
-          <div className="mt-2 text-sm text-slate-500">Current selection-ի status distribution</div>
+        <Card className="rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-sm">
+          <div className="text-lg font-semibold text-[var(--vz-text)]">Booking statuses</div>
+          <div className="mt-2 text-sm text-[var(--vz-muted)]">Current selection-ի status distribution</div>
           <div className="mt-6 h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={statusRows}>
@@ -253,54 +253,54 @@ export default function Analytics() {
       </div>
 
       <div className="grid gap-4 sm:gap-6 xl:grid-cols-2">
-        <Card className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="text-lg font-semibold text-slate-950">Sources table</div>
-          <div className="mt-4 overflow-x-auto rounded-[24px] border border-slate-200">
-            <table className="min-w-full divide-y divide-slate-200 text-sm">
-              <thead className="bg-slate-50 text-left text-slate-500">
+        <Card className="rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-sm">
+          <div className="text-lg font-semibold text-[var(--vz-text)]">Sources table</div>
+          <div className="mt-4 overflow-x-auto rounded-[24px] border border-[var(--vz-line)]">
+            <table className="min-w-full divide-y divide-[var(--vz-line)] text-sm">
+              <thead className="bg-[var(--vz-surface-2)] text-left text-[var(--vz-muted)]">
                 <tr>
                   <th className="px-4 py-3 font-medium">Source</th>
                   <th className="px-4 py-3 font-medium">Ամրագրումներ</th>
                   <th className="px-4 py-3 font-medium">Եկամուտ</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 bg-white">
+              <tbody className="divide-y divide-[var(--vz-line)] bg-[var(--vz-surface)]">
                 {sourceRows.map((row) => (
                   <tr key={row.source}>
-                    <td className="px-4 py-3 font-medium text-slate-900">{row.source}</td>
-                    <td className="px-4 py-3 text-slate-600">{row.bookings}</td>
-                    <td className="px-4 py-3 text-slate-600">{formatMoney(row.revenue, currency)}</td>
+                    <td className="px-4 py-3 font-medium text-[var(--vz-text)]">{row.source}</td>
+                    <td className="px-4 py-3 text-[var(--vz-text-secondary)]">{row.bookings}</td>
+                    <td className="px-4 py-3 text-[var(--vz-text-secondary)]">{formatMoney(row.revenue, currency)}</td>
                   </tr>
                 ))}
-                {!sourceRows.length ? <tr><td colSpan={3} className="px-4 py-6 text-center text-slate-400">Դեռ տվյալներ չկան</td></tr> : null}
+                {!sourceRows.length ? <tr><td colSpan={3} className="px-4 py-6 text-center text-[var(--vz-muted)]">Դեռ տվյալներ չկան</td></tr> : null}
               </tbody>
             </table>
           </div>
         </Card>
 
-        <Card className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="text-lg font-semibold text-slate-950">Կորցրած հաճախորդներ</div>
-          <div className="mt-2 text-sm text-slate-500">Վերջին {clientsQ.data?.lost_threshold_days ?? 60} օրում ակտիվություն չունեցող հաճախորդներ</div>
+        <Card className="rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-sm">
+          <div className="text-lg font-semibold text-[var(--vz-text)]">Կորցրած հաճախորդներ</div>
+          <div className="mt-2 text-sm text-[var(--vz-muted)]">Վերջին {clientsQ.data?.lost_threshold_days ?? 60} օրում ակտիվություն չունեցող հաճախորդներ</div>
           <div className="mt-4 space-y-3">
             {(clientsQ.data?.lost_rows ?? []).length ? (clientsQ.data?.lost_rows ?? []).map((row) => (
-              <div key={row.client_id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <div key={row.client_id} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className="font-medium text-slate-900">{row.name}</div>
-                    <div className="mt-1 text-xs text-slate-500">Վերջին այց՝ {formatDateTime(row.last_booking_at)}</div>
+                    <div className="font-medium text-[var(--vz-text)]">{row.name}</div>
+                    <div className="mt-1 text-xs text-[var(--vz-muted)]">Վերջին այց՝ {formatDateTime(row.last_booking_at)}</div>
                   </div>
-                  <div className="text-right text-sm text-slate-600">
+                  <div className="text-right text-sm text-[var(--vz-text-secondary)]">
                     <div>{row.total_bookings} այց</div>
-                    <div className="mt-1 font-semibold text-violet-700">{formatMoney(row.total_spent, currency)}</div>
+                    <div className="mt-1 font-semibold text-[var(--vz-accent-text)]">{formatMoney(row.total_spent, currency)}</div>
                   </div>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
-                  {row.group_name ? <span className="rounded-full bg-sky-50 px-2.5 py-1 font-medium text-sky-700">{row.group_name}</span> : null}
-                  {row.is_vip ? <span className="rounded-full bg-amber-50 px-2.5 py-1 font-medium text-amber-700">VIP</span> : null}
-                  {row.is_blacklisted ? <span className="rounded-full bg-rose-50 px-2.5 py-1 font-medium text-rose-700">Blacklist</span> : null}
+                  {row.group_name ? <span className="rounded-full bg-[var(--vz-info-soft)] px-2.5 py-1 font-medium text-[var(--vz-info)]">{row.group_name}</span> : null}
+                  {row.is_vip ? <span className="rounded-full bg-[var(--vz-warning-soft)] px-2.5 py-1 font-medium text-[var(--vz-warning)]">VIP</span> : null}
+                  {row.is_blacklisted ? <span className="rounded-full bg-[var(--vz-danger-soft)] px-2.5 py-1 font-medium text-[var(--vz-danger)]">Blacklist</span> : null}
                 </div>
               </div>
-            )) : <div className="rounded-2xl border border-dashed border-slate-200 px-4 py-6 text-sm text-slate-500">Կորցրած հաճախորդներ այս պահին չկան։</div>}
+            )) : <div className="rounded-2xl border border-dashed border-[var(--vz-line)] px-4 py-6 text-sm text-[var(--vz-muted)]">Կորցրած հաճախորդներ այս պահին չկան։</div>}
           </div>
         </Card>
       </div>

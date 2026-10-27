@@ -116,7 +116,7 @@ export function TelegramConnectionCard({
   return (
     <section
       className={cn(
-        "rounded-[22px] border border-sky-200/80 bg-gradient-to-br from-sky-50 via-white to-white text-slate-900 shadow-[0_12px_30px_rgba(14,165,233,0.08)] dark:border-sky-400/15 dark:from-sky-950/35 dark:via-slate-900 dark:to-slate-900 dark:text-white",
+        "rounded-[22px] border border-[var(--vz-info-line)] bg-[var(--vz-primary)] via-white to-white text-[var(--vz-text)] shadow-[0_12px_30px_rgba(14,165,233,0.08)] dark:border-sky-400/15 dark:via-slate-900 dark:to-slate-900",
         isSettings ? "p-4 sm:flex sm:items-center sm:justify-between sm:gap-5" : "p-3.5",
         variant === "drawer" && "rounded-2xl shadow-none",
         className,
@@ -124,34 +124,34 @@ export function TelegramConnectionCard({
       aria-labelledby={`telegram-connection-title-${variant}`}
     >
       <div className={cn("flex min-w-0 items-start gap-3", isSettings && "sm:flex-1")}>
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-sky-500 text-white shadow-sm" aria-hidden="true">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-sm" aria-hidden="true">
           <Send className="h-[18px] w-[18px]" />
         </span>
         <div className="min-w-0">
-          <h3 id={`telegram-connection-title-${variant}`} className="text-sm font-bold text-slate-950 dark:text-white">
+          <h3 id={`telegram-connection-title-${variant}`} className="text-sm font-bold text-[var(--vz-text)]">
             {text.title}
           </h3>
-          <p className={cn("mt-1 text-xs leading-5 text-slate-600 dark:text-slate-300", !isSettings && "line-clamp-3")}>
+          <p className={cn("mt-1 text-xs leading-5 text-[var(--vz-text-secondary)]", !isSettings && "line-clamp-3")}>
             {connected ? text.connectedHint : text.description}
           </p>
           {!connected && !unavailable ? (
-            <p className="mt-1 text-[11px] font-semibold leading-4 text-sky-700 dark:text-sky-300">{text.startHint}</p>
+            <p className="mt-1 text-[11px] font-semibold leading-4 text-[var(--vz-info)] dark:text-sky-300">{text.startHint}</p>
           ) : null}
         </div>
       </div>
 
       <div className={cn("mt-3", isSettings && "sm:mt-0 sm:shrink-0")} aria-live="polite">
         {connectionQ.isError ? (
-          <p className="text-xs font-semibold leading-5 text-rose-700 dark:text-rose-300">{text.loadError}</p>
+          <p className="text-xs font-semibold leading-5 text-[var(--vz-danger)] dark:text-rose-300">{text.loadError}</p>
         ) : null}
         {unavailable ? (
-          <p className="text-xs font-semibold leading-5 text-amber-700 dark:text-amber-300">{text.unavailable}</p>
+          <p className="text-xs font-semibold leading-5 text-[var(--vz-warning)] dark:text-amber-300">{text.unavailable}</p>
         ) : null}
 
         {!connectionQ.isError && !unavailable ? (
           connected ? (
             <div className={cn("flex flex-wrap items-center gap-2", !isSettings && "justify-between")}>
-              <span className="inline-flex min-h-9 items-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 px-2.5 text-xs font-bold text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-300">
+              <span className="inline-flex min-h-9 items-center gap-1.5 rounded-xl border border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] px-2.5 text-xs font-bold text-[var(--vz-success)] dark:border-[var(--vz-success-line)] dark:bg-emerald-400/10 dark:text-emerald-300">
                 <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
                 {text.connected}
               </span>
@@ -159,7 +159,7 @@ export function TelegramConnectionCard({
                 type="button"
                 disabled={busy}
                 onClick={() => disconnectMut.mutate()}
-                className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-200 dark:hover:bg-white/[0.1]"
+                className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 text-xs font-bold text-[var(--vz-text-secondary)] transition hover:bg-[var(--vz-surface-2)] disabled:cursor-not-allowed disabled:opacity-60 dark:hover:bg-white/[0.1]"
               >
                 {disconnectMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Unplug className="h-4 w-4" aria-hidden="true" />}
                 {disconnectMut.isPending ? text.disconnecting : text.disconnect}
@@ -170,7 +170,7 @@ export function TelegramConnectionCard({
               type="button"
               disabled={busy || !connectionQ.data?.available}
               onClick={() => connectMut.mutate()}
-              className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-sky-500 px-3 text-xs font-black text-white shadow-sm transition hover:bg-sky-600 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+              className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-[var(--vz-primary)] px-3 text-xs font-black text-[var(--vz-on-primary)] shadow-sm transition hover:bg-[var(--vz-primary-hover)] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
             >
               {busy ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Send className="h-4 w-4" aria-hidden="true" />}
               {busy ? text.connecting : text.connect}
@@ -178,7 +178,7 @@ export function TelegramConnectionCard({
           )
         ) : null}
 
-        {actionError ? <p className="mt-2 text-xs font-semibold leading-5 text-rose-700 dark:text-rose-300">{actionError}</p> : null}
+        {actionError ? <p className="mt-2 text-xs font-semibold leading-5 text-[var(--vz-danger)] dark:text-rose-300">{actionError}</p> : null}
       </div>
     </section>
   );

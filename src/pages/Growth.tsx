@@ -45,11 +45,11 @@ const copy = {
 } as const;
 
 const statusStyles: Record<WaitlistStatus, string> = {
-  waiting: "border-amber-200 bg-amber-50 text-amber-700",
-  offered: "border-violet-200 bg-violet-50 text-violet-700",
-  booked: "border-emerald-200 bg-emerald-50 text-emerald-700",
-  cancelled: "border-slate-200 bg-slate-50 text-slate-600",
-  expired: "border-rose-200 bg-rose-50 text-rose-700",
+  waiting: "border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] text-[var(--vz-warning)]",
+  offered: "border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]",
+  booked: "border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] text-[var(--vz-success)]",
+  cancelled: "border-[var(--vz-line)] bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)]",
+  expired: "border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] text-[var(--vz-danger)]",
 };
 
 function errorMessage(error: unknown, fallback: string) {
@@ -158,45 +158,45 @@ export default function GrowthPage() {
     <motion.div {...page} className="admin-page space-y-5">
       <Toast open={toast.open} text={toast.text} type={toast.type} />
 
-      <Card className="overflow-hidden border border-violet-200 bg-[radial-gradient(circle_at_top_right,rgba(124,58,237,.16),transparent_35%),linear-gradient(135deg,#fff,#faf5ff)] p-6 sm:p-8">
+      <Card className="overflow-hidden border border-[var(--vz-line-strong)] bg-[var(--vz-surface-2)] p-6 sm:p-8">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/80 px-3 py-1.5 text-xs font-semibold text-violet-700"><Sparkles className="h-4 w-4" />{text.badge}</div>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">{text.title}</h1>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">{text.intro}</p>
+            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] px-3 py-1.5 text-xs font-semibold text-[var(--vz-accent-text)]"><Sparkles className="h-4 w-4" />{text.badge}</div>
+            <h1 className="mt-4 text-3xl font-semibold tracking-tight text-[var(--vz-text)] sm:text-4xl">{text.title}</h1>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--vz-text-secondary)] sm:text-base">{text.intro}</p>
           </div>
           <Button variant="secondary" onClick={() => { waitlistQ.refetch(); campaignsQ.refetch(); }}><RefreshCw className="h-4 w-4" />{text.refresh}</Button>
         </div>
       </Card>
 
-      <div className="flex w-full gap-2 rounded-2xl border border-slate-200 bg-white p-1.5 sm:w-fit">
-        <button onClick={() => setTab("waitlist")} className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold sm:flex-none ${tab === "waitlist" ? "bg-violet-600 text-white" : "text-slate-600 hover:bg-slate-50"}`}><CalendarClock className="mr-2 inline h-4 w-4" />{text.waitlist}</button>
-        <button onClick={() => setTab("campaigns")} className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold sm:flex-none ${tab === "campaigns" ? "bg-violet-600 text-white" : "text-slate-600 hover:bg-slate-50"}`}><Megaphone className="mr-2 inline h-4 w-4" />{text.campaigns}</button>
+      <div className="flex w-full gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-1.5 sm:w-fit">
+        <button onClick={() => setTab("waitlist")} className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold sm:flex-none ${tab === "waitlist" ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)]" : "text-[var(--vz-text-secondary)] hover:bg-[var(--vz-surface-2)]"}`}><CalendarClock className="mr-2 inline h-4 w-4" />{text.waitlist}</button>
+        <button onClick={() => setTab("campaigns")} className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold sm:flex-none ${tab === "campaigns" ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)]" : "text-[var(--vz-text-secondary)] hover:bg-[var(--vz-surface-2)]"}`}><Megaphone className="mr-2 inline h-4 w-4" />{text.campaigns}</button>
       </div>
 
       {tab === "waitlist" ? (
         <div className="space-y-4">
-          <Card className="border border-violet-100 bg-violet-50/70 p-4 text-sm leading-6 text-violet-800"><Sparkles className="mr-2 inline h-4 w-4" />{text.autoHint}</Card>
+          <Card className="border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] p-4 text-sm leading-6 text-[var(--vz-accent-text)]"><Sparkles className="mr-2 inline h-4 w-4" />{text.autoHint}</Card>
           <Card className="p-5">
             <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <h2 className="text-xl font-semibold text-slate-950">{text.waitlist}</h2>
-              <select value={status} onChange={(event) => setStatus(event.target.value as WaitlistStatus | "")} className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-violet-300">
+              <h2 className="text-xl font-semibold text-[var(--vz-text)]">{text.waitlist}</h2>
+              <select value={status} onChange={(event) => setStatus(event.target.value as WaitlistStatus | "")} className="rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2.5 text-sm outline-none focus:border-[var(--vz-primary)]">
                 <option value="">{text.all}</option><option value="waiting">{text.waiting}</option><option value="offered">{text.offered}</option><option value="booked">{text.booked}</option><option value="cancelled">{text.cancelled}</option><option value="expired">{text.expired}</option>
               </select>
             </div>
-            {!waitlistQ.isLoading && waitlist.length === 0 ? <div className="rounded-2xl border border-dashed border-slate-200 p-10 text-center text-sm text-slate-500">{text.noWaitlist}</div> : null}
+            {!waitlistQ.isLoading && waitlist.length === 0 ? <div className="rounded-2xl border border-dashed border-[var(--vz-line)] p-10 text-center text-sm text-[var(--vz-muted)]">{text.noWaitlist}</div> : null}
             <div className="grid gap-3 xl:grid-cols-2">
               {waitlist.map((entry) => (
-                <div key={entry.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div key={entry.id} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4 shadow-sm">
                   <div className="flex items-start justify-between gap-3">
-                    <div><div className="font-semibold text-slate-950">{entry.customer_name}</div><div className="mt-1 text-xs text-slate-500">{entry.customer_phone} · {entry.customer_email}</div></div>
+                    <div><div className="font-semibold text-[var(--vz-text)]">{entry.customer_name}</div><div className="mt-1 text-xs text-[var(--vz-muted)]">{entry.customer_phone} · {entry.customer_email}</div></div>
                     <span className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${statusStyles[entry.status]}`}>{statusLabel(entry.status)}</span>
                   </div>
-                  <div className="mt-4 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
-                    <div className="flex gap-2"><CalendarClock className="mt-0.5 h-4 w-4 text-violet-600" /><span><strong className="text-slate-800">{entry.service?.name}</strong><br />{text.requested}: {entry.desired_date} {entry.window_start?.slice(0, 5) || "—"}–{entry.window_end?.slice(0, 5) || "—"}</span></div>
-                    <div className="flex gap-2"><UserRound className="mt-0.5 h-4 w-4 text-violet-600" /><span>{entry.staff?.name || text.anyStaff}<br />{text.party}: {entry.party_size}</span></div>
+                  <div className="mt-4 grid gap-2 text-sm text-[var(--vz-text-secondary)] sm:grid-cols-2">
+                    <div className="flex gap-2"><CalendarClock className="mt-0.5 h-4 w-4 text-[var(--vz-accent-text)]" /><span><strong className="text-[var(--vz-text)]">{entry.service?.name}</strong><br />{text.requested}: {entry.desired_date} {entry.window_start?.slice(0, 5) || "—"}–{entry.window_end?.slice(0, 5) || "—"}</span></div>
+                    <div className="flex gap-2"><UserRound className="mt-0.5 h-4 w-4 text-[var(--vz-accent-text)]" /><span>{entry.staff?.name || text.anyStaff}<br />{text.party}: {entry.party_size}</span></div>
                   </div>
-                  {entry.offered_starts_at ? <div className="mt-3 rounded-xl bg-violet-50 px-3 py-2 text-xs font-medium text-violet-700"><Clock3 className="mr-1 inline h-3.5 w-3.5" />{entry.offered_starts_at} · {entry.offered_staff?.name}</div> : null}
+                  {entry.offered_starts_at ? <div className="mt-3 rounded-xl bg-[var(--vz-accent-soft)] px-3 py-2 text-xs font-medium text-[var(--vz-accent-text)]"><Clock3 className="mr-1 inline h-3.5 w-3.5" />{entry.offered_starts_at} · {entry.offered_staff?.name}</div> : null}
                   <div className="mt-4 flex flex-wrap gap-2">
                     {entry.status === "waiting" ? <Button size="sm" onClick={() => openOffer(entry)}><Send className="h-4 w-4" />{text.offer}</Button> : null}
                     {entry.status === "offered" || entry.status === "expired" ? <Button size="sm" variant="secondary" onClick={() => updateWaitlistMut.mutate({ id: entry.id, nextStatus: "waiting" })}>{text.returnToQueue}</Button> : null}
@@ -210,29 +210,29 @@ export default function GrowthPage() {
       ) : (
         <div className="grid gap-5 xl:grid-cols-[380px_1fr]">
           <Card className="h-fit p-5">
-            <div className="flex items-center justify-between gap-3"><h2 className="text-xl font-semibold text-slate-950">{editingCampaignId ? text.editCampaign : text.newCampaign}</h2>{editingCampaignId ? <button type="button" onClick={resetCampaignForm} className="rounded-xl p-2 text-slate-500 hover:bg-slate-100" aria-label={text.close}><X className="h-4 w-4" /></button> : null}</div>
-            <p className="mt-2 text-xs leading-5 text-slate-500">{text.consentHint}</p>
+            <div className="flex items-center justify-between gap-3"><h2 className="text-xl font-semibold text-[var(--vz-text)]">{editingCampaignId ? text.editCampaign : text.newCampaign}</h2>{editingCampaignId ? <button type="button" onClick={resetCampaignForm} className="rounded-xl p-2 text-[var(--vz-muted)] hover:bg-[var(--vz-surface-2)]" aria-label={text.close}><X className="h-4 w-4" /></button> : null}</div>
+            <p className="mt-2 text-xs leading-5 text-[var(--vz-muted)]">{text.consentHint}</p>
             <div className="mt-5 space-y-4">
-              <label className="block text-sm font-medium text-slate-700">{text.campaignName}<input value={form.name} onChange={(event) => setForm((previous) => ({ ...previous, name: event.target.value }))} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-violet-300" /></label>
-              <label className="block text-sm font-medium text-slate-700">{text.segment}<select value={form.segment} onChange={(event) => setForm((previous) => ({ ...previous, segment: event.target.value as CampaignSegment }))} className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 outline-none focus:border-violet-300"><option value="all">{text.allOpted}</option><option value="new">{text.newClients}</option><option value="returning">{text.returning}</option><option value="inactive">{text.inactive}</option><option value="vip">{text.vip}</option></select></label>
-              <label className="block text-sm font-medium text-slate-700">{text.subject}<input value={form.subject} onChange={(event) => setForm((previous) => ({ ...previous, subject: event.target.value }))} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-violet-300" /></label>
-              <label className="block text-sm font-medium text-slate-700">{text.message}<textarea rows={6} value={form.body} onChange={(event) => setForm((previous) => ({ ...previous, body: event.target.value }))} placeholder="{{name}}, {{business}}" className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm leading-6 outline-none focus:border-violet-300" /></label>
-              <label className="block text-sm font-medium text-slate-700">{text.schedule} <span className="font-normal text-slate-400">({text.optional})</span><input type="datetime-local" value={form.scheduled_for || ""} onChange={(event) => setForm((previous) => ({ ...previous, scheduled_for: event.target.value || null }))} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-violet-300" /></label>
+              <label className="block text-sm font-medium text-[var(--vz-text-secondary)]">{text.campaignName}<input value={form.name} onChange={(event) => setForm((previous) => ({ ...previous, name: event.target.value }))} className="mt-2 w-full rounded-xl border border-[var(--vz-line)] px-3 py-2.5 outline-none focus:border-[var(--vz-primary)]" /></label>
+              <label className="block text-sm font-medium text-[var(--vz-text-secondary)]">{text.segment}<select value={form.segment} onChange={(event) => setForm((previous) => ({ ...previous, segment: event.target.value as CampaignSegment }))} className="mt-2 w-full rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2.5 outline-none focus:border-[var(--vz-primary)]"><option value="all">{text.allOpted}</option><option value="new">{text.newClients}</option><option value="returning">{text.returning}</option><option value="inactive">{text.inactive}</option><option value="vip">{text.vip}</option></select></label>
+              <label className="block text-sm font-medium text-[var(--vz-text-secondary)]">{text.subject}<input value={form.subject} onChange={(event) => setForm((previous) => ({ ...previous, subject: event.target.value }))} className="mt-2 w-full rounded-xl border border-[var(--vz-line)] px-3 py-2.5 outline-none focus:border-[var(--vz-primary)]" /></label>
+              <label className="block text-sm font-medium text-[var(--vz-text-secondary)]">{text.message}<textarea rows={6} value={form.body} onChange={(event) => setForm((previous) => ({ ...previous, body: event.target.value }))} placeholder="{{name}}, {{business}}" className="mt-2 w-full rounded-xl border border-[var(--vz-line)] px-3 py-2.5 text-sm leading-6 outline-none focus:border-[var(--vz-primary)]" /></label>
+              <label className="block text-sm font-medium text-[var(--vz-text-secondary)]">{text.schedule} <span className="font-normal text-[var(--vz-muted)]">({text.optional})</span><input type="datetime-local" value={form.scheduled_for || ""} onChange={(event) => setForm((previous) => ({ ...previous, scheduled_for: event.target.value || null }))} className="mt-2 w-full rounded-xl border border-[var(--vz-line)] px-3 py-2.5 outline-none focus:border-[var(--vz-primary)]" /></label>
               <Button className="w-full" onClick={submitCampaign} loading={createMut.isPending || updateCampaignMut.isPending}><Check className="h-4 w-4" />{editingCampaignId ? text.saveDraft : form.scheduled_for ? text.createScheduled : text.saveDraft}</Button>
             </div>
           </Card>
           <Card className="p-5">
-            <h2 className="text-xl font-semibold text-slate-950">{text.campaigns}</h2>
-            {!campaignsQ.isLoading && campaigns.length === 0 ? <div className="mt-5 rounded-2xl border border-dashed border-slate-200 p-10 text-center text-sm text-slate-500">{text.noCampaigns}</div> : null}
+            <h2 className="text-xl font-semibold text-[var(--vz-text)]">{text.campaigns}</h2>
+            {!campaignsQ.isLoading && campaigns.length === 0 ? <div className="mt-5 rounded-2xl border border-dashed border-[var(--vz-line)] p-10 text-center text-sm text-[var(--vz-muted)]">{text.noCampaigns}</div> : null}
             <div className="mt-5 space-y-3">
               {campaigns.map((campaign) => (
-                <div key={campaign.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div key={campaign.id} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4 shadow-sm">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div><div className="font-semibold text-slate-950">{campaign.name}</div><div className="mt-1 text-sm text-slate-600">{campaign.subject}</div><div className="mt-2 flex flex-wrap gap-2 text-xs text-slate-500"><span className="rounded-full bg-slate-100 px-2.5 py-1">{campaign.segment}</span><span>{campaign.recipient_count} {text.recipients}</span><span>{campaign.sent_count} {text.delivered}</span>{campaign.failed_count ? <span className="text-rose-600">{campaign.failed_count} {text.failed}</span> : null}</div></div>
-                    <span className="w-fit rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-700">{campaignStatus(campaign)}</span>
+                    <div><div className="font-semibold text-[var(--vz-text)]">{campaign.name}</div><div className="mt-1 text-sm text-[var(--vz-text-secondary)]">{campaign.subject}</div><div className="mt-2 flex flex-wrap gap-2 text-xs text-[var(--vz-muted)]"><span className="rounded-full bg-[var(--vz-surface-2)] px-2.5 py-1">{campaign.segment}</span><span>{campaign.recipient_count} {text.recipients}</span><span>{campaign.sent_count} {text.delivered}</span>{campaign.failed_count ? <span className="text-[var(--vz-danger)]">{campaign.failed_count} {text.failed}</span> : null}</div></div>
+                    <span className="w-fit rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-2.5 py-1 text-xs font-semibold text-[var(--vz-accent-text)]">{campaignStatus(campaign)}</span>
                   </div>
-                  {campaign.scheduled_for ? <div className="mt-3 text-xs text-slate-500"><CalendarClock className="mr-1 inline h-3.5 w-3.5" />{new Date(campaign.scheduled_for).toLocaleString()}</div> : null}
-                  {campaign.last_error ? <div className="mt-3 rounded-xl bg-rose-50 px-3 py-2 text-xs text-rose-700">{campaign.last_error}</div> : null}
+                  {campaign.scheduled_for ? <div className="mt-3 text-xs text-[var(--vz-muted)]"><CalendarClock className="mr-1 inline h-3.5 w-3.5" />{new Date(campaign.scheduled_for).toLocaleString()}</div> : null}
+                  {campaign.last_error ? <div className="mt-3 rounded-xl bg-[var(--vz-danger-soft)] px-3 py-2 text-xs text-[var(--vz-danger)]">{campaign.last_error}</div> : null}
                   <div className="mt-4 flex flex-wrap gap-2">
                     {campaign.status === "draft" || campaign.status === "scheduled" || campaign.status === "failed" ? <><Button size="sm" onClick={() => sendMut.mutate(campaign.id)} loading={sendMut.isPending}><Mail className="h-4 w-4" />{text.sendNow}</Button><Button size="sm" variant="secondary" onClick={() => editCampaign(campaign)}><Pencil className="h-4 w-4" />{text.edit}</Button><Button size="sm" variant="danger" onClick={() => cancelMut.mutate(campaign.id)}>{text.stop}</Button></> : null}
                     {campaign.deliveries_count || campaign.status === "sent" || campaign.status === "failed" ? <Button size="sm" variant="secondary" onClick={() => setDeliveryCampaign(campaign)}><ListChecks className="h-4 w-4" />{text.deliveries}</Button> : null}
@@ -246,11 +246,11 @@ export default function GrowthPage() {
 
       {offerFor ? (
         <div className="fixed inset-0 z-[80] grid place-items-center bg-slate-950/45 p-4" onMouseDown={(event) => { if (event.target === event.currentTarget) setOfferFor(null); }}>
-          <Card className="w-full max-w-md border border-slate-200 bg-white p-5 shadow-2xl">
-            <div className="flex items-center justify-between"><div><h3 className="text-lg font-semibold text-slate-950">{text.offer}</h3><p className="mt-1 text-sm text-slate-500">{offerFor.customer_name} · {offerFor.service?.name}</p></div><button onClick={() => setOfferFor(null)} className="rounded-xl p-2 text-slate-500 hover:bg-slate-100"><X className="h-5 w-5" /></button></div>
+          <Card className="w-full max-w-md border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 shadow-2xl">
+            <div className="flex items-center justify-between"><div><h3 className="text-lg font-semibold text-[var(--vz-text)]">{text.offer}</h3><p className="mt-1 text-sm text-[var(--vz-muted)]">{offerFor.customer_name} · {offerFor.service?.name}</p></div><button onClick={() => setOfferFor(null)} className="rounded-xl p-2 text-[var(--vz-muted)] hover:bg-[var(--vz-surface-2)]"><X className="h-5 w-5" /></button></div>
             <div className="mt-5 space-y-4">
-              <label className="block text-sm font-medium text-slate-700">{text.chooseStaff}<select value={offerStaff} onChange={(event) => setOfferStaff(event.target.value)} className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 outline-none focus:border-violet-300"><option value="" disabled>{text.chooseStaff}</option>{bookableStaff.map((member) => <option key={member.id} value={member.id}>{member.name}</option>)}</select></label>
-              <label className="block text-sm font-medium text-slate-700">{text.chooseTime}<input type="datetime-local" value={offerTime} onChange={(event) => setOfferTime(event.target.value)} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-violet-300" /></label>
+              <label className="block text-sm font-medium text-[var(--vz-text-secondary)]">{text.chooseStaff}<select value={offerStaff} onChange={(event) => setOfferStaff(event.target.value)} className="mt-2 w-full rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2.5 outline-none focus:border-[var(--vz-primary)]"><option value="" disabled>{text.chooseStaff}</option>{bookableStaff.map((member) => <option key={member.id} value={member.id}>{member.name}</option>)}</select></label>
+              <label className="block text-sm font-medium text-[var(--vz-text-secondary)]">{text.chooseTime}<input type="datetime-local" value={offerTime} onChange={(event) => setOfferTime(event.target.value)} className="mt-2 w-full rounded-xl border border-[var(--vz-line)] px-3 py-2.5 outline-none focus:border-[var(--vz-primary)]" /></label>
               <Button className="w-full" disabled={!offerStaff || !offerTime} loading={offerMut.isPending} onClick={() => offerMut.mutate()}><Send className="h-4 w-4" />{text.sendOffer}</Button>
             </div>
           </Card>
@@ -259,11 +259,11 @@ export default function GrowthPage() {
 
       {deliveryCampaign ? (
         <div className="fixed inset-0 z-[80] grid place-items-center bg-slate-950/45 p-4" onMouseDown={(event) => { if (event.target === event.currentTarget) setDeliveryCampaign(null); }}>
-          <Card className="max-h-[82vh] w-full max-w-2xl overflow-y-auto border border-slate-200 bg-white p-5 shadow-2xl">
-            <div className="flex items-center justify-between gap-3"><div><h3 className="text-lg font-semibold text-slate-950">{text.deliveries}</h3><p className="mt-1 text-sm text-slate-500">{deliveryCampaign.name}</p></div><button type="button" onClick={() => setDeliveryCampaign(null)} className="rounded-xl p-2 text-slate-500 hover:bg-slate-100" aria-label={text.close}><X className="h-5 w-5" /></button></div>
+          <Card className="max-h-[82vh] w-full max-w-2xl overflow-y-auto border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 shadow-2xl">
+            <div className="flex items-center justify-between gap-3"><div><h3 className="text-lg font-semibold text-[var(--vz-text)]">{text.deliveries}</h3><p className="mt-1 text-sm text-[var(--vz-muted)]">{deliveryCampaign.name}</p></div><button type="button" onClick={() => setDeliveryCampaign(null)} className="rounded-xl p-2 text-[var(--vz-muted)] hover:bg-[var(--vz-surface-2)]" aria-label={text.close}><X className="h-5 w-5" /></button></div>
             <div className="mt-5 space-y-2">
-              {!deliveriesQ.isLoading && !(deliveriesQ.data ?? []).length ? <div className="rounded-2xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">{text.noDeliveries}</div> : null}
-              {(deliveriesQ.data ?? []).map((delivery) => <div key={delivery.id} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm"><div className="flex items-center justify-between gap-3"><span className="font-medium text-slate-900">{delivery.email}</span><span className={delivery.status === "sent" ? "text-emerald-700" : delivery.status === "failed" ? "text-rose-700" : "text-amber-700"}>{delivery.status}</span></div>{delivery.sent_at ? <div className="mt-1 text-xs text-slate-500">{new Date(delivery.sent_at).toLocaleString()}</div> : null}{delivery.error ? <div className="mt-1 text-xs text-rose-600">{delivery.error}</div> : null}</div>)}
+              {!deliveriesQ.isLoading && !(deliveriesQ.data ?? []).length ? <div className="rounded-2xl border border-dashed border-[var(--vz-line)] p-8 text-center text-sm text-[var(--vz-muted)]">{text.noDeliveries}</div> : null}
+              {(deliveriesQ.data ?? []).map((delivery) => <div key={delivery.id} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm"><div className="flex items-center justify-between gap-3"><span className="font-medium text-[var(--vz-text)]">{delivery.email}</span><span className={delivery.status === "sent" ? "text-[var(--vz-success)]" : delivery.status === "failed" ? "text-[var(--vz-danger)]" : "text-[var(--vz-warning)]"}>{delivery.status}</span></div>{delivery.sent_at ? <div className="mt-1 text-xs text-[var(--vz-muted)]">{new Date(delivery.sent_at).toLocaleString()}</div> : null}{delivery.error ? <div className="mt-1 text-xs text-[var(--vz-danger)]">{delivery.error}</div> : null}</div>)}
             </div>
           </Card>
         </div>

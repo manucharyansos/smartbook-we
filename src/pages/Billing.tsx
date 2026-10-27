@@ -431,12 +431,23 @@ function cycleLabel(cycle: BillingCycle, locale: Locale) {
   return cycle === "yearly" ? billingCopy[locale].yearly : billingCopy[locale].monthly;
 }
 
+const statusNames: Record<Locale, Record<string, string>> = {
+  hy: { active: "Ակտիվ", trialing: "Փորձաշրջան", past_due: "Վճարումն ուշացած է", suspended: "Կասեցված", cancelled: "Չեղարկված", canceled: "Չեղարկված", inactive: "Ակտիվ չէ", pending: "Սպասվում է", paid: "Վճարված", failed: "Չհաջողվեց", refunded: "Վերադարձված", expired: "Ժամկետանց" },
+  ru: { active: "Активна", trialing: "Пробный период", past_due: "Просрочена оплата", suspended: "Приостановлена", cancelled: "Отменена", canceled: "Отменена", inactive: "Не активна", pending: "Ожидает", paid: "Оплачено", failed: "Не удалось", refunded: "Возвращено", expired: "Истёк срок" },
+  en: { active: "Active", trialing: "Trial", past_due: "Past due", suspended: "Suspended", cancelled: "Cancelled", canceled: "Cancelled", inactive: "Inactive", pending: "Pending", paid: "Paid", failed: "Failed", refunded: "Refunded", expired: "Expired" },
+};
+
+function statusText(status: string | null | undefined, locale: Locale) {
+  const value = String(status ?? "inactive");
+  return statusNames[locale][value] ?? value;
+}
+
 function statusBadge(status?: string | null) {
   const value = String(status ?? "inactive");
-  if (value === "active") return "bg-emerald-50 text-emerald-700 border-emerald-200";
-  if (value === "trialing") return "bg-amber-50 text-amber-700 border-amber-200";
-  if (value === "suspended") return "bg-rose-50 text-rose-700 border-rose-200";
-  return "bg-slate-100 text-slate-700 border-slate-200";
+  if (value === "active") return "bg-[var(--vz-success-soft)] text-[var(--vz-success)] border-[var(--vz-success-line)]";
+  if (value === "trialing") return "bg-[var(--vz-warning-soft)] text-[var(--vz-warning)] border-[var(--vz-warning-line)]";
+  if (value === "suspended") return "bg-[var(--vz-danger-soft)] text-[var(--vz-danger)] border-[var(--vz-danger-line)]";
+  return "bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)] border-[var(--vz-line)]";
 }
 
 function requestErrorMessage(error: unknown, fallback: string) {
@@ -454,15 +465,15 @@ function PaymentBrandLogo({ brand }: { brand: PaymentBrand }) {
 
   if (!asset) {
     return (
-      <span aria-label="Բանկային փոխանցում" className="inline-flex h-8 min-w-[64px] items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-2 shadow-sm">
-        <Landmark className="h-4 w-4 text-slate-600" aria-hidden="true" />
-        <span className="text-[9px] font-black tracking-[0.08em] text-slate-700">BANK</span>
+      <span aria-label="Բանկային փոխանցում" className="inline-flex h-8 min-w-[64px] items-center justify-center gap-1.5 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-2 shadow-sm">
+        <Landmark className="h-4 w-4 text-[var(--vz-text-secondary)]" aria-hidden="true" />
+        <span className="text-[9px] font-black tracking-[0.08em] text-[var(--vz-text-secondary)]">BANK</span>
       </span>
     );
   }
 
   return (
-    <span className={cn("inline-flex h-8 min-w-[64px] items-center justify-center rounded-xl border border-slate-200 bg-white px-2 shadow-sm", asset.badgeClassName)}>
+    <span className={cn("inline-flex h-8 min-w-[64px] items-center justify-center rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-2 shadow-sm", asset.badgeClassName)}>
       <img src={asset.src} alt={asset.alt} loading="lazy" className={cn("block h-auto w-auto object-contain", asset.imageClassName)} />
     </span>
   );
@@ -470,7 +481,7 @@ function PaymentBrandLogo({ brand }: { brand: PaymentBrand }) {
 
 function SectionCard({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <Card className={cn("rounded-[24px] border border-slate-200/80 bg-white shadow-[0_18px_60px_rgba(7,22,36,0.08)]", className)}>
+    <Card className={cn("rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface)] shadow-[0_18px_60px_rgba(7,22,36,0.08)]", className)}>
       {children}
     </Card>
   );
@@ -630,8 +641,8 @@ export default function Billing() {
     return (
       <div className="grid min-h-[60vh] place-items-center px-4">
         <SectionCard className="max-w-lg p-8 text-center">
-          <h1 className="text-xl font-semibold text-slate-950">{copy.loadErrorTitle}</h1>
-          <p className="mt-3 text-sm leading-7 text-slate-600">{copy.loadErrorText}</p>
+          <h1 className="text-xl font-semibold text-[var(--vz-text)]">{copy.loadErrorTitle}</h1>
+          <p className="mt-3 text-sm leading-7 text-[var(--vz-text-secondary)]">{copy.loadErrorText}</p>
           <Button className="mt-5" onClick={() => void billingQ.refetch()}>{copy.retry}</Button>
         </SectionCard>
       </div>
@@ -641,7 +652,7 @@ export default function Billing() {
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="admin-page space-y-4">
       {!billingQ.data?.is_billable ? (
-        <div className={cn("rounded-3xl border px-5 py-4 text-sm leading-7", billingQ.data?.reason === "business_suspended" ? "border-rose-200 bg-rose-50 text-rose-800" : "border-amber-200 bg-amber-50 text-amber-800")} role="alert">
+        <div className={cn("rounded-3xl border px-5 py-4 text-sm leading-7", billingQ.data?.reason === "business_suspended" ? "border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] text-[var(--vz-danger)]" : "border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] text-[var(--vz-warning)]")} role="alert">
           {billingQ.data?.reason === "business_suspended"
             ? copy.businessSuspended
             : billingQ.data?.reason === "billing_suspended"
@@ -653,11 +664,11 @@ export default function Billing() {
       <SectionCard className="overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(55,138,221,0.14),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(132,193,242,0.10),transparent_35%),white] p-8">
         <div className="flex flex-col gap-5 sm:gap-8 xl:flex-row xl:items-center xl:justify-between">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#c4d4e1] bg-[var(--vz-accent-soft)] px-4 py-2 text-sm font-medium text-[var(--vz-brand-text)]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-accent-soft)] px-4 py-2 text-sm font-medium text-[var(--vz-brand-text)]">
               <Sparkles className="h-4 w-4" /> {copy.heroBadge}
             </div>
-            <h1 className="mt-6 text-4xl font-semibold leading-tight tracking-tight text-slate-950 md:text-5xl">{copy.title}</h1>
-            <p className="mt-4 max-w-2xl text-base leading-8 text-slate-600">
+            <h1 className="mt-6 text-4xl font-semibold leading-tight tracking-tight text-[var(--vz-text)] md:text-5xl">{copy.title}</h1>
+            <p className="mt-4 max-w-2xl text-base leading-8 text-[var(--vz-text-secondary)]">
               {currentBusinessType === "rentals" ? rentalCopy[locale].subscriptionHelp : copy.intro}
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
@@ -665,54 +676,54 @@ export default function Billing() {
             </div>
           </div>
 
-          <div className="w-full rounded-[24px] border border-slate-200 bg-white/90 p-6 shadow-[0_24px_80px_rgba(7,22,36,0.10)]">
+          <div className="w-full rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-[0_24px_80px_rgba(7,22,36,0.10)]">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <div className="text-sm font-medium text-slate-500">{copy.currentPlan}</div>
-                <div className="mt-2 text-2xl font-semibold text-slate-950">{currentPlanName ?? copy.awaitingActivation}</div>
+                <div className="text-sm font-medium text-[var(--vz-muted)]">{copy.currentPlan}</div>
+                <div className="mt-2 text-2xl font-semibold text-[var(--vz-text)]">{currentPlanName ?? copy.awaitingActivation}</div>
               </div>
               <div className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-r from-[var(--vz-primary-hover)] to-[var(--vz-primary)] text-white shadow-lg"><Landmark className="h-6 w-6" /></div>
             </div>
 
             <div className="mt-4 grid gap-3 grid-cols-2 xl:grid-cols-5">
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">{copy.status}</div>
-                <div className="mt-2"><span className={cn("rounded-full border px-3 py-1 text-xs font-semibold", statusBadge(subscription?.status))}>{subscription?.status ?? "inactive"}</span></div>
+              <div className="rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-[var(--vz-muted)]">{copy.status}</div>
+                <div className="mt-2"><span className={cn("rounded-full border px-3 py-1 text-xs font-semibold", statusBadge(subscription?.status))}>{statusText(subscription?.status, locale)}</span></div>
               </div>
               {currentBusinessType !== "rentals" && <>
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">{copy.specialists}</div>
-                <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.seats.active_staff ?? 0} / {billingQ.data?.seats.staff_limit ?? "∞"}</div>
-                <div className="mt-1 text-xs text-slate-500">{copy.specialistHint}</div>
+              <div className="rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-[var(--vz-muted)]">{copy.specialists}</div>
+                <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{billingQ.data?.seats.active_staff ?? 0} / {billingQ.data?.seats.staff_limit ?? "∞"}</div>
+                <div className="mt-1 text-xs text-[var(--vz-muted)]">{copy.specialistHint}</div>
               </div>
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">{copy.services}</div>
-                <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.usage?.services_count ?? 0} / {billingQ.data?.usage?.services_limit ?? "∞"}</div>
-                <div className="mt-1 text-xs text-slate-500">{copy.servicesHint}</div>
+              <div className="rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-[var(--vz-muted)]">{copy.services}</div>
+                <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{billingQ.data?.usage?.services_count ?? 0} / {billingQ.data?.usage?.services_limit ?? "∞"}</div>
+                <div className="mt-1 text-xs text-[var(--vz-muted)]">{copy.servicesHint}</div>
               </div>
               </>}
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">{copy.locations}</div>
-                <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.usage?.locations_count ?? 0} / {billingQ.data?.usage?.locations_limit ?? "∞"}</div>
-                <div className="mt-1 text-xs text-slate-500">{copy.locationsHint}</div>
+              <div className="rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-[var(--vz-muted)]">{copy.locations}</div>
+                <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{billingQ.data?.usage?.locations_count ?? 0} / {billingQ.data?.usage?.locations_limit ?? "∞"}</div>
+                <div className="mt-1 text-xs text-[var(--vz-muted)]">{copy.locationsHint}</div>
               </div>
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">{copy.paymentProvider}</div>
-                <div className="mt-2 text-lg font-semibold text-slate-950">{billingQ.data?.payment_provider?.live_ready ? "IDBank Live" : billingQ.data?.payment_provider?.default === "idbank" ? copy.awaitingConnection : "IDBank Test"}</div>
-                <div className="mt-1 text-xs text-slate-500">{copy.secureEnvironment}</div>
+              <div className="rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-[var(--vz-muted)]">{copy.paymentProvider}</div>
+                <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{billingQ.data?.payment_provider?.live_ready ? "IDBank Live" : billingQ.data?.payment_provider?.default === "idbank" ? copy.awaitingConnection : "IDBank Test"}</div>
+                <div className="mt-1 text-xs text-[var(--vz-muted)]">{copy.secureEnvironment}</div>
               </div>
 
             </div>
 
-            <div className="mt-4 rounded-3xl border border-slate-200 bg-white p-4">
+            <div className="mt-4 rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="text-xs uppercase tracking-[0.2em] text-slate-400">{copy.effectiveMonthly}</div>
-                  <div className="mt-2 text-2xl font-semibold text-slate-950">{formatMoney(pricing?.effective_monthly_price ?? subscription?.plan?.monthly_price, subscription?.plan?.currency ?? pricing?.currency ?? "AMD", locale)}</div>
+                  <div className="text-xs uppercase tracking-[0.2em] text-[var(--vz-muted)]">{copy.effectiveMonthly}</div>
+                  <div className="mt-2 text-2xl font-semibold text-[var(--vz-text)]">{formatMoney(pricing?.effective_monthly_price ?? subscription?.plan?.monthly_price, subscription?.plan?.currency ?? pricing?.currency ?? "AMD", locale)}</div>
                 </div>
-                {pricing?.has_override ? <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">{copy.customTermsActive}</span> : null}
+                {pricing?.has_override ? <span className="rounded-full border border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] px-3 py-1 text-xs font-semibold text-[var(--vz-success)]">{copy.customTermsActive}</span> : null}
               </div>
-              <div className="mt-3 text-sm text-slate-600">{copy.yearlyValue} {formatMoney(pricing?.effective_yearly_price ?? subscription?.plan?.yearly_price, subscription?.plan?.currency ?? pricing?.currency ?? "AMD", locale)}</div>
+              <div className="mt-3 text-sm text-[var(--vz-text-secondary)]">{copy.yearlyValue} {formatMoney(pricing?.effective_yearly_price ?? subscription?.plan?.yearly_price, subscription?.plan?.currency ?? pricing?.currency ?? "AMD", locale)}</div>
               {pricing?.override?.note ? <div className="mt-3 rounded-xl bg-[var(--vz-accent-soft)] px-4 py-3 text-sm text-[var(--vz-brand-text)]">{pricing.override.note}</div> : null}
             </div>
           </div>
@@ -722,29 +733,29 @@ export default function Billing() {
       <SectionCard className="p-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-3 py-1.5 text-xs font-medium text-[var(--vz-text-secondary)]">
               <ShieldCheck className="h-3.5 w-3.5" /> {copy.allToolsIncluded}
             </div>
-            <h2 className="mt-4 text-2xl font-semibold text-slate-950">{copy.changePlan}</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">{copy.comparePlans}</p>
+            <h2 className="mt-4 text-2xl font-semibold text-[var(--vz-text)]">{copy.changePlan}</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-7 text-[var(--vz-text-secondary)]">{copy.comparePlans}</p>
           </div>
 
-          <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1">
-            <button type="button" onClick={() => setBillingCycle("monthly")} className={cn("rounded-[10px] px-4 py-2.5 text-sm font-medium transition", billingCycle === "monthly" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600")}>{copy.monthly}</button>
-            <button type="button" onClick={() => setBillingCycle("yearly")} className={cn("rounded-[10px] px-4 py-2.5 text-sm font-medium transition", billingCycle === "yearly" ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)]" : "text-slate-600")}>{copy.yearly}</button>
+          <div className="inline-flex items-center rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-1">
+            <button type="button" onClick={() => setBillingCycle("monthly")} className={cn("rounded-[10px] px-4 py-2.5 text-sm font-medium transition", billingCycle === "monthly" ? "bg-[var(--vz-surface)] text-[var(--vz-text)] shadow-sm" : "text-[var(--vz-text-secondary)]")}>{copy.monthly}</button>
+            <button type="button" onClick={() => setBillingCycle("yearly")} className={cn("rounded-[10px] px-4 py-2.5 text-sm font-medium transition", billingCycle === "yearly" ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)]" : "text-[var(--vz-text-secondary)]")}>{copy.yearly}</button>
           </div>
         </div>
 
         {plansQ.isError ? (
-          <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{copy.plansLoadError}</div>
+          <div className="mt-4 rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-sm text-[var(--vz-danger)]">{copy.plansLoadError}</div>
         ) : null}
 
         {upgradeError ? (
-          <div className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{upgradeError}</div>
+          <div className="mt-4 rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-sm text-[var(--vz-danger)]">{upgradeError}</div>
         ) : null}
 
         {plansQ.isLoading ? (
-          <div className="mt-6 flex items-center justify-center gap-2 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-8 text-sm text-slate-600">
+          <div className="mt-6 flex items-center justify-center gap-2 rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-8 text-sm text-[var(--vz-text-secondary)]">
             <Loader2 className="h-4 w-4 animate-spin" /> {copy.plansLoading}
           </div>
         ) : null}
@@ -755,22 +766,22 @@ export default function Billing() {
             const isRenewal = !hasUsableSubscription && currentPlanCode === plan.code;
             const isBusy = requestMut.isPending && selectedPlan === plan.code;
             return (
-              <motion.div key={plan.id} whileHover={{ y: -4 }} className={cn("vizit-billing-plan relative rounded-2xl border p-6 pt-14 shadow-sm", isCurrent && "is-current", isCurrent ? "border-[var(--vz-primary)] bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-[0_24px_60px_rgba(55,138,221,0.22)]" : plan.isIndividualOffer ? "border-emerald-200 bg-emerald-50/40" : "border-slate-200 bg-white")}>
-                {billingCycle === "yearly" && plan.code !== "rental" ? <div className={cn("absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-semibold", isCurrent ? "bg-white/15 text-white" : plan.isIndividualOffer ? "border border-emerald-200 bg-white text-emerald-700" : "bg-emerald-50 text-emerald-700")}>{plan.isIndividualOffer ? copy.individualPlan : copy.twoMonthsFree}</div> : null}
+              <motion.div key={plan.id} whileHover={{ y: -4 }} className={cn("vizit-billing-plan relative rounded-2xl border p-6 pt-14 shadow-sm", isCurrent && "is-current", isCurrent ? "border-[var(--vz-primary)] bg-[var(--vz-accent-subtle)] text-[var(--vz-text)] shadow-[var(--vz-shadow-sm)]" : plan.isIndividualOffer ? "border-[var(--vz-success-line)] bg-[var(--vz-success-soft)]" : "border-[var(--vz-line)] bg-[var(--vz-surface)]")}>
+                {billingCycle === "yearly" && plan.code !== "rental" ? <div className={cn("absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-semibold", isCurrent ? "bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]" : plan.isIndividualOffer ? "border border-[var(--vz-success-line)] bg-[var(--vz-surface)] text-[var(--vz-success)]" : "bg-[var(--vz-success-soft)] text-[var(--vz-success)]")}>{plan.isIndividualOffer ? copy.individualPlan : copy.twoMonthsFree}</div> : null}
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="text-xl font-semibold">{plan.name}</div>
-                    <div className={cn("mt-1 text-sm", isCurrent ? "text-white/70" : plan.isIndividualOffer ? "text-emerald-700" : "text-slate-500")}>{plan.code === "rental" ? rentalCopy[locale].title : plan.isIndividualOffer ? plan.description : copy.activeStaff(plan.staff_limit ?? 0)}</div>
+                    <div className={cn("mt-1 text-sm", isCurrent ? "text-[var(--vz-muted)]" : plan.isIndividualOffer ? "text-[var(--vz-success)]" : "text-[var(--vz-muted)]")}>{plan.code === "rental" ? rentalCopy[locale].title : plan.isIndividualOffer ? plan.description : copy.activeStaff(plan.staff_limit ?? 0)}</div>
                   </div>
-                  {isCurrent ? <span className={cn("rounded-full px-3 py-1 text-xs font-semibold", isCurrent ? "bg-white/15 text-white" : "bg-[var(--vz-accent-soft)] text-[var(--vz-brand-text)]")}><BadgeCheck className="mr-1 inline h-3.5 w-3.5" /> {copy.active}</span> : null}
+                  {isCurrent ? <span className={cn("rounded-full px-3 py-1 text-xs font-semibold", "bg-[var(--vz-primary)] text-[var(--vz-on-primary)]")}><BadgeCheck className="mr-1 inline h-3.5 w-3.5" /> {copy.active}</span> : null}
                 </div>
 
                 <div className="mt-6 flex items-end gap-2">
                   <div className="text-4xl font-semibold tracking-tight">{plan.displayPrice.toLocaleString("hy-AM")}</div>
-                  <div className={cn("pb-1 text-sm", isCurrent ? "text-white/70" : "text-slate-500")}>{plan.currency}</div>
+                  <div className={cn("pb-1 text-sm", "text-[var(--vz-muted)]")}>{plan.currency}</div>
                 </div>
 
-                <div className={cn("mt-3 space-y-1 text-sm", isCurrent ? "text-white/80" : "text-slate-600")}>
+                <div className={cn("mt-3 space-y-1 text-sm", "text-[var(--vz-text-secondary)]")}>
                   <div>{billingCycle === "yearly" ? `${copy.perMonthEffective} ~${formatMoney(plan.perMonthEffective, plan.currency, locale)}${copy.perMonth}` : `${formatMoney(plan.monthlyPrice, plan.currency, locale)} ${copy.perMonth}`}</div>
                   {billingCycle === "yearly" ? <div>{plan.isIndividualOffer ? `${copy.customYearly} ${formatMoney(plan.yearlyPrice, plan.currency, locale)}` : `${copy.savings} ${formatMoney(plan.discountAmount, plan.currency, locale)}`}</div> : null}
                   <div>{plan.locations && plan.locations > 1 ? copy.locationLimit(plan.locations) : copy.oneLocation}</div>
@@ -779,14 +790,14 @@ export default function Billing() {
                 </div>
 
                 <div className="mt-5 space-y-2">
-                  <div className={cn("flex items-center gap-2 text-sm", isCurrent ? "text-white/90" : "text-slate-700")}><Check className="h-4 w-4 text-emerald-500" /> {copy.featureBooking}</div>
-                  <div className={cn("flex items-center gap-2 text-sm", isCurrent ? "text-white/90" : "text-slate-700")}><Check className="h-4 w-4 text-emerald-500" /> {copy.featureAnalytics}</div>
-                  <div className={cn("flex items-center gap-2 text-sm", isCurrent ? "text-white/90" : "text-slate-700")}><Check className="h-4 w-4 text-emerald-500" /> {copy.featureOwners}</div>
+                  <div className={cn("flex items-center gap-2 text-sm", "text-[var(--vz-text-secondary)]")}><Check className="h-4 w-4 text-[var(--vz-success)]" /> {copy.featureBooking}</div>
+                  <div className={cn("flex items-center gap-2 text-sm", "text-[var(--vz-text-secondary)]")}><Check className="h-4 w-4 text-[var(--vz-success)]" /> {copy.featureAnalytics}</div>
+                  <div className={cn("flex items-center gap-2 text-sm", "text-[var(--vz-text-secondary)]")}><Check className="h-4 w-4 text-[var(--vz-success)]" /> {copy.featureOwners}</div>
                 </div>
 
-                {plan.note ? <div className={cn("mt-4 rounded-xl px-4 py-3 text-sm", isCurrent ? "bg-white/10 text-white/85" : plan.isIndividualOffer ? "border border-emerald-200 bg-white text-emerald-800" : "bg-[var(--vz-accent-soft)] text-[var(--vz-brand-text)]")}>{plan.note}</div> : null}
+                {plan.note ? <div className={cn("mt-4 rounded-xl px-4 py-3 text-sm", isCurrent ? "bg-[var(--vz-accent-soft)] text-[var(--vz-text-secondary)]" : plan.isIndividualOffer ? "border border-[var(--vz-success-line)] bg-[var(--vz-surface)] text-[var(--vz-success)]" : "bg-[var(--vz-accent-soft)] text-[var(--vz-brand-text)]")}>{plan.note}</div> : null}
 
-                <Button className={cn("mt-6 w-full", isCurrent ? "bg-white text-[var(--vz-brand-text)] hover:bg-white/90" : "")} loading={isBusy} disabled={isCurrent || requestMut.isPending || billingQ.data?.reason === "business_suspended"} onClick={() => { setSelectedPlan(plan.code); requestMut.mutate({ planCode: plan.code, cycle: billingCycle }); }}>
+                <Button className={cn("mt-6 w-full", isCurrent ? "!bg-[var(--vz-accent-soft)] !text-[var(--vz-accent-text)] hover:!bg-[var(--vz-accent-soft)]" : "")} loading={isBusy} disabled={isCurrent || requestMut.isPending || billingQ.data?.reason === "business_suspended"} onClick={() => { setSelectedPlan(plan.code); requestMut.mutate({ planCode: plan.code, cycle: billingCycle }); }}>
                   {isCurrent ? <BadgeCheck className="h-4 w-4" /> : plan.isIndividualOffer ? <Handshake className="h-4 w-4" /> : <Crown className="h-4 w-4" />}
                   {isCurrent ? copy.currentPlanButton : isRenewal ? copy.restorePlan : plan.isIndividualOffer ? copy.createCustomInvoice : billingCycle === "yearly" ? copy.createYearlyInvoice : copy.createMonthlyInvoice}
                 </Button>
@@ -797,18 +808,18 @@ export default function Billing() {
       </SectionCard>
 
       <SectionCard className="overflow-hidden p-0">
-        <div className="border-b border-[#d8e3ec] bg-[radial-gradient(circle_at_top_right,rgba(55,138,221,0.12),transparent_38%),linear-gradient(135deg,#f7fafc,#ffffff)] px-6 py-7 sm:px-8">
+        <div className="border-b border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-6 py-7 sm:px-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#c4d4e1] bg-white/80 px-3 py-1.5 text-xs font-semibold text-[var(--vz-brand-text)]">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-1.5 text-xs font-semibold text-[var(--vz-brand-text)]">
                 <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" /> {copy.securePayment}
               </div>
               <h2 className="mt-4 text-2xl font-semibold text-[var(--vz-text)]">{copy.choosePayment}</h2>
-              <p className="mt-2 text-sm leading-7 text-slate-600">
+              <p className="mt-2 text-sm leading-7 text-[var(--vz-text-secondary)]">
                 {copy.paymentIntro}
               </p>
             </div>
-            <div className="rounded-xl border border-[#d8e3ec] bg-white/85 px-4 py-3 text-sm text-slate-600 shadow-sm">
+            <div className="rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm text-[var(--vz-text-secondary)] shadow-sm">
               {checkoutAvailable ? copy.selected : copy.paymentProvider}{" "}
               <span className="font-semibold text-[var(--vz-text)]">{checkoutAvailable ? selectedPayment.label : copy.awaitingConnection}</span>
             </div>
@@ -836,25 +847,25 @@ export default function Billing() {
                     "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--vz-primary)]/25",
                     isSelected && isAvailable
                       ? "border-[var(--vz-primary)] bg-[var(--vz-accent-soft)] shadow-[0_14px_36px_rgba(55,138,221,0.14)]"
-                      : "border-slate-200 bg-white",
+                      : "border-[var(--vz-line)] bg-[var(--vz-surface)]",
                     isAvailable
                       ? "cursor-pointer hover:-translate-y-0.5 hover:border-[var(--vz-line-strong)] hover:shadow-md"
-                      : "cursor-not-allowed bg-slate-50/80 opacity-70",
+                      : "cursor-not-allowed bg-[var(--vz-surface-2)] opacity-70",
                   )}
                 >
                   <span className="flex min-h-9 flex-wrap items-center gap-1.5" aria-hidden="true">
                     {method.brands.map((brand) => <PaymentBrandLogo key={brand} brand={brand} />)}
                   </span>
-                  <span className="mt-4 block text-sm font-semibold leading-6 text-slate-950">{method.label}</span>
-                  <span className="mt-1 block text-xs leading-5 text-slate-500">{method.detail}</span>
+                  <span className="mt-4 block text-sm font-semibold leading-6 text-[var(--vz-text)]">{method.label}</span>
+                  <span className="mt-1 block text-xs leading-5 text-[var(--vz-muted)]">{method.detail}</span>
                   <span
                     className={cn(
                       "mt-3 inline-flex rounded-full border px-2.5 py-1 text-[11px] font-semibold",
                       isAvailable
                         ? isTest
-                          ? "border-amber-200 bg-amber-50 text-amber-800"
-                          : "border-emerald-200 bg-emerald-50 text-emerald-700"
-                        : "border-slate-200 bg-white text-slate-500",
+                          ? "border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] text-[var(--vz-warning)]"
+                          : "border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] text-[var(--vz-success)]"
+                        : "border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-muted)]",
                     )}
                   >
                     {isAvailable ? (isTest ? copy.testEnvironment : copy.connected) : copy.bankAwaiting}
@@ -869,7 +880,7 @@ export default function Billing() {
             })}
           </div>
 
-          <div className="mt-5 flex gap-3 rounded-xl border border-[#d8e3ec] bg-[#f7fafc] px-4 py-3 text-sm leading-6 text-[var(--vz-muted)]" role="note">
+          <div className="mt-5 flex gap-3 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm leading-6 text-[var(--vz-muted)]" role="note">
             <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--vz-brand-text)]" aria-hidden="true" />
             <div className="space-y-1">
               <p>{copy.paymentSafetyNote}</p>
@@ -882,35 +893,35 @@ export default function Billing() {
 
       <div className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
         <SectionCard className="space-y-4 p-6">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-700"><Landmark className="h-4 w-4 text-[var(--vz-brand-text)]" /> {copy.latestInvoice}</div>
+          <div className="flex items-center gap-2 text-sm font-semibold text-[var(--vz-text-secondary)]"><Landmark className="h-4 w-4 text-[var(--vz-brand-text)]" /> {copy.latestInvoice}</div>
           {invoicesQ.isLoading ? (
-            <div className="flex items-center justify-center gap-2 py-12 text-sm text-slate-600"><Loader2 className="h-4 w-4 animate-spin" /> {copy.invoicesLoading}</div>
+            <div className="flex items-center justify-center gap-2 py-12 text-sm text-[var(--vz-text-secondary)]"><Loader2 className="h-4 w-4 animate-spin" /> {copy.invoicesLoading}</div>
           ) : invoicesQ.isError ? (
-            <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{copy.invoicesLoadError}</div>
+            <div className="rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-sm text-[var(--vz-danger)]">{copy.invoicesLoadError}</div>
           ) : !latestInvoice ? (
             <EmptyState icon={Receipt} title={copy.noInvoiceTitle} description={copy.noInvoiceText} className="border-0 shadow-none" />
           ) : (
             <>
               <div className="grid gap-4 xl:grid-cols-2">
-                <div className="rounded-3xl border border-slate-200 bg-slate-50/70 p-4">
-                  <div className="text-xs uppercase tracking-wide text-slate-400">{copy.invoice}</div>
-                  <div className="mt-2 text-lg font-semibold text-slate-950">#{latestInvoice.id} · {latestInvoice.plan?.name ?? copy.planFallback}</div>
-                  <div className="mt-1 text-sm text-slate-600">{formatMoney(latestInvoice.amount, latestInvoice.currency, locale)} · {cycleLabel((latestInvoice.billing_cycle as BillingCycle | undefined) ?? "monthly", locale)}</div>
+                <div className="rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
+                  <div className="text-xs uppercase tracking-wide text-[var(--vz-muted)]">{copy.invoice}</div>
+                  <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">#{latestInvoice.id} · {latestInvoice.plan?.name ?? copy.planFallback}</div>
+                  <div className="mt-1 text-sm text-[var(--vz-text-secondary)]">{formatMoney(latestInvoice.amount, latestInvoice.currency, locale)} · {cycleLabel((latestInvoice.billing_cycle as BillingCycle | undefined) ?? "monthly", locale)}</div>
                   {latestInvoice.meta?.pricing_override_id ? <div className="mt-2 text-sm text-[var(--vz-brand-text)]">{copy.customApplied}</div> : null}
-                  {latestInvoice.meta?.discount_amount ? <div className="mt-2 text-sm text-emerald-700">{copy.discount} {formatMoney(latestInvoice.meta.discount_amount, latestInvoice.currency, locale)}</div> : null}
+                  {latestInvoice.meta?.discount_amount ? <div className="mt-2 text-sm text-[var(--vz-success)]">{copy.discount} {formatMoney(latestInvoice.meta.discount_amount, latestInvoice.currency, locale)}</div> : null}
                 </div>
-                <div className="rounded-3xl border border-slate-200 bg-white p-4">
-                  <div className="text-xs uppercase tracking-wide text-slate-400">{copy.state}</div>
-                  <div className="mt-2 text-lg font-semibold text-slate-950">{latestInvoiceStatus}</div>
-                  <div className="mt-1 text-sm text-slate-600">{new Date(latestInvoice.created_at).toLocaleString("hy-AM")}</div>
+                <div className="rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4">
+                  <div className="text-xs uppercase tracking-wide text-[var(--vz-muted)]">{copy.state}</div>
+                  <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{latestInvoiceStatus}</div>
+                  <div className="mt-1 text-sm text-[var(--vz-text-secondary)]">{new Date(latestInvoice.created_at).toLocaleString("hy-AM")}</div>
                 </div>
               </div>
               {latestInvoiceStatus === "pending" ? (
-                <div className="rounded-3xl border border-slate-200 bg-white p-5">
-                  <div className="text-base font-semibold text-slate-950">{copy.openBankPage}</div>
-                  <p className="mt-2 text-sm leading-7 text-slate-600">{copy.checkoutText}</p>
-                  {paymentProviderUnavailable ? <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">{copy.providerUnavailable}</div> : null}
-                  {checkoutError ? <div className="mt-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{checkoutError}</div> : null}
+                <div className="rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5">
+                  <div className="text-base font-semibold text-[var(--vz-text)]">{copy.openBankPage}</div>
+                  <p className="mt-2 text-sm leading-7 text-[var(--vz-text-secondary)]">{copy.checkoutText}</p>
+                  {paymentProviderUnavailable ? <div className="mt-3 rounded-2xl border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-4 py-3 text-sm text-[var(--vz-warning)]">{copy.providerUnavailable}</div> : null}
+                  {checkoutError ? <div className="mt-3 rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-sm text-[var(--vz-danger)]">{checkoutError}</div> : null}
                   <Button
                     className="mt-4"
                     loading={checkoutMut.isPending}
@@ -921,26 +932,26 @@ export default function Billing() {
                   </Button>
                 </div>
               ) : latestInvoiceStatus === "approved" ? (
-                <div className="rounded-3xl border border-emerald-200 bg-emerald-50 p-5 text-sm leading-7 text-emerald-800">{copy.paymentApproved}</div>
+                <div className="rounded-3xl border border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] p-5 text-sm leading-7 text-[var(--vz-success)]">{copy.paymentApproved}</div>
               ) : (
-                <div className="rounded-3xl border border-amber-200 bg-amber-50 p-5 text-sm leading-7 text-amber-800">{copy.invoiceClosed}</div>
+                <div className="rounded-3xl border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] p-5 text-sm leading-7 text-[var(--vz-warning)]">{copy.invoiceClosed}</div>
               )}
             </>
           )}
         </SectionCard>
 
         <SectionCard className="space-y-4 p-6">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-700"><ArrowRight className="h-4 w-4 text-[var(--vz-brand-text)]" /> {copy.transactionTimeline}</div>
+          <div className="flex items-center gap-2 text-sm font-semibold text-[var(--vz-text-secondary)]"><ArrowRight className="h-4 w-4 text-[var(--vz-brand-text)]" /> {copy.transactionTimeline}</div>
           {currentTransaction ? (
             <div className="space-y-3">
-              <div className="rounded-2xl border border-slate-200 p-4">
-                <div className="text-xs uppercase tracking-wide text-slate-400">{copy.reference}</div>
-                <div className="mt-2 break-all font-mono text-sm text-slate-700">{currentTransaction.provider_transaction_id}</div>
+              <div className="rounded-2xl border border-[var(--vz-line)] p-4">
+                <div className="text-xs uppercase tracking-wide text-[var(--vz-muted)]">{copy.reference}</div>
+                <div className="mt-2 break-all font-mono text-sm text-[var(--vz-text-secondary)]">{currentTransaction.provider_transaction_id}</div>
               </div>
-              <div className="rounded-2xl border border-slate-200 p-4">
-                <div className="text-xs uppercase tracking-wide text-slate-400">{copy.state}</div>
-                <div className="mt-2 text-lg font-semibold text-slate-950">{currentTransaction.status}</div>
-                <div className="mt-1 text-sm text-slate-600">{formatMoney(currentTransaction.amount, currentTransaction.currency, locale)}</div>
+              <div className="rounded-2xl border border-[var(--vz-line)] p-4">
+                <div className="text-xs uppercase tracking-wide text-[var(--vz-muted)]">{copy.state}</div>
+                <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{statusText(currentTransaction.status, locale)}</div>
+                <div className="mt-1 text-sm text-[var(--vz-text-secondary)]">{formatMoney(currentTransaction.amount, currentTransaction.currency, locale)}</div>
               </div>
             </div>
           ) : (

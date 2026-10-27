@@ -32,13 +32,13 @@ export default function LocationMapPicker({ latitude, longitude, onChange, addre
   return (
     <div className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-2">
-        <label className="space-y-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
+        <label className="space-y-1.5 text-xs font-medium text-[var(--vz-text-secondary)]">
           <span>{text.latitude}</span>
-          <input value={latitude} disabled={disabled} inputMode="decimal" onChange={(event) => onChange(event.target.value, longitude)} placeholder="40.1772000" className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100 disabled:opacity-60 dark:border-white/10 dark:bg-white/[0.06] dark:text-white dark:focus:ring-violet-500/15" />
+          <input value={latitude} disabled={disabled} inputMode="decimal" onChange={(event) => onChange(event.target.value, longitude)} placeholder="40.1772000" className="h-12 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 text-sm text-[var(--vz-text)] outline-none transition focus:border-[var(--vz-primary)] focus:ring-4 focus:ring-[var(--vz-focus)] disabled:opacity-60 dark:focus:ring-[var(--vz-focus)]" />
         </label>
-        <label className="space-y-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
+        <label className="space-y-1.5 text-xs font-medium text-[var(--vz-text-secondary)]">
           <span>{text.longitude}</span>
-          <input value={longitude} disabled={disabled} inputMode="decimal" onChange={(event) => onChange(latitude, event.target.value)} placeholder="44.5035000" className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100 disabled:opacity-60 dark:border-white/10 dark:bg-white/[0.06] dark:text-white dark:focus:ring-violet-500/15" />
+          <input value={longitude} disabled={disabled} inputMode="decimal" onChange={(event) => onChange(latitude, event.target.value)} placeholder="44.5035000" className="h-12 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 text-sm text-[var(--vz-text)] outline-none transition focus:border-[var(--vz-primary)] focus:ring-4 focus:ring-[var(--vz-focus)] disabled:opacity-60 dark:focus:ring-[var(--vz-focus)]" />
         </label>
       </div>
 
@@ -52,8 +52,8 @@ export default function LocationMapPicker({ latitude, longitude, onChange, addre
         )}
       />
 
-      <div className={`flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs text-slate-600 dark:border-white/10 dark:bg-white/[0.05] dark:text-slate-300 ${compact ? "text-[11px]" : ""}`}>
-        <MapPin className="h-4 w-4 text-violet-600 dark:text-violet-300" />
+      <div className={`flex items-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-xs text-[var(--vz-text-secondary)] ${compact ? "text-[11px]" : ""}`}>
+        <MapPin className="h-4 w-4 text-[var(--vz-accent-text)] dark:text-violet-300" />
         <span><strong>{text.address}:</strong> {address || text.empty}</span>
       </div>
     </div>

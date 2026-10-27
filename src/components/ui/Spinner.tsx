@@ -17,7 +17,7 @@ export function Spinner({
     return (
         <span
             className={cn(
-                "inline-block animate-spin rounded-full border-2 border-gray-300 border-t-gray-800",
+                "inline-block animate-spin rounded-full border-2 border-[var(--vz-line-strong)] border-t-gray-800",
                 className
             )}
             style={{ width: px, height: px }}

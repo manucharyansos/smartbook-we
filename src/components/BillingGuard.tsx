@@ -56,12 +56,12 @@ export function BillingGuard() {
 
   return (
     <div className="grid min-h-screen place-items-center bg-[radial-gradient(circle_at_top_right,rgba(232,194,174,0.34),transparent_28rem),#f7efe7] px-6 dark:bg-[radial-gradient(circle_at_top_right,rgba(109,42,99,0.30),transparent_28rem),#120b14]">
-      <div className="w-full max-w-lg rounded-[32px] border border-[#d39a43]/20 bg-[#fffdf9] p-8 text-center shadow-[0_24px_80px_rgba(70,34,49,0.12)] dark:border-[#e7bc6b]/15 dark:bg-[#2f182e]">
-        <div className="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-[#f8eee4] text-[#6d2a63] dark:bg-white/10 dark:text-[#efcb87]">
+      <div className="w-full max-w-lg rounded-[32px] border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] p-8 text-center shadow-[0_24px_80px_rgba(70,34,49,0.12)]">
+        <div className="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-[var(--vz-surface-2)] text-[var(--vz-accent-text)]">
           <CreditCard className="h-7 w-7" />
         </div>
-        <h1 className="mt-6 text-2xl font-semibold text-[#321c37] dark:text-[#fff8f2]">{text.title}</h1>
-        <p className="mt-3 text-sm leading-7 text-[#746777] dark:text-[#cbbdca]">
+        <h1 className="mt-6 text-2xl font-semibold text-[var(--vz-accent-text)]">{text.title}</h1>
+        <p className="mt-3 text-sm leading-7 text-[var(--vz-muted)]">
           {text.body}
         </p>
         <Button

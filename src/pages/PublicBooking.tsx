@@ -200,27 +200,27 @@ function getStatusMeta(status: string, label: string | undefined, locale: Locale
     if (status === "confirmed") {
         return {
             label: label || text.statusConfirmed,
-            badgeClass: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:border-emerald-400/25 dark:bg-emerald-500/15 dark:text-emerald-200",
+            badgeClass: "bg-[var(--vz-success-soft)] text-[var(--vz-success)] border-[var(--vz-success-line)] dark:border-[var(--vz-success-line)] dark:bg-emerald-500/15 dark:text-emerald-200",
         };
     }
 
     if (status === "cancelled") {
         return {
             label: label || text.statusCancelled,
-            badgeClass: "bg-rose-100 text-rose-700 border-rose-200 dark:border-rose-400/25 dark:bg-rose-500/15 dark:text-rose-200",
+            badgeClass: "bg-[var(--vz-danger-soft)] text-[var(--vz-danger)] border-[var(--vz-danger-line)] dark:border-rose-400/25 dark:bg-rose-500/15 dark:text-rose-200",
         };
     }
 
     if (status === "done" || status === "completed") {
         return {
             label: label || text.statusCompleted,
-            badgeClass: "bg-slate-100 text-slate-700 border-slate-200 dark:border-[#312641] dark:bg-white/[0.06] dark:text-slate-200",
+            badgeClass: "bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)] border-[var(--vz-line)] dark:border-[#312641]",
         };
     }
 
     return {
         label: label || text.statusPending,
-        badgeClass: "bg-amber-100 text-amber-700 border-amber-200 dark:border-amber-400/25 dark:bg-amber-500/15 dark:text-amber-200",
+        badgeClass: "bg-[var(--vz-warning-soft)] text-[var(--vz-warning)] border-[var(--vz-warning-line)] dark:border-amber-400/25 dark:bg-amber-500/15 dark:text-amber-200",
     };
 }
 
@@ -234,7 +234,7 @@ const fadeUp = {
 };
 
 const inputClass =
-    "w-full rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-slate-900 shadow-sm outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100 dark:border-[#312641] dark:bg-[#100c18] dark:text-white dark:focus:border-[#a980f3] dark:focus:ring-[#a980f3]/15";
+    "w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3.5 text-[var(--vz-text)] shadow-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-4 focus:ring-[var(--vz-focus)] dark:border-[#312641] dark:bg-[#100c18] dark:focus:border-[#a980f3] dark:focus:ring-[#a980f3]/15";
 
 function slotLabel(slot: Slot, showStaff = false) {
     const st = slot.starts_at.slice(11, 16);
@@ -279,12 +279,12 @@ function SmartSuggestions({
     if (!slots.length) return null;
 
     return (
-        <div className="rounded-3xl border border-emerald-200 bg-gradient-to-r from-emerald-50 via-white to-violet-50 p-4 dark:border-emerald-400/25 dark:from-emerald-950/45 dark:via-[#151020] dark:to-violet-950/45">
-            <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-emerald-800 dark:text-emerald-200">
+        <div className="bg-[var(--vz-accent-soft)] rounded-3xl border border-[var(--vz-success-line)] p-4 dark:border-[var(--vz-success-line)]">
+            <div className="flex flex-wrap items-center gap-2 text-sm font-medium text-[var(--vz-success)] dark:text-emerald-200">
                 <Sparkles className="h-4 w-4" />
                 {text.smartTitle}
             </div>
-            <div className="mt-1 text-sm text-slate-600">
+            <div className="mt-1 text-sm text-[var(--vz-text-secondary)]">
                 {text.smartText}
             </div>
             <div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
@@ -298,17 +298,17 @@ function SmartSuggestions({
                             className={mergeClass(
                                 "vizit-smart-slot rounded-2xl border px-3 py-3 text-left transition-all",
                                 active
-                                    ? "is-active border-emerald-400 bg-emerald-100 shadow-sm dark:border-emerald-400/45 dark:bg-emerald-500/15"
-                                    : "border-white/70 bg-white/90 hover:border-emerald-300 hover:bg-white dark:border-[#312641] dark:hover:border-emerald-400/35 dark:hover:bg-white/[0.08]"
+                                    ? "is-active border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] shadow-sm dark:border-[var(--vz-success-line)] dark:bg-emerald-500/15"
+                                    : "border-white/70 bg-[var(--vz-surface)] hover:border-[var(--vz-success-line)] hover:bg-[var(--vz-surface)] dark:border-[#312641] dark:hover:border-[var(--vz-success-line)] dark:hover:bg-white/[0.08]"
                             )}
                         >
                             <div className="flex items-center justify-between gap-2">
-                                <div className="vizit-smart-slot-title text-sm font-semibold text-slate-900">{slotLabel(slot, showStaff)}</div>
-                                <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[11px] font-semibold text-white">
+                                <div className="vizit-smart-slot-title text-sm font-semibold text-[var(--vz-text)]">{slotLabel(slot, showStaff)}</div>
+                                <span className="rounded-full bg-[var(--vz-success)] px-2 py-0.5 text-[11px] font-semibold text-[var(--vz-on-success)]">
                                     #{slot.recommendation_rank ?? "★"}
                                 </span>
                             </div>
-                            <div className="vizit-smart-slot-reason mt-1 text-xs text-slate-500">{localizeSmartReason(slot.smart_reason, locale)}</div>
+                            <div className="vizit-smart-slot-reason mt-1 text-xs text-[var(--vz-muted)]">{localizeSmartReason(slot.smart_reason, locale)}</div>
                         </button>
                     );
                 })}
@@ -373,13 +373,13 @@ function LineBookingCard({
     }, [slots, line.time, line.id, onChange]);
 
     return (
-        <div className="rounded-[26px] border border-orange-200 bg-gradient-to-br from-orange-50 via-white to-rose-50 p-4 shadow-sm dark:border-orange-400/25 dark:from-orange-950/35 dark:via-[#151020] dark:to-rose-950/35 sm:p-5">
+        <div className="bg-[var(--vz-highlight-soft)] rounded-[26px] border border-[var(--vz-warning-line)] p-4 shadow-sm dark:border-orange-400/25 sm:p-5">
             <div className="flex items-center justify-between gap-3 mb-4">
                 <div>
-                    <div className="text-sm font-medium text-orange-600 dark:text-orange-300">
+                    <div className="text-sm font-medium text-[var(--vz-warning)] dark:text-orange-300">
                         {text.serviceNumber} #{index + 1}
                     </div>
-                    <div className="text-lg font-semibold text-slate-900">
+                    <div className="text-lg font-semibold text-[var(--vz-text)]">
                         {selectedService?.name || text.chooseService}
                     </div>
                 </div>
@@ -387,7 +387,7 @@ function LineBookingCard({
                 <button
                     type="button"
                     onClick={() => onRemove(line.id)}
-                    className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-white px-3 py-2 text-sm text-rose-600 hover:bg-rose-50"
+                    className="inline-flex items-center gap-2 rounded-xl border border-[var(--vz-danger-line)] bg-[var(--vz-surface)] px-3 py-2 text-sm text-[var(--vz-danger)] hover:bg-[var(--vz-danger-soft)]"
                 >
                     <Trash2 className="h-4 w-4" />
                     {text.remove}
@@ -1340,15 +1340,15 @@ function ServiceBooking() {
 
     if (businessQ.isLoading || servicesQ.isLoading || staffQ.isLoading) {
         return (
-            <div className="vizit-booking-page min-h-screen bg-[radial-gradient(circle_at_top,_#faf8fc,_#f4effa_50%,_#ffffff)] transition-colors dark:bg-[radial-gradient(circle_at_top,_#211632,_#151020_52%,_#090712)] dark:text-white">
+            <div className="vizit-booking-page min-h-screen bg-[var(--vz-surface-2)] transition-colors dark:text-white">
                 <PublicBusinessHeader secondaryHref="/" secondaryLabel="Vizit" />
                 <div className="flex items-center justify-center px-4 py-10">
-                <div className="rounded-3xl bg-white/80 backdrop-blur-xl border border-white/60 shadow-2xl px-8 py-10 text-center max-w-md w-full">
-                    <Loader2 className="mx-auto mb-4 h-10 w-10 animate-spin text-fuchsia-500" />
-                    <h2 className="text-xl font-semibold text-slate-900">
+                <div className="rounded-3xl bg-[var(--vz-surface)] backdrop-blur-xl border border-white/60 shadow-2xl px-8 py-10 text-center max-w-md w-full">
+                    <Loader2 className="mx-auto mb-4 h-10 w-10 animate-spin text-[var(--vz-accent-text)]" />
+                    <h2 className="text-xl font-semibold text-[var(--vz-text)]">
                         {text.loadingPage}
                     </h2>
-                    <p className="mt-2 text-sm text-slate-500">
+                    <p className="mt-2 text-sm text-[var(--vz-muted)]">
                         {text.wait}
                     </p>
                 </div>
@@ -1360,16 +1360,16 @@ function ServiceBooking() {
 
     if (!business) {
         return (
-            <div className="vizit-booking-page min-h-screen bg-[#faf8fc] transition-colors dark:bg-[#090712] dark:text-white">
+            <div className="vizit-booking-page min-h-screen bg-[var(--vz-surface-2)] transition-colors dark:text-white">
                 <Seo title={`${text.notFound} | Vizit`} description={text.checkLink} robots="noindex,nofollow" />
                 <PublicBusinessHeader secondaryHref="/" secondaryLabel="Vizit" />
                 <div className="flex items-center justify-center px-4 py-10">
-                <div className="max-w-md w-full rounded-3xl bg-white p-8 shadow-xl border border-slate-200 text-center">
-                    <AlertCircle className="mx-auto h-10 w-10 text-rose-500 mb-4" />
-                    <h2 className="text-xl font-semibold text-slate-900">
+                <div className="max-w-md w-full rounded-3xl bg-[var(--vz-surface)] p-8 shadow-xl border border-[var(--vz-line)] text-center">
+                    <AlertCircle className="mx-auto h-10 w-10 text-[var(--vz-danger)] mb-4" />
+                    <h2 className="text-xl font-semibold text-[var(--vz-text)]">
                         {text.notFound}
                     </h2>
-                    <p className="text-slate-500 mt-2">
+                    <p className="text-[var(--vz-muted)] mt-2">
                         {text.checkLink}
                     </p>
                 </div>
@@ -1382,7 +1382,7 @@ function ServiceBooking() {
     const isBeauty = business.business_type === "beauty";
 
     return (
-        <div className="vizit-booking-page min-h-screen bg-[radial-gradient(circle_at_top_left,_#f3edf9,_#faf8fc_44%,_#eaf8f6_76%,_#ffffff)] transition-colors dark:bg-[radial-gradient(circle_at_top_left,_#25173a,_#151020_44%,_#0d2423_78%,_#090712)] dark:text-white">
+        <div className="vizit-booking-page min-h-screen bg-[var(--vz-surface-2)] transition-colors dark:text-white">
             <Seo
                 title={`${text.bookNow} — ${business.name} | Vizit`}
                 description={business.short_description || (isBeauty ? text.beautyIntro : text.clinicIntro)}
@@ -1399,7 +1399,7 @@ function ServiceBooking() {
                     className="grid gap-4 sm:gap-6 xl:grid-cols-[1fr_1.5fr]"
                 >
                     <div className="space-y-6">
-                        <div className="vizit-booking-hero rounded-[28px] bg-gradient-to-br from-fuchsia-600 via-violet-600 to-sky-500 text-white shadow-2xl p-6 sm:p-8 overflow-hidden relative">
+                        <div className="bg-[var(--vz-primary)] vizit-booking-hero rounded-[28px] text-[var(--vz-on-primary)] shadow-2xl p-6 sm:p-8 overflow-hidden relative">
                             <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/15 blur-2xl" />
                             <div className="absolute -left-6 bottom-0 h-24 w-24 rounded-full bg-white/10 blur-2xl" />
 
@@ -1419,13 +1419,13 @@ function ServiceBooking() {
 
                                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
                                     <div className="vizit-booking-hero-stat rounded-2xl bg-white/[0.12] px-4 py-3 backdrop-blur">
-                                        <div className="text-white/75 text-xs">{text.workingHours}</div>
+                                        <div className="text-xs text-[var(--vz-muted)]">{text.workingHours}</div>
                                         <div className="mt-1 font-semibold">
                                             {String(business.work_start || "09:00").slice(0,5)} – {String(business.work_end || "18:00").slice(0,5)}
                                         </div>
                                     </div>
                                     <div className="vizit-booking-hero-stat rounded-2xl bg-white/[0.12] px-4 py-3 backdrop-blur">
-                                        <div className="text-white/75 text-xs">{text.timezone}</div>
+                                        <div className="text-xs text-[var(--vz-muted)]">{text.timezone}</div>
                                         <div className="mt-1 font-semibold">
                                             {business.timezone
                                                 ? getTimezoneDisplay(business.timezone, locale)
@@ -1437,9 +1437,9 @@ function ServiceBooking() {
                             </div>
                         </div>
 
-                        {!activeBookingCode && <div className="rounded-[24px] border border-white/70 bg-white/[0.88] p-4 shadow-lg backdrop-blur-xl sm:p-5">
-                            <div className="text-sm font-semibold text-slate-900">{text.chooseMode}</div>
-                            <div className="mt-1 text-xs leading-5 text-slate-500">{text.modeIntro}</div>
+                        {!activeBookingCode && <div className="rounded-[24px] border border-white/70 bg-[var(--vz-surface)] p-4 shadow-lg backdrop-blur-xl sm:p-5">
+                            <div className="text-sm font-semibold text-[var(--vz-text)]">{text.chooseMode}</div>
+                            <div className="mt-1 text-xs leading-5 text-[var(--vz-muted)]">{text.modeIntro}</div>
                             <div className="mt-4 grid gap-2.5">
                                 <ModeCard
                                     active={mode === "single"}
@@ -1447,7 +1447,7 @@ function ServiceBooking() {
                                     title={text.singleMode}
                                     description={text.singleModeText}
                                     onClick={() => setMode("single")}
-                                    color="from-sky-500 to-cyan-500"
+                                    color=""
                                 />
                                 <ModeCard
                                     active={mode === "multi"}
@@ -1455,7 +1455,7 @@ function ServiceBooking() {
                                     title={text.multiMode}
                                     description={text.multiModeText}
                                     onClick={() => setMode("multi")}
-                                    color="from-violet-500 to-fuchsia-500"
+                                    color=""
                                 />
                                 <ModeCard
                                     active={mode === "lines"}
@@ -1463,20 +1463,20 @@ function ServiceBooking() {
                                     title={text.linesMode}
                                     description={text.linesModeText}
                                     onClick={() => setMode("lines")}
-                                    color="from-amber-500 to-orange-500"
+                                    color=""
                                 />
                             </div>
                         </div>}
                     </div>
 
-                    <div className="rounded-[24px] sm:rounded-[30px] bg-white/80 backdrop-blur-xl border border-white/70 shadow-2xl p-4 sm:p-6">
+                    <div className="rounded-[24px] sm:rounded-[30px] bg-[var(--vz-surface)] backdrop-blur-xl border border-white/70 shadow-2xl p-4 sm:p-6">
                         {msg && (
                             <div
                                 className={mergeClass(
                                     "mb-6 rounded-2xl border px-4 py-4 flex items-start gap-3",
                                     msgType === "success"
-                                        ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-                                        : "bg-rose-50 border-rose-200 text-rose-800"
+                                        ? "bg-[var(--vz-success-soft)] border-[var(--vz-success-line)] text-[var(--vz-success)]"
+                                        : "bg-[var(--vz-danger-soft)] border-[var(--vz-danger-line)] text-[var(--vz-danger)]"
                                 )}
                             >
                                 {msgType === "success" ? (
@@ -1489,23 +1489,23 @@ function ServiceBooking() {
                         )}
 
                         {waitlistOfferQ.data && !activeBookingCode ? (
-                            <div className="mb-6 rounded-2xl border border-emerald-300 bg-gradient-to-r from-emerald-50 to-violet-50 p-5 text-emerald-950">
+                            <div className="bg-[var(--vz-accent-soft)] mb-6 rounded-2xl border border-[var(--vz-success-line)] p-5 text-emerald-950">
                                 <div className="flex items-start gap-3">
-                                    <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                                    <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-[var(--vz-success)]" />
                                     <div className="flex-1">
                                         <div className="font-semibold">{text.offerReady}</div>
                                         <div className="mt-1 text-sm leading-6">{waitlistOfferQ.data.service?.name} · {waitlistOfferQ.data.offered_starts_at} · {waitlistOfferQ.data.offered_staff?.name}</div>
-                                        <button type="button" disabled={acceptWaitlistMut.isPending} onClick={() => acceptWaitlistMut.mutate({ slug, entry_id: waitlistOfferId, token: waitlistOfferToken })} className="mt-3 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60">
+                                        <button type="button" disabled={acceptWaitlistMut.isPending} onClick={() => acceptWaitlistMut.mutate({ slug, entry_id: waitlistOfferId, token: waitlistOfferToken })} className="mt-3 inline-flex items-center gap-2 rounded-xl bg-[var(--vz-success)] px-4 py-2.5 text-sm font-semibold text-[var(--vz-on-success)] disabled:opacity-60">
                                             {acceptWaitlistMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}{text.acceptOffer}
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         ) : null}
-                        {waitlistOfferQ.isError && waitlistOfferId > 0 ? <div className="mb-6 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">{text.offerExpired}</div> : null}
+                        {waitlistOfferQ.isError && waitlistOfferId > 0 ? <div className="mb-6 rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] p-4 text-sm text-[var(--vz-danger)]">{text.offerExpired}</div> : null}
 
                         {availabilityErrorText && mode !== "lines" && (
-                            <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-800">
+                            <div className="mb-6 rounded-2xl border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-4 py-4 text-sm text-[var(--vz-warning)]">
                                 <div className="flex items-start gap-3">
                                     <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
                                     <div>
@@ -1531,7 +1531,7 @@ function ServiceBooking() {
                         )}
 
                         {manageAccessExpired && activeBookingCode && (
-                            <div className="mb-6 rounded-[24px] border border-amber-200 bg-amber-50/80 px-5 py-4 text-sm text-amber-900">
+                            <div className="mb-6 rounded-[24px] border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-5 py-4 text-sm text-[var(--vz-warning)]">
                                 {text.expiredBanner}
                             </div>
                         )}
@@ -1584,7 +1584,7 @@ function ServiceBooking() {
                                 </section>
                             )}
                             {selectedLocationId && servicesQ.isSuccess && !servicesQ.isFetching && services.length === 0 ? (
-                                <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
+                                <div className="rounded-2xl border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-4 py-3 text-sm leading-6 text-[var(--vz-warning)]">
                                     {text.noLocationServices}
                                 </div>
                             ) : null}
@@ -1635,7 +1635,7 @@ function ServiceBooking() {
                                         </Field>
 
                                         {!staffQ.isLoading && !staff.length && (
-                                            <div className="xl:col-span-2 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                                            <div className="xl:col-span-2 rounded-2xl border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-4 py-3 text-sm text-[var(--vz-warning)]">
                                                 {text.noBookableStaff}
                                             </div>
                                         )}
@@ -1681,16 +1681,16 @@ function ServiceBooking() {
                                     </div>
 
                                     {selectedSingleService?.booking_mode === "group" ? (
-                                        <div className="rounded-2xl border border-amber-200 bg-amber-50/80 p-4">
-                                            <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-amber-900"><Users className="h-4 w-4" />{text.groupBooking}</div>
+                                        <div className="rounded-2xl border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] p-4">
+                                            <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-[var(--vz-warning)]"><Users className="h-4 w-4" />{text.groupBooking}</div>
                                             <Field label={`${text.partySize} · max ${selectedSingleService.capacity}`}>
                                                 <input type="number" min={1} max={selectedSingleService.capacity} className={inputClass} value={partySize} onChange={(e) => { setPartySize(Math.min(selectedSingleService.capacity, Math.max(1, Number(e.target.value)))); setTime(""); setSingleSlotKey(""); }} />
                                             </Field>
                                         </div>
                                     ) : null}
 
-                                    <details className="vizit-booking-recurrence rounded-2xl border border-sky-200 bg-sky-50/70 p-4">
-                                        <summary className="cursor-pointer text-sm font-semibold text-sky-900">{text.recurring}</summary>
+                                    <details className="vizit-booking-recurrence rounded-2xl border border-[var(--vz-info-line)] bg-[var(--vz-info-soft)] p-4">
+                                        <summary className="cursor-pointer text-sm font-semibold text-[var(--vz-info)]">{text.recurring}</summary>
                                         <div className="mt-4 grid gap-3 sm:grid-cols-2">
                                             <Field label={text.repeat}>
                                                 <select className={inputClass} value={recurrenceFrequency} onChange={(e) => setRecurrenceFrequency(e.target.value as typeof recurrenceFrequency)}>
@@ -1704,10 +1704,10 @@ function ServiceBooking() {
                                     </details>
 
                                     {!singleAvailabilityQ.isLoading && !singleSlots.length && serviceId > 0 && (
-                                        <div className="rounded-2xl border border-violet-200 bg-violet-50 px-4 py-4 text-sm text-violet-900">
+                                        <div className="rounded-2xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-4 py-4 text-sm text-[var(--vz-accent-text)]">
                                             <div>{text.noDaySlots}</div>
-                                            <div className="mt-1 text-xs leading-5 text-violet-700">{text.waitlistHint}</div>
-                                            <button type="button" onClick={handleJoinWaitlist} disabled={joinWaitlistMut.isPending} className="mt-3 inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 font-semibold text-white disabled:opacity-60">
+                                            <div className="mt-1 text-xs leading-5 text-[var(--vz-accent-text)]">{text.waitlistHint}</div>
+                                            <button type="button" onClick={handleJoinWaitlist} disabled={joinWaitlistMut.isPending} className="mt-3 inline-flex items-center gap-2 rounded-xl bg-[var(--vz-primary)] px-4 py-2.5 font-semibold text-[var(--vz-on-primary)] disabled:opacity-60">
                                                 {joinWaitlistMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CalendarClock className="h-4 w-4" />}{text.joinWaitlist}
                                             </button>
                                         </div>
@@ -1737,7 +1737,7 @@ function ServiceBooking() {
                                     />
 
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-3">
+                                        <label className="block text-sm font-medium text-[var(--vz-text-secondary)] mb-3">
                                             {text.chooseServices} *
                                         </label>
                                         <div className="grid gap-3 sm:grid-cols-2">
@@ -1751,26 +1751,26 @@ function ServiceBooking() {
                                                         className={mergeClass(
                                                             "text-left rounded-2xl border px-4 py-4 transition-all",
                                                             active
-                                                                ? "border-violet-400 bg-violet-50 shadow-md shadow-violet-100"
-                                                                : "border-slate-200 bg-white hover:border-violet-300 hover:bg-slate-50"
+                                                                ? "border-[var(--vz-primary)] bg-[var(--vz-accent-soft)] shadow-md"
+                                                                : "border-[var(--vz-line)] bg-[var(--vz-surface)] hover:border-[var(--vz-primary)] hover:bg-[var(--vz-surface-2)]"
                                                         )}
                                                     >
                                                         <div className="flex items-start justify-between gap-3">
                                                             <div>
-                                                                <div className="font-semibold text-slate-900">
+                                                                <div className="font-semibold text-[var(--vz-text)]">
                                                                     {service.name}
                                                                 </div>
-                                                                <div className="mt-1 text-sm text-slate-500">
+                                                                <div className="mt-1 text-sm text-[var(--vz-muted)]">
                                                                     {service.duration_minutes} {text.minuteShort}
                                                                 </div>
                                                             </div>
                                                             {active && (
-                                                                <div className="rounded-full bg-violet-600 text-white p-1">
+                                                                <div className="rounded-full bg-[var(--vz-primary)] text-[var(--vz-on-primary)] p-1">
                                                                     <Check className="h-4 w-4" />
                                                                 </div>
                                                             )}
                                                         </div>
-                                                        <div className="mt-3 text-sm text-violet-700 font-medium">
+                                                        <div className="mt-3 text-sm text-[var(--vz-accent-text)] font-medium">
                                                             {formatMoney(service.price, service.currency, locale)}
                                                         </div>
                                                     </button>
@@ -1851,18 +1851,18 @@ function ServiceBooking() {
                                     />
 
                                     {!multiAvailabilityQ.isLoading && !multiSlots.length && multiServiceIds.length > 0 && (
-                                        <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+                                        <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]">
                                             {text.noCommonSlot}
                                         </div>
                                     )}
 
-                                    <div className="rounded-3xl border border-violet-200 bg-gradient-to-r from-violet-50 to-fuchsia-50 p-5 dark:border-violet-400/25 dark:from-violet-950/40 dark:to-fuchsia-950/35">
+                                    <div className="bg-[var(--vz-accent-soft)] rounded-3xl border border-[var(--vz-line-strong)] p-5 dark:border-[var(--vz-primary)]">
                                         <div className="flex flex-wrap items-center justify-between gap-3">
                                             <div>
-                                                <div className="text-sm text-slate-500">
+                                                <div className="text-sm text-[var(--vz-muted)]">
                                                     {text.selectedServices}
                                                 </div>
-                                                <div className="mt-1 font-semibold text-slate-900">
+                                                <div className="mt-1 font-semibold text-[var(--vz-text)]">
                                                     {selectedMultiServices.length} {text.serviceCount}
                                                 </div>
                                             </div>
@@ -1882,15 +1882,15 @@ function ServiceBooking() {
                                             {selectedMultiServices.map((s) => (
                                                 <div
                                                     key={s.id}
-                                                    className="rounded-2xl bg-white/80 border border-white px-4 py-3 flex items-center justify-between gap-3"
+                                                    className="rounded-2xl bg-[var(--vz-surface)] border border-white px-4 py-3 flex items-center justify-between gap-3"
                                                 >
                                                     <div>
-                                                        <div className="font-medium text-slate-900">{s.name}</div>
-                                                        <div className="text-sm text-slate-500">
+                                                        <div className="font-medium text-[var(--vz-text)]">{s.name}</div>
+                                                        <div className="text-sm text-[var(--vz-muted)]">
                                                             {s.duration_minutes} {text.minuteShort}
                                                         </div>
                                                     </div>
-                                                    <div className="text-sm font-semibold text-violet-700">
+                                                    <div className="text-sm font-semibold text-[var(--vz-accent-text)]">
                                                         {formatMoney(s.price, s.currency, locale)}
                                                     </div>
                                                 </div>
@@ -1908,13 +1908,13 @@ function ServiceBooking() {
                                     />
 
                                     {hasDuplicateLineServices() && (
-                                        <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+                                        <div className="rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-sm text-[var(--vz-danger)]">
                                             {text.duplicateBanner}
                                         </div>
                                     )}
 
                                     {lineOverlap ? (
-                                        <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+                                        <div className="rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-sm text-[var(--vz-danger)]">
                                             {text.overlapPrefix} {lineOverlap.first}/{lineOverlap.second}. {text.overlapAction}
                                         </div>
                                     ) : null}
@@ -1938,7 +1938,7 @@ function ServiceBooking() {
                                     <button
                                         type="button"
                                         onClick={addLine}
-                                        className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-orange-500 to-rose-500 text-white px-4 py-3 shadow-lg hover:opacity-95"
+                                        className="bg-[var(--vz-primary)] inline-flex items-center gap-2 rounded-2xl text-[var(--vz-on-primary)] px-4 py-3 shadow-lg hover:opacity-95"
                                     >
                                         <Plus className="h-4 w-4" />
                                         {text.addService}
@@ -1997,41 +1997,41 @@ function ServiceBooking() {
                                             onChange={(e) => setNotes(e.target.value)}
                                             placeholder={text.notesPlaceholder}
                                         />
-                                        <p className="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                                        <p className="mt-2 text-xs leading-5 text-[var(--vz-muted)]">
                                             {text.notesPrivacyHint}
                                         </p>
                                     </Field>
                                 </div>
 
-                                <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-violet-200 bg-violet-50/70 p-4 text-sm leading-6 text-slate-800 dark:border-violet-900/60 dark:bg-violet-950/20 dark:text-slate-200">
+                                <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] p-4 text-sm leading-6 text-[var(--vz-text)] dark:border-violet-900/60 dark:bg-violet-950/20">
                                     <input
                                         type="checkbox"
                                         checked={legalAccepted}
                                         onChange={(e) => setLegalAccepted(e.target.checked)}
                                         required
-                                        className="mt-1 h-4 w-4 shrink-0 rounded border-violet-300 text-violet-600"
+                                        className="mt-1 h-4 w-4 shrink-0 rounded border-[var(--vz-primary)] text-[var(--vz-accent-text)]"
                                     />
                                     <span>
                                         {text.legalPrefix}{" "}
-                                        <Link to="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold text-violet-700 underline underline-offset-2 dark:text-violet-300">
+                                        <Link to="/terms" target="_blank" rel="noopener noreferrer" className="font-semibold text-[var(--vz-accent-text)] underline underline-offset-2 dark:text-violet-300">
                                             {text.termsLink}
                                         </Link>{" "}
                                         {text.legalAnd}{" "}
-                                        <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="font-semibold text-violet-700 underline underline-offset-2 dark:text-violet-300">
+                                        <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="font-semibold text-[var(--vz-accent-text)] underline underline-offset-2 dark:text-violet-300">
                                             {text.privacyLink}
                                         </Link>{" "}
                                         {text.legalDataConsent}
                                     </span>
                                 </label>
 
-                                <label className="vizit-booking-marketing-consent flex cursor-pointer items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 text-sm leading-6 text-emerald-900">
-                                    <input type="checkbox" checked={marketingOptIn} onChange={(e) => setMarketingOptIn(e.target.checked)} className="mt-1 h-4 w-4 rounded border-emerald-300 text-emerald-600" />
+                                <label className="vizit-booking-marketing-consent flex cursor-pointer items-start gap-3 rounded-2xl border border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] p-4 text-sm leading-6 text-[var(--vz-success)]">
+                                    <input type="checkbox" checked={marketingOptIn} onChange={(e) => setMarketingOptIn(e.target.checked)} className="mt-1 h-4 w-4 rounded border-[var(--vz-success-line)] text-[var(--vz-success)]" />
                                     <span>{text.marketingConsent}</span>
                                 </label>
 
                                 {mode !== 'lines' ? (
-                                    <details className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-                                        <summary className="cursor-pointer text-sm font-semibold text-slate-700">
+                                    <details className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
+                                        <summary className="cursor-pointer text-sm font-semibold text-[var(--vz-text-secondary)]">
                                             {text.discounts}
                                         </summary>
                                         <div className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -2049,11 +2049,11 @@ function ServiceBooking() {
                                 ) : null}
                             </section>
 
-                            <div className="rounded-[28px] border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-5 dark:border-[#312641] dark:from-[#21162f] dark:to-[#151020] sm:p-6">
+                            <div className="bg-[var(--vz-surface-2)] rounded-[28px] border border-[var(--vz-line)] p-5 dark:border-[#312641] sm:p-6">
                                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                     <div>
-                                        <div className="text-sm text-slate-500">{text.ready}</div>
-                                        <div className="text-lg font-semibold text-slate-900">
+                                        <div className="text-sm text-[var(--vz-muted)]">{text.ready}</div>
+                                        <div className="text-lg font-semibold text-[var(--vz-text)]">
                                             {mode === "single"
                                                 ? text.readySingle
                                                 : mode === "multi"
@@ -2066,10 +2066,10 @@ function ServiceBooking() {
                                         type="submit"
                                         disabled={isSubmitting || !canSubmit}
                                         className={mergeClass(
-                                            "inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-4 text-white font-semibold shadow-xl transition-all",
-                                            mode === "single" && "bg-gradient-to-r from-sky-500 to-cyan-500",
-                                            mode === "multi" && "bg-gradient-to-r from-violet-500 to-fuchsia-500",
-                                            mode === "lines" && "bg-gradient-to-r from-orange-500 to-rose-500",
+                                            "inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-4 font-semibold text-[var(--vz-on-primary)] shadow-[var(--vz-shadow)] transition-all hover:bg-[var(--vz-primary-hover)]",
+                                            mode === "single" && "bg-[var(--vz-primary)]",
+                                            mode === "multi" && "bg-[var(--vz-primary)]",
+                                            mode === "lines" && "bg-[var(--vz-primary)]",
                                             (isSubmitting || !canSubmit) && "opacity-60 cursor-not-allowed"
                                         )}
                                     >
@@ -2089,11 +2089,11 @@ function ServiceBooking() {
                             </div>
                         </form>
                         ) : (
-                            <div className="mt-2 border-t border-slate-200 pt-5">
+                            <div className="mt-2 border-t border-[var(--vz-line)] pt-5">
                                 <button
                                     type="button"
                                     onClick={startNewBooking}
-                                    className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-violet-200 bg-violet-50 px-5 py-3.5 text-sm font-semibold text-violet-700 transition hover:border-violet-300 hover:bg-violet-100 sm:w-auto"
+                                    className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-5 py-3.5 text-sm font-semibold text-[var(--vz-accent-text)] transition hover:border-[var(--vz-primary)] hover:bg-[var(--vz-accent-soft)] sm:w-auto"
                                 >
                                     <CalendarDays className="h-4 w-4" />
                                     {text.newBooking}
@@ -2118,8 +2118,8 @@ function SectionTitle({
 }) {
     return (
         <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">{title}</h2>
-            <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-[var(--vz-text)]">{title}</h2>
+            <p className="mt-1 text-sm text-[var(--vz-muted)]">{subtitle}</p>
         </div>
     );
 }
@@ -2142,10 +2142,10 @@ function Field({
 
     return (
         <div>
-            <label htmlFor={controlId} className="block text-sm font-medium text-slate-700 mb-2">{label}</label>
+            <label htmlFor={controlId} className="block text-sm font-medium text-[var(--vz-text-secondary)] mb-2">{label}</label>
             <div className="relative">
                 {icon && (
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--vz-muted)] pointer-events-none">
                         {icon}
                     </div>
                 )}
@@ -2178,20 +2178,20 @@ function ModeCard({
             className={mergeClass(
                 "vizit-booking-mode-card w-full rounded-2xl border p-3 text-left transition-all sm:p-4",
                 active
-                    ? "is-active border-[#d39a43]/55 bg-[#f8eee4] shadow-sm ring-2 ring-[#d39a43]/10"
-                    : "border-slate-200 bg-white hover:border-violet-200 hover:bg-slate-50"
+                    ? "is-active border-[var(--vz-line-strong)] bg-[var(--vz-surface-2)] shadow-sm ring-2 ring-[#d39a43]/10"
+                    : "border-[var(--vz-line)] bg-[var(--vz-surface)] hover:border-[var(--vz-line-strong)] hover:bg-[var(--vz-surface-2)]"
             )}
         >
             <div className="flex items-start gap-3">
-                <div className={mergeClass("mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-r text-white", color)}>
+                <div className={mergeClass("mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-xl", active ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)]" : "bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]", color)}>
                     {icon}
                 </div>
                 <div className="min-w-0">
-                    <div className="vizit-booking-mode-title flex items-center gap-2 font-semibold text-slate-900">
+                    <div className="vizit-booking-mode-title flex items-center gap-2 font-semibold text-[var(--vz-text)]">
                         {title}
-                        {active ? <CheckCircle2 className="h-4 w-4 shrink-0 text-violet-600" /> : null}
+                        {active ? <CheckCircle2 className="h-4 w-4 shrink-0 text-[var(--vz-accent-text)]" /> : null}
                     </div>
-                    <div className="vizit-booking-mode-description mt-1 text-xs leading-5 text-slate-500">{description}</div>
+                    <div className="vizit-booking-mode-description mt-1 text-xs leading-5 text-[var(--vz-muted)]">{description}</div>
                 </div>
             </div>
         </button>
@@ -2199,9 +2199,9 @@ function ModeCard({
 }
 function StatPill({ label, value }: { label: string; value: string }) {
     return (
-        <div className="rounded-2xl bg-white border border-violet-100 px-4 py-3 min-w-0">
-            <div className="text-xs text-slate-500">{label}</div>
-            <div className="mt-1 font-semibold text-slate-900">{value}</div>
+        <div className="rounded-2xl bg-[var(--vz-surface)] border border-[var(--vz-line-strong)] px-4 py-3 min-w-0">
+            <div className="text-xs text-[var(--vz-muted)]">{label}</div>
+            <div className="mt-1 font-semibold text-[var(--vz-text)]">{value}</div>
         </div>
     );
 }
@@ -2234,7 +2234,7 @@ function TelegramConnectButton({
 
     if (connected) {
         return (
-            <div className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-center text-sm font-bold text-emerald-800">
+            <div className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] px-4 py-3 text-center text-sm font-bold text-[var(--vz-success)]">
                 <CheckCircle2 className="h-4 w-4" />
                 {text.telegramConnected}
             </div>
@@ -2247,12 +2247,12 @@ function TelegramConnectButton({
                 type="button"
                 onClick={() => connectMut.mutate()}
                 disabled={connectMut.isPending || !bookingCode || !guestToken}
-                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#229ED9] px-4 py-3 text-sm font-bold text-white shadow-[0_12px_28px_rgba(34,158,217,0.24)] transition hover:bg-[#168ac0] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-200 disabled:opacity-60"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[var(--vz-primary)] px-4 py-3 text-sm font-bold text-[var(--vz-on-primary)] shadow-[0_12px_28px_rgba(34,158,217,0.24)] transition hover:bg-[var(--vz-primary-hover)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-200 disabled:opacity-60"
             >
                 {connectMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 {connectMut.isPending ? text.telegramConnecting : text.telegramConnect}
             </button>
-            {error ? <div className="mt-2 text-sm text-rose-700">{error}</div> : null}
+            {error ? <div className="mt-2 text-sm text-[var(--vz-danger)]">{error}</div> : null}
         </div>
     );
 }
@@ -2299,19 +2299,19 @@ function OtpVerifyPanel({
     const seconds = String(visibleRemainingSeconds % 60).padStart(2, "0");
 
     return (
-        <div className="rounded-[28px] border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-fuchsia-50 p-5 shadow-sm dark:border-violet-400/25 dark:from-violet-950/40 dark:via-[#151020] dark:to-fuchsia-950/35 sm:p-6">
+        <div className="bg-[var(--vz-accent-soft)] rounded-[28px] border border-[var(--vz-line-strong)] p-5 shadow-sm dark:border-[var(--vz-primary)] sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <div className="text-sm font-medium text-violet-700 dark:text-violet-300">{text.otpStep}</div>
-                    <div className="mt-1 text-2xl font-bold text-slate-900">{text.otpTitle}</div>
+                    <div className="text-sm font-medium text-[var(--vz-accent-text)] dark:text-violet-300">{text.otpStep}</div>
+                    <div className="mt-1 text-2xl font-bold text-[var(--vz-text)]">{text.otpTitle}</div>
                 </div>
-                <div className="rounded-2xl bg-white border border-violet-100 px-4 py-3 text-sm text-slate-600">
-                    <div className="font-semibold text-slate-900">{text.contactChannels}</div>
+                <div className="rounded-2xl bg-[var(--vz-surface)] border border-[var(--vz-line-strong)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]">
+                    <div className="font-semibold text-[var(--vz-text)]">{text.contactChannels}</div>
                     <div className="mt-1">{text.otpValid}: {expiresAt ? `${minutes}:${seconds}` : "--:--"}</div>
                 </div>
             </div>
 
-            <div className="mt-5 rounded-2xl border border-violet-100 bg-white/90 px-4 py-4 text-sm text-slate-600">
+            <div className="mt-5 rounded-2xl border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] px-4 py-4 text-sm text-[var(--vz-text-secondary)]">
                 {text.otpHelp}
             </div>
 
@@ -2324,13 +2324,13 @@ function OtpVerifyPanel({
                     autoComplete="one-time-code"
                     aria-label={text.otpTitle}
                     placeholder={text.otpPlaceholder}
-                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-4 text-lg font-semibold tracking-[0.35em] text-slate-900 outline-none focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+                    className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-4 text-lg font-semibold tracking-[0.35em] text-[var(--vz-text)] outline-none focus:border-[var(--vz-primary)] focus:ring-4 focus:ring-[var(--vz-focus)]"
                 />
                 <button
                     type="button"
                     onClick={onVerify}
                     disabled={otp.trim().length < 4 || isSubmitting}
-                    className="rounded-2xl bg-slate-900 px-5 py-4 font-semibold text-white disabled:opacity-60"
+                    className="rounded-2xl bg-[var(--vz-primary)] px-5 py-4 font-semibold text-[var(--vz-on-primary)] disabled:opacity-60"
                 >
                     {isSubmitting ? text.checking : text.confirm}
                 </button>
@@ -2338,7 +2338,7 @@ function OtpVerifyPanel({
                     type="button"
                     onClick={onResend}
                     disabled={isResending}
-                    className="rounded-2xl border border-slate-200 bg-white px-5 py-4 font-semibold text-slate-700 disabled:opacity-60"
+                    className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-5 py-4 font-semibold text-[var(--vz-text-secondary)] disabled:opacity-60"
                 >
                     {isResending ? text.resending : text.resend}
                 </button>
@@ -2446,15 +2446,15 @@ function ManageBookingCard({
     }
 
     return (
-        <div className="rounded-[28px] border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-sky-50 p-5 shadow-sm dark:border-emerald-400/25 dark:from-emerald-950/40 dark:via-[#151020] dark:to-sky-950/35 sm:p-6">
+        <div className="bg-[var(--vz-accent-soft)] rounded-[28px] border border-[var(--vz-success-line)] p-5 shadow-sm dark:border-[var(--vz-success-line)] sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-200">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-[var(--vz-success-soft)] px-3 py-1 text-xs font-semibold text-[var(--vz-success)] dark:bg-emerald-500/15 dark:text-emerald-200">
                         <ShieldCheck className="h-4 w-4" />
                         {text.secureActive}
                     </div>
-                    <h3 className="mt-3 text-2xl font-bold text-slate-900">{detail.business.name}</h3>
-                    <div className="mt-2 flex flex-wrap gap-2 text-sm text-slate-500">
+                    <h3 className="mt-3 text-2xl font-bold text-[var(--vz-text)]">{detail.business.name}</h3>
+                    <div className="mt-2 flex flex-wrap gap-2 text-sm text-[var(--vz-muted)]">
                         <span>{text.customer}: {detail.client_name}</span>
                         <span>• {detail.client_phone}</span>
                         {detail.client_email ? <span>• {detail.client_email}</span> : null}
@@ -2464,7 +2464,7 @@ function ManageBookingCard({
                             {statusMeta.label}
                         </span>
                         {detail.guest_access_expires_at ? (
-                            <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600">
+                            <span className="inline-flex items-center rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-1 text-xs font-medium text-[var(--vz-text-secondary)]">
                                 {text.manageUntil} {formatDateTime(detail.guest_access_expires_at, timezone, locale)}
                             </span>
                         ) : null}
@@ -2475,7 +2475,7 @@ function ManageBookingCard({
                         type="button"
                         onClick={copyBookingCode}
                         aria-label={text.copiedLabel}
-                        className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm"
+                        className="inline-flex items-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm font-semibold text-[var(--vz-text-secondary)] shadow-sm"
                     >
                         <Copy className="h-4 w-4" />
                         {detail.booking_code}
@@ -2484,7 +2484,7 @@ function ManageBookingCard({
                         type="button"
                         onClick={() => setConfirmingCancel(true)}
                         disabled={isCancelling || detail.status === "cancelled" || detail.can_cancel === false}
-                        className="rounded-2xl border border-rose-200 bg-white px-4 py-3 text-sm font-semibold text-rose-600 disabled:opacity-60"
+                        className="rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm font-semibold text-[var(--vz-danger)] disabled:opacity-60"
                     >
                         {isCancelling
                             ? text.cancelling
@@ -2501,15 +2501,15 @@ function ManageBookingCard({
                 <section
                     id="customer-telegram-notifications"
                     aria-labelledby="customer-telegram-title"
-                    className="mt-5 scroll-mt-24 rounded-[24px] border border-sky-200 bg-gradient-to-br from-sky-50 via-white to-cyan-50 p-4 shadow-[0_14px_38px_rgba(14,116,144,0.10)] sm:p-5"
+                    className="bg-[var(--vz-accent-soft)] mt-5 scroll-mt-24 rounded-[24px] border border-[var(--vz-info-line)] p-4 shadow-[0_14px_38px_rgba(14,116,144,0.10)] sm:p-5"
                 >
                     <div className="flex items-start gap-3">
-                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[#229ED9] text-white shadow-[0_10px_24px_rgba(34,158,217,0.24)]">
+                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-[0_10px_24px_rgba(34,158,217,0.24)]">
                             <Send className="h-5 w-5" aria-hidden="true" />
                         </span>
                         <div className="min-w-0">
-                            <h4 id="customer-telegram-title" className="text-base font-bold text-slate-900">{text.telegramCardTitle}</h4>
-                            <p className="mt-1 text-sm leading-6 text-slate-600">
+                            <h4 id="customer-telegram-title" className="text-base font-bold text-[var(--vz-text)]">{text.telegramCardTitle}</h4>
+                            <p className="mt-1 text-sm leading-6 text-[var(--vz-text-secondary)]">
                                 {detail.telegram_connected ? text.telegramConnectedHelp : text.telegramCardText}
                             </p>
                         </div>
@@ -2522,21 +2522,21 @@ function ManageBookingCard({
                         />
                     </div>
                     {!detail.telegram_connected ? (
-                        <p className="mt-3 text-xs font-medium leading-5 text-sky-800">{text.telegramConnectHelp}</p>
+                        <p className="mt-3 text-xs font-medium leading-5 text-[var(--vz-info)]">{text.telegramConnectHelp}</p>
                     ) : null}
                 </section>
             ) : null}
 
             {confirmingCancel ? (
-                <div className="mt-5 rounded-3xl border border-rose-200 bg-rose-50 p-4 sm:p-5">
-                    <div className="font-semibold text-rose-900">
+                <div className="mt-5 rounded-3xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] p-4 sm:p-5">
+                    <div className="font-semibold text-[var(--vz-danger)]">
                         {cancellableBookings.length > 1
                             ? `${text.cancelManyWarning} (${cancellableBookings.length})`
                             : text.cancelOneWarning}
                     </div>
                     <div className="mt-3 space-y-2">
                         {cancellableBookings.map((booking) => (
-                            <div key={booking.id} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-white px-3 py-2 text-sm text-slate-700">
+                            <div key={booking.id} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-[var(--vz-surface)] px-3 py-2 text-sm text-[var(--vz-text-secondary)]">
                                 <span>{booking.service?.name ?? text.service} · {formatDateTime(booking.starts_at, timezone, locale)}</span>
                                 <span className="font-semibold">#{booking.booking_code}</span>
                             </div>
@@ -2550,7 +2550,7 @@ function ManageBookingCard({
                                 onCancel();
                             }}
                             disabled={isCancelling}
-                            className="rounded-2xl bg-rose-600 px-4 py-3 text-sm font-semibold text-white disabled:opacity-60"
+                            className="rounded-2xl bg-[var(--vz-danger)] px-4 py-3 text-sm font-semibold text-[var(--vz-on-danger)] disabled:opacity-60"
                         >
                             {text.yesCancel}
                         </button>
@@ -2558,7 +2558,7 @@ function ManageBookingCard({
                             type="button"
                             onClick={() => setConfirmingCancel(false)}
                             disabled={isCancelling}
-                            className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700"
+                            className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm font-semibold text-[var(--vz-text-secondary)]"
                         >
                             {text.goBack}
                         </button>
@@ -2567,7 +2567,7 @@ function ManageBookingCard({
             ) : null}
 
             {reschedulingBooking ? (
-                <div className="mt-5 rounded-3xl border border-violet-200 bg-violet-50/80 p-4 sm:p-5">
+                <div className="mt-5 rounded-3xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] p-4 sm:p-5">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
                             <div className="flex items-center gap-2 font-semibold text-violet-950">
@@ -2582,7 +2582,7 @@ function ManageBookingCard({
                             type="button"
                             onClick={closeReschedule}
                             disabled={rescheduleMut.isPending}
-                            className="rounded-xl border border-violet-200 bg-white px-3 py-2 text-sm font-semibold text-violet-800 disabled:opacity-60"
+                            className="rounded-xl border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] px-3 py-2 text-sm font-semibold text-[var(--vz-accent-text)] disabled:opacity-60"
                         >
                             {text.goBack}
                         </button>
@@ -2622,12 +2622,12 @@ function ManageBookingCard({
                     </div>
 
                     {rescheduleOptionsQ.isError ? (
-                        <div className="mt-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+                        <div className="mt-3 rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-sm text-[var(--vz-danger)]">
                             {formatApiError(rescheduleOptionsQ.error, text.rescheduleError)}
                         </div>
                     ) : null}
                     {!rescheduleOptionsQ.isFetching && rescheduleOptionsQ.isSuccess && !rescheduleSlots.length ? (
-                        <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                        <div className="mt-3 rounded-2xl border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-4 py-3 text-sm text-[var(--vz-warning)]">
                             {text.noRescheduleTimes}
                         </div>
                     ) : null}
@@ -2640,7 +2640,7 @@ function ManageBookingCard({
                             type="button"
                             onClick={confirmReschedule}
                             disabled={!selectedRescheduleSlot || rescheduleMut.isPending}
-                            className="inline-flex items-center gap-2 rounded-2xl bg-violet-700 px-5 py-3 text-sm font-semibold text-white shadow-sm disabled:opacity-60"
+                            className="inline-flex items-center gap-2 rounded-2xl bg-[var(--vz-primary)] px-5 py-3 text-sm font-semibold text-[var(--vz-on-primary)] shadow-sm disabled:opacity-60"
                         >
                             {rescheduleMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
                             {rescheduleMut.isPending ? text.rescheduling : text.saveNewTime}
@@ -2655,18 +2655,18 @@ function ManageBookingCard({
                         const inactive = ["cancelled", "done", "completed", "no_show"].includes(booking.status);
                         const canReschedule = !inactive && booking.can_reschedule !== false;
                         return (
-                            <div data-booking-id={booking.id} key={booking.id} className="rounded-3xl border border-white bg-white/90 px-4 py-4 shadow-sm">
+                            <div data-booking-id={booking.id} key={booking.id} className="rounded-3xl border border-white bg-[var(--vz-surface)] px-4 py-4 shadow-sm">
                                 <div className="flex flex-wrap items-start justify-between gap-3">
                                     <div>
-                                        <div className="font-semibold text-slate-900">{booking.service?.name ?? text.service}</div>
-                                        <div className="mt-1 text-sm text-slate-500">
+                                        <div className="font-semibold text-[var(--vz-text)]">{booking.service?.name ?? text.service}</div>
+                                        <div className="mt-1 text-sm text-[var(--vz-muted)]">
                                             {formatDateTime(booking.starts_at, timezone, locale)}
                                             {booking.staff?.name ? ` • ${booking.staff.name}` : ""}
                                         </div>
                                     </div>
                                     <div className="text-right text-sm">
-                                        <div className="font-semibold text-slate-900">{formatMoney(booking.final_price ?? booking.service?.price, booking.currency ?? booking.service?.currency ?? detail.currency ?? "AMD", locale)}</div>
-                                        <div className="mt-1 text-slate-500">#{booking.booking_code}</div>
+                                        <div className="font-semibold text-[var(--vz-text)]">{formatMoney(booking.final_price ?? booking.service?.price, booking.currency ?? booking.service?.currency ?? detail.currency ?? "AMD", locale)}</div>
+                                        <div className="mt-1 text-[var(--vz-muted)]">#{booking.booking_code}</div>
                                     </div>
                                 </div>
                                 <div className="mt-3 flex justify-end">
@@ -2674,7 +2674,7 @@ function ManageBookingCard({
                                         type="button"
                                         onClick={() => openReschedule(booking.id, booking.starts_at)}
                                         disabled={!canReschedule || rescheduleMut.isPending}
-                                        className="inline-flex items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-3 py-2 text-xs font-semibold text-violet-800 disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400"
+                                        className="inline-flex items-center gap-2 rounded-xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-2 text-xs font-semibold text-[var(--vz-accent-text)] disabled:border-[var(--vz-line)] disabled:bg-[var(--vz-surface-2)] disabled:text-[var(--vz-muted)]"
                                     >
                                         <CalendarClock className="h-4 w-4" />
                                         {canReschedule ? text.changeTime : text.rescheduleClosed}
@@ -2685,35 +2685,35 @@ function ManageBookingCard({
                     })}
                 </div>
 
-                <div className="rounded-3xl border border-white bg-white/90 px-4 py-4 shadow-sm space-y-4">
+                <div className="rounded-3xl border border-white bg-[var(--vz-surface)] px-4 py-4 shadow-sm space-y-4">
                     <div>
-                        <div className="text-xs uppercase tracking-[0.12em] text-slate-400">{text.contact}</div>
-                        <div className="mt-2 space-y-2 text-sm text-slate-600">
+                        <div className="text-xs uppercase tracking-[0.12em] text-[var(--vz-muted)]">{text.contact}</div>
+                        <div className="mt-2 space-y-2 text-sm text-[var(--vz-text-secondary)]">
                             {detail.business.address ? (
-                                <div className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 text-slate-400" /> <span>{detail.business.address}</span></div>
+                                <div className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 text-[var(--vz-muted)]" /> <span>{detail.business.address}</span></div>
                             ) : null}
                             {detail.business.phone ? (
-                                <div className="flex items-start gap-2"><Phone className="mt-0.5 h-4 w-4 text-slate-400" /> <a href={`tel:${detail.business.phone}`} className="hover:text-slate-900">{detail.business.phone}</a></div>
+                                <div className="flex items-start gap-2"><Phone className="mt-0.5 h-4 w-4 text-[var(--vz-muted)]" /> <a href={`tel:${detail.business.phone}`} className="hover:text-[var(--vz-text)]">{detail.business.phone}</a></div>
                             ) : null}
                         </div>
                     </div>
 
                     <div>
-                        <div className="text-xs uppercase tracking-[0.12em] text-slate-400">{text.total}</div>
-                        <div className="mt-2 text-lg font-semibold text-slate-900">
+                        <div className="text-xs uppercase tracking-[0.12em] text-[var(--vz-muted)]">{text.total}</div>
+                        <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">
                             {formatMoney(detail.total_price, detail.currency ?? "AMD", locale)}
                         </div>
                     </div>
 
                     {detail.notes ? (
-                        <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+                        <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]">
                             {text.notes}: {detail.notes}
                         </div>
                     ) : null}
                 </div>
             </div>
 
-            {isLoading && <div className="mt-4 text-sm text-slate-500">{text.updating}</div>}
+            {isLoading && <div className="mt-4 text-sm text-[var(--vz-muted)]">{text.updating}</div>}
         </div>
     );
 }
@@ -2731,25 +2731,25 @@ function ServicePreviewCard({
     const text = publicBookingCopy[locale];
     const tones =
         tone === "sky"
-            ? "from-sky-50 to-cyan-50 border-sky-200 text-sky-700 dark:from-sky-950/45 dark:to-cyan-950/35 dark:border-sky-400/25 dark:text-sky-300"
-            : "from-amber-50 to-orange-50 border-amber-200 text-amber-700 dark:from-amber-950/45 dark:to-orange-950/35 dark:border-amber-400/25 dark:text-amber-300";
+            ? "bg-[var(--vz-info-soft)] border-[var(--vz-info-line)] text-[var(--vz-info)]"
+            : "bg-[var(--vz-warning-soft)] border-[var(--vz-warning-line)] text-[var(--vz-warning)]";
 
     return (
         <div
             className={mergeClass(
-                "rounded-3xl border bg-gradient-to-r p-4",
+                "rounded-3xl border p-4",
                 tones,
                 compact ? "p-4" : "p-5"
             )}
         >
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <div className="font-semibold text-slate-900">{service.name}</div>
-                    <div className="mt-1 text-sm text-slate-500">
+                    <div className="font-semibold text-[var(--vz-text)]">{service.name}</div>
+                    <div className="mt-1 text-sm text-[var(--vz-muted)]">
                         {service.duration_minutes} {text.minuteShort} • {formatMoney(service.price, service.currency, locale)}
                     </div>
                 </div>
-                <div className="rounded-full bg-white px-3 py-1 text-xs font-medium border border-white shadow-sm">
+                <div className="rounded-full bg-[var(--vz-surface)] px-3 py-1 text-xs font-medium border border-white shadow-sm">
                     {text.selected}
                 </div>
             </div>

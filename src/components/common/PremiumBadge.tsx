@@ -24,9 +24,9 @@ export const PremiumBadge: React.FC<PremiumBadgeProps> = ({ children, className 
                 <motion.span
                     animate={{ scale: [1, 1.2, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
-                    className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-[#C5A28A] to-[#B88E72]"
+                    className="bg-[var(--vz-primary)] w-1.5 h-1.5 rounded-full"
                 />
-                {Icon && <Icon size={14} className="text-[#C5A28A]" />}
+                {Icon && <Icon size={14} className="text-[var(--vz-muted)]" />}
                 {children}
             </span>
             <motion.div

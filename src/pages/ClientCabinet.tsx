@@ -32,14 +32,14 @@ async function fetchCabinet() {
 
 function StatusPill({ status }: { status: string }) {
   const map: Record<string, string> = {
-    pending: "bg-amber-50 text-amber-700 border-amber-200",
-    confirmed: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    cancelled: "bg-rose-50 text-rose-700 border-rose-200",
-    completed: "bg-slate-100 text-slate-700 border-slate-200",
-    done: "bg-slate-100 text-slate-700 border-slate-200",
-    no_show: "bg-rose-50 text-rose-700 border-rose-200",
+    pending: "bg-[var(--vz-warning-soft)] text-[var(--vz-warning)] border-[var(--vz-warning-line)]",
+    confirmed: "bg-[var(--vz-success-soft)] text-[var(--vz-success)] border-[var(--vz-success-line)]",
+    cancelled: "bg-[var(--vz-danger-soft)] text-[var(--vz-danger)] border-[var(--vz-danger-line)]",
+    completed: "bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)] border-[var(--vz-line)]",
+    done: "bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)] border-[var(--vz-line)]",
+    no_show: "bg-[var(--vz-danger-soft)] text-[var(--vz-danger)] border-[var(--vz-danger-line)]",
   };
-  return <span className={cn("inline-flex rounded-full border px-3 py-1 text-xs font-medium capitalize", map[status] || "bg-slate-100 text-slate-700 border-slate-200")}>{status.replace("_", " ")}</span>;
+  return <span className={cn("inline-flex rounded-full border px-3 py-1 text-xs font-medium capitalize", map[status] || "bg-[var(--vz-surface-2)] text-[var(--vz-text-secondary)] border-[var(--vz-line)]")}>{status.replace("_", " ")}</span>;
 }
 
 function formatDate(v?: string) {
@@ -131,19 +131,19 @@ export default function ClientCabinet() {
   return (
     <motion.div variants={pageTransition} initial="hidden" animate="show" className="vizit-public-page vizit-client-page min-h-screen">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-        <motion.div variants={fadeUp} className="rounded-[32px] border border-white/70 bg-white/85 p-5 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur sm:p-6">
+        <motion.div variants={fadeUp} className="rounded-[32px] border border-white/70 bg-[var(--vz-surface)] p-5 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur sm:p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-violet-100 bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-1 text-xs font-medium text-[var(--vz-accent-text)]">
                 <Sparkles className="h-3.5 w-3.5" /> Vizit client cabinet
               </div>
-              <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">Բարի վերադարձ, {user?.name ?? "հյուր"}</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-500">Այստեղ տեսնում ես տարբեր բիզնեսներում կատարած քո առաջիկա և նախորդ ամրագրումները՝ կապված նույն հաստատված email հասցեին։</p>
+              <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--vz-text)]">Բարի վերադարձ, {user?.name ?? "հյուր"}</h1>
+              <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--vz-muted)]">Այստեղ տեսնում ես տարբեր բիզնեսներում կատարած քո առաջիկա և նախորդ ամրագրումները՝ կապված նույն հաստատված email հասցեին։</p>
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Link to="/" className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700">Գլխավոր</Link>
-              <button disabled={loggingOut} onClick={logout} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60">
+              <Link to="/" className="inline-flex items-center justify-center rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-2.5 text-sm font-medium text-[var(--vz-text-secondary)]">Գլխավոր</Link>
+              <button disabled={loggingOut} onClick={logout} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[var(--vz-primary)] px-4 py-2.5 text-sm font-medium text-[var(--vz-on-primary)] disabled:cursor-not-allowed disabled:opacity-60">
                 <LogOut className="h-4 w-4" /> {loggingOut ? "Դուրս ենք գալիս…" : "Դուրս գալ"}
               </button>
             </div>
@@ -151,12 +151,12 @@ export default function ClientCabinet() {
         </motion.div>
 
         {requiresVerification ? (
-          <motion.div variants={fadeUp} className="mt-6 flex flex-col gap-4 rounded-[28px] border border-amber-200 bg-amber-50 p-5 text-amber-950 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+          <motion.div variants={fadeUp} className="mt-6 flex flex-col gap-4 rounded-[28px] border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] p-5 text-amber-950 shadow-sm sm:flex-row sm:items-center sm:justify-between">
             <div className="flex gap-3">
-              <MailCheck className="mt-0.5 h-5 w-5 shrink-0 text-amber-700" />
+              <MailCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--vz-warning)]" />
               <div>
                 <div className="font-semibold">Հաստատիր email հասցեն</div>
-                <p className="mt-1 text-sm leading-6 text-amber-800">Ամրագրումների պատմությունը կերևա միայն email-ի հաստատումից հետո։ Ստուգիր նաև spam թղթապանակը։</p>
+                <p className="mt-1 text-sm leading-6 text-[var(--vz-warning)]">Ամրագրումների պատմությունը կերևա միայն email-ի հաստատումից հետո։ Ստուգիր նաև spam թղթապանակը։</p>
               </div>
             </div>
             <button disabled={resending} onClick={resendVerification} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-amber-900 px-4 py-2.5 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60">
@@ -172,8 +172,8 @@ export default function ClientCabinet() {
             className={cn(
               "mt-4 rounded-2xl border px-4 py-3 text-sm",
               verificationNotice.type === "success"
-                ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-                : "border-rose-200 bg-rose-50 text-rose-800",
+                ? "border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] text-[var(--vz-success)]"
+                : "border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] text-[var(--vz-danger)]",
             )}
           >
             {verificationNotice.text}
@@ -181,51 +181,51 @@ export default function ClientCabinet() {
         ) : null}
 
         <motion.div variants={staggerContainer(0.08)} initial="hidden" animate="show" className="mt-6 grid gap-6 2xl:grid-cols-[1.05fr_0.95fr]">
-          <motion.section variants={fadeUp} className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex items-center gap-2 text-lg font-semibold text-slate-900"><CalendarClock className="h-5 w-5 text-violet-600" /> Առաջիկա այցեր</div>
+          <motion.section variants={fadeUp} className="rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 shadow-sm">
+            <div className="flex items-center gap-2 text-lg font-semibold text-[var(--vz-text)]"><CalendarClock className="h-5 w-5 text-[var(--vz-accent-text)]" /> Առաջիկա այցեր</div>
             <div className="mt-5 space-y-4">
-              {cabinetQ.isLoading ? <div className="text-sm text-slate-500">Բեռնում ենք upcoming bookings-ները...</div> : null}
-              {(cabinetQ.data?.data.upcoming ?? []).length === 0 && !cabinetQ.isLoading ? <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-sm text-slate-500">Առաջիկա այց դեռ չկա։ Նույն հաստատված email-ով ամրագրումը կերևա այստեղ։</div> : null}
+              {cabinetQ.isLoading ? <div className="text-sm text-[var(--vz-muted)]">Բեռնում ենք upcoming bookings-ները...</div> : null}
+              {(cabinetQ.data?.data.upcoming ?? []).length === 0 && !cabinetQ.isLoading ? <div className="rounded-2xl border border-dashed border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-6 text-sm text-[var(--vz-muted)]">Առաջիկա այց դեռ չկա։ Նույն հաստատված email-ով ամրագրումը կերևա այստեղ։</div> : null}
               {(cabinetQ.data?.data.upcoming ?? []).map((booking) => (
-                <div key={booking.id} className="rounded-[24px] border border-slate-200 bg-slate-50/70 p-4">
+                <div key={booking.id} className="rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                      <div className="text-base font-semibold text-slate-900">{booking.business?.name || "Բիզնես"}</div>
-                      <div className="mt-1 text-sm text-slate-500">{booking.service?.name || "Ծառայություն"} • {formatDate(booking.starts_at)}</div>
+                      <div className="text-base font-semibold text-[var(--vz-text)]">{booking.business?.name || "Բիզնես"}</div>
+                      <div className="mt-1 text-sm text-[var(--vz-muted)]">{booking.service?.name || "Ծառայություն"} • {formatDate(booking.starts_at)}</div>
                     </div>
                     <StatusPill status={booking.status} />
                   </div>
-                  <div className="mt-4 grid gap-3 text-sm text-slate-600 sm:grid-cols-3">
-                    <div className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-violet-600" /> {booking.service?.duration_minutes ? `${booking.service.duration_minutes} րոպե` : "Տևողություն չկա"}</div>
-                    <div className="flex items-center gap-2"><UserRound className="h-4 w-4 text-violet-600" /> {booking.staff?.name || "Աշխատակից չի նշվել"}</div>
-                    <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-violet-600" /> {booking.business?.address || "Հասցե չկա"}</div>
+                  <div className="mt-4 grid gap-3 text-sm text-[var(--vz-text-secondary)] sm:grid-cols-3">
+                    <div className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-[var(--vz-accent-text)]" /> {booking.service?.duration_minutes ? `${booking.service.duration_minutes} րոպե` : "Տևողություն չկա"}</div>
+                    <div className="flex items-center gap-2"><UserRound className="h-4 w-4 text-[var(--vz-accent-text)]" /> {booking.staff?.name || "Աշխատակից չի նշվել"}</div>
+                    <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-[var(--vz-accent-text)]" /> {booking.business?.address || "Հասցե չկա"}</div>
                   </div>
                 </div>
               ))}
             </div>
           </motion.section>
 
-          <motion.section variants={fadeUp} className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex items-center gap-2 text-lg font-semibold text-slate-900"><History className="h-5 w-5 text-violet-600" /> Նախորդ այցեր</div>
+          <motion.section variants={fadeUp} className="rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 shadow-sm">
+            <div className="flex items-center gap-2 text-lg font-semibold text-[var(--vz-text)]"><History className="h-5 w-5 text-[var(--vz-accent-text)]" /> Նախորդ այցեր</div>
             <div className="mt-5 space-y-4">
-              {cabinetQ.isLoading ? <div className="text-sm text-slate-500">Բեռնում ենք history-ն...</div> : null}
-              {(cabinetQ.data?.data.past ?? []).length === 0 && !cabinetQ.isLoading ? <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-sm text-slate-500">History դեռ չի գտնվել կապված profile-ների վրա։</div> : null}
+              {cabinetQ.isLoading ? <div className="text-sm text-[var(--vz-muted)]">Բեռնում ենք history-ն...</div> : null}
+              {(cabinetQ.data?.data.past ?? []).length === 0 && !cabinetQ.isLoading ? <div className="rounded-2xl border border-dashed border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-6 text-sm text-[var(--vz-muted)]">History դեռ չի գտնվել կապված profile-ների վրա։</div> : null}
               {(cabinetQ.data?.data.past ?? []).slice(0, 8).map((booking) => (
-                <div key={booking.id} className="rounded-[22px] border border-slate-200 bg-white p-4">
+                <div key={booking.id} className="rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <div className="font-medium text-slate-900">{booking.business?.name || "Բիզնես"}</div>
-                      <div className="mt-1 text-sm text-slate-500">{booking.service?.name || "Ծառայություն"}</div>
+                      <div className="font-medium text-[var(--vz-text)]">{booking.business?.name || "Բիզնես"}</div>
+                      <div className="mt-1 text-sm text-[var(--vz-muted)]">{booking.service?.name || "Ծառայություն"}</div>
                     </div>
                     <StatusPill status={booking.status} />
                   </div>
-                  <div className="mt-3 text-sm text-slate-600">{formatDate(booking.starts_at)}</div>
+                  <div className="mt-3 text-sm text-[var(--vz-text-secondary)]">{formatDate(booking.starts_at)}</div>
                 </div>
               ))}
             </div>
 
-            <div className="mt-6 rounded-[24px] border border-violet-100 bg-violet-50/70 p-4 text-sm leading-7 text-slate-600">
-              Կապված հաճախորդի պրոֆիլներ՝ <span className="font-semibold text-slate-900">{cabinetQ.data?.meta.linked_profiles ?? 0}</span>։ Եթե ամրագրումները չեն երևում, համոզվիր, որ email-ը հաստատված է և համընկնում է ամրագրման ժամանակ նշված հասցեին։
+            <div className="mt-6 rounded-[24px] border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] p-4 text-sm leading-7 text-[var(--vz-text-secondary)]">
+              Կապված հաճախորդի պրոֆիլներ՝ <span className="font-semibold text-[var(--vz-text)]">{cabinetQ.data?.meta.linked_profiles ?? 0}</span>։ Եթե ամրագրումները չեն երևում, համոզվիր, որ email-ը հաստատված է և համընկնում է ամրագրման ժամանակ նշված հասցեին։
             </div>
           </motion.section>
         </motion.div>

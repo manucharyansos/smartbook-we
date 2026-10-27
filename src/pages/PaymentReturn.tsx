@@ -30,10 +30,10 @@ const copy = {
 } as const;
 
 const statusStyle = {
-  processing: { icon: LoaderCircle, tone: "text-violet-600", box: "border-violet-200 bg-violet-50" },
-  success: { icon: CheckCircle2, tone: "text-emerald-600", box: "border-emerald-200 bg-emerald-50" },
-  failed: { icon: CircleX, tone: "text-rose-600", box: "border-rose-200 bg-rose-50" },
-  cancelled: { icon: Clock3, tone: "text-amber-600", box: "border-amber-200 bg-amber-50" },
+  processing: { icon: LoaderCircle, tone: "text-[var(--vz-accent-text)]", box: "border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)]" },
+  success: { icon: CheckCircle2, tone: "text-[var(--vz-success)]", box: "border-[var(--vz-success-line)] bg-[var(--vz-success-soft)]" },
+  failed: { icon: CircleX, tone: "text-[var(--vz-danger)]", box: "border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)]" },
+  cancelled: { icon: Clock3, tone: "text-[var(--vz-warning)]", box: "border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)]" },
 } as const;
 
 function isPaymentStatus(value: string | null): value is keyof typeof statusStyle {
@@ -54,30 +54,30 @@ export default function PaymentReturn() {
   const linkClass = "inline-flex h-11 items-center justify-center rounded-2xl px-4 text-sm font-medium transition";
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-10 text-slate-100">
+    <div className="min-h-screen bg-[var(--vz-page)] px-4 py-10 text-[var(--vz-text)]">
       <div className="mx-auto max-w-2xl">
-        <div className="mb-4 flex justify-end"><LanguageToggle compact className="rounded-full border border-white/15 bg-white/10" /></div>
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="overflow-hidden rounded-[28px] border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.18em] text-white/70">
+        <div className="mb-4 flex justify-end"><LanguageToggle compact className="rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text-secondary)]" /></div>
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="overflow-hidden rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-[var(--vz-shadow)]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-3 py-1 text-xs uppercase tracking-[0.18em] text-[var(--vz-muted)]">
             <Landmark className="h-3.5 w-3.5" /> {text.hosted}
           </div>
           <div className={`mt-5 rounded-3xl border p-5 ${style.box}`}>
             <Icon className={`h-10 w-10 ${style.tone} ${status === "processing" ? "animate-spin" : ""}`} />
-            <h1 className="mt-4 text-2xl font-semibold text-slate-950">{title}</h1>
-            <p className="mt-2 text-sm leading-7 text-slate-700">{description}</p>
-            <div className="mt-4 space-y-1 text-xs text-slate-500">
-              {reference ? <div>{text.reference}: <span className="break-all font-medium text-slate-700">{reference}</span></div> : null}
-              {invoiceId ? <div>{text.invoice}: <span className="font-medium text-slate-700">#{invoiceId}</span></div> : null}
+            <h1 className="mt-4 text-2xl font-semibold text-[var(--vz-text)]">{title}</h1>
+            <p className="mt-2 text-sm leading-7 text-[var(--vz-text-secondary)]">{description}</p>
+            <div className="mt-4 space-y-1 text-xs text-[var(--vz-muted)]">
+              {reference ? <div>{text.reference}: <span className="break-all font-medium text-[var(--vz-text-secondary)]">{reference}</span></div> : null}
+              {invoiceId ? <div>{text.invoice}: <span className="font-medium text-[var(--vz-text-secondary)]">#{invoiceId}</span></div> : null}
             </div>
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link to="/app/billing" className={`${linkClass} bg-violet-600 text-white hover:bg-violet-700`}>{text.billing}</Link>
-            <Link to="/app/dashboard" className={`${linkClass} border border-slate-200 bg-white text-slate-700 hover:bg-slate-100`}>{text.dashboard}</Link>
-            <Link to="/login" className={`${linkClass} text-white/80 hover:bg-white/10 hover:text-white`}>{text.login}</Link>
+            <Link to="/app/billing" className={`${linkClass} bg-[var(--vz-primary)] text-[var(--vz-on-primary)] hover:bg-[var(--vz-primary-hover)]`}>{text.billing}</Link>
+            <Link to="/app/dashboard" className={`${linkClass} border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text-secondary)] hover:bg-[var(--vz-surface-2)]`}>{text.dashboard}</Link>
+            <Link to="/login" className={`${linkClass} text-[var(--vz-text-secondary)] hover:bg-[var(--vz-surface-2)] hover:text-[var(--vz-text)]`}>{text.login}</Link>
           </div>
 
-          <p className="mt-5 text-xs leading-6 text-white/60">{text.note}</p>
+          <p className="mt-5 text-xs leading-6 text-[var(--vz-muted)]">{text.note}</p>
         </motion.div>
       </div>
     </div>

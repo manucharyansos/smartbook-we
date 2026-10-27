@@ -120,7 +120,7 @@ function SectionCard({
     return (
         <Card
             className={cn(
-                "rounded-[32px] border border-slate-200 bg-white shadow-[0_18px_60px_rgba(124,58,237,0.06)]",
+                "rounded-[32px] border border-[var(--vz-line)] bg-[var(--vz-surface)] shadow-[0_18px_60px_rgba(124,58,237,0.06)]",
                 className
             )}
         >
@@ -309,19 +309,19 @@ export default function ServicesPage() {
             <Toast open={toast.open} text={toast.text} type={toast.type} />
 
             <motion.div {...page} className="admin-page space-y-4">
-                <SectionCard className="overflow-hidden border-[#d39a43]/25 bg-[radial-gradient(circle_at_top_right,rgba(232,194,174,0.58),transparent_35%),linear-gradient(135deg,#fffdf9,#f8eee4)] p-5 dark:bg-[radial-gradient(circle_at_top_right,rgba(109,42,99,0.34),transparent_35%),#2f182e] sm:p-8">
+                <SectionCard className="overflow-hidden border-[var(--vz-line-strong)] bg-[var(--vz-surface-2)] p-5 sm:p-8">
                     <div className="flex flex-col gap-6 2xl:flex-row 2xl:items-center 2xl:justify-between">
                         <div className="max-w-3xl">
-                            <div className="inline-flex items-center gap-2 rounded-full border border-[#d39a43]/30 bg-white/65 px-3 py-1.5 text-xs font-semibold text-[#6d2a63] dark:bg-white/10 dark:text-[#efcb87]">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line-strong)] bg-white/65 px-3 py-1.5 text-xs font-semibold text-[var(--vz-accent-text)] dark:bg-white/10">
                                 {isHealthcare ? <Stethoscope className="h-4 w-4" /> : <Scissors className="h-4 w-4" />}
                                 {isHealthcare ? text.medicalBadge : text.badge}
                             </div>
 
-                            <h1 className="mt-4 text-[1.75rem] font-semibold leading-[1.08] tracking-tight text-slate-950 sm:text-4xl xl:text-[44px]">
+                            <h1 className="mt-4 text-[1.75rem] font-semibold leading-[1.08] tracking-tight text-[var(--vz-text)] sm:text-4xl xl:text-[44px]">
                                 {isHealthcare ? text.medicalTitle : text.title}
                             </h1>
 
-                            <p className="mt-3 text-base leading-8 text-slate-600">
+                            <p className="mt-3 text-base leading-8 text-[var(--vz-text-secondary)]">
                                 {isHealthcare ? text.medicalIntro : text.intro}
                             </p>
                         </div>
@@ -331,7 +331,7 @@ export default function ServicesPage() {
                                 <select
                                     value={selectedLocationId}
                                     onChange={(e) => setSelectedLocationId(e.target.value ? Number(e.target.value) : "")}
-                                    className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+                                    className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm text-[var(--vz-text-secondary)] outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)]"
                                 >
                                     <option value="">{text.allLocations}</option>
                                     {locations.map((location) => (
@@ -350,46 +350,46 @@ export default function ServicesPage() {
                 <SectionCard className="p-6">
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                         <div>
-                            <div className="text-lg font-semibold text-slate-950">{text.listTitle}</div>
-                            <div className="mt-1 text-sm text-slate-500">
+                            <div className="text-lg font-semibold text-[var(--vz-text)]">{text.listTitle}</div>
+                            <div className="mt-1 text-sm text-[var(--vz-muted)]">
                                 {text.listText}
                             </div>
                         </div>
 
                         <div className="relative w-full max-w-sm">
-                            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--vz-muted)]" />
                             <input
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 placeholder={text.search}
-                                className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+                                className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] py-3 pl-11 pr-4 outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)]"
                             />
                         </div>
                     </div>
 
                     {serviceUsage ? (
-                        <div className="mt-6 mb-4 rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600">
+                        <div className="mt-6 mb-4 rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-4 text-sm text-[var(--vz-text-secondary)]">
                             <div className="flex flex-wrap items-center gap-3">
-                                <span className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 font-medium text-violet-700">
+                                <span className="rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-1 font-medium text-[var(--vz-accent-text)]">
                                     {settingsQ.data?.plan?.name ?? 'Plan'}
                                 </span>
-                                <span>{text.services}: <strong className="text-slate-950">{serviceUsage.services_count}</strong> / <strong className="text-slate-950">{serviceUsage.services_limit ?? '∞'}</strong></span>
-                                <span>{text.locations}: <strong className="text-slate-950">{serviceUsage.locations_count}</strong> / <strong className="text-slate-950">{serviceUsage.locations_limit}</strong></span>
-                                <span>{text.specialists}: <strong className="text-slate-950">{serviceUsage.active_staff}</strong> / <strong className="text-slate-950">{serviceUsage.staff_limit ?? '∞'}</strong></span>
+                                <span>{text.services}: <strong className="text-[var(--vz-text)]">{serviceUsage.services_count}</strong> / <strong className="text-[var(--vz-text)]">{serviceUsage.services_limit ?? '∞'}</strong></span>
+                                <span>{text.locations}: <strong className="text-[var(--vz-text)]">{serviceUsage.locations_count}</strong> / <strong className="text-[var(--vz-text)]">{serviceUsage.locations_limit}</strong></span>
+                                <span>{text.specialists}: <strong className="text-[var(--vz-text)]">{serviceUsage.active_staff}</strong> / <strong className="text-[var(--vz-text)]">{serviceUsage.staff_limit ?? '∞'}</strong></span>
                             </div>
-                            {serviceLimitReached ? <div className="mt-2 flex flex-wrap items-center gap-2 text-rose-600">{text.limitReached} <Link to="/app/billing" className="font-semibold underline underline-offset-4">{text.seePlans}</Link></div> : null}
+                            {serviceLimitReached ? <div className="mt-2 flex flex-wrap items-center gap-2 text-[var(--vz-danger)]">{text.limitReached} <Link to="/app/billing" className="font-semibold underline underline-offset-4">{text.seePlans}</Link></div> : null}
                         </div>
                     ) : null}
 
                     <div className="mt-6">
                         {servicesQ.isError ? (
-                            <div className="rounded-[24px] border border-rose-200 bg-rose-50 p-5 text-rose-800">
+                            <div className="rounded-[24px] border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] p-5 text-[var(--vz-danger)]">
                                 <div className="font-semibold">{text.loadFailed}</div>
                                 <p className="mt-1 text-sm leading-6">{getErrorMessage(servicesQ.error, text.loadHint)}</p>
-                                <div className="mt-3 flex flex-wrap gap-2"><Button variant="secondary" onClick={() => servicesQ.refetch()}>{text.retry}</Button><Link to="/app/billing" className="inline-flex items-center rounded-2xl border border-rose-200 bg-white px-4 py-2 text-sm font-semibold">{text.planStatus}</Link></div>
+                                <div className="mt-3 flex flex-wrap gap-2"><Button variant="secondary" onClick={() => servicesQ.refetch()}>{text.retry}</Button><Link to="/app/billing" className="inline-flex items-center rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-surface)] px-4 py-2 text-sm font-semibold">{text.planStatus}</Link></div>
                             </div>
                         ) : servicesQ.isLoading ? (
-                            <div className="flex items-center justify-center py-14 text-slate-500">
+                            <div className="flex items-center justify-center py-14 text-[var(--vz-muted)]">
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 {text.loading}
                             </div>
@@ -405,35 +405,35 @@ export default function ServicesPage() {
                                 {services.map((service) => (
                                     <div
                                         key={service.id}
-                                        className="rounded-[26px] border border-[#d39a43]/20 bg-[#fffdf9] p-4 shadow-[0_14px_38px_rgba(70,34,49,.07)] transition hover:-translate-y-1 hover:border-[#d39a43]/45 dark:bg-[#2f182e]/90 sm:p-5"
+                                        className="rounded-[26px] border border-[var(--vz-line-strong)] bg-[var(--vz-surface)] p-4 shadow-[0_14px_38px_rgba(70,34,49,.07)] transition hover:-translate-y-1 hover:border-[var(--vz-line-strong)] sm:p-5"
                                     >
                                         <div className="flex items-start gap-4">
-                                            <div className="relative h-16 w-16 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+                                            <div className="relative h-16 w-16 overflow-hidden rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)]">
                                                 {service.image_url ? (
                                                     <img src={service.image_url} alt={service.name} className="h-full w-full object-cover" />
                                                 ) : (
-                                                    <div className="grid h-full w-full place-items-center text-slate-400"><Scissors className="h-5 w-5" /></div>
+                                                    <div className="grid h-full w-full place-items-center text-[var(--vz-muted)]"><Scissors className="h-5 w-5" /></div>
                                                 )}
                                             </div>
                                             <div className="min-w-0 flex-1">
-                                                <div className="text-xl font-semibold text-slate-950">{service.name}</div>
-                                                {service.description ? <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-500">{service.description}</p> : null}
+                                                <div className="text-xl font-semibold text-[var(--vz-text)]">{service.name}</div>
+                                                {service.description ? <p className="mt-1 line-clamp-2 text-sm leading-6 text-[var(--vz-muted)]">{service.description}</p> : null}
                                                 <div className="mt-2 flex flex-wrap items-center gap-2">
-                                                <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">
+                                                <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-3 py-1 text-xs font-medium text-[var(--vz-text-secondary)]">
                                                     {service.is_active ? (
                                                         <>
-                                                            <CheckCircle2 size={13} className="text-emerald-600" />
+                                                            <CheckCircle2 size={13} className="text-[var(--vz-success)]" />
                                                             {text.active}
                                                         </>
                                                     ) : (
                                                         <>{text.inactive}</>
                                                     )}
                                                 </div>
-                                                <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700">
+                                                <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-1 text-xs font-medium text-[var(--vz-accent-text)]">
                                                     {service.location_id ? (locationNameById.get(service.location_id) ?? `#${service.location_id}`) : text.allBranches}
                                                 </div>
                                                 {service.booking_mode === "group" ? (
-                                                    <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700">
+                                                    <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-3 py-1 text-xs font-medium text-[var(--vz-warning)]">
                                                         {text.group} · {service.capacity} {text.seats}
                                                     </div>
                                                 ) : null}
@@ -442,19 +442,19 @@ export default function ServicesPage() {
                                         </div>
 
                                         <div className="mt-5 space-y-3">
-                                            <div className="flex items-center gap-2 text-sm text-slate-600">
-                                                <Clock3 size={16} className="text-violet-600" />
+                                            <div className="flex items-center gap-2 text-sm text-[var(--vz-text-secondary)]">
+                                                <Clock3 size={16} className="text-[var(--vz-accent-text)]" />
                                                 {service.duration_minutes} {text.minutes}
                                             </div>
 
-                                            <div className="flex items-center gap-2 text-sm text-slate-600">
-                                                <Wallet size={16} className="text-violet-600" />
+                                            <div className="flex items-center gap-2 text-sm text-[var(--vz-text-secondary)]">
+                                                <Wallet size={16} className="text-[var(--vz-accent-text)]" />
                                                 {service.price != null ? `${service.price.toLocaleString(numberLocale(locale))} ${service.currency}` : text.noPrice}
                                             </div>
                                         </div>
 
                                         <div className="mt-6 flex gap-2">
-                                            <label className="inline-flex cursor-pointer items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 px-4 text-slate-700 transition hover:border-violet-200 hover:bg-violet-50">
+                                            <label className="inline-flex cursor-pointer items-center justify-center rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 text-[var(--vz-text-secondary)] transition hover:border-[var(--vz-line-strong)] hover:bg-[var(--vz-accent-soft)]">
                                                 {uploadImageMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
                                                 <input
                                                     type="file"
@@ -480,7 +480,7 @@ export default function ServicesPage() {
                                                     const ok = window.confirm(text.deleteConfirm);
                                                     if (ok) deleteMut.mutate(service.id);
                                                 }}
-                                                className="inline-flex items-center justify-center rounded-2xl border border-rose-200 bg-rose-50 px-4 text-rose-700 transition hover:bg-rose-100"
+                                                className="inline-flex items-center justify-center rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 text-[var(--vz-danger)] transition hover:bg-[var(--vz-danger-soft)]"
                                             >
                                                 <Trash2 size={16} />
                                             </button>
@@ -518,10 +518,10 @@ export default function ServicesPage() {
                                 <SectionCard className="p-6">
                                     <div className="flex items-center justify-between gap-3">
                                         <div>
-                                            <div className="text-2xl font-semibold text-slate-950">
+                                            <div className="text-2xl font-semibold text-[var(--vz-text)]">
                                                 {editing ? text.editTitle : text.newTitle}
                                             </div>
-                                            <div className="mt-1 text-sm text-slate-500">
+                                            <div className="mt-1 text-sm text-[var(--vz-muted)]">
                                                 {text.formText}
                                             </div>
                                         </div>
@@ -530,55 +530,55 @@ export default function ServicesPage() {
                                     <div className="mt-4 grid gap-4 sm:gap-5 lg:grid-cols-[1.15fr_0.85fr]">
                                         <div className="space-y-4">
                                             <div>
-                                                <label className="mb-2 block text-sm font-medium text-slate-800">{text.name}</label>
+                                                <label className="mb-2 block text-sm font-medium text-[var(--vz-text)]">{text.name}</label>
                                                 <input
                                                     value={form.name}
                                                     onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
-                                                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+                                                    className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)]"
                                                     placeholder={text.namePlaceholder}
                                                 />
                                             </div>
 
                                             <div>
-                                                <label className="mb-2 block text-sm font-medium text-slate-800">{text.description}</label>
+                                                <label className="mb-2 block text-sm font-medium text-[var(--vz-text)]">{text.description}</label>
                                                 <textarea
                                                     value={form.description}
                                                     onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
                                                     rows={3}
-                                                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+                                                    className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm leading-6 outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)]"
                                                     placeholder={text.descriptionPlaceholder}
                                                 />
                                             </div>
 
                                             <div className="grid gap-4 sm:grid-cols-2">
                                                 <div>
-                                                    <label className="mb-2 block text-sm font-medium text-slate-800">{text.branch}</label>
+                                                    <label className="mb-2 block text-sm font-medium text-[var(--vz-text)]">{text.branch}</label>
                                                     <select
                                                         value={form.location_id}
                                                         onChange={(e) => setForm((p) => ({ ...p, location_id: e.target.value ? Number(e.target.value) : "" }))}
-                                                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+                                                        className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)]"
                                                     >
                                                         {hasMultipleLocations ? <option value="" disabled>{text.chooseBranch}</option> : null}
                                                         {locations.map((location) => (
                                                             <option key={location.id} value={location.id}>{location.name || (location.is_primary ? text.primary : location.address)}</option>
                                                         ))}
                                                     </select>
-                                                    {hasMultipleLocations ? <p className="mt-2 text-xs text-slate-500">{text.branchHint}</p> : null}
+                                                    {hasMultipleLocations ? <p className="mt-2 text-xs text-[var(--vz-muted)]">{text.branchHint}</p> : null}
                                                 </div>
                                                 <div>
-                                                    <label className="mb-2 block text-sm font-medium text-slate-800">{text.duration}</label>
+                                                    <label className="mb-2 block text-sm font-medium text-[var(--vz-text)]">{text.duration}</label>
                                                     <input
                                                         type="number"
                                                         value={form.duration_minutes}
                                                         onChange={(e) =>
                                                             setForm((p) => ({ ...p, duration_minutes: Number(e.target.value) }))
                                                         }
-                                                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+                                                        className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)]"
                                                     />
                                                 </div>
 
                                                 <div>
-                                                    <label className="mb-2 block text-sm font-medium text-slate-800">{text.price}</label>
+                                                    <label className="mb-2 block text-sm font-medium text-[var(--vz-text)]">{text.price}</label>
                                                     <input
                                                         type="number"
                                                         value={form.price}
@@ -588,15 +588,15 @@ export default function ServicesPage() {
                                                                 price: e.target.value === "" ? "" : Number(e.target.value),
                                                             }))
                                                         }
-                                                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+                                                        className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)]"
                                                         placeholder={text.pricePlaceholder}
                                                     />
                                                 </div>
                                             </div>
 
-                                            <div className="grid gap-4 rounded-2xl border border-violet-100 bg-violet-50/60 p-4 sm:grid-cols-2">
+                                            <div className="grid gap-4 rounded-2xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] p-4 sm:grid-cols-2">
                                                 <div>
-                                                    <label className="mb-2 block text-sm font-medium text-slate-800">{text.bookingType}</label>
+                                                    <label className="mb-2 block text-sm font-medium text-[var(--vz-text)]">{text.bookingType}</label>
                                                     <select
                                                         value={form.booking_mode}
                                                         onChange={(e) => setForm((p) => ({
@@ -604,14 +604,14 @@ export default function ServicesPage() {
                                                             booking_mode: e.target.value as "individual" | "group",
                                                             capacity: e.target.value === "group" ? Math.max(2, p.capacity) : 1,
                                                         }))}
-                                                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+                                                        className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)]"
                                                     >
                                                         <option value="individual">{text.individual}</option>
                                                         <option value="group">{text.group}</option>
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <label className="mb-2 block text-sm font-medium text-slate-800">{text.capacity}</label>
+                                                    <label className="mb-2 block text-sm font-medium text-[var(--vz-text)]">{text.capacity}</label>
                                                     <input
                                                         type="number"
                                                         min={form.booking_mode === "group" ? 2 : 1}
@@ -619,19 +619,19 @@ export default function ServicesPage() {
                                                         disabled={form.booking_mode !== "group"}
                                                         value={form.capacity}
                                                         onChange={(e) => setForm((p) => ({ ...p, capacity: Math.max(1, Number(e.target.value)) }))}
-                                                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition disabled:bg-slate-100 disabled:text-slate-400 focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+                                                        className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 outline-none transition disabled:bg-[var(--vz-surface-2)] disabled:text-[var(--vz-muted)] focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)]"
                                                     />
                                                 </div>
-                                                {form.booking_mode === "group" ? <p className="text-xs leading-5 text-violet-700 sm:col-span-2">{text.groupHint}</p> : null}
+                                                {form.booking_mode === "group" ? <p className="text-xs leading-5 text-[var(--vz-accent-text)] sm:col-span-2">{text.groupHint}</p> : null}
                                             </div>
 
                                             <div className="grid gap-4 sm:grid-cols-2">
                                                 <div>
-                                                    <label className="mb-2 block text-sm font-medium text-slate-800">{text.currency}</label>
+                                                    <label className="mb-2 block text-sm font-medium text-[var(--vz-text)]">{text.currency}</label>
                                                     <select
                                                         value={form.currency}
                                                         onChange={(e) => setForm((p) => ({ ...p, currency: e.target.value }))}
-                                                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+                                                        className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)]"
                                                     >
                                                         <option value="AMD">AMD</option>
                                                         <option value="USD">USD</option>
@@ -640,11 +640,11 @@ export default function ServicesPage() {
                                                 </div>
 
                                                 <div>
-                                                    <label className="mb-2 block text-sm font-medium text-slate-800">{text.status}</label>
+                                                    <label className="mb-2 block text-sm font-medium text-[var(--vz-text)]">{text.status}</label>
                                                     <select
                                                         value={form.is_active ? "1" : "0"}
                                                         onChange={(e) => setForm((p) => ({ ...p, is_active: e.target.value === "1" }))}
-                                                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-violet-300 focus:ring-2 focus:ring-violet-100"
+                                                        className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)]"
                                                     >
                                                         <option value="1">{text.active}</option>
                                                         <option value="0">{text.inactive}</option>
@@ -653,30 +653,30 @@ export default function ServicesPage() {
                                             </div>
                                         </div>
 
-                                        <div className="rounded-[28px] border border-[#d39a43]/20 bg-[linear-gradient(180deg,#fff8ef_0%,#fffdf9_55%)] p-4 dark:bg-[linear-gradient(180deg,#3b2039,#2f182e)]">
-                                            <div className="text-sm font-semibold text-slate-900">{text.preview}</div>
-                                            <div className="mt-1 text-xs text-slate-500">{text.previewText}</div>
+                                        <div className="rounded-[28px] border border-[var(--vz-line-strong)] bg-[var(--vz-surface-2)] p-4">
+                                            <div className="text-sm font-semibold text-[var(--vz-text)]">{text.preview}</div>
+                                            <div className="mt-1 text-xs text-[var(--vz-muted)]">{text.previewText}</div>
 
-                                            <div className="mt-4 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm">
-                                                <div className="h-40 w-full overflow-hidden bg-slate-100">
+                                            <div className="mt-4 overflow-hidden rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface)] shadow-sm">
+                                                <div className="h-40 w-full overflow-hidden bg-[var(--vz-surface-2)]">
                                                     {form.image_url ? (
                                                         <img src={form.image_url} alt={form.name || 'service'} className="h-full w-full object-cover" />
                                                     ) : (
-                                                        <div className="grid h-full w-full place-items-center text-slate-400"><ImagePlus className="h-6 w-6" /></div>
+                                                        <div className="grid h-full w-full place-items-center text-[var(--vz-muted)]"><ImagePlus className="h-6 w-6" /></div>
                                                     )}
                                                 </div>
                                                 <div className="space-y-2 p-4">
-                                                    <div className="text-lg font-semibold text-slate-950">{form.name || text.newService}</div>
-                                                    {form.description ? <p className="line-clamp-3 text-xs leading-5 text-slate-500">{form.description}</p> : null}
-                                                    <div className="flex items-center justify-between text-sm text-slate-500">
+                                                    <div className="text-lg font-semibold text-[var(--vz-text)]">{form.name || text.newService}</div>
+                                                    {form.description ? <p className="line-clamp-3 text-xs leading-5 text-[var(--vz-muted)]">{form.description}</p> : null}
+                                                    <div className="flex items-center justify-between text-sm text-[var(--vz-muted)]">
                                                         <span>{form.duration_minutes || 0} {text.minutes}</span>
                                                         <span>{form.price === '' ? text.noPrice : `${form.price} ${form.currency}`}</span>
                                                     </div>
                                                     <div className="flex flex-wrap gap-2">
-                                                        <div className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
+                                                        <div className="inline-flex rounded-full border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--vz-accent-text)]">
                                                             {form.is_active ? text.activeService : text.inactiveService}
                                                         </div>
-                                                        <div className="inline-flex rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">
+                                                        <div className="inline-flex rounded-full border border-[var(--vz-info-line)] bg-[var(--vz-info-soft)] px-3 py-1 text-xs font-semibold text-[var(--vz-info)]">
                                                             {form.location_id === "" ? text.allBranches : (locationNameById.get(Number(form.location_id)) ?? `#${form.location_id}`)}
                                                         </div>
                                                     </div>
@@ -684,8 +684,8 @@ export default function ServicesPage() {
                                             </div>
 
                                             <div className="mt-4">
-                                                <label className="mb-2 block text-sm font-medium text-slate-800">{text.image}</label>
-                                                <label className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-violet-200 hover:bg-violet-50">
+                                                <label className="mb-2 block text-sm font-medium text-[var(--vz-text)]">{text.image}</label>
+                                                <label className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm font-medium text-[var(--vz-text-secondary)] transition hover:border-[var(--vz-line-strong)] hover:bg-[var(--vz-accent-soft)]">
                                                     {uploadImageMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
                                                     {form.image_url ? text.changeImage : text.uploadImage}
                                                     <input

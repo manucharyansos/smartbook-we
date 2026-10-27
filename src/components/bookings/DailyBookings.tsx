@@ -52,10 +52,10 @@ export function DailyBookings({ date, role, businessId }: DailyBookingsProps) {
     const bookings = useMemo(() => q.data ?? [], [q.data]);
 
     if (q.isLoading) return <div>Բեռնում է...</div>;
-    if (q.isError) return <div className="text-red-600">{(q.error as Error).message}</div>;
+    if (q.isError) return <div className="text-[var(--vz-danger)]">{(q.error as Error).message}</div>;
 
     if (bookings.length === 0) {
-        return <div className="text-gray-500">Այս օրը ամրագրումներ չկան</div>;
+        return <div className="text-[var(--vz-muted)]">Այս օրը ամրագրումներ չկան</div>;
     }
 
     return (

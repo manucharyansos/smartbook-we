@@ -25,14 +25,15 @@ import { api } from "@/lib/api";
 import { cn } from "@/lib/cn";
 import { fetchBillingMe } from "@/lib/billingMeApi";
 import { createCheckoutSession, getInvoicePaymentStatus, type PaymentTransaction } from "@/lib/paymentsApi";
+import { providerPaymentMethod } from "@/lib/paymentReturn";
 import type { PublicPlan } from "@/lib/planApi";
 import { isCustomPlan, localizePlanNameForLocale } from "@/lib/planPresentation";
 import { useLanguage, type Locale } from "@/contexts/LanguageContext";
 import { LEGAL_ENTITY } from "@/config/legal";
 
 type BillingCycle = "monthly" | "yearly";
-type PaymentBrand = "idbank";
-type PaymentMethodValue = "idbank-card";
+type PaymentBrand = "idbank" | "idram";
+type PaymentMethodValue = "idbank-card" | "idram-wallet";
 
 const paymentMethodDefinitions: Array<{
   value: PaymentMethodValue;
@@ -40,6 +41,12 @@ const paymentMethodDefinitions: Array<{
   detail: Record<Locale, string>;
   brands: PaymentBrand[];
 }> = [
+  {
+    value: "idram-wallet",
+    label: { hy: "Idram դրամապանակ", ru: "Кошелёк Idram", en: "Idram wallet" },
+    detail: { hy: "Վճարումը հաստատվում է Idram-ում", ru: "Оплата подтверждается в Idram", en: "Confirm your payment in Idram" },
+    brands: ["idram"],
+  },
   {
     value: "idbank-card",
     label: { hy: "Բանկային քարտ · IDBank V-POS", ru: "Банковская карта · IDBank V-POS", en: "Bank card · IDBank V-POS" },
@@ -49,6 +56,7 @@ const paymentMethodDefinitions: Array<{
 ];
 
 const paymentBrandAssets: Partial<Record<PaymentBrand, { src: string; alt: string; imageClassName?: string; badgeClassName?: string }>> = {
+  idram: { src: "/payments/idram.png", alt: "Idram", imageClassName: "max-h-[26px] max-w-[96px]" },
   idbank: {
     src: "https://idbank.am/images/m-logo.svg",
     alt: "IDBank",
@@ -113,7 +121,7 @@ const billingCopy = {
     createMonthlyInvoice: "Ստեղծել ամսական վճարման հաշիվ",
     securePayment: "Վճարային կապի կարգավիճակ",
     choosePayment: "Վճարային կապի եղանակ",
-    paymentIntro: "Այստեղ ցուցադրվում է IDBank V-POS-ի պաշտոնական կապի վիճակը։ Վճարման կոճակը կակտիվանա միայն merchant պայմանագրի, API դաշտերի և webhook-ի ամբողջական միացումից հետո։",
+    paymentIntro: "Վճարումն ավարտվում է ընտրված ծառայության պաշտպանված էջում։ Պլանն ակտիվանում է սերվերի հաստատումից հետո։",
     sellerLine: `Վճար ստացող՝ ${LEGAL_ENTITY.legalName} · ՀՎՀՀ ${LEGAL_ENTITY.taxId} · ${LEGAL_ENTITY.email}`,
     autoRenewalOff: "Ավտոմատ երկարաձգումը միացված չէ․ յուրաքանչյուր նոր շրջանի համար ստեղծվում և վճարվում է նոր հաշիվ։",
     selected: "Ընտրված է՝",
@@ -134,7 +142,9 @@ const billingCopy = {
     state: "Վիճակ",
     openBankPage: "Բացել բանկի վճարման էջը",
     checkoutText: "Պաշտոնական կապից հետո վճարումը կբացվի բանկի էջում, իսկ սերվերով հաստատված հաջող վճարումից հետո պլանը կակտիվանա։",
-    providerUnavailable: "IDBank-ի իրական վճարումը դեռ միացված չէ։ Կապվիր աջակցության հետ։",
+    providerUnavailable: "Վճարային ծառայությունը դեռ միացված չէ։ Կապվիր աջակցության հետ։",
+    openIdramCheckout: "Վճարել Idram-ով",
+    reviewPayment: "Վճարումը ստացվել է և պահանջում է ստուգում։ Կապվիր աջակցության հետ՝ առանց կրկին վճարելու։",
     openLiveCheckout: "Բացել IDBank վճարման էջը",
     openTestCheckout: "Բացել IDBank թեստային վճարման էջը",
     paymentApproved: "Վճարումը հաստատված է, և պլանն ակտիվացված է։",
@@ -204,7 +214,7 @@ const billingCopy = {
     createMonthlyInvoice: "Создать счёт за месяц",
     securePayment: "Статус платёжного подключения",
     choosePayment: "Способ платёжного подключения",
-    paymentIntro: "Здесь показан статус официального подключения IDBank V-POS. Кнопка оплаты станет доступна только после полного подключения merchant-договора, API-полей и webhook.",
+    paymentIntro: "Оплата проходит на защищённой странице выбранного сервиса. Тариф активируется после подтверждения сервером.",
     sellerLine: `Получатель платежа: ${LEGAL_ENTITY.legalName} · ИНН ${LEGAL_ENTITY.taxId} · ${LEGAL_ENTITY.email}`,
     autoRenewalOff: "Автоматическое продление не включено: для каждого нового периода создаётся и оплачивается новый счёт.",
     selected: "Выбрано:",
@@ -225,7 +235,9 @@ const billingCopy = {
     state: "Статус",
     openBankPage: "Открыть банковскую страницу оплаты",
     checkoutText: "После официального подключения оплата откроется на странице банка, а тариф активируется после подтверждённого сервером успешного платежа.",
-    providerUnavailable: "Оплата через IDBank в рабочем режиме ещё не подключена. Обратитесь в поддержку.",
+    providerUnavailable: "Платёжный сервис ещё не подключён. Обратитесь в поддержку.",
+    openIdramCheckout: "Оплатить через Idram",
+    reviewPayment: "Платёж получен и требует проверки. Свяжитесь с поддержкой, не оплачивая повторно.",
     openLiveCheckout: "Открыть оплату IDBank",
     openTestCheckout: "Открыть тестовую оплату IDBank",
     paymentApproved: "Оплата подтверждена, тариф активирован.",
@@ -295,7 +307,7 @@ const billingCopy = {
     createMonthlyInvoice: "Create monthly invoice",
     securePayment: "Payment connection status",
     choosePayment: "Payment connection method",
-    paymentIntro: "This shows the official IDBank V-POS connection status. The payment button activates only after the merchant agreement, exact API mapping and webhook are fully connected.",
+    paymentIntro: "Pay on the selected service’s secure page. Your plan activates after server confirmation.",
     sellerLine: `Payment recipient: ${LEGAL_ENTITY.legalName} · Tax ID ${LEGAL_ENTITY.taxId} · ${LEGAL_ENTITY.email}`,
     autoRenewalOff: "Automatic renewal is not enabled; each new period requires a new invoice and payment.",
     selected: "Selected:",
@@ -316,7 +328,9 @@ const billingCopy = {
     state: "Status",
     openBankPage: "Open the bank payment page",
     checkoutText: "After the official connection, payment opens on the bank page and the plan activates only after a server-confirmed successful payment.",
-    providerUnavailable: "Live IDBank payments are not connected yet. Contact support.",
+    providerUnavailable: "The payment service is not connected yet. Contact support.",
+    openIdramCheckout: "Pay with Idram",
+    reviewPayment: "Your payment was received and needs review. Contact support without paying again.",
     openLiveCheckout: "Open IDBank payment",
     openTestCheckout: "Open IDBank test payment",
     paymentApproved: "Payment is confirmed and the plan is active.",
@@ -382,7 +396,7 @@ type InvoiceUpgradeResponse = {
   mode: "invoice";
   data: Invoice;
   provider?: {
-    default: "idbank" | "idbank_mock";
+    default: "idbank" | "idbank_mock" | "idram";
     mode: string;
     checkout_required: boolean;
   };
@@ -415,7 +429,6 @@ async function fetchInvoices(): Promise<Invoice[]> {
 async function requestUpgrade(planCode: string, billingCycle: BillingCycle) {
   const r = await api.post("/billing/upgrade-request", {
     plan_code: planCode,
-    payment_method: "card",
     billing_cycle: billingCycle,
   });
   return r.data as UpgradeResponse;
@@ -496,14 +509,13 @@ export default function Billing() {
   const [currentInvoiceId, setCurrentInvoiceId] = useState<number | null>(null);
   const [upgradeError, setUpgradeError] = useState<string | null>(null);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethodValue>("idbank-card");
-  const paymentMethods = useMemo(() => paymentMethodDefinitions.map((method) => ({
-    ...method,
-    label: method.label[locale],
-    detail: method.detail[locale],
-  })), [locale]);
-
   const billingQ = useQuery({ queryKey: ["billing", "me"], queryFn: fetchBillingMe, staleTime: 20_000 });
+  const providerCode = billingQ.data?.payment_provider?.default ?? "idbank";
+  const selectedPaymentMethod: PaymentMethodValue = providerCode === "idram" ? "idram-wallet" : "idbank-card";
+  const paymentMethods = useMemo(() => paymentMethodDefinitions
+    .filter((method) => method.value === selectedPaymentMethod)
+    .map((method) => ({ ...method, label: method.label[locale], detail: method.detail[locale] })), [locale, selectedPaymentMethod]);
+
   const currentBusinessType = billingQ.data?.business.business_type ?? null;
   const plansQ = useQuery({
     queryKey: ["plans", "billing-page", currentBusinessType],
@@ -540,7 +552,7 @@ export default function Billing() {
   });
 
   const checkoutMut = useMutation({
-    mutationFn: (invoiceId: number) => createCheckoutSession({ invoice_id: invoiceId, payment_method: "card" }),
+    mutationFn: (invoiceId: number) => createCheckoutSession({ invoice_id: invoiceId, payment_method: providerPaymentMethod(providerCode) }),
     onMutate: () => setCheckoutError(null),
     onSuccess: (data) => {
       setCurrentInvoiceId(data.data.invoice_id);
@@ -709,7 +721,7 @@ export default function Billing() {
               </div>
               <div className="rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
                 <div className="text-xs uppercase tracking-[0.2em] text-[var(--vz-muted)]">{copy.paymentProvider}</div>
-                <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{billingQ.data?.payment_provider?.live_ready ? "IDBank Live" : billingQ.data?.payment_provider?.default === "idbank" ? copy.awaitingConnection : "IDBank Test"}</div>
+                <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{billingQ.data?.payment_provider?.live_ready ? (providerCode === "idram" ? "Idram" : "IDBank") : providerCode === "idbank_mock" ? "IDBank Test" : copy.awaitingConnection}</div>
                 <div className="mt-1 text-xs text-[var(--vz-muted)]">{copy.secureEnvironment}</div>
               </div>
 
@@ -829,10 +841,9 @@ export default function Billing() {
         <div className="p-5 sm:p-8">
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" role="radiogroup" aria-label={copy.paymentMethodsAria}>
             {paymentMethods.map((method) => {
-              const isCard = method.value === "idbank-card";
-              const isAvailable = isCard && checkoutAvailable;
+              const isAvailable = method.value === selectedPaymentMethod && checkoutAvailable;
               const isSelected = selectedPaymentMethod === method.value;
-              const isTest = isCard && billingQ.data?.payment_provider?.default !== "idbank";
+              const isTest = providerCode === "idbank_mock";
 
               return (
                 <button
@@ -841,7 +852,6 @@ export default function Billing() {
                   role="radio"
                   aria-checked={isSelected}
                   disabled={!isAvailable}
-                  onClick={() => setSelectedPaymentMethod(method.value)}
                   className={cn(
                     "group relative min-h-[164px] rounded-2xl border p-4 text-left transition duration-200",
                     "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--vz-primary)]/25",
@@ -916,7 +926,9 @@ export default function Billing() {
                   <div className="mt-1 text-sm text-[var(--vz-text-secondary)]">{new Date(latestInvoice.created_at).toLocaleString("hy-AM")}</div>
                 </div>
               </div>
-              {latestInvoiceStatus === "pending" ? (
+              {currentTransaction?.requires_manual_review ? (
+                <div role="status" className="rounded-3xl border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] p-5 text-sm leading-7 text-[var(--vz-warning)]">{copy.reviewPayment}</div>
+              ) : latestInvoiceStatus === "pending" ? (
                 <div className="rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5">
                   <div className="text-base font-semibold text-[var(--vz-text)]">{copy.openBankPage}</div>
                   <p className="mt-2 text-sm leading-7 text-[var(--vz-text-secondary)]">{copy.checkoutText}</p>
@@ -925,10 +937,10 @@ export default function Billing() {
                   <Button
                     className="mt-4"
                     loading={checkoutMut.isPending}
-                    disabled={selectedPaymentMethod !== "idbank-card" || paymentProviderUnavailable || billingQ.data?.reason === "business_suspended"}
+                    disabled={paymentProviderUnavailable || billingQ.data?.reason === "business_suspended"}
                     onClick={() => checkoutMut.mutate(latestInvoice.id)}
                   >
-                    {checkoutMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />} {billingQ.data?.payment_provider?.default === "idbank" ? copy.openLiveCheckout : copy.openTestCheckout}
+                    {checkoutMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />} {providerCode === "idram" ? copy.openIdramCheckout : providerCode === "idbank" ? copy.openLiveCheckout : copy.openTestCheckout}
                   </Button>
                 </div>
               ) : latestInvoiceStatus === "approved" ? (
@@ -950,7 +962,7 @@ export default function Billing() {
               </div>
               <div className="rounded-2xl border border-[var(--vz-line)] p-4">
                 <div className="text-xs uppercase tracking-wide text-[var(--vz-muted)]">{copy.state}</div>
-                <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{statusText(currentTransaction.status, locale)}</div>
+                <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{currentTransaction.requires_manual_review ? copy.reviewPayment : statusText(currentTransaction.status, locale)}</div>
                 <div className="mt-1 text-sm text-[var(--vz-text-secondary)]">{formatMoney(currentTransaction.amount, currentTransaction.currency, locale)}</div>
               </div>
             </div>

@@ -9,6 +9,7 @@ export type PaymentTransaction = {
   amount: number;
   currency: string;
   status: "pending" | "paid" | "failed";
+  requires_manual_review?: boolean;
   checkout_url?: string | null;
   checkout_payload?: {
     reference?: string;
@@ -23,8 +24,8 @@ export type PaymentTransaction = {
 
 export async function createCheckoutSession(input: {
   invoice_id: number;
-  provider?: "idbank" | "idbank_mock";
-  payment_method?: "card";
+  provider?: "idbank" | "idbank_mock" | "idram";
+  payment_method?: "card" | "wallet";
 }) {
   const r = await api.post("/billing/checkout-session", input);
   return r.data as {

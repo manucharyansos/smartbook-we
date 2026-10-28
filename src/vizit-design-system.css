@@ -115,10 +115,10 @@ html.dark {
   --vz-success-soft: rgb(95 190 149 / .16);
   --vz-warning: #E0B96C;
   --vz-warning-soft: rgb(215 173 94 / .16);
-  --vz-danger: #E28783;
-  --vz-danger-soft: rgb(226 135 131 / .16);
-  --vz-info: #7FA3D1;
-  --vz-info-soft: rgb(127 163 209 / .16);
+  --vz-danger: #E9938F;
+  --vz-danger-soft: rgb(233 147 143 / .16);
+  --vz-info: #8BADD9;
+  --vz-info-soft: rgb(139 173 217 / .16);
   --vz-on-success: #06261A;
   --vz-on-danger: #2A0E0D;
   --vz-cover: #134E4A;

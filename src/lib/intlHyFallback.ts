@@ -7,6 +7,8 @@
 const ARMENIAN = /^hy(-AM)?$/i;
 
 const MONTHS_LONG = ["հունվարի", "փետրվարի", "մարտի", "ապրիլի", "մայիսի", "հունիսի", "հուլիսի", "օգոստոսի", "սեպտեմբերի", "հոկտեմբերի", "նոյեմբերի", "դեկտեմբերի"];
+// Month on its own ("Հոկտեմբեր 2026") uses the nominative form.
+const MONTHS_NOMINATIVE = ["հունվար", "փետրվար", "մարտ", "ապրիլ", "մայիս", "հունիս", "հուլիս", "օգոստոս", "սեպտեմբեր", "հոկտեմբեր", "նոյեմբեր", "դեկտեմբեր"];
 const MONTHS_SHORT = ["հնվ", "փտվ", "մրտ", "ապր", "մյս", "հնս", "հլս", "օգս", "սեպ", "հոկ", "նոյ", "դեկ"];
 const WEEKDAYS_LONG = ["կիրակի", "երկուշաբթի", "երեքշաբթի", "չորեքշաբթի", "հինգշաբթի", "ուրբաթ", "շաբաթ"];
 const WEEKDAYS_SHORT = ["կիր", "երկ", "երք", "չրք", "հնգ", "ուրբ", "շբթ"];
@@ -42,7 +44,8 @@ export function installArmenianDateFallback() {
     return base.formatToParts(date).flatMap((part): Intl.DateTimeFormatPart[] => {
       if (part.type === "month" && (options.month === "long" || options.month === "short" || options.month === "narrow")) {
         const index = Number(new Native("en-US", { month: "numeric", timeZone: zone }).format(date)) - 1;
-        return [{ ...part, value: (options.month === "long" ? MONTHS_LONG : MONTHS_SHORT)[index] ?? part.value }];
+        const names = options.month !== "long" ? MONTHS_SHORT : options.day ? MONTHS_LONG : MONTHS_NOMINATIVE;
+        return [{ ...part, value: names[index] ?? part.value }];
       }
       if (part.type === "weekday") {
         const index = EN_WEEKDAYS.indexOf(new Native("en-US", { weekday: "short", timeZone: zone }).format(date));

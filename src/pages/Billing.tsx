@@ -14,6 +14,7 @@ import {
   Receipt,
   ShieldCheck,
   Sparkles,
+  X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -149,6 +150,11 @@ const billingCopy = {
     openTestCheckout: "Բացել IDBank թեստային վճարման էջը",
     paymentApproved: "Վճարումը հաստատված է, և պլանն ակտիվացված է։",
     invoiceClosed: "Այս հաշիվն այլևս վճարման ենթակա չէ։ Ընտրիր պլանը և ստեղծիր նոր հաշիվ։",
+    cancelInvoice: "Չեղարկել հաշիվը",
+    cancelConfirm: "Չեղարկե՞լ այս վճարման հաշիվը։ Կարող ես հետո ընտրել պլան և ստեղծել նորը։",
+    cancelError: "Չհաջողվեց չեղարկել հաշիվը։ Փորձիր կրկին։",
+    payInvoiceTitle: (id: number) => `Վճարման հաշիվ #${id}`,
+    choosePlanFirst: "Վճարելու համար նախ վերևում ընտրիր պլանը և սեղմիր «Ստեղծել հաշիվ»։",
     transactionTimeline: "Գործարքի ընթացք",
     reference: "Հղման համար",
     noTransactionTitle: "Գործարք դեռ չկա",
@@ -242,6 +248,11 @@ const billingCopy = {
     openTestCheckout: "Открыть тестовую оплату IDBank",
     paymentApproved: "Оплата подтверждена, тариф активирован.",
     invoiceClosed: "Этот счёт больше нельзя оплатить. Выберите тариф и создайте новый счёт.",
+    cancelInvoice: "Отменить счёт",
+    cancelConfirm: "Отменить этот счёт? Потом можно выбрать тариф и создать новый.",
+    cancelError: "Не удалось отменить счёт. Попробуйте ещё раз.",
+    payInvoiceTitle: (id: number) => `Счёт #${id}`,
+    choosePlanFirst: "Чтобы оплатить, сначала выберите тариф выше и нажмите «Создать счёт».",
     transactionTimeline: "Ход операции",
     reference: "Номер операции",
     noTransactionTitle: "Операции пока нет",
@@ -335,6 +346,11 @@ const billingCopy = {
     openTestCheckout: "Open IDBank test payment",
     paymentApproved: "Payment is confirmed and the plan is active.",
     invoiceClosed: "This invoice can no longer be paid. Choose a plan and create a new invoice.",
+    cancelInvoice: "Cancel invoice",
+    cancelConfirm: "Cancel this invoice? You can choose a plan and create a new one later.",
+    cancelError: "Could not cancel the invoice. Please try again.",
+    payInvoiceTitle: (id: number) => `Invoice #${id}`,
+    choosePlanFirst: "To pay, first choose a plan above and press Create invoice.",
     transactionTimeline: "Transaction timeline",
     reference: "Reference",
     noTransactionTitle: "No transaction yet",
@@ -426,6 +442,10 @@ async function fetchInvoices(): Promise<Invoice[]> {
   return r.data.data as Invoice[];
 }
 
+async function cancelInvoice(invoiceId: number) {
+  await api.post(`/billing/invoices/${invoiceId}/cancel`);
+}
+
 async function requestUpgrade(planCode: string, billingCycle: BillingCycle) {
   const r = await api.post("/billing/upgrade-request", {
     plan_code: planCode,
@@ -492,9 +512,9 @@ function PaymentBrandLogo({ brand }: { brand: PaymentBrand }) {
   );
 }
 
-function SectionCard({ children, className }: { children: React.ReactNode; className?: string }) {
+function SectionCard({ children, className, id }: { children: React.ReactNode; className?: string; id?: string }) {
   return (
-    <Card className={cn("rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface)] shadow-[0_18px_60px_rgba(7,22,36,0.08)]", className)}>
+    <Card id={id} className={cn("rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface)] shadow-[0_18px_60px_rgba(7,22,36,0.08)]", className)}>
       {children}
     </Card>
   );
@@ -543,6 +563,7 @@ export default function Billing() {
     onSuccess: (data) => {
       const invoiceId = data.mode === "invoice" ? data.data.id : data.data.invoice_id;
       if (invoiceId) setCurrentInvoiceId(invoiceId);
+      window.setTimeout(() => document.getElementById("billing-payment")?.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
       void queryClient.invalidateQueries({ queryKey: ["billing", "invoices"] });
       void queryClient.invalidateQueries({ queryKey: ["billing", "me"] });
       void queryClient.invalidateQueries({ queryKey: ["features"] });
@@ -563,6 +584,20 @@ export default function Billing() {
     },
     onError: (error) => setCheckoutError(checkoutErrorMessage(error, copy.checkoutError)),
   });
+
+  const cancelMut = useMutation({
+    mutationFn: cancelInvoice,
+    onMutate: () => setCheckoutError(null),
+    onSuccess: () => {
+      setCurrentInvoiceId(null);
+      void queryClient.invalidateQueries({ queryKey: ["billing"] });
+      void queryClient.invalidateQueries({ queryKey: ["features"] });
+    },
+    onError: (error) => setCheckoutError(checkoutErrorMessage(error, copy.cancelError)),
+  });
+  const confirmCancel = (invoiceId: number) => {
+    if (window.confirm(copy.cancelConfirm)) cancelMut.mutate(invoiceId);
+  };
 
   const subscription = billingQ.data?.subscription ?? null;
   const pricing = billingQ.data?.pricing ?? null;
@@ -647,6 +682,23 @@ export default function Billing() {
   const latestInvoiceStatus = paymentInvoice && latestInvoice && paymentInvoice.id === latestInvoice.id
     ? paymentInvoice.status
     : latestInvoice?.status;
+
+  const pendingInvoice = latestInvoice && latestInvoiceStatus === "pending" && !currentTransaction?.requires_manual_review ? latestInvoice : null;
+  const payButtonLabel = providerCode === "idram" ? copy.openIdramCheckout : providerCode === "idbank" ? copy.openLiveCheckout : copy.openTestCheckout;
+  const payActions = (invoiceId: number) => (
+    <div className="mt-4 flex flex-wrap gap-3">
+      <Button
+        loading={checkoutMut.isPending}
+        disabled={paymentProviderUnavailable || cancelMut.isPending || billingQ.data?.reason === "business_suspended"}
+        onClick={() => checkoutMut.mutate(invoiceId)}
+      >
+        {checkoutMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />} {payButtonLabel}
+      </Button>
+      <Button variant="secondary" loading={cancelMut.isPending} disabled={checkoutMut.isPending} onClick={() => confirmCancel(invoiceId)}>
+        <X className="h-4 w-4" /> {copy.cancelInvoice}
+      </Button>
+    </div>
+  );
 
   if (billingQ.isLoading) {
     return <FullScreenLoader title={copy.loadingTitle} subtitle={copy.loadingSubtitle} />;
@@ -824,7 +876,7 @@ export default function Billing() {
         </div>
       </SectionCard>
 
-      <SectionCard className="overflow-hidden p-0">
+      <SectionCard id="billing-payment" className="scroll-mt-24 overflow-hidden p-0">
         <div className="border-b border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-6 py-7 sm:px-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
@@ -895,6 +947,21 @@ export default function Billing() {
             })}
           </div>
 
+          {checkoutAvailable ? (
+            <div className="mt-5 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4 sm:p-5">
+              {pendingInvoice ? (
+                <>
+                  <div className="text-sm font-semibold text-[var(--vz-text)]">{copy.payInvoiceTitle(pendingInvoice.id)} · {pendingInvoice.plan?.name ?? copy.planFallback}</div>
+                  <div className="mt-1 text-2xl font-semibold text-[var(--vz-text)]">{formatMoney(pendingInvoice.amount, pendingInvoice.currency, locale)}</div>
+                  {checkoutError ? <div className="mt-3 rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-sm text-[var(--vz-danger)]">{checkoutError}</div> : null}
+                  {payActions(pendingInvoice.id)}
+                </>
+              ) : (
+                <p className="text-sm leading-6 text-[var(--vz-text-secondary)]">{copy.choosePlanFirst}</p>
+              )}
+            </div>
+          ) : null}
+
           <div className="mt-5 flex gap-3 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm leading-6 text-[var(--vz-muted)]" role="note">
             <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--vz-brand-text)]" aria-hidden="true" />
             <div className="space-y-1">
@@ -938,15 +1005,7 @@ export default function Billing() {
                   <div className="text-base font-semibold text-[var(--vz-text)]">{copy.openBankPage}</div>
                   <p className="mt-2 text-sm leading-7 text-[var(--vz-text-secondary)]">{copy.checkoutText}</p>
                   {paymentProviderUnavailable ? <div className="mt-3 rounded-2xl border border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] px-4 py-3 text-sm text-[var(--vz-warning)]">{copy.providerUnavailable}</div> : null}
-                  {checkoutError ? <div className="mt-3 rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-sm text-[var(--vz-danger)]">{checkoutError}</div> : null}
-                  <Button
-                    className="mt-4"
-                    loading={checkoutMut.isPending}
-                    disabled={paymentProviderUnavailable || billingQ.data?.reason === "business_suspended"}
-                    onClick={() => checkoutMut.mutate(latestInvoice.id)}
-                  >
-                    {checkoutMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />} {providerCode === "idram" ? copy.openIdramCheckout : providerCode === "idbank" ? copy.openLiveCheckout : copy.openTestCheckout}
-                  </Button>
+                  {payActions(latestInvoice.id)}
                 </div>
               ) : latestInvoiceStatus === "approved" ? (
                 <div className="rounded-3xl border border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] p-5 text-sm leading-7 text-[var(--vz-success)]">{copy.paymentApproved}</div>

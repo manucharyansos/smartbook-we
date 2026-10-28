@@ -956,7 +956,7 @@ export default function Billing() {
             <div className="mt-5 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4 sm:p-5">
               {pendingInvoice ? (
                 <>
-                  <div className="text-sm font-semibold text-[var(--vz-text)]">{copy.payInvoiceTitle(pendingInvoice.id)} · {pendingInvoice.plan?.name ?? copy.planFallback}</div>
+                  <div className="text-sm font-semibold text-[var(--vz-text)]">{copy.payInvoiceTitle(pendingInvoice.id)} · {pendingInvoice.plan?.name ?? copy.planFallback} · {cycleLabel((pendingInvoice.billing_cycle as BillingCycle | undefined) ?? "monthly", locale)}</div>
                   <div className="mt-1 text-2xl font-semibold text-[var(--vz-text)]">{formatMoney(pendingInvoice.amount, pendingInvoice.currency, locale)}</div>
                   {checkoutError ? <div className="mt-3 rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-sm text-[var(--vz-danger)]">{checkoutError}</div> : null}
                   {payActions(pendingInvoice.id)}

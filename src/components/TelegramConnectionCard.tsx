@@ -14,7 +14,10 @@ const telegramCopy = {
   hy: {
     title: "Telegram ծանուցումներ",
     description: "Ստացեք ձեր դերին վերաբերող նոր, տեղափոխված և չեղարկված ամրագրումները Telegram-ում։",
+    shortDescription: "Ամրագրումների ծանուցումները՝ Telegram-ում։",
     startHint: "Բոտը բացելուց հետո սեղմեք Start / Սկսել։",
+    shortStartHint: "Բոտում սեղմեք Start / Սկսել։",
+    checking: "Ստուգում ենք կապը…",
     connected: "Բոտը միացված է",
     connectedHint: "Ծանուցումները կգան այս Telegram հաշվին։",
     connect: "Միացնել Telegram-ը",
@@ -29,7 +32,10 @@ const telegramCopy = {
   ru: {
     title: "Уведомления Telegram",
     description: "Получайте в Telegram новые, перенесённые и отменённые записи, относящиеся к вашей роли.",
+    shortDescription: "Уведомления о записях в Telegram.",
     startHint: "После открытия бота нажмите Start / Запустить.",
+    shortStartHint: "В боте нажмите Start / Запустить.",
+    checking: "Проверяем подключение…",
     connected: "Бот подключён",
     connectedHint: "Уведомления будут приходить в этот аккаунт Telegram.",
     connect: "Подключить Telegram",
@@ -44,7 +50,10 @@ const telegramCopy = {
   en: {
     title: "Telegram notifications",
     description: "Receive new, rescheduled and cancelled bookings relevant to your role in Telegram.",
+    shortDescription: "Booking notifications in Telegram.",
     startHint: "After the bot opens, tap Start.",
+    shortStartHint: "Tap Start in the bot.",
+    checking: "Checking connection…",
     connected: "Bot connected",
     connectedHint: "Notifications will arrive in this Telegram account.",
     connect: "Connect Telegram",
@@ -116,42 +125,40 @@ export function TelegramConnectionCard({
   return (
     <section
       className={cn(
-        "rounded-[22px] border border-[var(--vz-info-line)] bg-[var(--vz-primary)] via-white to-white text-[var(--vz-text)] shadow-[0_12px_30px_rgba(14,165,233,0.08)] dark:border-sky-400/15 dark:via-slate-900 dark:to-slate-900",
-        isSettings ? "p-4 sm:flex sm:items-center sm:justify-between sm:gap-5" : "p-3.5",
+        "min-w-0 rounded-[22px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4 text-[var(--vz-text)] shadow-[var(--vz-shadow-sm)]",
+        isSettings && "sm:flex sm:items-center sm:justify-between sm:gap-5",
         variant === "drawer" && "rounded-2xl shadow-none",
         className,
       )}
       aria-labelledby={`telegram-connection-title-${variant}`}
+      data-telegram-variant={variant}
     >
-      <div className={cn("flex min-w-0 items-start gap-3", isSettings && "sm:flex-1")}>
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-sm" aria-hidden="true">
-          <Send className="h-[18px] w-[18px]" />
-        </span>
-        <div className="min-w-0">
-          <h3 id={`telegram-connection-title-${variant}`} className="text-sm font-bold text-[var(--vz-text)]">
+      <div className={cn("min-w-0", isSettings && "sm:flex-1")}>
+        <div className="flex items-center gap-2.5">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-[var(--vz-accent-soft)] text-[var(--vz-brand-text)]" aria-hidden="true">
+            <Send className="h-[18px] w-[18px]" />
+          </span>
+          <h3 id={`telegram-connection-title-${variant}`} className="min-w-0 text-sm font-semibold leading-5 text-[var(--vz-text)]">
             {text.title}
           </h3>
-          <p className={cn("mt-1 text-xs leading-5 text-[var(--vz-text-secondary)]", !isSettings && "line-clamp-3")}>
-            {connected ? text.connectedHint : text.description}
-          </p>
-          {!connected && !unavailable ? (
-            <p className="mt-1 text-[11px] font-semibold leading-4 text-[var(--vz-info)] dark:text-sky-300">{text.startHint}</p>
-          ) : null}
         </div>
+        <p className="mt-2.5 text-xs leading-5 text-[var(--vz-text-secondary)]">
+          {connected ? text.connectedHint : isSettings ? text.description : text.shortDescription}
+        </p>
       </div>
 
       <div className={cn("mt-3", isSettings && "sm:mt-0 sm:shrink-0")} aria-live="polite">
         {connectionQ.isError ? (
-          <p className="text-xs font-semibold leading-5 text-[var(--vz-danger)] dark:text-rose-300">{text.loadError}</p>
+          <p className="text-xs font-medium leading-5 text-[var(--vz-danger)]">{text.loadError}</p>
         ) : null}
         {unavailable ? (
-          <p className="text-xs font-semibold leading-5 text-[var(--vz-warning)] dark:text-amber-300">{text.unavailable}</p>
+          <p className="text-xs font-medium leading-5 text-[var(--vz-warning)]">{text.unavailable}</p>
         ) : null}
 
         {!connectionQ.isError && !unavailable ? (
           connected ? (
             <div className={cn("flex flex-wrap items-center gap-2", !isSettings && "justify-between")}>
-              <span className="inline-flex min-h-9 items-center gap-1.5 rounded-xl border border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] px-2.5 text-xs font-bold text-[var(--vz-success)] dark:border-[var(--vz-success-line)] dark:bg-emerald-400/10 dark:text-emerald-300">
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold leading-5 text-[var(--vz-success)]">
                 <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
                 {text.connected}
               </span>
@@ -159,7 +166,7 @@ export function TelegramConnectionCard({
                 type="button"
                 disabled={busy}
                 onClick={() => disconnectMut.mutate()}
-                className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 text-xs font-bold text-[var(--vz-text-secondary)] transition hover:bg-[var(--vz-surface-2)] disabled:cursor-not-allowed disabled:opacity-60 dark:hover:bg-white/[0.1]"
+                className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 text-xs font-semibold text-[var(--vz-text-secondary)] transition hover:bg-[var(--vz-surface-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--vz-primary)] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {disconnectMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Unplug className="h-4 w-4" aria-hidden="true" />}
                 {disconnectMut.isPending ? text.disconnecting : text.disconnect}
@@ -170,12 +177,16 @@ export function TelegramConnectionCard({
               type="button"
               disabled={busy || !connectionQ.data?.available}
               onClick={() => connectMut.mutate()}
-              className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-[var(--vz-primary)] px-3 text-xs font-black text-[var(--vz-on-primary)] shadow-sm transition hover:bg-[var(--vz-primary-hover)] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+              className={cn("inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-2 text-xs font-semibold leading-5 text-[var(--vz-brand-text)] transition hover:border-[var(--vz-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--vz-primary)] disabled:cursor-not-allowed disabled:opacity-60", isSettings && "sm:w-auto")}
             >
               {busy ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Send className="h-4 w-4" aria-hidden="true" />}
-              {busy ? text.connecting : text.connect}
+              {connectionQ.isLoading ? text.checking : connectMut.isPending ? text.connecting : text.connect}
             </button>
           )
+        ) : null}
+
+        {!connected && !unavailable && !connectionQ.isError && !connectionQ.isLoading ? (
+          <p className="mt-2 text-[11px] leading-4 text-[var(--vz-muted)]">{isSettings ? text.startHint : text.shortStartHint}</p>
         ) : null}
 
         {actionError ? <p className="mt-2 text-xs font-semibold leading-5 text-[var(--vz-danger)] dark:text-rose-300">{actionError}</p> : null}

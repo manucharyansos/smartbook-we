@@ -78,7 +78,7 @@ const billingCopy = {
     businessSuspended: "Բիզնեսը կասեցված է։ Վերականգնման համար կապվիր աջակցության հետ։",
     billingSuspended: "Վճարումները կասեցված են։ Ընտրիր գործող առաջարկը և հետևիր հասանելի ակտիվացման քայլերին, իսկ եթե օնլայն վճարումը փակ է՝ կապվիր աջակցության հետ։",
     subscriptionInactive: "Բաժանորդագրությունն ակտիվ չէ։ Ընտրիր պլանը և հետևիր հասանելի ակտիվացման քայլերին, իսկ եթե օնլայն վճարումը փակ է՝ կապվիր աջակցության հետ։",
-    heroBadge: "Վճարումներ · գնագոյացում ըստ մասնագետների",
+    heroBadge: "Վճարումներ · ձեր բաժանորդագրությունը",
     title: "Պլան և վճարումներ",
     intro: "Ընտրիր պլանը ըստ ակտիվ մասնագետների, ծառայությունների և հասցեների քանակի։ Սեփականատիրոջ և մենեջերի հաշիվները սահմանաչափում չեն հաշվվում, իսկ անհատական առաջարկը կերևա հենց այստեղ։",
     generalSettings: "Ընդհանուր կարգավորումներ",
@@ -171,7 +171,7 @@ const billingCopy = {
     businessSuspended: "Бизнес приостановлен. Для восстановления обратитесь в поддержку.",
     billingSuspended: "Платежи приостановлены. Выберите действующее предложение и следуйте доступным шагам активации; если онлайн-оплата закрыта, обратитесь в поддержку.",
     subscriptionInactive: "Подписка неактивна. Выберите тариф и следуйте доступным шагам активации; если онлайн-оплата закрыта, обратитесь в поддержку.",
-    heroBadge: "Платежи · цена по числу специалистов",
+    heroBadge: "Платежи · ваша подписка",
     title: "Тариф и платежи",
     intro: "Выберите тариф по числу активных специалистов, услуг и адресов. Владелец и менеджер не учитываются в лимите, а персональное предложение появится здесь.",
     generalSettings: "Общие настройки",
@@ -264,7 +264,7 @@ const billingCopy = {
     businessSuspended: "This business is suspended. Contact support to restore it.",
     billingSuspended: "Billing is suspended. Choose an active offer and follow the available activation steps; contact support if online payment is unavailable.",
     subscriptionInactive: "Your subscription is inactive. Choose a plan and follow the available activation steps; contact support if online payment is unavailable.",
-    heroBadge: "Payments · pricing by specialist count",
+    heroBadge: "Payments · your subscription",
     title: "Plan & payments",
     intro: "Choose a plan by active specialists, services and locations. Owner and manager accounts do not count toward the limit, and any tailored offer will appear here.",
     generalSettings: "General settings",
@@ -673,65 +673,67 @@ export default function Billing() {
         </div>
       ) : null}
 
-      <SectionCard className="overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(55,138,221,0.14),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(132,193,242,0.10),transparent_35%),white] p-8">
-        <div className="flex flex-col gap-5 sm:gap-8 xl:flex-row xl:items-center xl:justify-between">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-accent-soft)] px-4 py-2 text-sm font-medium text-[var(--vz-brand-text)]">
-              <Sparkles className="h-4 w-4" /> {copy.heroBadge}
+      <SectionCard className="overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(55,138,221,0.14),transparent_38%),radial-gradient(circle_at_bottom_right,rgba(132,193,242,0.10),transparent_35%),white] p-5 sm:p-6 lg:p-8">
+        <div className="flex min-w-0 flex-col gap-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div className="min-w-0 max-w-3xl">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-accent-soft)] px-4 py-2 text-sm font-medium text-[var(--vz-brand-text)]">
+                <Sparkles className="h-4 w-4 shrink-0" /> {copy.heroBadge}
+              </div>
+              <h1 className="mt-4 text-3xl font-semibold leading-tight tracking-tight text-[var(--vz-text)] sm:text-4xl">{copy.title}</h1>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--vz-text-secondary)]">
+                {currentBusinessType === "rentals" ? rentalCopy[locale].subscriptionHelp : copy.intro}
+              </p>
             </div>
-            <h1 className="mt-6 text-4xl font-semibold leading-tight tracking-tight text-[var(--vz-text)] md:text-5xl">{copy.title}</h1>
-            <p className="mt-4 max-w-2xl text-base leading-8 text-[var(--vz-text-secondary)]">
-              {currentBusinessType === "rentals" ? rentalCopy[locale].subscriptionHelp : copy.intro}
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="shrink-0 lg:pt-1">
               {billingQ.data?.is_billable ? <Link to="/app/settings"><Button variant="secondary">{copy.generalSettings}</Button></Link> : null}
             </div>
           </div>
 
-          <div className="w-full rounded-[24px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-[0_24px_80px_rgba(7,22,36,0.10)]">
-            <div className="flex items-center justify-between gap-3">
-              <div>
+          <div className="min-w-0 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4 sm:p-5" data-billing-summary>
+            <div className="flex min-w-0 items-start justify-between gap-3">
+              <div className="min-w-0">
                 <div className="text-sm font-medium text-[var(--vz-muted)]">{copy.currentPlan}</div>
-                <div className="mt-2 text-2xl font-semibold text-[var(--vz-text)]">{currentPlanName ?? copy.awaitingActivation}</div>
+                <div className="mt-1 break-words text-xl font-semibold text-[var(--vz-text)] sm:text-2xl">{currentPlanName ?? copy.awaitingActivation}</div>
               </div>
-              <div className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-r from-[var(--vz-primary-hover)] to-[var(--vz-primary)] text-white shadow-lg"><Landmark className="h-6 w-6" /></div>
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--vz-accent-soft)] text-[var(--vz-brand-text)]"><Landmark className="h-5 w-5" aria-hidden="true" /></div>
             </div>
 
-            <div className="mt-4 grid gap-3 grid-cols-2 xl:grid-cols-5">
-              <div className="rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
-                <div className="text-xs uppercase tracking-[0.2em] text-[var(--vz-muted)]">{copy.status}</div>
-                <div className="mt-2"><span className={cn("rounded-full border px-3 py-1 text-xs font-semibold", statusBadge(subscription?.status))}>{statusText(subscription?.status, locale)}</span></div>
+            <div className={cn("mt-5 grid grid-cols-1 gap-3", currentBusinessType === "rentals" ? "md:grid-cols-3" : "md:grid-cols-2 2xl:grid-cols-5")} data-billing-stats>
+              <div className="min-w-0 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
+                <div className="text-xs font-medium leading-5 text-[var(--vz-muted)]">{copy.status}</div>
+                <div className="mt-2"><span className={cn("inline-flex max-w-full rounded-full border px-2.5 py-1 text-xs font-semibold leading-5", statusBadge(subscription?.status))}>{statusText(subscription?.status, locale)}</span></div>
               </div>
               {currentBusinessType !== "rentals" && <>
-              <div className="rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
-                <div className="text-xs uppercase tracking-[0.2em] text-[var(--vz-muted)]">{copy.specialists}</div>
+              <div className="min-w-0 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
+                <div className="text-xs font-medium leading-5 text-[var(--vz-muted)]">{copy.specialists}</div>
                 <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{billingQ.data?.seats.active_staff ?? 0} / {billingQ.data?.seats.staff_limit ?? "∞"}</div>
-                <div className="mt-1 text-xs text-[var(--vz-muted)]">{copy.specialistHint}</div>
+                <div className="mt-1 text-xs leading-5 text-[var(--vz-muted)]">{copy.specialistHint}</div>
               </div>
-              <div className="rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
-                <div className="text-xs uppercase tracking-[0.2em] text-[var(--vz-muted)]">{copy.services}</div>
+              <div className="min-w-0 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
+                <div className="text-xs font-medium leading-5 text-[var(--vz-muted)]">{copy.services}</div>
                 <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{billingQ.data?.usage?.services_count ?? 0} / {billingQ.data?.usage?.services_limit ?? "∞"}</div>
-                <div className="mt-1 text-xs text-[var(--vz-muted)]">{copy.servicesHint}</div>
+                <div className="mt-1 text-xs leading-5 text-[var(--vz-muted)]">{copy.servicesHint}</div>
               </div>
               </>}
-              <div className="rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
-                <div className="text-xs uppercase tracking-[0.2em] text-[var(--vz-muted)]">{copy.locations}</div>
+              <div className="min-w-0 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
+                <div className="text-xs font-medium leading-5 text-[var(--vz-muted)]">{copy.locations}</div>
                 <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{billingQ.data?.usage?.locations_count ?? 0} / {billingQ.data?.usage?.locations_limit ?? "∞"}</div>
-                <div className="mt-1 text-xs text-[var(--vz-muted)]">{copy.locationsHint}</div>
+                <div className="mt-1 text-xs leading-5 text-[var(--vz-muted)]">{copy.locationsHint}</div>
               </div>
-              <div className="rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
-                <div className="text-xs uppercase tracking-[0.2em] text-[var(--vz-muted)]">{copy.paymentProvider}</div>
-                <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{billingQ.data?.payment_provider?.live_ready ? (providerCode === "idram" ? "Idram" : "IDBank") : providerCode === "idbank_mock" ? "IDBank Test" : copy.awaitingConnection}</div>
-                <div className="mt-1 text-xs text-[var(--vz-muted)]">{copy.secureEnvironment}</div>
+              <div className={cn("min-w-0 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4", currentBusinessType !== "rentals" && "md:col-span-2 2xl:col-span-1")}>
+                <div className="text-xs font-medium leading-5 text-[var(--vz-muted)]">{copy.paymentProvider}</div>
+                <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{billingQ.data?.payment_provider?.display_name ?? (providerCode === "idram" ? "Idram" : providerCode === "idbank_mock" ? "IDBank Test" : "IDBank V-POS")}</div>
+                <div className="mt-1 text-xs leading-5 text-[var(--vz-muted)]">{checkoutAvailable ? copy.connected : copy.awaitingConnection}</div>
               </div>
 
             </div>
 
-            <div className="mt-4 rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <div className="text-xs uppercase tracking-[0.2em] text-[var(--vz-muted)]">{copy.effectiveMonthly}</div>
-                  <div className="mt-2 text-2xl font-semibold text-[var(--vz-text)]">{formatMoney(pricing?.effective_monthly_price ?? subscription?.plan?.monthly_price, subscription?.plan?.currency ?? pricing?.currency ?? "AMD", locale)}</div>
+            <div className="mt-5 border-t border-[var(--vz-line)] pt-5">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="text-xs font-medium leading-5 text-[var(--vz-muted)]">{copy.effectiveMonthly}</div>
+                  <div className="mt-1 break-words text-2xl font-semibold text-[var(--vz-text)]">{formatMoney(pricing?.effective_monthly_price ?? subscription?.plan?.monthly_price, subscription?.plan?.currency ?? pricing?.currency ?? "AMD", locale)}</div>
                 </div>
                 {pricing?.has_override ? <span className="rounded-full border border-[var(--vz-success-line)] bg-[var(--vz-success-soft)] px-3 py-1 text-xs font-semibold text-[var(--vz-success)]">{copy.customTermsActive}</span> : null}
               </div>
@@ -772,7 +774,7 @@ export default function Billing() {
           </div>
         ) : null}
 
-        <div className="mt-4 grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-4">
+        <div className={cn("mt-4 grid grid-cols-1 gap-4", presentationPlans.length > 1 && "sm:grid-cols-2 2xl:grid-cols-4")}>
           {presentationPlans.map((plan) => {
             const isCurrent = hasUsableSubscription && !plan.isIndividualOffer && currentPlanCode === plan.code;
             const isRenewal = !hasUsableSubscription && currentPlanCode === plan.code;
@@ -839,7 +841,7 @@ export default function Billing() {
         </div>
 
         <div className="p-5 sm:p-8">
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" role="radiogroup" aria-label={copy.paymentMethodsAria}>
+          <div className={cn("grid gap-3", paymentMethods.length > 1 && "sm:grid-cols-2")} role="radiogroup" aria-label={copy.paymentMethodsAria}>
             {paymentMethods.map((method) => {
               const isAvailable = method.value === selectedPaymentMethod && checkoutAvailable;
               const isSelected = selectedPaymentMethod === method.value;
@@ -853,7 +855,7 @@ export default function Billing() {
                   aria-checked={isSelected}
                   disabled={!isAvailable}
                   className={cn(
-                    "group relative min-h-[164px] rounded-2xl border p-4 text-left transition duration-200",
+                    "group relative min-w-0 rounded-2xl border p-4 text-left transition duration-200 sm:p-5",
                     "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--vz-primary)]/25",
                     isSelected && isAvailable
                       ? "border-[var(--vz-primary)] bg-[var(--vz-accent-soft)] shadow-[0_14px_36px_rgba(55,138,221,0.14)]"

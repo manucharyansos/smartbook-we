@@ -53,7 +53,9 @@ export type BillingMeResponse = {
   }>;
 
   payment_provider?: {
-    default: "idbank" | "idbank_mock";
+    default: "idbank" | "idbank_mock" | "idram";
+    display_name?: string;
+    payment_method?: "card" | "wallet";
     mode: string;
     live_ready: boolean;
     checkout_available: boolean;

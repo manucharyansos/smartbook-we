@@ -27,6 +27,7 @@ jobs:
 
       - run: npm ci
       - run: npm run lint
+      - run: npm run verify:payments
       - run: npm run build
       - run: |
           php -l public/index.php

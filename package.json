@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "typecheck": "node ./node_modules/typescript/lib/tsc.js -b",
     "clean": "rm -rf dist",
+    "verify:payments": "node scripts/verify-payments.mjs",
     "verify:rentals": "node scripts/verify-rentals.mjs"
   },
   "dependencies": {

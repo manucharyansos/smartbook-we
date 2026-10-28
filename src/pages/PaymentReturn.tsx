@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, CircleX, Clock3, Landmark, LoaderCircle } from "lucide-react";
@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import LanguageToggle from "../components/LanguageToggle";
 import { useLanguage } from "../contexts/LanguageContext";
 import { getInvoicePaymentStatus } from "../lib/paymentsApi";
-import { verifiedPaymentStatus } from "../lib/paymentReturn";
+import { readPendingCheckout, verifiedPaymentStatus } from "../lib/paymentReturn";
 import { SUPPORT_EMAIL } from "../lib/support";
 import { useAuth } from "../store/auth";
 
@@ -65,8 +65,10 @@ export default function PaymentReturn() {
   const user = useAuth((state) => state.user);
   const queryClient = useQueryClient();
   const [params] = useSearchParams();
-  const reference = params.get("reference");
-  const rawId = Number(params.get("invoice_id"));
+  // Idram may return without the bill number; fall back to the attempt this browser opened.
+  const [pending] = useState(() => (params.get("reference") ? null : readPendingCheckout()));
+  const reference = params.get("reference") ?? pending?.reference ?? null;
+  const rawId = Number(params.get("invoice_id") ?? pending?.invoice_id);
   const invoiceId = Number.isSafeInteger(rawId) && rawId > 0 ? rawId : null;
   const canCheck = Boolean(user?.business_id && invoiceId && reference);
   const paymentQ = useQuery({
@@ -85,7 +87,7 @@ export default function PaymentReturn() {
   const style = statusStyle[status];
   const [title, description] = text[status];
   const Icon = style.icon;
-  const provider = params.get("provider") === "idram" ? "Idram" : "IDBank";
+  const provider = (params.get("provider") ?? pending?.provider) === "idram" ? "Idram" : "IDBank";
   const linkClass = "inline-flex h-11 items-center justify-center rounded-2xl px-4 text-sm font-medium transition";
 
   useEffect(() => {

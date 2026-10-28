@@ -25,7 +25,7 @@ import { api } from "@/lib/api";
 import { cn } from "@/lib/cn";
 import { fetchBillingMe } from "@/lib/billingMeApi";
 import { createCheckoutSession, getInvoicePaymentStatus, type PaymentTransaction } from "@/lib/paymentsApi";
-import { providerPaymentMethod } from "@/lib/paymentReturn";
+import { providerPaymentMethod, rememberPendingCheckout } from "@/lib/paymentReturn";
 import type { PublicPlan } from "@/lib/planApi";
 import { isCustomPlan, localizePlanNameForLocale } from "@/lib/planPresentation";
 import { useLanguage, type Locale } from "@/contexts/LanguageContext";
@@ -556,7 +556,10 @@ export default function Billing() {
     onMutate: () => setCheckoutError(null),
     onSuccess: (data) => {
       setCurrentInvoiceId(data.data.invoice_id);
-      if (data.data.checkout_url) window.location.href = data.data.checkout_url;
+      if (data.data.checkout_url) {
+        rememberPendingCheckout(data.data);
+        window.location.href = data.data.checkout_url;
+      }
     },
     onError: (error) => setCheckoutError(checkoutErrorMessage(error, copy.checkoutError)),
   });

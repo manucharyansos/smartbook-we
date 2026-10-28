@@ -117,6 +117,7 @@ const billingCopy = {
     featureOwners: "Սեփականատեր և մենեջեր՝ անսահմանափակ",
     currentPlanButton: "Ընթացիկ պլան",
     restorePlan: "Վերականգնել այս պլանը",
+    payTrialPlan: "Վճարել և ակտիվացնել",
     createCustomInvoice: "Ստեղծել հաշիվ ըստ անհատական առաջարկի",
     createYearlyInvoice: "Ստեղծել տարեկան վճարման հաշիվ",
     createMonthlyInvoice: "Ստեղծել ամսական վճարման հաշիվ",
@@ -215,6 +216,7 @@ const billingCopy = {
     featureOwners: "Владелец и менеджер без ограничений",
     currentPlanButton: "Текущий тариф",
     restorePlan: "Восстановить этот тариф",
+    payTrialPlan: "Оплатить и активировать",
     createCustomInvoice: "Создать счёт по персональному предложению",
     createYearlyInvoice: "Создать счёт за год",
     createMonthlyInvoice: "Создать счёт за месяц",
@@ -313,6 +315,7 @@ const billingCopy = {
     featureOwners: "Unlimited owner and manager access",
     currentPlanButton: "Current plan",
     restorePlan: "Restore this plan",
+    payTrialPlan: "Pay and activate",
     createCustomInvoice: "Create invoice for tailored offer",
     createYearlyInvoice: "Create annual invoice",
     createMonthlyInvoice: "Create monthly invoice",
@@ -831,7 +834,9 @@ export default function Billing() {
 
         <div className={cn("mt-4 grid grid-cols-1 gap-4", presentationPlans.length > 1 && "sm:grid-cols-2 2xl:grid-cols-4")}>
           {presentationPlans.map((plan) => {
-            const isCurrent = hasUsableSubscription && !plan.isIndividualOffer && currentPlanCode === plan.code;
+            // A trial is not paid yet: its plan must stay purchasable.
+            const isCurrent = hasUsableSubscription && subscription?.status === "active" && !plan.isIndividualOffer && currentPlanCode === plan.code;
+            const isTrialPlan = subscription?.status === "trialing" && currentPlanCode === plan.code;
             const isRenewal = !hasUsableSubscription && currentPlanCode === plan.code;
             const isBusy = requestMut.isPending && selectedPlan === plan.code;
             return (
@@ -868,7 +873,7 @@ export default function Billing() {
 
                 <Button className={cn("mt-6 w-full", isCurrent ? "!bg-[var(--vz-accent-soft)] !text-[var(--vz-accent-text)] hover:!bg-[var(--vz-accent-soft)]" : "")} loading={isBusy} disabled={isCurrent || requestMut.isPending || billingQ.data?.reason === "business_suspended"} onClick={() => { setSelectedPlan(plan.code); requestMut.mutate({ planCode: plan.code, cycle: billingCycle }); }}>
                   {isCurrent ? <BadgeCheck className="h-4 w-4" /> : plan.isIndividualOffer ? <Handshake className="h-4 w-4" /> : <Crown className="h-4 w-4" />}
-                  {isCurrent ? copy.currentPlanButton : isRenewal ? copy.restorePlan : plan.isIndividualOffer ? copy.createCustomInvoice : billingCycle === "yearly" ? copy.createYearlyInvoice : copy.createMonthlyInvoice}
+                  {isCurrent ? copy.currentPlanButton : isTrialPlan ? copy.payTrialPlan : isRenewal ? copy.restorePlan : plan.isIndividualOffer ? copy.createCustomInvoice : billingCycle === "yearly" ? copy.createYearlyInvoice : copy.createMonthlyInvoice}
                 </Button>
               </motion.div>
             );

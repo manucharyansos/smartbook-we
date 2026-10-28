@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useAuth } from "../store/auth";
 import { rentalCopy } from "../i18n/rentals";
-import { rentalApi, rentalToday, type RentalBooking } from "../lib/rentalApi";
+import { rentalApi, rentalQuote, rentalToday, type RentalBooking, type RentalDiscount } from "../lib/rentalApi";
 import { createBlock, deleteBlock, fetchBlocks } from "../lib/calendarBlocksApi";
 import { getErrorMessage } from "../lib/http";
 import { Modal } from "../components/ui/Modal";
@@ -73,13 +73,13 @@ export default function RentalWorkspace() {
       <div className="rental-desktop-table rental-table-wrap"><table className="rental-table"><thead><tr><th>{t.date}</th><th>{t.name}</th><th>{t.status}</th><th>{t.total}</th><th>{t.paid}</th><th>{t.debt}</th><th /></tr></thead><tbody>{items.map((item) => <tr key={item.id} data-selectable="true" onClick={() => setSelectedId(item.id)}><td>{stamp(item.starts_at)}<div className="rental-muted">{stamp(item.ends_at)}</div></td><td>{item.client_name}<div className="rental-muted">{item.client_phone}</div></td><td><span className="rental-status" data-status={item.status}>{item.is_expired ? t.expired : statuses[item.status] || item.status}</span></td><td>{money(item.final_price)}</td><td>{money(item.paid_amount)}</td><td>{["cancelled", "no_show"].includes(item.status) ? "—" : money(item.outstanding_amount)}</td><td><button className="rental-btn secondary" onClick={(event) => { event.stopPropagation(); setSelectedId(item.id); }}>{t.status}</button></td></tr>)}</tbody></table></div>
       <div className="rental-mobile-cards">{items.map((item) => <button key={item.id} className="rental-card rental-stack" style={{ textAlign: "left", padding: 16 }} onClick={() => setSelectedId(item.id)}><div className="rental-row rental-between"><strong>{item.client_name}</strong><span className="rental-status" data-status={item.status}>{item.is_expired ? t.expired : statuses[item.status]}</span></div><span>{stamp(item.starts_at)} — {stamp(item.ends_at)}</span><span className="rental-row rental-between"><span>{t.total}: {money(item.final_price)}</span><span>{t.paid}: {money(item.paid_amount)}</span></span></button>)}</div>
     </section>
-    <Modal open={createOpen} onClose={() => setCreateOpen(false)} title={t.manual}>{createOpen && <ManualBooking minMinutes={ratesQ.data?.min_minutes || 60} maxMinutes={ratesQ.data?.max_minutes || 720} step={ratesQ.data?.slot_step_minutes || 15} hourly={ratesQ.data?.hourly_price || 0} onSuccess={() => { setCreateOpen(false); refresh(); }} />}</Modal>
+    <Modal open={createOpen} onClose={() => setCreateOpen(false)} title={t.manual}>{createOpen && <ManualBooking minMinutes={ratesQ.data?.min_minutes || 60} maxMinutes={ratesQ.data?.max_minutes || 720} step={ratesQ.data?.slot_step_minutes || 15} hourly={ratesQ.data?.hourly_price || 0} discounts={ratesQ.data?.duration_discounts} onSuccess={() => { setCreateOpen(false); refresh(); }} />}</Modal>
     <Modal open={blockOpen} onClose={() => setBlockOpen(false)} title={t.block}>{blockOpen && <BlockForm onSuccess={() => { setBlockOpen(false); refresh(); }} />}</Modal>
     <Modal open={!!current} onClose={() => setSelectedId(null)} title={current ? `${current.client_name} · #${current.booking_code}` : ""}>{current && <BookingDetail key={current.id} booking={current} timezone={timezone} onChange={refresh} />}</Modal>
   </div>;
 }
 
-function ManualBooking({ minMinutes, maxMinutes, step, hourly, onSuccess }: { minMinutes: number; maxMinutes: number; step: number; hourly: number; onSuccess: () => void }) {
+function ManualBooking({ minMinutes, maxMinutes, step, hourly, discounts, onSuccess }: { minMinutes: number; maxMinutes: number; step: number; hourly: number; discounts?: RentalDiscount[]; onSuccess: () => void }) {
   const { locale } = useLanguage(); const t = rentalCopy[locale];
   const [data, setData] = useState({ starts_at: "", duration_minutes: minMinutes, client_name: "", client_phone: "", client_email: "", notes: "" });
   const validDuration = validRentalDuration(data.duration_minutes, minMinutes, maxMinutes, step);
@@ -89,7 +89,7 @@ function ManualBooking({ minMinutes, maxMinutes, step, hourly, onSuccess }: { mi
     {mutation.isError && <div className="rental-note rental-error" role="alert">{getErrorMessage(mutation.error, t.error)}</div>}
     <div className="rental-fields"><label className="rental-field">{t.start}<input type="datetime-local" value={data.starts_at} onChange={(event) => setData((old) => ({ ...old, starts_at: event.target.value }))} required /></label><RentalDurationField value={data.duration_minutes} min={minMinutes} max={maxMinutes} step={step} onChange={(minutes) => setData((old) => ({ ...old, duration_minutes: minutes }))} presets /></div>
     {(["client_name", "client_phone", "client_email", "notes"] as const).map((key) => <label className="rental-field" key={key}>{key === "client_name" ? t.name : key === "client_phone" ? t.phone : key === "client_email" ? t.email : t.notes}<input value={data[key]} type={key === "client_email" ? "email" : key === "client_phone" ? "tel" : "text"} maxLength={key === "notes" ? 2000 : key === "client_phone" ? 40 : key === "client_email" ? 255 : 120} required={key === "client_name" || key === "client_phone"} onChange={(event) => setData((old) => ({ ...old, [key]: event.target.value }))} /></label>)}
-    {validDuration && <p>{t.total}: <strong>{Math.ceil(hourly * data.duration_minutes / 60).toLocaleString()} ֏</strong></p>}<button className="rental-btn" disabled={!validDuration || mutation.isPending}>{mutation.isPending ? t.loading : t.save}</button>
+    {validDuration && (() => { const quote = rentalQuote(hourly, data.duration_minutes, discounts); return <p>{t.total}: <strong>{quote.price.toLocaleString()} ֏</strong>{quote.percent > 0 && <span className="rental-muted"> · {t.discountApplied(quote.percent)} · <s>{quote.gross.toLocaleString()} ֏</s></span>}</p>; })()}<button className="rental-btn" disabled={!validDuration || mutation.isPending}>{mutation.isPending ? t.loading : t.save}</button>
   </form>;
 }
 

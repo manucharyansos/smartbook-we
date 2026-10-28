@@ -4,6 +4,7 @@ import { useLanguage } from "../../contexts/LanguageContext";
 import { rentalCopy } from "../../i18n/rentals";
 import type { PublicBusiness } from "../../lib/publicApi";
 import { rentalDurationLabel } from "../../lib/rentalTime";
+import RentalDiscounts from "./RentalDiscounts";
 import { safeExternalUrl } from "../../lib/support";
 import { PublicBusinessFooter, PublicBusinessHeader } from "../public/PublicBusinessChrome";
 import RentalGallery from "./RentalGallery";
@@ -41,6 +42,7 @@ export default function RentalProfile({ business }: { business: PublicBusiness }
             {rates?.hourly_price != null && <div><strong className="rental-price">{rates.hourly_price.toLocaleString(locale === "hy" ? "hy-AM" : locale)} ֏</strong><p className="rental-muted">{t.hourly}</p></div>}
             {rates && <p className="rental-muted">{t.allowedDuration}: {rentalDurationLabel(rates.min_minutes, t)} – {rentalDurationLabel(rates.max_minutes, t)}</p>}
             <p className="rental-muted">{t.availabilityHelp}</p>
+            <RentalDiscounts discounts={rates?.duration_discounts} />
             {rates?.allow_overnight && <p className="rental-note">{t.overnightPublic}</p>}
             <Link className="rental-btn rental-full" to={bookHref}>{t.chooseDateTime}<ArrowRight size={18} aria-hidden="true" /></Link>
           </section>

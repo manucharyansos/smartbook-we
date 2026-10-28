@@ -29,6 +29,11 @@ function RentalSettingsForm({ profile, settings, initialDays, onboarding }: { pr
   const { locale } = useLanguage(); const t = rentalCopy[locale];
   const navigate = useNavigate(); const queryClient = useQueryClient(); const { user, setUser } = useAuth();
   const [rates, setRates] = useState({ hourly_price: settings.hourly_price, min_minutes: settings.min_minutes, max_minutes: settings.max_minutes, buffer_minutes: settings.buffer_minutes, slot_step_minutes: settings.slot_step_minutes, allow_overnight: settings.allow_overnight ?? false });
+  // Hours are edited as text so "2.5" can be typed; they are sent to the API as minutes.
+  const [discounts, setDiscounts] = useState((settings.duration_discounts ?? []).map((tier) => ({ hours: String(tier.min_minutes / 60), percent: String(tier.percent) })));
+  const discountTiers = discounts.map((row) => ({ min_minutes: Math.round(Number(row.hours.replace(",", ".")) * 60), percent: Number(row.percent) }));
+  const validDiscounts = discountTiers.every((tier) => Number.isInteger(tier.min_minutes) && tier.min_minutes >= 15 && tier.min_minutes <= 43200 && Number.isInteger(tier.percent) && tier.percent >= 1 && tier.percent <= 90)
+    && new Set(discountTiers.map((tier) => tier.min_minutes)).size === discountTiers.length;
   const validDurations = validRentalDuration(rates.min_minutes, 15, 43200, rates.slot_step_minutes) && validRentalDuration(rates.max_minutes, rates.min_minutes, 43200, rates.slot_step_minutes);
   const [data, setData] = useState({ phone: profile.phone || "", address: profile.address || "", short_description: profile.short_description || "", description: profile.description || "", logo_url: profile.logo_url || "", cover_url: profile.cover_url || "", is_public_profile_enabled: profile.is_public_profile_enabled ?? true, is_marketplace_visible: profile.is_marketplace_visible ?? true });
   const [days, setDays] = useState<ScheduleDay[]>(Array.from({ length: 7 }, (_, n) => initialDays.find((day) => day.weekday === n + 1) || { weekday: n + 1, is_closed: n === 6, start: "09:00", end: "18:00", break_start: null, break_end: null }));
@@ -39,7 +44,7 @@ function RentalSettingsForm({ profile, settings, initialDays, onboarding }: { pr
   };
   const fail = (error: unknown) => { setMessage(getErrorMessage(error, t.error)); setSuccess(false); };
   const save = useMutation({ mutationFn: async (publish: boolean) => {
-    await rentalApi.saveSettings(rates);
+    await rentalApi.saveSettings({ ...rates, duration_discounts: discountTiers });
     await updateBusinessSettings({ ...data, show_services: false, show_staff: false });
     await api.put("/rental/schedule", { days });
     if (publish) await api.post("/business/complete-onboarding");
@@ -61,7 +66,7 @@ function RentalSettingsForm({ profile, settings, initialDays, onboarding }: { pr
       else { await rentalApi.upload(file, caption); setCaption(""); refresh(); }
     } catch (error) { fail(error); } finally { setUploading(false); }
   }
-  function submit(event: FormEvent) { event.preventDefault(); if (!validDurations) return; setMessage(""); save.mutate(onboarding); }
+  function submit(event: FormEvent) { event.preventDefault(); if (!validDurations || !validDiscounts) return; setMessage(""); save.mutate(onboarding); }
   return <div className={onboarding ? "rental-page rental-wrap" : "rental-workspace"}>
     <div className="rental-row rental-between"><div><span className="rental-badge">{t.title}</span><h1 style={{ marginTop: 10 }}>{t.settings}</h1></div>
       {!onboarding && <Link className="rental-btn secondary" to={`/businesses/${profile.slug}`} target="_blank">{t.publicPage}</Link>}
@@ -76,6 +81,16 @@ function RentalSettingsForm({ profile, settings, initialDays, onboarding }: { pr
         </label>)}<label className="rental-field">{t.step}<select value={rates.slot_step_minutes} onChange={(event) => setRates((old) => ({ ...old, slot_step_minutes: Number(event.target.value) }))}>{[5, 10, 15, 20, 30, 60].map((n) => <option key={n} value={n}>{n}</option>)}</select></label></div>
         <div className="rental-fields" style={{ marginTop: 16 }}>{(["min_minutes", "max_minutes"] as const).map((key) => <RentalDurationField key={key} label={key === "min_minutes" ? t.minDuration : t.maxDuration} value={rates[key]} min={key === "min_minutes" ? 15 : Math.max(15, rates.min_minutes)} max={43200} step={rates.slot_step_minutes} onChange={(minutes) => setRates((old) => ({ ...old, [key]: minutes }))} />)}</div>
         <label className="rental-check" style={{ marginTop: 20 }}><input type="checkbox" checked={rates.allow_overnight} onChange={(event) => setRates((old) => ({ ...old, allow_overnight: event.target.checked }))} />{t.overnight}</label><p className="rental-muted" style={{ marginTop: 10 }}>{t.overnightHelp}</p>
+      </section>
+      <section className="rental-card rental-stack"><h2>{t.discounts}</h2><p className="rental-muted">{t.discountsHelp}</p>
+        {!discounts.length && <p className="rental-muted">{t.noDiscounts}</p>}
+        {discounts.map((row, index) => <div className="rental-fields" key={index} style={{ alignItems: "end" }}>
+          <label className="rental-field">{t.discountFrom}<input inputMode="decimal" value={row.hours} required onChange={(event) => setDiscounts((old) => old.map((item, n) => n === index ? { ...item, hours: event.target.value } : item))} /></label>
+          <label className="rental-field">{t.discountPercent}<input type="number" min={1} max={90} step={1} value={row.percent} required onChange={(event) => setDiscounts((old) => old.map((item, n) => n === index ? { ...item, percent: event.target.value } : item))} /></label>
+          <button className="rental-btn danger" type="button" aria-label={t.removeDiscount} onClick={() => setDiscounts((old) => old.filter((_, n) => n !== index))}><Trash2 size={16} /></button>
+        </div>)}
+        {!validDiscounts && <p className="rental-note rental-error" role="alert">{t.discountInvalid}</p>}
+        <button className="rental-btn secondary" type="button" disabled={discounts.length >= 10} onClick={() => setDiscounts((old) => [...old, { hours: old.length ? String(Number(old[old.length - 1].hours || 0) + 2) : "3", percent: "5" }])}>{t.addDiscount}</button>
       </section>
       <section className="rental-card rental-stack"><h2>{t.space}</h2>
         <div className="rental-fields"><label className="rental-field">{t.address}<input value={data.address} onChange={(event) => setData((old) => ({ ...old, address: event.target.value }))} maxLength={255} required /></label><label className="rental-field">{t.phone}<input type="tel" value={data.phone} onChange={(event) => setData((old) => ({ ...old, phone: event.target.value }))} maxLength={40} /></label></div>
@@ -92,7 +107,7 @@ function RentalSettingsForm({ profile, settings, initialDays, onboarding }: { pr
         <span>{t.weekdays[index]}</span><label className="rental-check"><input type="checkbox" checked={day.is_closed} onChange={(event) => setDays((old) => old.map((row, n) => n === index ? { ...row, is_closed: event.target.checked, start: row.start || "09:00", end: row.end || "18:00" } : row))} />{t.closed}</label>
         {(["start", "end"] as const).map((field) => <label className="rental-field" key={field}><span className="sr-only">{t.weekdays[index]} {field === "start" ? t.start : t.end}</span><input type="time" disabled={day.is_closed} value={day[field]?.slice(0, 5) || ""} required={!day.is_closed} onChange={(event) => setDays((old) => old.map((row, n) => n === index ? { ...row, [field]: event.target.value } : row))} /></label>)}
       </div>)}</section>
-      <button className="rental-btn" disabled={!validDurations || save.isPending || uploading}>{save.isPending ? t.loading : onboarding ? t.publish : t.save}</button>
+      <button className="rental-btn" disabled={!validDurations || !validDiscounts || save.isPending || uploading}>{save.isPending ? t.loading : onboarding ? t.publish : t.save}</button>
     </form>
     <section className="rental-card rental-stack" style={{ marginTop: 24 }}><h2>{t.gallery} ({settings.gallery.length}/20)</h2><p className="rental-muted">{t.uploadHelp}</p>
       <label className="rental-field">{t.caption}<input value={caption} maxLength={255} onChange={(event) => setCaption(event.target.value)} /></label>

@@ -5,9 +5,19 @@ import { resolveMediaUrl } from "./mediaUrl";
 
 const publicApi = axios.create({ baseURL: API_BASE_URL });
 export type GalleryItem = { id: number; url: string; kind: "image" | "video"; caption?: string | null; sort_order: number };
-export type RentalRates = { hourly_price: number | null; min_minutes: number; max_minutes: number; buffer_minutes: number; slot_step_minutes: number; allow_overnight?: boolean; currency?: string };
+export type RentalDiscount = { min_minutes: number; percent: number };
+export type RentalRates = { hourly_price: number | null; min_minutes: number; max_minutes: number; buffer_minutes: number; slot_step_minutes: number; allow_overnight?: boolean; currency?: string; duration_discounts?: RentalDiscount[] };
 export type RentalSettings = RentalRates & { gallery: GalleryItem[]; timezone?: string };
-export type RentalSlot = { starts_at: string; ends_at: string; price: number; currency: string };
+export type RentalSlot = { starts_at: string; ends_at: string; price: number; gross_price?: number; discount_percent?: number; currency: string };
+
+/** Mirrors the API: the longest reached tier applies and the discount is rounded down. */
+export function rentalQuote(hourly: number, minutes: number, discounts: RentalDiscount[] = []) {
+  const gross = Math.ceil(hourly * minutes / 60);
+  const percent = [...discounts].sort((a, b) => a.min_minutes - b.min_minutes)
+    .reduce((current, tier) => minutes >= tier.min_minutes ? tier.percent : current, 0);
+  const discount = Math.floor(gross * percent / 100);
+  return { gross, percent, discount, price: gross - discount };
+}
 export type RentalBooking = {
   id: number; booking_code: string; client_name: string; client_phone: string; client_email?: string | null;
   starts_at: string; ends_at: string; status: string; final_price: number; paid_amount: number;

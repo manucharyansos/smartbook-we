@@ -4,7 +4,8 @@ import { Link, useSearchParams } from "react-router-dom";
 import { Building2, Clock3, MapPin, Phone } from "lucide-react";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { rentalCopy } from "../../i18n/rentals";
-import { rentalApi, rentalToday } from "../../lib/rentalApi";
+import { rentalApi, rentalQuote, rentalToday } from "../../lib/rentalApi";
+import RentalDiscounts from "./RentalDiscounts";
 import { cancelPublicBooking, fetchPublicBookingDetail, resendPublicBookingCode, verifyPublicBooking, type PublicBusiness } from "../../lib/publicApi";
 import { getErrorMessage } from "../../lib/http";
 import { LEGAL_DOCUMENT_VERSION } from "../../config/legal";
@@ -64,7 +65,7 @@ export default function RentalPublic({ business }: { business: PublicBusiness })
   const booking = detail?.primary_booking;
   const currency = (value: number) => `${value.toLocaleString(locale === "hy" ? "hy-AM" : locale)} ֏`;
   const stamp = (value: string) => new Date(value).toLocaleString(locale === "hy" ? "hy-AM" : locale, { timeZone: business.timezone || "Asia/Yerevan", dateStyle: "medium", timeStyle: "short" });
-  const amount = rates?.hourly_price == null ? null : Math.ceil(rates.hourly_price * duration / 60);
+  const quote = rates?.hourly_price == null ? null : rentalQuote(rates.hourly_price, duration, rates.duration_discounts);
   function submit(event: FormEvent) { event.preventDefault(); setMessage(""); if (!selectedSlot || !validDuration || slotsQ.isError || slotsQ.isFetching) { setMessage(t.chooseSlot); return; } create.mutate(); }
   function newBooking() { setParams({}); setToken(""); setOtp(""); setTime(""); setMessage(""); setMoving(false); }
 
@@ -76,6 +77,7 @@ export default function RentalPublic({ business }: { business: PublicBusiness })
         {business.logo_url && business.show_logo !== false ? <img className="rental-logo" src={business.logo_url} alt={business.name} /> : <Building2 size={36} />}
         <div><span className="rental-badge">{t.title}</span><h1 style={{ marginTop: 10 }}>{business.name}</h1></div>
       </div><div>{rates?.hourly_price != null && <><div className="rental-price">{currency(rates.hourly_price)}</div><span className="rental-muted">{t.hourly}</span></>}</div></div>
+      {!moving && <RentalDiscounts discounts={rates?.duration_discounts} />}
       <div className="rental-layout">
         <div className="rental-stack">
           {business.cover_url && business.show_cover !== false && <img className="rental-cover" src={business.cover_url} alt={business.name} />}
@@ -120,7 +122,7 @@ export default function RentalPublic({ business }: { business: PublicBusiness })
             <div className="rental-slots">{slotsQ.data?.map((slot) => <button type="button" key={slot.starts_at} className="rental-slot" aria-label={`${t.start}: ${rentalLocalStamp(slot.starts_at, locale)} · ${t.end}: ${rentalLocalStamp(slot.ends_at, locale)}`} aria-pressed={time === slot.starts_at} onClick={() => { setTime(slot.starts_at); setMessage(""); }}>{slot.starts_at.slice(11, 16)}<small style={{ display: "block", opacity: .75 }}>– {slot.ends_at.slice(0, 10) !== slot.starts_at.slice(0, 10) ? rentalLocalStamp(slot.ends_at, locale) : slot.ends_at.slice(11, 16)}</small></button>)}</div>
             {selectedSlot && <div className="rental-note rental-selected-period" role="status"><strong>{t.selection}</strong><span>{t.start}: {rentalLocalStamp(selectedSlot.starts_at, locale)}</span><span>{t.end}: {rentalLocalStamp(selectedSlot.ends_at, locale)}</span>{!moving && <span>{t.duration}: {rentalDurationLabel(duration, t)}</span>}</div>}
             {moving ? <button className="rental-btn" disabled={!selectedSlot || slotsQ.isError || slotsQ.isFetching || move.isPending} onClick={() => move.mutate()}>{move.isPending ? t.loading : t.save}</button> : <form className="rental-stack" onSubmit={submit}>
-              {amount !== null && validDuration && <div className="rental-row rental-between"><span>{t.total}</span><strong className="rental-price">{currency(amount)}</strong></div>}
+              {quote !== null && validDuration && <div className="rental-row rental-between"><span>{t.total}{quote.percent > 0 && <small className="rental-muted" style={{ display: "block" }}>{t.discountApplied(quote.percent)} · <s>{currency(quote.gross)}</s></small>}</span><strong className="rental-price">{currency(quote.price)}</strong></div>}
               <label className="rental-field">{t.name}<input value={name} onChange={(event) => setName(event.target.value)} autoComplete="name" minLength={2} maxLength={120} required /></label>
               <div className="rental-fields"><label className="rental-field">{t.phone}<input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} autoComplete="tel" maxLength={40} required /></label>
                 <label className="rental-field">{t.email}<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" maxLength={150} required /></label></div>

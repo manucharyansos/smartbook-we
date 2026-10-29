@@ -99,7 +99,7 @@ export default function AdminLayout() {
                 </div>
               </div>
 
-              <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white shadow-lg shadow-violet-500/20">
+              <div className="grid h-11 w-11 place-items-center rounded-2xl bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-lg">
                 <User size={18} />
               </div>
 

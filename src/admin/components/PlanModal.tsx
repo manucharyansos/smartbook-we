@@ -479,7 +479,7 @@ export function PlanModal({
                                         disabled={saving}
                                         {...hoverLift}
                                         className={cn(
-                                            "inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-6 text-sm font-medium text-white shadow-lg shadow-violet-500/20",
+                                            "inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[var(--vz-primary)] px-6 text-sm font-medium text-[var(--vz-on-primary)] shadow-lg",
                                             saving && "cursor-not-allowed opacity-70"
                                         )}
                                     >

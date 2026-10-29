@@ -57,7 +57,7 @@ export default function AdminSidebar({ expanded, mobileOpen, onToggleExpanded, o
             <div className="min-w-0">
               {expanded ? (
                 <div className="flex items-center gap-3">
-                  <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 shadow-lg shadow-violet-500/25">
+                  <div className="grid h-11 w-11 place-items-center rounded-2xl bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-lg">
                     <CalendarDays className="h-5 w-5" />
                   </div>
                   <div className="min-w-0">
@@ -66,7 +66,7 @@ export default function AdminSidebar({ expanded, mobileOpen, onToggleExpanded, o
                   </div>
                 </div>
               ) : (
-                <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 shadow-lg shadow-violet-500/25">
+                <div className="grid h-11 w-11 place-items-center rounded-2xl bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-lg">
                   <CalendarDays className="h-5 w-5" />
                 </div>
               )}

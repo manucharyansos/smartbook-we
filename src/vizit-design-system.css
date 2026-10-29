@@ -1588,6 +1588,12 @@ body,
 .vizit-superadmin-shell header, .vizit-superadmin-sidebar { background: var(--vz-surface); border-color: var(--vz-line); color: var(--vz-text); }
 .vizit-superadmin-sidebar :is(.text-white, [class*="text-white/"]) { color: var(--vz-muted); }
 .vizit-superadmin-shell :is(.bg-white, [class*="bg-white/"], .bg-slate-50) { background-color: var(--vz-surface); border-color: var(--vz-line); }
+/* Tinted panels, borders and secondary text used by admin pages and modals follow the theme too. */
+.vizit-superadmin-shell :is([class*="bg-slate-50/"], .bg-slate-100, [class*="bg-slate-100/"], .bg-gray-50, .bg-gray-100) { background-color: var(--vz-surface-2); }
+.vizit-superadmin-shell :is(.bg-violet-50, [class*="bg-violet-50/"]) { background-color: var(--vz-accent-soft); }
+.vizit-superadmin-shell :is(.border-slate-100, .border-slate-200, .border-gray-100, .border-gray-200) { border-color: var(--vz-line); }
+.vizit-superadmin-shell :is(.text-slate-700, .text-slate-800, .text-gray-700, .text-gray-800) { color: var(--vz-text-secondary); }
+.vizit-superadmin-shell :is(.text-violet-700, .text-violet-600) { color: var(--vz-brand-text); }
 .vizit-superadmin-shell :is([class*="from-violet-"], [class*="from-fuchsia-"], .bg-violet-50) { background: var(--vz-accent-soft); color: var(--vz-accent-text); box-shadow: none; }
 .vizit-superadmin-shell :is(.text-violet-600,.text-violet-700,.text-fuchsia-600) { color: var(--vz-accent-text); }
 

@@ -42,8 +42,9 @@ export const adminService = {
 
 /** "HTTP 404 · message" so a screenshot of an admin error shows the real cause. */
 export function adminErrorText(error: unknown, fallback: string): string {
-    const response = (error as { response?: { status?: number; data?: { message?: string } } })?.response;
+    const response = (error as { response?: { status?: number; data?: { message?: string; debug?: string } } })?.response;
     if (!response) return `${fallback} (սերվերի հետ կապ չկա)`;
+    if (response.data?.debug) return `${fallback} · HTTP ${response.status} · ${response.data.debug}`;
     const hint = response.status === 404 ? "API-ն թարմացված չէ կամ route cache-ը մաքրված չէ"
         : response.status === 403 ? "այս ադմին դերը հասանելիություն չունի"
         : response.status === 500 ? "սերվերի սխալ, տես storage/logs/laravel.log"

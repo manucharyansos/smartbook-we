@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { trackSiteEvent } from "@/lib/siteAnalytics";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
@@ -417,6 +418,7 @@ export default function Register() {
             );
 
             setAuth(res.data.token, res.data.user);
+            trackSiteEvent("signup_completed");
             queryClient.clear();
 
             navigate("/app/onboarding", {

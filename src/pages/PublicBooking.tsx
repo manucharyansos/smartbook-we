@@ -1,4 +1,5 @@
 import RentalPublic from "../components/rentals/RentalPublic";
+import { trackSiteEvent } from "@/lib/siteAnalytics";
 /* eslint-disable react-hooks/set-state-in-effect -- this form reconciles URL, location and async availability state after each external source updates */
 import { cloneElement, isValidElement, useEffect, useId, useMemo, useRef, useState, type ReactElement, type ReactNode } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
@@ -911,6 +912,7 @@ function ServiceBooking() {
             setGuestToken("");
             setOtpExpiresAt(res?.data?.expires_at ?? null);
             setOtpPanelOpen(true);
+            if (res?.data?.booking_code) trackSiteEvent("booking_created");
             const next = new URLSearchParams(searchParams);
             if (res?.data?.booking_code) next.set("booking", res.data.booking_code);
             next.delete("token");
@@ -934,6 +936,7 @@ function ServiceBooking() {
             setGuestToken("");
             setOtpExpiresAt(res?.data?.expires_at ?? null);
             setOtpPanelOpen(true);
+            if (res?.data?.booking_code) trackSiteEvent("booking_created");
             const next = new URLSearchParams(searchParams);
             if (res?.data?.booking_code) next.set("booking", res.data.booking_code);
             next.delete("token");
@@ -959,6 +962,7 @@ function ServiceBooking() {
             setGuestToken("");
             setOtpExpiresAt(res?.data?.expires_at ?? null);
             setOtpPanelOpen(true);
+            if (res?.data?.booking_code) trackSiteEvent("booking_created");
             const next = new URLSearchParams(searchParams);
             if (res?.data?.booking_code) next.set("booking", res.data.booking_code);
             next.delete("token");

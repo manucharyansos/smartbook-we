@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Building2, CalendarDays, ChevronLeft, ChevronRight, CreditCard, FileText, LayoutDashboard, Package, Shield, Users, X } from 'lucide-react';
+import { Building2, CalendarDays, ChevronLeft, ChevronRight, CreditCard, FileText, Globe2, LayoutDashboard, Package, Shield, Users, X } from 'lucide-react';
 import { cn } from '@/lib/cn';
 
 interface Props {
@@ -20,7 +20,7 @@ export default function AdminSidebar({ expanded, mobileOpen, onToggleExpanded, o
   const isSuperAdmin = admin.role === 'super_admin';
 
   const menuItems = [
-    ...(isSuperAdmin ? [{ path: '/admin/dashboard', icon: LayoutDashboard, label: 'Վահանակ' }] : []),
+    ...(isSuperAdmin ? [{ path: '/admin/dashboard', icon: LayoutDashboard, label: 'Վահանակ' }, { path: '/admin/site-analytics', icon: Globe2, label: 'Այցելություններ' }] : []),
     { path: '/admin/businesses', icon: Building2, label: 'Բիզնեսներ' },
     { path: '/admin/users', icon: Users, label: 'Օգտատերեր' },
     ...(isSuperAdmin || admin.role === 'finance' ? [{ path: '/admin/payments', icon: CreditCard, label: 'Վճարումներ' }] : []),

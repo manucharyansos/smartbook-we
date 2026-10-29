@@ -14,6 +14,7 @@ const titleMap: Record<string, string> = {
   '/admin/businesses': 'Բիզնեսներ',
   '/admin/users': 'Օգտատերեր',
   '/admin/payments': 'Վճարումներ',
+  '/admin/site-analytics': 'Այցելություններ',
   '/admin/plans': 'Փաթեթներ',
   '/admin/admins': 'Ադմիններ',
   '/admin/logs': 'Մատյան',

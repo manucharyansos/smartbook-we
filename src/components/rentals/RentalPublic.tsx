@@ -5,6 +5,7 @@ import { Building2, Clock3, MapPin, Phone } from "lucide-react";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { rentalCopy } from "../../i18n/rentals";
 import { rentalApi, rentalQuote, rentalToday } from "../../lib/rentalApi";
+import { trackSiteEvent } from "../../lib/siteAnalytics";
 import RentalDiscounts from "./RentalDiscounts";
 import { cancelPublicBooking, fetchPublicBookingDetail, resendPublicBookingCode, verifyPublicBooking, type PublicBusiness } from "../../lib/publicApi";
 import { getErrorMessage } from "../../lib/http";
@@ -53,7 +54,7 @@ export default function RentalPublic({ business }: { business: PublicBusiness })
   const create = useMutation({ mutationFn: () => rentalApi.publicCreate(business.slug, {
     starts_at: selectedSlot?.starts_at || "", duration_minutes: duration, client_name: name, client_phone: phone, client_email: email, notes,
     legal_accepted: legal, terms_version: LEGAL_DOCUMENT_VERSION, privacy_version: LEGAL_DOCUMENT_VERSION,
-  }), onError: (error) => { onError(error); setTime(""); void slotsQ.refetch(); }, onSuccess: (result) => { const next = new URLSearchParams(); next.set("booking", result.data.booking_code); setParams(next); setMessage(""); setTime(""); void slotsQ.refetch(); } });
+  }), onError: (error) => { onError(error); setTime(""); void slotsQ.refetch(); }, onSuccess: (result) => { trackSiteEvent("booking_created"); const next = new URLSearchParams(); next.set("booking", result.data.booking_code); setParams(next); setMessage(""); setTime(""); void slotsQ.refetch(); } });
   const verify = useMutation({ mutationFn: () => verifyPublicBooking({ booking_code: code, otp }), onError,
     onSuccess: (result) => { if (result.manage_token) { setToken(result.manage_token); setMessage(""); } } });
   const resend = useMutation({ mutationFn: () => resendPublicBookingCode(code), onError, onSuccess: () => setMessage(t.sent) });

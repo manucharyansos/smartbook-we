@@ -1,4 +1,5 @@
 import { useAuth } from "./store/auth";
+import SiteAnalyticsListener from "./components/SiteAnalyticsListener";
 import { isRentalBusiness } from "./lib/rentalApi";
 import { Suspense, lazy } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
@@ -70,6 +71,7 @@ const AdminAdmins = lazy(() => import("./admin/pages/AdminAdmins"));
 const AdminLogs = lazy(() => import("./admin/pages/AdminLogs"));
 const AdminPlans = lazy(() => import("./admin/pages/AdminPlans"));
 const AdminPayments = lazy(() => import("./admin/pages/AdminPayments"));
+const AdminSiteAnalytics = lazy(() => import("./admin/pages/AdminSiteAnalytics"));
 
 const RentalWorkspace = lazy(() => import("./pages/RentalWorkspace"));
 const RentalSettings = lazy(() => import("./pages/RentalSettings"));
@@ -89,6 +91,7 @@ export default function App() {
             <ScrollToTop />
             <ScrollToTopButton />
             <RouteSeo />
+            <SiteAnalyticsListener />
             <Suspense fallback={<AppRouteLoader />}>
                 <Routes>
                     <Route path="/" element={<Index />} />
@@ -129,6 +132,7 @@ export default function App() {
                         <Route path="users" element={<AdminUsers />} />
                         <Route path="admins" element={<RequireAdminRole roles={["super_admin"]}><AdminAdmins /></RequireAdminRole>} />
                         <Route path="logs" element={<RequireAdminRole roles={["super_admin"]}><AdminLogs /></RequireAdminRole>} />
+                        <Route path="site-analytics" element={<RequireAdminRole roles={["super_admin"]}><AdminSiteAnalytics /></RequireAdminRole>} />
                         <Route path="payments" element={<RequireAdminRole roles={["super_admin", "finance"]}><AdminPayments /></RequireAdminRole>} />
                         <Route path="plans" element={<RequireAdminRole roles={["super_admin"]}><AdminPlans /></RequireAdminRole>} />
                     </Route>

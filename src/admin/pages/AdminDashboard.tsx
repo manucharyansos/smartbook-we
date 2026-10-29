@@ -15,6 +15,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { AdminStatCard } from '../components/AdminStatCard';
 import { Toast } from '@/components/ui/Toast';
 import { adminBillingApi } from '../services/adminBillingApi';
+import { adminErrorText, fetchSystemStatus } from '../services/adminApi';
 import { adminLabel, verticalLabel } from '../lib/labels';
 
 function fmtAMD(n: number) {
@@ -51,6 +52,8 @@ export default function AdminDashboard() {
   const stats = data?.data;
   const billingQ = useQuery({ queryKey: ['admin', 'billing', 'summary'], queryFn: () => adminBillingApi.summary(), staleTime: 60_000 });
   const billing = billingQ.data;
+  const systemQ = useQuery({ queryKey: ['admin', 'system'], queryFn: fetchSystemStatus, staleTime: 60_000, retry: false });
+  const system = systemQ.data;
 
   const cards = useMemo(() => {
     if (!stats) return [];
@@ -126,7 +129,7 @@ export default function AdminDashboard() {
 
   if (error || !stats) {
     return (
-      <div className="rounded-[28px] border border-rose-200 bg-rose-50 p-5 text-rose-700">Չհաջողվեց բեռնել վահանակի տվյալները</div>
+      <div role="alert" className="rounded-[28px] border border-rose-200 bg-rose-50 p-5 text-rose-700">{adminErrorText(error, 'Չհաջողվեց բեռնել վահանակի տվյալները')}</div>
     );
   }
 
@@ -160,6 +163,10 @@ export default function AdminDashboard() {
         }
       />
 
+      {system && system.pending_migrations.length ? (
+        <div role="alert" className="rounded-[24px] border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">Սերվերում կան չարված միգրացիաներ ({system.pending_migrations.length})։ Գործարկիր <code>php artisan migrate --force</code> և <code>php artisan optimize:clear</code>։</div>
+      ) : null}
+      {billingQ.isError ? <div role="alert" className="rounded-[24px] border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">{adminErrorText(billingQ.error, 'Vizit-ի եկամուտը չբեռնվեց')}</div> : null}
       {billing ? (
         <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
           <AdminStatCard title="Vizit-ի եկամուտ այս ամիս" value={fmtAMD(billing.income.this_month)} hint={`${fmtAMD(billing.income.all_time)} ընդհանուր · Idram ${billing.provider.idram.ready ? 'միացված' : 'միացված չէ'}`} icon={CircleDollarSign} tone="emerald" />
@@ -347,6 +354,7 @@ export default function AdminDashboard() {
           </div>
         </Card>
       </div>
+      <div className="text-xs text-slate-400">{system ? `API ${system.commit ?? '—'} · ${system.database} · ${system.environment}${system.routes_cached ? ' · route cache' : ''}` : systemQ.isError ? adminErrorText(systemQ.error, 'Համակարգի վիճակը հասանելի չէ') : null}</div>
       <Toast open={!!toast} text={toast?.text || ''} type={toast?.type} />
     </motion.div>
   );

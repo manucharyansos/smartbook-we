@@ -12,6 +12,7 @@ import { cn } from "@/lib/cn";
 import { AdminStatCard } from "../components/AdminStatCard";
 import { adminBillingApi, type AdminInvoice, type AdminTransaction } from "../services/adminBillingApi";
 import { adminLabel, amd, dateTime, verticalLabel } from "../lib/labels";
+import { adminErrorText } from "../services/adminApi";
 
 type Action = { kind: "approve"; invoice: AdminInvoice } | { kind: "cancel"; invoice: AdminInvoice } | { kind: "resolve"; transaction: AdminTransaction };
 
@@ -78,7 +79,8 @@ export default function AdminPayments() {
 
       {message ? <div role={message.error ? "alert" : "status"} className={cn("rounded-2xl border px-4 py-3 text-sm", message.error ? "border-rose-200 bg-rose-50 text-rose-700" : "border-emerald-200 bg-emerald-50 text-emerald-700")}>{message.text}</div> : null}
 
-      {summaryQ.isError ? <div role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">Չհաջողվեց բեռնել ամփոփումը։</div> : null}
+      {summaryQ.isError ? <div role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{adminErrorText(summaryQ.error, "Չհաջողվեց բեռնել ամփոփումը")}</div> : null}
+      {(tab === "invoices" ? invoicesQ.error : transactionsQ.error) ? <div role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{adminErrorText(tab === "invoices" ? invoicesQ.error : transactionsQ.error, "Չհաջողվեց բեռնել ցանկը")}</div> : null}
       {s ? (
         <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
           <AdminStatCard title="Այս ամիս ստացված" value={amd(s.income.this_month)} hint={`${amd(s.income.today)} այսօր · ${amd(s.income.all_time)} ընդհանուր`} icon={CircleDollarSign} tone="emerald" />

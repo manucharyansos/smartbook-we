@@ -38,6 +38,7 @@ export default function AdminPlans() {
     const [modalError, setModalError] = useState<string | null>(null);
     const [deleteTarget, setDeleteTarget] = useState<PersistedPlan | null>(null);
     const [toast, setToast] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+    const [area, setArea] = useState<'all' | 'services' | 'healthcare' | 'rentals'>('all');
 
     const queryClient = useQueryClient();
 
@@ -94,7 +95,19 @@ export default function AdminPlans() {
         },
     });
 
-    const plans: PersistedPlan[] = Array.isArray(data) ? data : (data?.data || []);
+    const allPlans: PersistedPlan[] = Array.isArray(data) ? data : (data?.data || []);
+    // A shared plan (audience "all") is sold to both services and healthcare.
+    const plans = area === 'all' ? allPlans : allPlans.filter((plan) => plan.audience === area || (plan.audience === 'all' && area !== 'rentals'));
+
+    const copyMutation = useMutation({
+        mutationFn: ({ plan, audience }: { plan: PersistedPlan; audience: 'services' | 'healthcare' | 'rentals' }) => adminPlansApi.copy(plan.id, audience, plan.audience === 'all'),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin', 'plans'] });
+            setShowHidden(true);
+            setToast({ text: 'Ստեղծվեց թաքնված պատճեն։ Փոխիր գինը և պայմանները, հետո միացրու ցուցադրումը։', type: 'success' });
+        },
+        onError: (mutationError: unknown) => setToast({ text: getErrorMessage(mutationError, 'Պատճենը չհաջողվեց ստեղծել'), type: 'error' }),
+    });
 
     const getPlanIcon = (code: string) => {
         switch (code) {
@@ -192,6 +205,17 @@ export default function AdminPlans() {
                 }
             />
 
+            <div className="flex flex-wrap gap-2" role="tablist" aria-label="Ուղղություն">
+                {([['all', 'Բոլորը'], ['services', 'Ծառայություններ'], ['healthcare', 'Առողջապահություն'], ['rentals', 'Վարձով տարածքներ']] as const).map(([key, label]) => (
+                    <Button key={key} size="sm" role="tab" aria-selected={area === key} variant={area === key ? 'primary' : 'secondary'} onClick={() => setArea(key)}>
+                        {label} ({key === 'all' ? allPlans.length : allPlans.filter((plan) => plan.audience === key || (plan.audience === 'all' && key !== 'rentals')).length})
+                    </Button>
+                ))}
+            </div>
+            {area === 'services' || area === 'healthcare' ? (
+                <p className="text-sm text-slate-500">«Ընդհանուր» պլանները վաճառվում են և՛ ծառայություններին, և՛ առողջապահությանը նույն գնով։ Առանձին գին տալու համար սեղմիր «Առանձին գին այս ուղղության համար»։</p>
+            ) : null}
+
             {/* Plans Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-6">
                 {plans.map((plan: PersistedPlan, index: number) => (
@@ -225,16 +249,16 @@ export default function AdminPlans() {
                                 </div>
                                 <div className="flex items-center gap-1">
                                     {/* Business Type Badge */}
-                                    {plan.code === 'rental' ? (
+                                    {plan.audience === 'rentals' ? (
                                         <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs">Վարձով տարածքներ</span>
                                     ) : null}
-                                    {plan.code !== 'rental' && plan.business_type === 'beauty' && (
+                                    {plan.audience === 'services' && (
                                         <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">Ծառայություններ</span>
                                     )}
-                                    {plan.code !== 'rental' && plan.business_type === 'dental' && (
+                                    {plan.audience === 'healthcare' && (
                                         <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">Առողջապահություն</span>
                                     )}
-                                    {plan.code !== 'rental' && !plan.business_type && (
+                                    {(!plan.audience || plan.audience === 'all') && (
                                         <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
                                             Բոլոր ուղղությունների համար
                                         </span>
@@ -304,8 +328,15 @@ export default function AdminPlans() {
                             )}
                         </div>
 
-                        <div className="px-6 py-3 bg-gray-50 border-t flex items-center justify-end gap-2">
+                        <div className="px-6 py-3 bg-gray-50 border-t flex flex-wrap items-center justify-end gap-2">
+                            {typeof plan.subscriptions_count === 'number' ? <span className="mr-auto text-xs text-gray-500">{plan.subscriptions_count} բաժանորդ</span> : null}
+                            {plan.audience === 'all' && (area === 'services' || area === 'healthcare') ? (
+                                <Button size="sm" variant="secondary" loading={copyMutation.isPending} onClick={() => copyMutation.mutate({ plan, audience: area })}>
+                                    Առանձին գին այս ուղղության համար
+                                </Button>
+                            ) : null}
                             <button
+                                aria-label="Խմբագրել"
                                 onClick={() => {
                                     setEditingPlan(plan);
                                     setIsModalOpen(true);
@@ -316,6 +347,7 @@ export default function AdminPlans() {
                                 <Edit size={16} className="text-gray-600" />
                             </button>
                             <button
+                                aria-label="Ջնջել"
                                 onClick={() => setDeleteTarget(plan)}
                                 className="p-2 hover:bg-white rounded-lg transition"
                             >
@@ -338,6 +370,7 @@ export default function AdminPlans() {
                 onSave={handleSavePlan}
                 saving={createMutation.isPending || updateMutation.isPending}
                 error={modalError}
+                defaultBusinessType={area === 'all' ? null : area}
             />
 
             <ConfirmModal

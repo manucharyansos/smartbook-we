@@ -5,7 +5,8 @@ import { X, AlertCircle, Sparkles, Award, Save } from "lucide-react";
 import { scaleIn, fadeUp, staggerContainer, hoverLift } from "@/lib/motion.ts";
 import { cn } from "@/lib/cn.ts";
 
-type BusinessType = "beauty" | "dental" | null;
+/** Which business area may buy the plan; null means services and healthcare together. */
+export type BusinessType = "services" | "healthcare" | "rentals" | null;
 
 export interface Plan {
     id?: number;
@@ -37,6 +38,8 @@ export interface Plan {
     is_active?: boolean;
     is_visible?: boolean;
     sort_order?: number;
+    audience?: "services" | "healthcare" | "rentals" | "all";
+    subscriptions_count?: number;
 }
 
 interface PlanModalProps {
@@ -46,6 +49,7 @@ interface PlanModalProps {
     onSave: (plan: Plan) => void;
     saving?: boolean;
     error?: string | null;
+    defaultBusinessType?: BusinessType;
 }
 
 const emptyForm: Plan = {
@@ -84,6 +88,7 @@ export function PlanModal({
                               onSave,
                               saving,
                               error,
+                              defaultBusinessType = null,
                           }: PlanModalProps) {
     const [formData, setFormData] = useState<Plan>({ ...emptyForm });
 
@@ -92,7 +97,7 @@ export function PlanModal({
             setFormData({
                 name: plan.name || "",
                 code: plan.code || "",
-                business_type: plan.business_type ?? null,
+                business_type: plan.audience && plan.audience !== "all" ? plan.audience : null,
                 description: plan.description || "",
                 monthly_price: plan.monthly_price ?? plan.price ?? plan.price_beauty ?? 0,
                 yearly_price: plan.yearly_price ?? ((plan.monthly_price ?? plan.price ?? plan.price_beauty ?? 0) * 10),
@@ -118,9 +123,9 @@ export function PlanModal({
                 sort_order: plan.sort_order ?? 0,
             });
         } else {
-            setFormData({ ...emptyForm });
+            setFormData({ ...emptyForm, business_type: defaultBusinessType });
         }
-    }, [plan, open]);
+    }, [plan, open, defaultBusinessType]);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -236,11 +241,13 @@ export function PlanModal({
                                 <motion.div variants={fadeUp} className="rounded-[24px] border border-slate-200 bg-slate-50/80 p-5">
                                     <SectionTitle>Բիզնեսի տեսակ</SectionTitle>
 
-                                    <div className="grid gap-3 sm:grid-cols-3">
+                                    <p className="mb-3 text-xs text-slate-500">Ընտրիր, թե որ բիզնեսները կարող են գնել այս պլանը։ Յուրաքանչյուր ուղղության համար կարող ես ունենալ առանձին գին և պայմաններ։</p>
+                                    <div className="grid gap-3 sm:grid-cols-2">
                                         {[
-                                            { key: null, label: "Երկուսի համար", icon: null },
-                                            { key: "beauty", label: "Beauty", icon: <Sparkles size={16} className="text-violet-600" /> },
-                                            { key: "dental", label: "Clinic", icon: <Award size={16} className="text-sky-600" /> },
+                                            { key: "services", label: "Ծառայություններ", icon: <Sparkles size={16} className="text-violet-600" /> },
+                                            { key: "healthcare", label: "Առողջապահություն", icon: <Award size={16} className="text-sky-600" /> },
+                                            { key: "rentals", label: "Վարձով տարածքներ", icon: <Award size={16} className="text-emerald-600" /> },
+                                            { key: null, label: "Ծառայություններ + առողջապահություն", icon: null },
                                         ].map((item) => {
                                             const active = formData.business_type === item.key;
                                             return (
@@ -365,6 +372,7 @@ export function PlanModal({
                                     <SectionTitle>Փաթեթի մանրամասներ</SectionTitle>
 
                                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                                        {formData.business_type !== "rentals" ? <>
                                         <div>
                                             <label className="mb-2 block text-sm font-medium text-slate-700">Աշխատակիցների քանակ</label>
                                             <input
@@ -388,6 +396,7 @@ export function PlanModal({
                                                 className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
                                             />
                                         </div>
+                                        </> : null}
 
                                         <div>
                                             <label className="mb-2 block text-sm font-medium text-slate-700">Տևողություն (օր)</label>

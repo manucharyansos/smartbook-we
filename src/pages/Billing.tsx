@@ -841,11 +841,11 @@ export default function Billing() {
             const isBusy = requestMut.isPending && selectedPlan === plan.code;
             return (
               <motion.div key={plan.id} whileHover={{ y: -4 }} className={cn("vizit-billing-plan relative rounded-2xl border p-6 pt-14 shadow-sm", isCurrent && "is-current", isCurrent ? "border-[var(--vz-primary)] bg-[var(--vz-accent-subtle)] text-[var(--vz-text)] shadow-[var(--vz-shadow-sm)]" : plan.isIndividualOffer ? "border-[var(--vz-success-line)] bg-[var(--vz-success-soft)]" : "border-[var(--vz-line)] bg-[var(--vz-surface)]")}>
-                {billingCycle === "yearly" && plan.code !== "rental" ? <div className={cn("absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-semibold", isCurrent ? "bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]" : plan.isIndividualOffer ? "border border-[var(--vz-success-line)] bg-[var(--vz-surface)] text-[var(--vz-success)]" : "bg-[var(--vz-success-soft)] text-[var(--vz-success)]")}>{plan.isIndividualOffer ? copy.individualPlan : copy.twoMonthsFree}</div> : null}
+                {billingCycle === "yearly" && currentBusinessType !== "rentals" ? <div className={cn("absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-semibold", isCurrent ? "bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]" : plan.isIndividualOffer ? "border border-[var(--vz-success-line)] bg-[var(--vz-surface)] text-[var(--vz-success)]" : "bg-[var(--vz-success-soft)] text-[var(--vz-success)]")}>{plan.isIndividualOffer ? copy.individualPlan : copy.twoMonthsFree}</div> : null}
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="text-xl font-semibold">{plan.name}</div>
-                    <div className={cn("mt-1 text-sm", isCurrent ? "text-[var(--vz-muted)]" : plan.isIndividualOffer ? "text-[var(--vz-success)]" : "text-[var(--vz-muted)]")}>{plan.code === "rental" ? rentalCopy[locale].title : plan.isIndividualOffer ? plan.description : copy.activeStaff(plan.staff_limit ?? 0)}</div>
+                    <div className={cn("mt-1 text-sm", isCurrent ? "text-[var(--vz-muted)]" : plan.isIndividualOffer ? "text-[var(--vz-success)]" : "text-[var(--vz-muted)]")}>{currentBusinessType === "rentals" ? rentalCopy[locale].title : plan.isIndividualOffer ? plan.description : copy.activeStaff(plan.staff_limit ?? 0)}</div>
                   </div>
                   {isCurrent ? <span className={cn("rounded-full px-3 py-1 text-xs font-semibold", "bg-[var(--vz-primary)] text-[var(--vz-on-primary)]")}><BadgeCheck className="mr-1 inline h-3.5 w-3.5" /> {copy.active}</span> : null}
                 </div>
@@ -859,7 +859,7 @@ export default function Billing() {
                   <div>{billingCycle === "yearly" ? `${copy.perMonthEffective} ~${formatMoney(plan.perMonthEffective, plan.currency, locale)}${copy.perMonth}` : `${formatMoney(plan.monthlyPrice, plan.currency, locale)} ${copy.perMonth}`}</div>
                   {billingCycle === "yearly" ? <div>{plan.isIndividualOffer ? `${copy.customYearly} ${formatMoney(plan.yearlyPrice, plan.currency, locale)}` : `${copy.savings} ${formatMoney(plan.discountAmount, plan.currency, locale)}`}</div> : null}
                   <div>{plan.locations && plan.locations > 1 ? copy.locationLimit(plan.locations) : copy.oneLocation}</div>
-                  <div>{plan.code === "rental" ? rentalCopy[locale].gallery : plan.services_limit && plan.services_limit > 0 ? copy.servicesLimit(plan.services_limit) : copy.unlimitedServices}</div>
+                  <div>{currentBusinessType === "rentals" ? rentalCopy[locale].gallery : plan.services_limit && plan.services_limit > 0 ? copy.servicesLimit(plan.services_limit) : copy.unlimitedServices}</div>
                   {plan.billingCyclesLimit ? <div>{copy.remainingCycles(plan.remainingBillingCycles ?? plan.billingCyclesLimit)}</div> : null}
                 </div>
 

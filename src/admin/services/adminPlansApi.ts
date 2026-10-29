@@ -17,6 +17,9 @@ export const adminPlansApi = {
     delete: (id: number) =>
         adminApi.delete(`/plans/${id}`),
 
+    copy: (id: number, audience: "services" | "healthcare" | "rentals", detachSource = false) =>
+        adminApi.post(`/plans/${id}/copy`, { audience, detach_source: detachSource }),
+
     reorder: (plans: { id: number; sort_order: number }[]) =>
         adminApi.post("/plans/reorder", { plans }),
 };

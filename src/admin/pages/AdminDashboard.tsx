@@ -14,19 +14,20 @@ import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { AdminStatCard } from '../components/AdminStatCard';
 import { Toast } from '@/components/ui/Toast';
+import { adminBillingApi } from '../services/adminBillingApi';
+import { adminLabel, verticalLabel } from '../lib/labels';
 
 function fmtAMD(n: number) {
   return `${new Intl.NumberFormat('hy-AM').format(n)} ֏`;
 }
 
-function businessTypeLabel(type?: string) {
-  if (type === 'beauty' || type === 'salon' || type === 'services') return 'Ծառայություններ';
-  if (type === 'dental' || type === 'clinic' || type === 'healthcare') return 'Առողջապահություն';
-  return 'Other';
+function businessTypeLabel(type?: string, vertical?: string | null) {
+  return verticalLabel(vertical, type);
 }
 
 function sourceLabel(source: string) {
-  return source === 'unknown' ? 'Unknown' : source.replace(/_/g, ' ');
+  const known: Record<string, string> = { unknown: 'Անհայտ', website: 'Կայք', mobile: 'Հավելված', manual: 'Ձեռքով', widget: 'Վիջեթ', telegram: 'Telegram', marketplace: 'Որոնում' };
+  return known[source] ?? source.replace(/_/g, ' ');
 }
 
 export default function AdminDashboard() {
@@ -48,6 +49,8 @@ export default function AdminDashboard() {
   });
 
   const stats = data?.data;
+  const billingQ = useQuery({ queryKey: ['admin', 'billing', 'summary'], queryFn: () => adminBillingApi.summary(), staleTime: 60_000 });
+  const billing = billingQ.data;
 
   const cards = useMemo(() => {
     if (!stats) return [];
@@ -63,7 +66,7 @@ export default function AdminDashboard() {
       {
         title: 'Օգտատերեր',
         value: stats.users.total,
-        hint: `${stats.users.staff} staff · ${stats.users.owners} owner · ${stats.users.managers} manager`,
+        hint: `${stats.users.owners} սեփականատեր · ${stats.users.managers} մենեջեր · ${stats.users.staff} աշխատակից`,
         icon: Users,
         tone: 'sky' as const,
         trend: stats.users.growth,
@@ -71,15 +74,15 @@ export default function AdminDashboard() {
       {
         title: 'Ամրագրումներ',
         value: stats.bookings.period_total,
-        hint: `${stats.bookings.today} այսօր · completion ${stats.bookings.completion_rate}%`,
+        hint: `${stats.bookings.today} այսօր · ${stats.bookings.completion_rate}% հաստատված`,
         icon: CalendarCheck,
         tone: 'emerald' as const,
         trend: stats.bookings.trend,
       },
       {
-        title: 'Եկամուտ',
+        title: 'Բիզնեսների շրջանառություն',
         value: fmtAMD(stats.revenue.period_total),
-        hint: `${fmtAMD(stats.revenue.today)} այսօր · avg ticket ${fmtAMD(stats.revenue.average_booking_value)}`,
+        hint: `Հաճախորդների ամրագրումներ, ոչ Vizit-ի եկամուտ · միջինը ${fmtAMD(stats.revenue.average_booking_value)}`,
         icon: DollarSign,
         tone: 'amber' as const,
         trend: stats.revenue.trend,
@@ -123,16 +126,16 @@ export default function AdminDashboard() {
 
   if (error || !stats) {
     return (
-      <div className="rounded-[28px] border border-rose-200 bg-rose-50 p-5 text-rose-700">Չհաջողվեց բեռնել analytics-ը</div>
+      <div className="rounded-[28px] border border-rose-200 bg-rose-50 p-5 text-rose-700">Չհաջողվեց բեռնել վահանակի տվյալները</div>
     );
   }
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <PageHero
-        eyebrow={<><ShieldCheck className="h-4 w-4" /> Platform analytics</>}
-        title="Super admin analytics"
-        description={`Տվյալները՝ ${stats.date_range.start} — ${stats.date_range.end}. Այստեղ տեսնում ես platform health, source mix, top businesses և recurring revenue ազդակները։`}
+        eyebrow={<><ShieldCheck className="h-4 w-4" /> Vizit-ի վահանակ</>}
+        title="Ընդհանուր պատկեր"
+        description={`Ժամանակահատված՝ ${stats.date_range.start} — ${stats.date_range.end}։ Vizit-ի եկամուտը, բիզնեսները, ամրագրումները և բաժանորդագրությունները։`}
         actions={
           <div className="flex flex-wrap items-center gap-3">
             <select
@@ -157,6 +160,15 @@ export default function AdminDashboard() {
         }
       />
 
+      {billing ? (
+        <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
+          <AdminStatCard title="Vizit-ի եկամուտ այս ամիս" value={fmtAMD(billing.income.this_month)} hint={`${fmtAMD(billing.income.all_time)} ընդհանուր · Idram ${billing.provider.idram.ready ? 'միացված' : 'միացված չէ'}`} icon={CircleDollarSign} tone="emerald" />
+          <AdminStatCard title="Ամսական կրկնվող եկամուտ" value={fmtAMD(billing.mrr)} hint={`${billing.subscriptions.active} վճարված · ${billing.subscriptions.trialing} փորձաշրջանում`} icon={DollarSign} tone="violet" />
+          <AdminStatCard title="Չվճարված հաշիվներ" value={billing.pending.invoices} hint={fmtAMD(billing.pending.amount)} icon={Clock3} tone="amber" />
+          <button type="button" onClick={() => navigate('/admin/payments')} className="text-left"><AdminStatCard title="Պահանջում է ստուգում" value={billing.review_required} hint="Բացել վճարումների էջը" icon={AlarmClockCheck} tone={billing.review_required ? 'rose' : 'slate'} /></button>
+        </div>
+      ) : null}
+
       <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
         {cards.map((card) => (
           <AdminStatCard key={card.title} {...card} />
@@ -165,41 +177,41 @@ export default function AdminDashboard() {
 
       <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
         <Card className="rounded-[28px] p-5 xl:col-span-1">
-          <div className="text-sm font-medium text-slate-500">Booking health</div>
+          <div className="text-sm font-medium text-slate-500">Ամրագրումների վիճակ</div>
           <div className="mt-4 space-y-3 text-sm text-slate-600">
-            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3"><span>Completed</span><span>{stats.bookings.completed}</span></div>
-            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3"><span>Cancelled</span><span>{stats.bookings.canceled}</span></div>
-            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3"><span>No-show</span><span>{stats.bookings.no_show}</span></div>
-            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3"><span>Average daily</span><span>{stats.bookings.average_daily}</span></div>
+            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3"><span>Հաստատված/ավարտված</span><span>{stats.bookings.completed}</span></div>
+            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3"><span>Չեղարկված</span><span>{stats.bookings.canceled}</span></div>
+            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3"><span>Չեկած</span><span>{stats.bookings.no_show}</span></div>
+            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3"><span>Օրական միջինը</span><span>{stats.bookings.average_daily}</span></div>
           </div>
         </Card>
 
         <Card className="rounded-[28px] p-5 xl:col-span-1">
-          <div className="text-sm font-medium text-slate-500">Subscription signals</div>
+          <div className="text-sm font-medium text-slate-500">Բաժանորդագրություններ</div>
           <div className="mt-4 space-y-3 text-sm text-slate-600">
-            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3"><span>MRR</span><span>{fmtAMD(stats.subscriptions.mrr)}</span></div>
-            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3"><span>ARR</span><span>{fmtAMD(stats.subscriptions.arr)}</span></div>
-            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3"><span>Trials ending 7d</span><span>{stats.subscriptions.expiring_trials_7d}</span></div>
-            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3"><span>Renewals due 30d</span><span>{stats.subscriptions.renewals_due_30d}</span></div>
+            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3"><span>Ամսական եկամուտ</span><span>{fmtAMD(stats.subscriptions.mrr)}</span></div>
+            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3"><span>Տարեկան եկամուտ</span><span>{fmtAMD(stats.subscriptions.arr)}</span></div>
+            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3"><span>Փորձաշրջանն ավարտվում է 7 օրում</span><span>{stats.subscriptions.expiring_trials_7d}</span></div>
+            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3"><span>Երկարաձգում 30 օրում</span><span>{stats.subscriptions.renewals_due_30d}</span></div>
           </div>
         </Card>
 
         <Card className="rounded-[28px] p-5 xl:col-span-2">
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="rounded-[24px] border border-violet-100 bg-violet-50/80 p-4">
-              <div className="flex items-center gap-2 text-sm font-medium text-violet-700"><BarChart3 className="h-4 w-4" /> Active businesses</div>
+              <div className="flex items-center gap-2 text-sm font-medium text-violet-700"><BarChart3 className="h-4 w-4" /> Ակտիվ բիզնեսներ</div>
               <div className="mt-3 text-2xl font-semibold text-slate-950">{stats.operations.active_businesses_with_bookings}</div>
-              <p className="mt-1 text-sm text-slate-500">Պարբերության ընթացքում booking ունեցող բիզնեսներ</p>
+              <p className="mt-1 text-sm text-slate-500">Ժամանակահատվածում ամրագրում ունեցած բիզնեսներ</p>
             </div>
             <div className="rounded-[24px] border border-emerald-100 bg-emerald-50/80 p-4">
-              <div className="flex items-center gap-2 text-sm font-medium text-emerald-700"><Clock3 className="h-4 w-4" /> Avg staff</div>
+              <div className="flex items-center gap-2 text-sm font-medium text-emerald-700"><Clock3 className="h-4 w-4" /> Միջին աշխատակից</div>
               <div className="mt-3 text-2xl font-semibold text-slate-950">{stats.operations.avg_staff_per_business}</div>
-              <p className="mt-1 text-sm text-slate-500">Միջին ակտիվ staff մեկ ակտիվ բիզնեսի վրա</p>
+              <p className="mt-1 text-sm text-slate-500">Ակտիվ աշխատակիցներ մեկ բիզնեսի հաշվով</p>
             </div>
             <div className="rounded-[24px] border border-amber-100 bg-amber-50/80 p-4">
-              <div className="flex items-center gap-2 text-sm font-medium text-amber-700"><AlarmClockCheck className="h-4 w-4" /> Avg bookings</div>
+              <div className="flex items-center gap-2 text-sm font-medium text-amber-700"><AlarmClockCheck className="h-4 w-4" /> Միջին ամրագրում</div>
               <div className="mt-3 text-2xl font-semibold text-slate-950">{stats.operations.avg_bookings_per_active_business}</div>
-              <p className="mt-1 text-sm text-slate-500">Միջին booking ակտիվ բիզնեսի վրա</p>
+              <p className="mt-1 text-sm text-slate-500">Ամրագրումներ մեկ ակտիվ բիզնեսի հաշվով</p>
             </div>
           </div>
         </Card>
@@ -209,10 +221,10 @@ export default function AdminDashboard() {
         <Card className="rounded-[30px] p-6">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
-              <div className="text-lg font-semibold text-slate-950">Եկամուտների դինամիկա</div>
-              <div className="text-sm text-slate-500">Trend ըստ {stats.charts.group_by}</div>
+              <div className="text-lg font-semibold text-slate-950">Շրջանառության դինամիկա</div>
+              <div className="text-sm text-slate-500">Բիզնեսների հաճախորդների ամրագրումներից</div>
             </div>
-            <div className="bb-stat-pill">Avg ticket {fmtAMD(stats.revenue.average_booking_value)}</div>
+            <div className="bb-stat-pill">Միջին՝ {fmtAMD(stats.revenue.average_booking_value)}</div>
           </div>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
@@ -231,9 +243,9 @@ export default function AdminDashboard() {
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
               <div className="text-lg font-semibold text-slate-950">Ամրագրումների դինամիկա</div>
-              <div className="text-sm text-slate-500">Completion {stats.bookings.completion_rate}% · Cancel {stats.bookings.cancellation_rate}%</div>
+              <div className="text-sm text-slate-500">Հաստատված {stats.bookings.completion_rate}% · Չեղարկված {stats.bookings.cancellation_rate}%</div>
             </div>
-            <div className="bb-stat-pill">Today {stats.bookings.today}</div>
+            <div className="bb-stat-pill">Այսօր {stats.bookings.today}</div>
           </div>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
@@ -252,7 +264,7 @@ export default function AdminDashboard() {
       <div className="grid gap-6 lg:grid-cols-2 2xl:grid-cols-3">
         <Card className="rounded-[30px] p-6 xl:col-span-1">
           <div className="mb-4 flex items-center justify-between">
-            <div className="text-lg font-semibold text-slate-950">Source mix</div>
+            <div className="text-lg font-semibold text-slate-950">Ամրագրման աղբյուրներ</div>
             <CircleDollarSign className="h-5 w-5 text-violet-500" />
           </div>
           <div className="space-y-3">
@@ -260,36 +272,36 @@ export default function AdminDashboard() {
               <div key={item.source} className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div className="font-medium capitalize text-slate-900">{sourceLabel(item.source)}</div>
-                  <div className="text-sm text-slate-500">{item.total} bookings</div>
+                  <div className="text-sm text-slate-500">{item.total} ամրագրում</div>
                 </div>
-                <div className="mt-2 text-sm text-slate-500">Revenue {fmtAMD(item.revenue)}</div>
+                <div className="mt-2 text-sm text-slate-500">{fmtAMD(item.revenue)}</div>
               </div>
-            )) : <EmptyState icon={TrendingUp} title="Source data չկա" description="Երբ source tracking data լինի, այստեղ կտեսնես ամենաուժեղ ալիքները։" className="border-0 shadow-none" />}
+            )) : <EmptyState icon={TrendingUp} title="Տվյալներ չկան" description="Ամրագրումների աղբյուրները կերևան այստեղ։" className="border-0 shadow-none" />}
           </div>
         </Card>
 
         <Card className="rounded-[30px] p-6 xl:col-span-1">
-          <div className="mb-4 text-lg font-semibold text-slate-950">Business mix</div>
+          <div className="mb-4 text-lg font-semibold text-slate-950">Բիզնեսներն ըստ տեսակի</div>
           <div className="space-y-3">
             {stats.business_mix.length ? stats.business_mix.map((item) => (
               <div key={item.business_type} className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div className="font-medium text-slate-900">{businessTypeLabel(item.business_type)}</div>
-                  <div className="text-sm text-slate-500">{item.total} businesses</div>
+                  <div className="text-sm text-slate-500">{item.total} բիզնես</div>
                 </div>
-                <div className="mt-2 text-sm text-slate-500">{item.active} active · {item.bookings} bookings · {fmtAMD(item.revenue)}</div>
+                <div className="mt-2 text-sm text-slate-500">{item.active} ակտիվ · {item.bookings} ամրագրում · {fmtAMD(item.revenue)}</div>
               </div>
-            )) : <EmptyState icon={Building2} title="Mix data չկա" description="Business type breakdown-ը կերևա այստեղ։" className="border-0 shadow-none" />}
+            )) : <EmptyState icon={Building2} title="Տվյալներ չկան" description="Բիզնեսների բաշխվածությունը կերևա այստեղ։" className="border-0 shadow-none" />}
           </div>
         </Card>
 
         <Card className="rounded-[30px] p-6 xl:col-span-1">
-          <div className="mb-4 text-lg font-semibold text-slate-950">Platform signals</div>
+          <div className="mb-4 text-lg font-semibold text-slate-950">Այլ ցուցանիշներ</div>
           <div className="space-y-3">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 text-sm text-slate-600">No-show rate <span className="float-right font-medium text-slate-900">{stats.bookings.no_show_rate}%</span></div>
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 text-sm text-slate-600">Avg revenue per active business <span className="float-right font-medium text-slate-900">{fmtAMD(stats.revenue.average_business_revenue)}</span></div>
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 text-sm text-slate-600">Trialing subscriptions <span className="float-right font-medium text-slate-900">{stats.subscriptions.trialing}</span></div>
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 text-sm text-slate-600">Canceled subscriptions <span className="float-right font-medium text-slate-900">{stats.subscriptions.canceled}</span></div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 text-sm text-slate-600">Չեկածների տոկոս <span className="float-right font-medium text-slate-900">{stats.bookings.no_show_rate}%</span></div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 text-sm text-slate-600">Միջին շրջանառություն մեկ բիզնեսի <span className="float-right font-medium text-slate-900">{fmtAMD(stats.revenue.average_business_revenue)}</span></div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 text-sm text-slate-600">Փորձաշրջանում <span className="float-right font-medium text-slate-900">{stats.subscriptions.trialing}</span></div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 text-sm text-slate-600">Չեղարկված բաժանորդագրություններ <span className="float-right font-medium text-slate-900">{stats.subscriptions.canceled}</span></div>
           </div>
         </Card>
       </div>
@@ -298,8 +310,8 @@ export default function AdminDashboard() {
         <Card className="rounded-[30px] p-6">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
-              <div className="text-lg font-semibold text-slate-950">Top businesses</div>
-              <div className="text-sm text-slate-500">Ըստ պարբերության եկամտի և booking ակտիվության</div>
+              <div className="text-lg font-semibold text-slate-950">Ամենաակտիվ բիզնեսները</div>
+              <div className="text-sm text-slate-500">Ըստ ժամանակահատվածի շրջանառության և ամրագրումների</div>
             </div>
           </div>
           <div className="space-y-3">
@@ -307,9 +319,9 @@ export default function AdminDashboard() {
               <button key={business.id} onClick={() => navigate(`/admin/businesses/${business.id}`)} className="flex w-full flex-col gap-2 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 text-left transition hover:border-violet-200 hover:bg-violet-50/60 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <div className="font-medium text-slate-900">{business.name}</div>
-                  <div className="mt-1 text-sm text-slate-500">{business.slug} · {businessTypeLabel(business.business_type)}</div>
+                  <div className="mt-1 text-sm text-slate-500">{business.slug} · {businessTypeLabel(business.business_type, (business as { vertical?: string | null }).vertical)}</div>
                 </div>
-                <div className="text-sm text-slate-500">{business.bookings_count} bookings · {business.active_staff_count} staff · {fmtAMD(business.revenue)}</div>
+                <div className="text-sm text-slate-500">{business.bookings_count} ամրագրում · {business.active_staff_count} աշխատակից · {fmtAMD(business.revenue)}</div>
               </button>
             ))}
           </div>
@@ -319,7 +331,7 @@ export default function AdminDashboard() {
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
               <div className="text-lg font-semibold text-slate-950">Վերջին ավելացված բիզնեսներ</div>
-              <div className="text-sm text-slate-500">Onboarding և activation flow-ի արագ ստուգման համար</div>
+              <div className="text-sm text-slate-500">Նոր գրանցված բիզնեսները</div>
             </div>
           </div>
           <div className="space-y-3">
@@ -327,9 +339,9 @@ export default function AdminDashboard() {
               <button key={business.id} onClick={() => navigate(`/admin/businesses/${business.id}`)} className="flex w-full flex-col gap-2 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 text-left transition hover:border-violet-200 hover:bg-violet-50/60 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <div className="font-medium text-slate-900">{business.name}</div>
-                  <div className="mt-1 text-sm text-slate-500">{businessTypeLabel(business.business_type)} · {business.status}</div>
+                  <div className="mt-1 text-sm text-slate-500">{businessTypeLabel(business.business_type, (business as { vertical?: string | null }).vertical)} · {adminLabel(business.status)}</div>
                 </div>
-                <div className="text-sm text-slate-500">{business.users_count} users · {business.bookings_count} bookings</div>
+                <div className="text-sm text-slate-500">{business.users_count} օգտատեր · {business.bookings_count} ամրագրում</div>
               </button>
             ))}
           </div>

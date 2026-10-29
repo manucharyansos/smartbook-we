@@ -129,17 +129,17 @@ export default function AdminBusinesses() {
   return (
     <div className="space-y-6">
       <PageHero
-        eyebrow={<><Building2 className="h-4 w-4" /> Business management</>}
+        eyebrow={<><Building2 className="h-4 w-4" /> Բիզնեսներ</>}
         title="Բիզնեսների կառավարում"
-        description="Ընտրիր բիզնեսը, տես նրա subscription/profile վիճակը, տուր անհատական առաջարկ կամ ստուգիր health-ը մեկ տեղից։"
+        description="Ընտրիր բիզնեսը՝ նրա պլանը, վճարումները, թիմը և անհատական առաջարկները տեսնելու կամ փոխելու համար։"
         actions={canExport ? <Button variant="secondary" className="gap-2" onClick={handleExport} loading={exporting}><Download className="h-4 w-4" /> Արտահանել CSV</Button> : undefined}
       />
 
       <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
-        <AdminStatCard title="Filtered total" value={pagination?.total ?? 0} hint="Ընթացիկ ֆիլտրերի համապատասխան բիզնեսներ" icon={Building2} tone="violet" />
-        <AdminStatCard title="Active in page" value={summary.active} hint="Ընթացիկ էջի ակտիվ բիզնեսներ" icon={Sparkles} tone="emerald" />
-        <AdminStatCard title="Healthcare in page" value={summary.healthcare} hint="Առողջապահական բիզնեսներ այս էջում" icon={Award} tone="sky" />
-        <AdminStatCard title="Revenue in page" value={fmtAMD(summary.totalRevenue)} hint="Ընթացիկ էջի բոլոր բիզնեսների գումարային revenue" icon={HandCoins} tone="amber" />
+        <AdminStatCard title="Ընդամենը" value={pagination?.total ?? 0} hint="Ընթացիկ ֆիլտրերի համապատասխան բիզնեսներ" icon={Building2} tone="violet" />
+        <AdminStatCard title="Ակտիվ (այս էջում)" value={summary.active} hint="Ընթացիկ էջի ակտիվ բիզնեսներ" icon={Sparkles} tone="emerald" />
+        <AdminStatCard title="Առողջապահություն (այս էջում)" value={summary.healthcare} hint="Առողջապահական բիզնեսներ այս էջում" icon={Award} tone="sky" />
+        <AdminStatCard title="Շրջանառություն (այս էջում)" value={fmtAMD(summary.totalRevenue)} hint="Հաճախորդների ամրագրումներից, ոչ Vizit-ի եկամուտ" icon={HandCoins} tone="amber" />
       </div>
 
       <Card className="rounded-[28px] p-4 sm:p-5">
@@ -176,10 +176,10 @@ export default function AdminBusinesses() {
               </div>
               <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
                 <span className="rounded-full bg-violet-50 px-3 py-1 text-violet-700">{businessTypeLabel(business.business_type)}</span>
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600">{business.users_count || 0} users</span>
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600">{business.bookings_count || 0} bookings</span>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600">{business.users_count || 0} օգտատեր</span>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600">{business.bookings_count || 0} ամրագրում</span>
               </div>
-              <div className="mt-4 text-sm text-slate-500">Revenue {fmtAMD(Number(business.total_revenue || 0))}</div>
+              <div className="mt-4 text-sm text-slate-500">Շրջանառություն {fmtAMD(Number(business.total_revenue || 0))}</div>
             </Card>
           </motion.button>
         ))}
@@ -193,9 +193,9 @@ export default function AdminBusinesses() {
                 <th className="px-6 py-4 text-left text-sm font-medium text-slate-500">Բիզնես</th>
                 <th className="px-6 py-4 text-left text-sm font-medium text-slate-500">Տեսակ</th>
                 <th className="px-6 py-4 text-left text-sm font-medium text-slate-500">Կարգավիճակ</th>
-                <th className="px-6 py-4 text-center text-sm font-medium text-slate-500">Users</th>
-                <th className="px-6 py-4 text-center text-sm font-medium text-slate-500">Bookings</th>
-                <th className="px-6 py-4 text-right text-sm font-medium text-slate-500">Revenue</th>
+                <th className="px-6 py-4 text-center text-sm font-medium text-slate-500">Օգտատեր</th>
+                <th className="px-6 py-4 text-center text-sm font-medium text-slate-500">Ամրագրում</th>
+                <th className="px-6 py-4 text-right text-sm font-medium text-slate-500">Շրջանառություն</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -224,10 +224,10 @@ export default function AdminBusinesses() {
 
       {pagination ? (
         <div className="flex flex-col gap-3 rounded-[24px] border border-slate-200 bg-white/80 px-4 py-3 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-          <div>Page {pagination.current_page} / {pagination.last_page} · {pagination.total} businesses</div>
+          <div>Էջ {pagination.current_page} / {pagination.last_page} · {pagination.total} բիզնես</div>
           <div className="flex items-center gap-2">
-            <Button variant="secondary" size="sm" disabled={pagination.current_page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</Button>
-            <Button variant="secondary" size="sm" disabled={pagination.current_page >= pagination.last_page} onClick={() => setPage((p) => p + 1)}>Next</Button>
+            <Button variant="secondary" size="sm" disabled={pagination.current_page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Նախորդ</Button>
+            <Button variant="secondary" size="sm" disabled={pagination.current_page >= pagination.last_page} onClick={() => setPage((p) => p + 1)}>Հաջորդ</Button>
           </div>
         </div>
       ) : null}

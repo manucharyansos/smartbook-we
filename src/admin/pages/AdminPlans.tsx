@@ -225,13 +225,16 @@ export default function AdminPlans() {
                                 </div>
                                 <div className="flex items-center gap-1">
                                     {/* Business Type Badge */}
-                                    {plan.business_type === 'beauty' && (
-                                        <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">Beauty</span>
+                                    {plan.code === 'rental' ? (
+                                        <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs">Վարձով տարածքներ</span>
+                                    ) : null}
+                                    {plan.code !== 'rental' && plan.business_type === 'beauty' && (
+                                        <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">Ծառայություններ</span>
                                     )}
-                                    {plan.business_type === 'dental' && (
-                                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">Clinic</span>
+                                    {plan.code !== 'rental' && plan.business_type === 'dental' && (
+                                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">Առողջապահություն</span>
                                     )}
-                                    {!plan.business_type && (
+                                    {plan.code !== 'rental' && !plan.business_type && (
                                         <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
                                             Բոլոր ուղղությունների համար
                                         </span>

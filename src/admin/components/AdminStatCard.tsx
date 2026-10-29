@@ -33,7 +33,7 @@ export function AdminStatCard({ title, value, hint, trend, icon: Icon, tone = 'v
             <div className={cn('mt-4 inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium', trend >= 0 ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-rose-200 bg-rose-50 text-rose-700')}>
               {trend >= 0 ? <ArrowUpRight className="h-3.5 w-3.5" /> : <ArrowDownRight className="h-3.5 w-3.5" />}
               {Math.abs(trend)}%
-              <span className="font-normal text-slate-500">vs prev</span>
+              <span className="font-normal text-slate-500">նախորդի համեմատ</span>
             </div>
           ) : null}
         </div>

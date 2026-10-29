@@ -13,6 +13,7 @@ const titleMap: Record<string, string> = {
   '/admin/dashboard': 'Վահանակ',
   '/admin/businesses': 'Բիզնեսներ',
   '/admin/users': 'Օգտատերեր',
+  '/admin/payments': 'Վճարումներ',
   '/admin/plans': 'Փաթեթներ',
   '/admin/admins': 'Ադմիններ',
   '/admin/logs': 'Մատյան',
@@ -35,7 +36,7 @@ export default function AdminLayout() {
 
   const pageTitle = location.pathname.startsWith('/admin/businesses/')
     ? 'Բիզնեսի մանրամասներ'
-    : titleMap[location.pathname] || 'Admin workspace';
+    : titleMap[location.pathname] || 'Ադմին';
 
   const handleLogout = async () => {
     if (loggingOut) return;
@@ -84,7 +85,7 @@ export default function AdminLayout() {
                 <div className="truncate text-2xl font-semibold tracking-tight text-slate-950">{pageTitle}</div>
                 <div className="mt-1 inline-flex max-w-full items-center gap-2 truncate text-xs text-slate-500">
                   <Sparkles className="h-3.5 w-3.5 shrink-0 text-violet-500" />
-                  Vizit admin workspace
+                  Vizit ադմին
                 </div>
               </div>
             </div>

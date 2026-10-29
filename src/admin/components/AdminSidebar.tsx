@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Building2, CalendarDays, ChevronLeft, ChevronRight, FileText, LayoutDashboard, Package, Shield, Users, X } from 'lucide-react';
+import { Building2, CalendarDays, ChevronLeft, ChevronRight, CreditCard, FileText, LayoutDashboard, Package, Shield, Users, X } from 'lucide-react';
 import { cn } from '@/lib/cn';
 
 interface Props {
@@ -23,6 +23,7 @@ export default function AdminSidebar({ expanded, mobileOpen, onToggleExpanded, o
     ...(isSuperAdmin ? [{ path: '/admin/dashboard', icon: LayoutDashboard, label: 'Վահանակ' }] : []),
     { path: '/admin/businesses', icon: Building2, label: 'Բիզնեսներ' },
     { path: '/admin/users', icon: Users, label: 'Օգտատերեր' },
+    ...(isSuperAdmin || admin.role === 'finance' ? [{ path: '/admin/payments', icon: CreditCard, label: 'Վճարումներ' }] : []),
     ...(isSuperAdmin
       ? [
           { path: '/admin/plans', icon: Package, label: 'Փաթեթներ' },
@@ -61,7 +62,7 @@ export default function AdminSidebar({ expanded, mobileOpen, onToggleExpanded, o
                   </div>
                   <div className="min-w-0">
                     <div className="truncate text-lg font-semibold tracking-tight">Vizit</div>
-                    <div className="truncate text-xs text-white/45">Admin workspace</div>
+                    <div className="truncate text-xs text-white/45">Ադմինի վահանակ</div>
                   </div>
                 </div>
               ) : (

@@ -152,9 +152,9 @@ export default function AdminUsers() {
     return (
         <div className="space-y-6">
             <PageHero
-                eyebrow={<><Users className="h-4 w-4" /> User management</>}
+                eyebrow={<><Users className="h-4 w-4" /> Բիզնեսների օգտատերեր</>}
                 title="Օգտատերեր"
-                description="Բոլոր business user-երը, նրանց դերը և ակտիվության վիճակը մեկ տեղում։"
+                description="Բոլոր բիզնեսների օգտատերերը, նրանց դերը և ակտիվ լինելը մեկ տեղում։"
             />
 
             {/* Filters */}

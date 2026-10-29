@@ -22,6 +22,19 @@ type ApiResponse = {
   data: PaginatedResponse;
 };
 
+const actionLabels: Record<string, string> = {
+  login: "Մուտք", logout: "Ելք", create_admin: "Ստեղծել ադմին", update_admin: "Փոխել ադմինին", delete_admin: "Ջնջել ադմին",
+  update_admin_password: "Փոխել ադմինի գաղտնաբառը", update_user: "Փոխել օգտատիրոջը", suspend_business: "Կասեցնել բիզնեսը",
+  restore_business: "Վերականգնել բիզնեսը", update_business_plan: "Փոխել պլանը", extend_trial: "Երկարաձգել փորձաշրջանը",
+  create_business_pricing_override: "Անհատական գին՝ ստեղծել", update_business_pricing_override: "Անհատական գին՝ փոխել",
+  delete_business_pricing_override: "Անհատական գին՝ ջնջել", purge_business: "Ջնջել բիզնեսը ընդմիշտ",
+  billing_invoice_approved: "Հաշիվ՝ հաստատել ձեռքով", billing_invoice_cancelled: "Հաշիվ՝ չեղարկել", billing_review_resolved: "Վճարում՝ ստուգված",
+};
+
+function actionLabel(action: string) {
+  return actionLabels[action] ?? action;
+}
+
 export default function AdminLogs() {
   const [search, setSearch] = useState("");
   const [expandedLog, setExpandedLog] = useState<number | null>(null);
@@ -71,6 +84,8 @@ export default function AdminLogs() {
   };
 
   const getActionColor = (action: string) => {
+    if (action.includes("purge") || action.includes("suspend")) return "text-red-700 bg-red-50 border-red-200";
+    if (action.startsWith("billing_")) return "text-emerald-700 bg-emerald-50 border-emerald-200";
     if (action.includes("create")) return "text-green-700 bg-green-50 border-green-200";
     if (action.includes("update")) return "text-blue-700 bg-blue-50 border-blue-200";
     if (action.includes("delete")) return "text-red-700 bg-red-50 border-red-200";
@@ -102,7 +117,7 @@ export default function AdminLogs() {
   return (
     <div className="space-y-6">
       <PageHero
-        eyebrow={<><FileText className="h-4 w-4" /> Admin activity</>}
+        eyebrow={<><FileText className="h-4 w-4" /> Ադմինների գործողություններ</>}
         title="Գործողությունների մատյան"
         description="Ադմինների կատարած գործողությունները, փոփոխությունները և մուտքերի պատմությունը մեկ տեղում։"
         actions={
@@ -147,7 +162,7 @@ export default function AdminLogs() {
                   <div className="min-w-0 flex-1">
                     <div className="mb-2 flex flex-wrap items-center gap-3">
                       <span className={cn("inline-flex rounded-full border px-2.5 py-1 text-xs font-medium", getActionColor(log.action))}>
-                        {log.action}
+                        {actionLabel(log.action)}
                       </span>
                       <span className="flex items-center gap-1 text-xs text-slate-400">
                         <Clock size={12} />
@@ -192,7 +207,7 @@ export default function AdminLogs() {
                       ) : null}
 
                       {log.user_agent ? (
-                        <div className="text-xs text-slate-500"><span className="font-medium">User Agent:</span> {log.user_agent}</div>
+                        <div className="text-xs text-slate-500"><span className="font-medium">Բրաուզեր՝</span> {log.user_agent}</div>
                       ) : null}
                     </div>
                   </motion.div>

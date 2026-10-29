@@ -14,4 +14,12 @@ export const adminBusinessesApi = {
     adminApi.patch(`/businesses/${id}/pricing-overrides/${overrideId}`, payload),
   deletePricingOverride: (id: number, overrideId: number) =>
     adminApi.delete(`/businesses/${id}/pricing-overrides/${overrideId}`),
+  purgePreview: async (id: number) => (await adminApi.get<{ data: PurgePreview }>(`/businesses/${id}/purge-preview`)).data.data,
+  purge: (id: number, confirmSlug: string) => adminApi.delete(`/businesses/${id}`, { data: { confirm_slug: confirmSlug } }),
+};
+
+export type PurgePreview = {
+  business: { id: number; name: string; slug: string; status: string };
+  counts: Record<string, number>;
+  warnings: string[];
 };

@@ -57,10 +57,10 @@ const emptyForm: AdminForm = {
 };
 
 const roleMeta: Record<Admin['role'], { label: string; className: string; icon: typeof Shield }> = {
-  super_admin: { label: 'Super Admin', className: 'bg-violet-100 text-violet-700', icon: Crown },
-  admin: { label: 'Admin', className: 'bg-sky-100 text-sky-700', icon: Shield },
-  support: { label: 'Support', className: 'bg-emerald-100 text-emerald-700', icon: Users },
-  finance: { label: 'Finance', className: 'bg-amber-100 text-amber-700', icon: WalletCards },
+  super_admin: { label: 'Սուպեր ադմին', className: 'bg-violet-100 text-violet-700', icon: Crown },
+  admin: { label: 'Ադմին', className: 'bg-sky-100 text-sky-700', icon: Shield },
+  support: { label: 'Աջակցություն', className: 'bg-emerald-100 text-emerald-700', icon: Users },
+  finance: { label: 'Ֆինանսներ', className: 'bg-amber-100 text-amber-700', icon: WalletCards },
 };
 
 function readCurrentAdmin(): Partial<Admin> {
@@ -196,7 +196,7 @@ export default function AdminAdmins() {
   return (
     <div className="space-y-6">
       <PageHero
-        eyebrow={<><Shield className="h-4 w-4" /> Admin team</>}
+        eyebrow={<><Shield className="h-4 w-4" /> Ադմինների թիմ</>}
         title="Ադմիններ"
         description="Կառավարիր հարթակի ադմինների դերերը և հասանելիությունը։ Գաղտնաբառերը երբեք չեն ցուցադրվում կամ գրանցվում մատյանում։"
         actions={<Button onClick={openCreate}><Plus size={18} /> Նոր ադմին</Button>}
@@ -308,10 +308,10 @@ export default function AdminAdmins() {
           <label className="space-y-2 text-sm text-slate-700">
             <span>Դեր</span>
             <select className="bb-input" value={form.role} disabled={Number(currentAdmin.id) === editing?.id} onChange={(event) => setForm((value) => ({ ...value, role: event.target.value as Admin['role'] }))}>
-              <option value="super_admin">Super Admin</option>
-              <option value="admin">Admin</option>
-              <option value="support">Support</option>
-              <option value="finance">Finance</option>
+              <option value="super_admin">Սուպեր ադմին</option>
+              <option value="admin">Ադմին</option>
+              <option value="support">Աջակցություն</option>
+              <option value="finance">Ֆինանսներ</option>
             </select>
           </label>
           <label className="flex items-center gap-3 self-end rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700">

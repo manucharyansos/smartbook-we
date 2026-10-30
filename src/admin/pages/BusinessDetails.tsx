@@ -25,7 +25,7 @@ type PricingOverride = {
   discount_type?: "percent" | "fixed" | "extra_trial_days" | null; discount_value?: number | null;
   billing_cycles_limit?: number | null; used_billing_cycles?: number; remaining_billing_cycles?: number | null;
   starts_at?: string | null; ends_at?: string | null; note?: string | null;
-  is_active: boolean; is_currently_active: boolean; creator?: { id: number; name: string } | null;
+  is_active: boolean; is_currently_active: boolean; state?: "active" | "scheduled" | "expired" | "disabled" | "used_up"; creator?: { id: number; name: string } | null;
 };
 
 type Details = {
@@ -69,6 +69,26 @@ const countLabels: Record<string, string> = {
   invoices: "Vizit-ի հաշիվներ", payment_transactions: "Վճարման փորձեր", gift_cards: "Նվեր քարտեր", gallery_files: "Պատկերասրահ", stored_files: "Ֆայլեր",
 };
 const inputClass = "w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-400";
+
+function overrideStateBadge(override: { state?: string; is_currently_active: boolean; starts_at?: string | null; ends_at?: string | null }): { tone: "emerald" | "slate" | "amber"; text: string } {
+  const state = override.state ?? (override.is_currently_active ? "active" : "disabled");
+  switch (state) {
+    case "active": return { tone: "emerald", text: "Գործում է" };
+    case "scheduled": return { tone: "amber", text: `Կգործի ${formatDate(override.starts_at)}-ից` };
+    case "expired": return { tone: "slate", text: `Ժամկետն անցել է (${formatDate(override.ends_at)})` };
+    case "used_up": return { tone: "slate", text: "Վճարումների քանակը սպառված է" };
+    default: return { tone: "slate", text: "Անջատված է" };
+  }
+}
+
+// YYYY-MM-DD in the viewer's own timezone (slicing the UTC ISO string can shift the day).
+function toDateInput(value?: string | null) {
+  if (!value) return "";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
 
 function formatDate(value?: string | null) {
   return value ? new Date(value).toLocaleDateString("hy-AM", { year: "numeric", month: "short", day: "numeric" }) : "—";
@@ -308,7 +328,7 @@ export default function BusinessDetails() {
             {!overrides.length ? <div className="rounded-[24px] border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">Անհատական առաջարկ չկա։</div> : overrides.map((override) => (
               <div key={override.id} className="space-y-2 rounded-[24px] border border-slate-100 p-5 text-sm">
                 <div className="flex flex-wrap items-center justify-between gap-2"><span className="font-medium">{override.plan?.name || `Պլան #${override.plan_id}`}</span>
-                  <Badge tone={override.is_currently_active ? "emerald" : "slate"}>{override.is_currently_active ? "Գործում է" : "Չի գործում"}</Badge></div>
+                  {(() => { const b = overrideStateBadge(override); return <Badge tone={b.tone}>{b.text}</Badge>; })()}</div>
                 <div className="grid gap-1 text-slate-600 sm:grid-cols-2">
                   <div>Ամսական՝ {amd(override.effective_monthly_price ?? override.custom_monthly_price)}</div>
                   <div>Տարեկան՝ {amd(override.effective_yearly_price ?? override.custom_yearly_price)}</div>
@@ -323,7 +343,7 @@ export default function BusinessDetails() {
                     plan_id: String(override.plan_id), custom_monthly_price: override.custom_monthly_price ? String(override.custom_monthly_price) : "",
                     custom_yearly_price: override.custom_yearly_price ? String(override.custom_yearly_price) : "", discount_type: override.discount_type || "",
                     discount_value: override.discount_value ? String(override.discount_value) : "", billing_cycles_limit: override.billing_cycles_limit ? String(override.billing_cycles_limit) : "",
-                    starts_at: override.starts_at?.slice(0, 10) ?? "", ends_at: override.ends_at?.slice(0, 10) ?? "", note: override.note || "", is_active: override.is_active }); }}><Pencil className="h-4 w-4" /> Խմբագրել</Button>
+                    starts_at: toDateInput(override.starts_at), ends_at: toDateInput(override.ends_at), note: override.note || "", is_active: override.is_active }); }}><Pencil className="h-4 w-4" /> Խմբագրել</Button>
                   <Button size="sm" variant="danger" loading={deleteOverrideMut.isPending} onClick={() => deleteOverrideMut.mutate(override.id)}><Trash2 className="h-4 w-4" /> Ջնջել</Button>
                 </div>
               </div>

@@ -194,7 +194,7 @@ export default function Pricing() {
                       ) : <span />}
 
                       {highlighted ? (
-                        <div className="rounded-full bg-white px-3 py-1.5 text-[11px] font-semibold text-slate-950 sm:text-xs">
+                        <div className="rounded-full bg-[var(--vz-primary)] px-3 py-1.5 text-[11px] font-semibold text-[var(--vz-on-primary)] sm:text-xs">
                           {text.popular}
                         </div>
                       ) : null}
@@ -219,7 +219,7 @@ export default function Pricing() {
                   {plan.hasYearly && <div className="mt-5"><PlanBillingSelector value={billingCycle} planName={name} onChange={(cycle) => setBillingCycles((current) => ({ ...current, [`${businessType}:${plan.id}`]: cycle }))} /></div>}
                   <div className="mt-6" aria-live="polite">
                     <div className="flex flex-wrap items-end gap-3">
-                      <div className="text-3xl font-semibold tracking-tight sm:text-4xl">
+                      <div className={cn("font-semibold tracking-tight", isCustom ? "text-2xl" : "text-3xl sm:text-4xl")}>
                         {isCustom ? text.customPrice : formatPlanPrice(plan.displayPrice, plan.currency || "AMD")}
                       </div>
                       {billingCycle === "yearly" && !isCustom && plan.discountAmount > 0 && (
@@ -229,9 +229,11 @@ export default function Pricing() {
                       )}
                     </div>
 
-                    <div className={cn("mt-1 text-sm", highlighted ? "text-white/60" : "text-slate-500 dark:text-slate-400")}>
-                      {isCustom ? text.customPrice : billingCycle === "yearly" ? text.yearlyPayment : text.monthlyPayment}
-                    </div>
+                    {!isCustom ? (
+                      <div className={cn("mt-1 text-sm", highlighted ? "text-white/60" : "text-slate-500 dark:text-slate-400")}>
+                        {billingCycle === "yearly" ? text.yearlyPayment : text.monthlyPayment}
+                      </div>
+                    ) : null}
 
                     {billingCycle === "yearly" && !isCustom && (
                       <div
@@ -263,7 +265,7 @@ export default function Pricing() {
                       to={planSignupHref(plan, businessType)}
                       className={cn(
                         "inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 text-sm font-medium transition",
-                        highlighted ? "bg-white text-slate-950 hover:bg-slate-100" : "bg-violet-600 text-white hover:bg-violet-700"
+                        highlighted ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)] hover:opacity-90" : "bg-violet-600 text-white hover:bg-violet-700"
                       )}
                     >
                       {isCustom ? text.customCta : text.trialCta}

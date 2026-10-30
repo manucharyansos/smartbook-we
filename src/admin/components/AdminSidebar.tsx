@@ -18,6 +18,8 @@ export default function AdminSidebar({ expanded, mobileOpen, onToggleExpanded, o
     admin = {};
   }
   const isSuperAdmin = admin.role === 'super_admin';
+  // The mobile drawer always opens full width; only the desktop rail collapses.
+  const wide = expanded || mobileOpen;
 
   const menuItems = [
     ...(isSuperAdmin ? [{ path: '/admin/dashboard', icon: LayoutDashboard, label: 'Վահանակ' }, { path: '/admin/site-analytics', icon: Globe2, label: 'Այցելություններ' }] : []),
@@ -45,7 +47,7 @@ export default function AdminSidebar({ expanded, mobileOpen, onToggleExpanded, o
 
       <motion.aside
         initial={false}
-        animate={{ width: expanded ? 280 : 96 }}
+        animate={{ width: wide ? 280 : 96 }}
         transition={{ duration: 0.24 }}
         className={cn(
           'vizit-superadmin-sidebar fixed left-0 top-0 z-50 h-full border-r transition-transform lg:z-40',
@@ -53,51 +55,60 @@ export default function AdminSidebar({ expanded, mobileOpen, onToggleExpanded, o
         )}
       >
         <div className="flex h-full flex-col">
-          <div className="flex h-20 items-center justify-between border-b border-white/10 px-4">
-            <div className="min-w-0">
-              {expanded ? (
-                <div className="flex items-center gap-3">
-                  <div className="grid h-11 w-11 place-items-center rounded-2xl bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-lg">
-                    <CalendarDays className="h-5 w-5" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="truncate text-lg font-semibold tracking-tight">Vizit</div>
-                    <div className="truncate text-xs text-white/45">Ադմինի վահանակ</div>
-                  </div>
-                </div>
-              ) : (
-                <div className="grid h-11 w-11 place-items-center rounded-2xl bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-lg">
+          {wide ? (
+            <div className="flex h-20 items-center justify-between gap-2 border-b border-white/10 px-4">
+              <div className="flex min-w-0 items-center gap-3">
+                <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-lg">
                   <CalendarDays className="h-5 w-5" />
                 </div>
-              )}
-            </div>
+                <div className="min-w-0">
+                  <div className="truncate text-lg font-semibold tracking-tight">Vizit</div>
+                  <div className="truncate text-xs text-white/45">Ադմինի վահանակ</div>
+                </div>
+              </div>
 
-            <div className="flex items-center gap-2">
               <button
                 onClick={onToggleExpanded}
-                className="hidden h-10 w-10 place-items-center rounded-2xl bg-white/10 text-white/80 transition hover:bg-white/15 lg:grid"
-                title={expanded ? 'Փոքրացնել' : 'Բացել'}
+                className="hidden h-10 w-10 shrink-0 place-items-center rounded-2xl bg-white/10 text-white/80 transition hover:bg-white/15 lg:grid"
+                title="Փոքրացնել"
+                aria-label="Փոքրացնել"
               >
-                {expanded ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
+                <ChevronLeft size={18} />
               </button>
               <button
                 onClick={onCloseMobile}
-                className="grid h-10 w-10 place-items-center rounded-2xl bg-white/10 text-white/80 transition hover:bg-white/15 lg:hidden"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-white/10 text-white/80 transition hover:bg-white/15 lg:hidden"
                 title="Փակել"
+                aria-label="Փակել"
               >
                 <X size={18} />
               </button>
             </div>
-          </div>
-
-          <div className="border-b border-white/10 px-4 py-4">
-            <div className={cn('rounded-2xl border border-white/10 bg-white/5 px-3 py-3', !expanded && 'px-2')}>
-              <div className="text-[11px] uppercase tracking-[0.2em] text-white/35">Role</div>
-              {expanded ? (
-                <div className="mt-2 text-sm font-medium text-white/85">{admin.role === 'super_admin' ? 'Super Admin' : 'Admin team'}</div>
-              ) : null}
+          ) : (
+            // Collapsed: the logo and the expand button stack in one column so they never overlap.
+            <div className="flex flex-col items-center gap-2 border-b border-white/10 py-3">
+              <div className="grid h-11 w-11 place-items-center rounded-2xl bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-lg">
+                <CalendarDays className="h-5 w-5" />
+              </div>
+              <button
+                onClick={onToggleExpanded}
+                className="grid h-8 w-11 place-items-center rounded-xl bg-white/10 text-white/80 transition hover:bg-white/15"
+                title="Բացել"
+                aria-label="Բացել"
+              >
+                <ChevronRight size={16} />
+              </button>
             </div>
-          </div>
+          )}
+
+          {wide ? (
+            <div className="border-b border-white/10 px-4 py-4">
+              <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-3">
+                <div className="text-[11px] uppercase tracking-[0.2em] text-white/35">Role</div>
+                <div className="mt-2 text-sm font-medium text-white/85">{admin.role === 'super_admin' ? 'Super Admin' : 'Admin team'}</div>
+              </div>
+            </div>
+          ) : null}
 
           <nav className="flex-1 overflow-y-auto px-3 py-5">
             <div className="space-y-2">
@@ -106,22 +117,23 @@ export default function AdminSidebar({ expanded, mobileOpen, onToggleExpanded, o
                   key={item.path}
                   to={item.path}
                   onClick={onCloseMobile}
+                  title={wide ? undefined : item.label}
                   className={({ isActive }) =>
                     cn(
                       'group flex items-center gap-3 rounded-2xl px-4 py-3 transition',
                       isActive ? 'bg-white/[0.12] text-white shadow-inner' : 'text-white/65 hover:bg-white/[0.08] hover:text-white',
-                      !expanded && 'justify-center px-0',
+                      !wide && 'justify-center px-0',
                     )
                   }
                 >
                   <item.icon size={20} className="shrink-0" />
-                  {expanded ? <span className="text-sm font-medium">{item.label}</span> : null}
+                  {wide ? <span className="text-sm font-medium">{item.label}</span> : null}
                 </NavLink>
               ))}
             </div>
           </nav>
 
-          {expanded ? (
+          {wide ? (
             <div className="border-t border-white/10 p-4">
               <div className="rounded-2xl bg-white/[0.06] p-4 text-xs text-white/55">
                 Central control for plans, businesses, billing and audit trails.

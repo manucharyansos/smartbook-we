@@ -140,6 +140,8 @@ const billingCopy = {
     invoice: "Հաշիվ",
     planFallback: "Պլան",
     customApplied: "Կիրառվել է անհատական առաջարկ",
+    upcomingOffer: (plan: string, date: string) => `Ձեզ համար պատրաստված է անհատական առաջարկ (${plan})։ Այն կգործի ${date}-ից։`,
+    upcomingOfferPrice: "Ամսական գին՝",
     discount: "Զեղչ՝",
     state: "Վիճակ",
     openBankPage: "Բացել բանկի վճարման էջը",
@@ -239,6 +241,8 @@ const billingCopy = {
     invoice: "Счёт",
     planFallback: "Тариф",
     customApplied: "Применено персональное предложение",
+    upcomingOffer: (plan: string, date: string) => `Для вас подготовлено персональное предложение (${plan}). Оно начнёт действовать с ${date}.`,
+    upcomingOfferPrice: "Цена в месяц:",
     discount: "Скидка:",
     state: "Статус",
     openBankPage: "Открыть банковскую страницу оплаты",
@@ -338,6 +342,8 @@ const billingCopy = {
     invoice: "Invoice",
     planFallback: "Plan",
     customApplied: "Tailored offer applied",
+    upcomingOffer: (plan: string, date: string) => `A tailored offer (${plan}) is ready for you. It starts on ${date}.`,
+    upcomingOfferPrice: "Monthly price:",
     discount: "Discount:",
     state: "Status",
     openBankPage: "Open the bank payment page",
@@ -615,6 +621,7 @@ export default function Billing() {
   }, [currentTransaction?.status, queryClient]);
 
   const individualOffers = useMemo(() => billingQ.data?.individual_offers ?? [], [billingQ.data?.individual_offers]);
+  const upcomingOffers = billingQ.data?.upcoming_offers ?? [];
 
   const presentationPlans = useMemo(() => {
     const standardPlans = (plansQ.data ?? []).filter((plan) => !isCustomPlan(plan)).map((plan) => {
@@ -817,6 +824,25 @@ export default function Billing() {
             <button type="button" onClick={() => setBillingCycle("yearly")} className={cn("rounded-[10px] px-4 py-2.5 text-sm font-medium transition", billingCycle === "yearly" ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)]" : "text-[var(--vz-text-secondary)]")}>{copy.yearly}</button>
           </div>
         </div>
+
+        {upcomingOffers.length ? (
+          <div className="mt-4 space-y-2">
+            {upcomingOffers.map((offer) => (
+              <div key={offer.id} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text)]">
+                <div className="font-medium">
+                  {copy.upcomingOffer(
+                    offer.base_plan.name,
+                    offer.starts_at ? new Date(offer.starts_at).toLocaleDateString(locale === "hy" ? "hy-AM" : locale === "ru" ? "ru-RU" : "en-US", { year: "numeric", month: "long", day: "numeric" }) : "—",
+                  )}
+                </div>
+                <div className="mt-1 text-[var(--vz-text-secondary)]">
+                  {copy.upcomingOfferPrice} {formatMoney(offer.effective_monthly_price, "AMD", locale)}
+                  {offer.note ? ` · ${offer.note}` : ""}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
 
         {plansQ.isError ? (
           <div className="mt-4 rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3 text-sm text-[var(--vz-danger)]">{copy.plansLoadError}</div>

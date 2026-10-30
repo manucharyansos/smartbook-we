@@ -26,6 +26,14 @@ interface Business {
   bookings_count?: number;
   total_revenue?: number;
   created_at: string;
+  owner_summary?: { id: number; name: string; email?: string | null; phone?: string | null } | null;
+  subscription_summary?: {
+    status: string;
+    billing_cycle?: string | null;
+    trial_ends_at?: string | null;
+    current_period_ends_at?: string | null;
+    plan?: { id: number; code: string; name: string } | null;
+  } | null;
 }
 
 interface PaginatedResponse {
@@ -42,6 +50,29 @@ interface ApiResponse {
 }
 
 const statusLabel: Record<string, string> = { active: 'Ակտիվ', suspended: 'Կասեցված', pending: 'Սպասման մեջ' };
+
+const subscriptionStatusLabel: Record<string, string> = {
+  trialing: 'Փորձաշրջան',
+  active: 'Վճարված',
+  past_due: 'Ուշացած վճար',
+  expired: 'Ժամկետանց',
+  canceled: 'Չեղարկված',
+  cancelled: 'Չեղարկված',
+  suspended: 'Կասեցված',
+};
+
+function shortDate(value?: string | null) {
+  return value ? new Date(value).toLocaleDateString('hy-AM', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
+}
+
+function planLine(business: Business) {
+  const sub = business.subscription_summary;
+  if (!sub) return 'Պլան չկա';
+  const plan = sub.plan?.name || 'Առանց պլանի';
+  const status = subscriptionStatusLabel[sub.status] || sub.status;
+  const until = sub.status === 'trialing' ? sub.trial_ends_at : sub.current_period_ends_at;
+  return `${plan} · ${status}${until ? ` · մինչև ${shortDate(until)}` : ''}`;
+}
 
 function fmtAMD(n: number) {
   return `${new Intl.NumberFormat('hy-AM').format(n)} ֏`;
@@ -179,7 +210,11 @@ export default function AdminBusinesses() {
                 <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600">{business.users_count || 0} օգտատեր</span>
                 <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600">{business.bookings_count || 0} ամրագրում</span>
               </div>
-              <div className="mt-4 text-sm text-slate-500">Շրջանառություն {fmtAMD(Number(business.total_revenue || 0))}</div>
+              <div className="mt-4 space-y-1 text-sm text-slate-600">
+                <div>{planLine(business)}</div>
+                {business.owner_summary ? <div className="text-slate-500">{business.owner_summary.name}{business.owner_summary.phone ? ` · ${business.owner_summary.phone}` : ''}{business.owner_summary.email ? ` · ${business.owner_summary.email}` : ''}</div> : null}
+                <div className="text-slate-500">Գրանցվել է {shortDate(business.created_at)} · Շրջանառություն {fmtAMD(Number(business.total_revenue || 0))}</div>
+              </div>
             </Card>
           </motion.button>
         ))}
@@ -191,6 +226,8 @@ export default function AdminBusinesses() {
             <thead className="border-b border-slate-200 bg-slate-50/80">
               <tr>
                 <th className="px-6 py-4 text-left text-sm font-medium text-slate-500">Բիզնես</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-slate-500">Պլան</th>
+                <th className="px-6 py-4 text-left text-sm font-medium text-slate-500">Սեփականատեր</th>
                 <th className="px-6 py-4 text-left text-sm font-medium text-slate-500">Տեսակ</th>
                 <th className="px-6 py-4 text-left text-sm font-medium text-slate-500">Կարգավիճակ</th>
                 <th className="px-6 py-4 text-center text-sm font-medium text-slate-500">Օգտատեր</th>
@@ -206,9 +243,18 @@ export default function AdminBusinesses() {
                       <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-violet-100 to-fuchsia-100 text-violet-700"><Building2 className="h-5 w-5" /></div>
                       <div>
                         <div className="font-medium text-slate-900">{business.name}</div>
-                        <div className="text-xs text-slate-500">{business.slug}</div>
+                        <div className="text-xs text-slate-500">{business.slug} · {shortDate(business.created_at)}</div>
                       </div>
                     </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-slate-700">{planLine(business)}</td>
+                  <td className="px-6 py-4 text-sm">
+                    {business.owner_summary ? (
+                      <>
+                        <div className="text-slate-800">{business.owner_summary.name}</div>
+                        <div className="text-xs text-slate-500">{[business.owner_summary.phone, business.owner_summary.email].filter(Boolean).join(' · ')}</div>
+                      </>
+                    ) : <span className="text-slate-400">—</span>}
                   </td>
                   <td className="px-6 py-4"><span className="rounded-full bg-violet-50 px-3 py-1 text-xs text-violet-700">{businessTypeLabel(business.business_type)}</span></td>
                   <td className="px-6 py-4"><span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-600">{statusLabel[business.status] || business.status}</span></td>

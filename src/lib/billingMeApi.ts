@@ -52,6 +52,18 @@ export type BillingMeResponse = {
     note?: string | null;
   }>;
 
+  /** Enabled tailored offers that start later; shown as information only. */
+  upcoming_offers?: Array<{
+    id: number;
+    title: string;
+    base_plan: { id: number; code: string; name: string };
+    effective_monthly_price: number;
+    effective_yearly_price: number;
+    starts_at?: string | null;
+    ends_at?: string | null;
+    note?: string | null;
+  }>;
+
   payment_provider?: {
     default: "idbank" | "idbank_mock" | "idram";
     display_name?: string;

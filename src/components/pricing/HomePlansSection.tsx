@@ -22,7 +22,7 @@ function HomePlanCard({ plan, businessType }: { plan: PublicPlan; businessType: 
   const price = planCyclePrice(plan, cycle);
   const name = localizePlanNameForLocale(plan, locale);
   return <div role="article" aria-label={name} className="flex min-w-0 flex-col rounded-[28px] border border-slate-200 bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.08)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.07] dark:shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
-    <div className="inline-flex w-fit rounded-full bg-white px-3 py-1 text-xs font-black text-slate-950">{t("plans.businessPlan")}</div>
+    <div className="inline-flex w-fit rounded-full bg-[var(--vz-accent-soft)] px-3 py-1 text-xs font-black text-[var(--vz-brand-text)]">{t("plans.businessPlan")}</div>
     <h3 className="mt-5 text-2xl font-black text-slate-950 dark:text-white">{name}</h3>
     <p className="mb-5 mt-3 min-h-[48px] text-sm leading-6 text-slate-500 dark:text-slate-300">{localizePlanDescription(plan, locale)}</p>
     {price.hasYearly && <PlanBillingSelector value={price.billingCycle} onChange={setCycle} planName={name} />}

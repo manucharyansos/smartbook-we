@@ -37,6 +37,7 @@ import { useLanguage, type Locale } from "../contexts/LanguageContext";
 import { publicBookingCopy } from "../i18n/publicBooking";
 import { LEGAL_DOCUMENT_VERSION } from "../config/legal";
 import { getErrorMessage, getHttpStatus, getValidationMessages } from "../lib/http";
+import ServiceDiscountsNotice from "../components/ServiceDiscountsNotice";
 import {
     createPublicBooking,
     createPublicBookingLines,
@@ -139,6 +140,14 @@ function locationOptionLabel(location: PublicLocation, locale: Locale) {
     const name = location.name?.trim() || (location.is_primary ? text.mainLocation : text.branch);
     const address = location.address?.trim();
     return address && address !== name ? `${name} — ${address}` : (address || name);
+}
+
+/** Adds "N% discount applied" to the success message when the server applied a service discount. */
+function withDiscountNote(message: string, res: unknown, locale: Locale) {
+    const percent = Number((res as { data?: { discount?: { percent?: number } } } | undefined)?.data?.discount?.percent ?? 0);
+    if (!percent) return message;
+    const note = locale === "ru" ? `Применена скидка ${percent}%.` : locale === "en" ? `A ${percent}% discount was applied.` : `Կիրառվեց ${percent}% զեղչ։`;
+    return `${message} ${note}`;
 }
 
 function explicitLineOverlap(lines: LineItem[], services: PublicService[]) {
@@ -907,7 +916,7 @@ function ServiceBooking() {
             invalidateAvailabilityQueries();
             const deliveryFailed = verificationWasNotDelivered(res);
             setMsgType(deliveryFailed ? "error" : "success");
-            setMsg(deliveryFailed ? text.codeDeliveryFailed : text.bookingCreated);
+            setMsg(deliveryFailed ? text.codeDeliveryFailed : withDiscountNote(text.bookingCreated, res, locale));
             setActiveBookingCode(res?.data?.booking_code ?? "");
             setGuestToken("");
             setOtpExpiresAt(res?.data?.expires_at ?? null);
@@ -931,7 +940,7 @@ function ServiceBooking() {
             invalidateAvailabilityQueries();
             const deliveryFailed = verificationWasNotDelivered(res);
             setMsgType(deliveryFailed ? "error" : "success");
-            setMsg(deliveryFailed ? text.codeDeliveryFailed : text.multiCreated);
+            setMsg(deliveryFailed ? text.codeDeliveryFailed : withDiscountNote(text.multiCreated, res, locale));
             setActiveBookingCode(res?.data?.booking_code ?? "");
             setGuestToken("");
             setOtpExpiresAt(res?.data?.expires_at ?? null);
@@ -957,7 +966,7 @@ function ServiceBooking() {
             invalidateAvailabilityQueries();
             const deliveryFailed = verificationWasNotDelivered(res);
             setMsgType(deliveryFailed ? "error" : "success");
-            setMsg(deliveryFailed ? text.codeDeliveryFailed : text.linesCreated);
+            setMsg(deliveryFailed ? text.codeDeliveryFailed : withDiscountNote(text.linesCreated, res, locale));
             setActiveBookingCode(res?.data?.booking_code ?? "");
             setGuestToken("");
             setOtpExpiresAt(res?.data?.expires_at ?? null);
@@ -2052,6 +2061,15 @@ function ServiceBooking() {
                                     </details>
                                 ) : null}
                             </section>
+
+                            {business ? (
+                                <ServiceDiscountsNotice
+                                    slug={business.slug}
+                                    discounts={business.service_discounts}
+                                    locale={locale}
+                                    serviceCount={mode === "single" ? (serviceId ? 1 : 0) : mode === "multi" ? selectedMultiServices.length : lines.filter((line) => line.service_id).length}
+                                />
+                            ) : null}
 
                             <div className="bg-[var(--vz-surface-2)] rounded-[28px] border border-[var(--vz-line)] p-5 dark:border-[#312641] sm:p-6">
                                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

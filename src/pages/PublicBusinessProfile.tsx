@@ -31,6 +31,7 @@ import {
 import { safeExternalUrl, whatsappLink } from "../lib/support";
 import { useLanguage, type Locale } from "../contexts/LanguageContext";
 import Seo from "../components/Seo";
+import ServiceDiscountsNotice from "../components/ServiceDiscountsNotice";
 
 const copy = {
     hy: {
@@ -378,6 +379,7 @@ export default function PublicBusinessProfile() {
 
                 <section className="mt-8 px-4 sm:px-6 lg:px-8">
                     <div className="mx-auto max-w-7xl space-y-6">
+                        <ServiceDiscountsNotice slug={business.slug} discounts={business.service_discounts} locale={locale} />
                         <div className="space-y-6">
                             {business.show_services !== false && (
                             <motion.section

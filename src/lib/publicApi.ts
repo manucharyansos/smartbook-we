@@ -82,6 +82,7 @@ export type PublicBusiness = {
     show_cover?: boolean;
     show_staff?: boolean;
     show_services?: boolean;
+    service_discounts?: import("../components/ServiceDiscountsCard").ServiceDiscounts | null;
     gallery?: import("./rentalApi").GalleryItem[];
     rental?: import("./rentalApi").RentalRates | null;
     settings?: {

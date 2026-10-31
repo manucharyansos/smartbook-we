@@ -14,6 +14,8 @@ import { getErrorMessage } from "../lib/http";
 import RentalDurationField from "../components/rentals/RentalDurationField";
 import { validRentalDuration } from "../lib/rentalTime";
 import "../rentals.css";
+import { TranslatedTextField } from "@/components/settings/TranslatedTextField";
+import { setTranslation } from "@/lib/localizedText";
 
 export default function RentalSettings({ onboarding = false }: { onboarding?: boolean }) {
   const { locale } = useLanguage(); const t = rentalCopy[locale];
@@ -35,7 +37,7 @@ function RentalSettingsForm({ profile, settings, initialDays, onboarding }: { pr
   const validDiscounts = discountTiers.every((tier) => Number.isInteger(tier.min_minutes) && tier.min_minutes >= 15 && tier.min_minutes <= 43200 && Number.isInteger(tier.percent) && tier.percent >= 1 && tier.percent <= 90)
     && new Set(discountTiers.map((tier) => tier.min_minutes)).size === discountTiers.length;
   const validDurations = validRentalDuration(rates.min_minutes, 15, 43200, rates.slot_step_minutes) && validRentalDuration(rates.max_minutes, rates.min_minutes, 43200, rates.slot_step_minutes);
-  const [data, setData] = useState({ phone: profile.phone || "", address: profile.address || "", short_description: profile.short_description || "", description: profile.description || "", logo_url: profile.logo_url || "", cover_url: profile.cover_url || "", is_public_profile_enabled: profile.is_public_profile_enabled ?? true, is_marketplace_visible: profile.is_marketplace_visible ?? true });
+  const [data, setData] = useState({ phone: profile.phone || "", address: profile.address || "", short_description: profile.short_description || "", description: profile.description || "", text_translations: profile.text_translations ?? {}, logo_url: profile.logo_url || "", cover_url: profile.cover_url || "", is_public_profile_enabled: profile.is_public_profile_enabled ?? true, is_marketplace_visible: profile.is_marketplace_visible ?? true });
   const [days, setDays] = useState<ScheduleDay[]>(Array.from({ length: 7 }, (_, n) => initialDays.find((day) => day.weekday === n + 1) || { weekday: n + 1, is_closed: n === 6, start: "09:00", end: "18:00", break_start: null, break_end: null }));
   const [caption, setCaption] = useState(""); const [message, setMessage] = useState(""); const [success, setSuccess] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -94,8 +96,12 @@ function RentalSettingsForm({ profile, settings, initialDays, onboarding }: { pr
       </section>
       <section className="rental-card rental-stack"><h2>{t.space}</h2>
         <div className="rental-fields"><label className="rental-field">{t.address}<input value={data.address} onChange={(event) => setData((old) => ({ ...old, address: event.target.value }))} maxLength={255} required /></label><label className="rental-field">{t.phone}<input type="tel" value={data.phone} onChange={(event) => setData((old) => ({ ...old, phone: event.target.value }))} maxLength={40} /></label></div>
-        <label className="rental-field">{t.shortDescription}<input value={data.short_description} onChange={(event) => setData((old) => ({ ...old, short_description: event.target.value }))} maxLength={255} /></label>
-        <label className="rental-field">{t.description}<textarea value={data.description} onChange={(event) => setData((old) => ({ ...old, description: event.target.value }))} maxLength={10000} /></label>
+        <TranslatedTextField className="rental-field" field="short_description" label={t.shortDescription} value={data.short_description} translations={data.text_translations} multiline={false}
+          onChange={(value) => setData((old) => ({ ...old, short_description: value }))}
+          onTranslationChange={(lang, value) => setData((old) => ({ ...old, text_translations: setTranslation(old.text_translations, "short_description", lang, value) }))} maxLength={255} inputClassName="" />
+        <TranslatedTextField className="rental-field" field="description" label={t.description} value={data.description} translations={data.text_translations} rows={8}
+          onChange={(value) => setData((old) => ({ ...old, description: value }))}
+          onTranslationChange={(lang, value) => setData((old) => ({ ...old, text_translations: setTranslation(old.text_translations, "description", lang, value) }))} maxLength={10000} inputClassName="" />
         <div className="rental-fields">{(["logo_url", "cover_url"] as const).map((key) => <div key={key} className="rental-stack">
           {data[key] && <img src={data[key]} alt={key === "logo_url" ? t.logo : t.cover} style={{ width: "100%", maxHeight: 160, objectFit: "contain", borderRadius: 12 }} />}
           <label className="rental-field">{key === "logo_url" ? t.logo : t.cover}<input type="file" accept="image/jpeg,image/png,image/webp" disabled={uploading} onChange={(event) => { void upload(event.target.files?.[0], key); event.target.value = ""; }} /></label>

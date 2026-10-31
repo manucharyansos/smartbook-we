@@ -533,7 +533,8 @@ export default function Billing() {
   const { locale } = useLanguage();
   const copy = billingCopy[locale];
   const queryClient = useQueryClient();
-  const [billingCycle, setBillingCycle] = useState<BillingCycle>("yearly");
+  // Each plan card has its own monthly/yearly switch; yearly is the default.
+  const [planCycles, setPlanCycles] = useState<Record<string, BillingCycle>>({});
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [currentInvoiceId, setCurrentInvoiceId] = useState<number | null>(null);
   const [upgradeError, setUpgradeError] = useState<string | null>(null);
@@ -638,7 +639,6 @@ export default function Billing() {
         locations: plan.locations,
         monthlyPrice,
         yearlyPrice,
-        displayPrice: billingCycle === "yearly" ? yearlyPrice : monthlyPrice,
         discountAmount: plan.yearly_offer?.discount_amount ?? Math.max(monthlyPrice * 12 - yearlyPrice, 0),
         perMonthEffective: Math.round(yearlyPrice / 12),
         isIndividualOffer: false,
@@ -663,7 +663,6 @@ export default function Billing() {
         locations: offer.base_plan.locations,
         monthlyPrice,
         yearlyPrice,
-        displayPrice: billingCycle === "yearly" ? yearlyPrice : monthlyPrice,
         discountAmount: offer.discount_amount ?? Math.max(monthlyPrice * 12 - yearlyPrice, 0),
         perMonthEffective: Math.round(yearlyPrice / 12),
         isIndividualOffer: true,
@@ -676,7 +675,7 @@ export default function Billing() {
     const offerCodes = new Set(offerCards.map((offer) => offer.code));
     const filteredStandard = standardPlans.filter((plan) => !offerCodes.has(plan.code));
     return [...filteredStandard, ...offerCards];
-  }, [plansQ.data, individualOffers, billingCycle, copy, locale]);
+  }, [plansQ.data, individualOffers, copy, locale]);
 
   const currentPlanCode = subscription?.plan?.code ?? null;
   const hasUsableSubscription = billingQ.data?.is_billable === true
@@ -819,10 +818,6 @@ export default function Billing() {
             <p className="mt-2 max-w-3xl text-sm leading-7 text-[var(--vz-text-secondary)]">{copy.comparePlans}</p>
           </div>
 
-          <div className="inline-flex items-center rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-1">
-            <button type="button" onClick={() => setBillingCycle("monthly")} className={cn("rounded-[10px] px-4 py-2.5 text-sm font-medium transition", billingCycle === "monthly" ? "bg-[var(--vz-surface)] text-[var(--vz-text)] shadow-sm" : "text-[var(--vz-text-secondary)]")}>{copy.monthly}</button>
-            <button type="button" onClick={() => setBillingCycle("yearly")} className={cn("rounded-[10px] px-4 py-2.5 text-sm font-medium transition", billingCycle === "yearly" ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)]" : "text-[var(--vz-text-secondary)]")}>{copy.yearly}</button>
-          </div>
         </div>
 
         {upcomingOffers.length ? (
@@ -858,13 +853,15 @@ export default function Billing() {
           </div>
         ) : null}
 
-        <div className={cn("mt-4 grid grid-cols-1 gap-4", presentationPlans.length > 1 && "sm:grid-cols-2 2xl:grid-cols-4")}>
+        <div className={cn("mt-4 grid grid-cols-1 gap-4", presentationPlans.length > 1 && "sm:grid-cols-[repeat(auto-fit,minmax(260px,1fr))]")}>
           {presentationPlans.map((plan) => {
             // A trial is not paid yet: its plan must stay purchasable.
             const isCurrent = hasUsableSubscription && subscription?.status === "active" && !plan.isIndividualOffer && currentPlanCode === plan.code;
             const isTrialPlan = subscription?.status === "trialing" && currentPlanCode === plan.code;
             const isRenewal = !hasUsableSubscription && currentPlanCode === plan.code;
             const isBusy = requestMut.isPending && selectedPlan === plan.code;
+            const billingCycle: BillingCycle = planCycles[plan.id] ?? "yearly";
+            const displayPrice = billingCycle === "yearly" ? plan.yearlyPrice : plan.monthlyPrice;
             return (
               <motion.div key={plan.id} whileHover={{ y: -4 }} className={cn("vizit-billing-plan relative rounded-2xl border p-6 pt-14 shadow-sm", isCurrent && "is-current", isCurrent ? "border-[var(--vz-primary)] bg-[var(--vz-accent-subtle)] text-[var(--vz-text)] shadow-[var(--vz-shadow-sm)]" : plan.isIndividualOffer ? "border-[var(--vz-success-line)] bg-[var(--vz-success-soft)]" : "border-[var(--vz-line)] bg-[var(--vz-surface)]")}>
                 {billingCycle === "yearly" && currentBusinessType !== "rentals" ? <div className={cn("absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-semibold", isCurrent ? "bg-[var(--vz-accent-soft)] text-[var(--vz-accent-text)]" : plan.isIndividualOffer ? "border border-[var(--vz-success-line)] bg-[var(--vz-surface)] text-[var(--vz-success)]" : "bg-[var(--vz-success-soft)] text-[var(--vz-success)]")}>{plan.isIndividualOffer ? copy.individualPlan : copy.twoMonthsFree}</div> : null}
@@ -876,8 +873,22 @@ export default function Billing() {
                   {isCurrent ? <span className={cn("rounded-full px-3 py-1 text-xs font-semibold", "bg-[var(--vz-primary)] text-[var(--vz-on-primary)]")}><BadgeCheck className="mr-1 inline h-3.5 w-3.5" /> {copy.active}</span> : null}
                 </div>
 
-                <div className="mt-6 flex items-end gap-2">
-                  <div className="text-4xl font-semibold tracking-tight">{plan.displayPrice.toLocaleString("hy-AM")}</div>
+                <div className="mt-5 grid grid-cols-2 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-1" role="group" aria-label={plan.name}>
+                  {(["monthly", "yearly"] as const).map((cycle) => (
+                    <button
+                      key={cycle}
+                      type="button"
+                      aria-pressed={billingCycle === cycle}
+                      onClick={() => setPlanCycles((current) => ({ ...current, [plan.id]: cycle }))}
+                      className={cn("rounded-[10px] px-3 py-2 text-sm font-medium transition", billingCycle === cycle ? "bg-[var(--vz-primary)] text-[var(--vz-on-primary)]" : "text-[var(--vz-text-secondary)] hover:text-[var(--vz-text)]")}
+                    >
+                      {cycle === "monthly" ? copy.monthly : copy.yearly}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="mt-5 flex items-end gap-2">
+                  <div className="text-4xl font-semibold tracking-tight">{displayPrice.toLocaleString("hy-AM")}</div>
                   <div className={cn("pb-1 text-sm", "text-[var(--vz-muted)]")}>{plan.currency}</div>
                 </div>
 
@@ -897,7 +908,7 @@ export default function Billing() {
 
                 {plan.note ? <div className={cn("mt-4 rounded-xl px-4 py-3 text-sm", isCurrent ? "bg-[var(--vz-accent-soft)] text-[var(--vz-text-secondary)]" : plan.isIndividualOffer ? "border border-[var(--vz-success-line)] bg-[var(--vz-surface)] text-[var(--vz-success)]" : "bg-[var(--vz-accent-soft)] text-[var(--vz-brand-text)]")}>{plan.note}</div> : null}
 
-                <Button className={cn("mt-6 w-full", isCurrent ? "!bg-[var(--vz-accent-soft)] !text-[var(--vz-accent-text)] hover:!bg-[var(--vz-accent-soft)]" : "")} loading={isBusy} disabled={isCurrent || requestMut.isPending || billingQ.data?.reason === "business_suspended"} onClick={() => { setSelectedPlan(plan.code); requestMut.mutate({ planCode: plan.code, cycle: billingCycle }); }}>
+                <Button className={cn("mt-6 w-full !h-auto min-h-12 whitespace-normal py-3 text-center leading-snug [&>svg]:shrink-0", isCurrent ? "!bg-[var(--vz-accent-soft)] !text-[var(--vz-accent-text)] hover:!bg-[var(--vz-accent-soft)]" : "")} loading={isBusy} disabled={isCurrent || requestMut.isPending || billingQ.data?.reason === "business_suspended"} onClick={() => { setSelectedPlan(plan.code); requestMut.mutate({ planCode: plan.code, cycle: billingCycle }); }}>
                   {isCurrent ? <BadgeCheck className="h-4 w-4" /> : plan.isIndividualOffer ? <Handshake className="h-4 w-4" /> : <Crown className="h-4 w-4" />}
                   {isCurrent ? copy.currentPlanButton : isTrialPlan ? copy.payTrialPlan : isRenewal ? copy.restorePlan : plan.isIndividualOffer ? copy.createCustomInvoice : billingCycle === "yearly" ? copy.createYearlyInvoice : copy.createMonthlyInvoice}
                 </Button>

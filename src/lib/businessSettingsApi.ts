@@ -1,3 +1,4 @@
+import type { TextTranslations } from "./localizedText";
 import { api } from "./api";
 import { resolveMediaUrl } from "./mediaUrl";
 
@@ -34,6 +35,7 @@ export type BusinessSettings = {
   work_end?: string;
   short_description?: string | null;
   description?: string | null;
+  text_translations?: TextTranslations | null;
   logo_url?: string | null;
   cover_url?: string | null;
   instagram_url?: string | null;
@@ -106,6 +108,7 @@ export async function updateBusinessSettings(payload: Partial<{
   work_end: string;
   short_description: string | null;
   description: string | null;
+  text_translations: TextTranslations;
   logo_url: string | null;
   cover_url: string | null;
   instagram_url: string | null;

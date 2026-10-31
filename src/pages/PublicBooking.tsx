@@ -64,6 +64,7 @@ import {
     type PublicStaff,
     type Slot,
 } from "../lib/publicApi";
+import { localizedText } from "@/lib/localizedText";
 
 type BookingMode = "single" | "multi" | "lines";
 
@@ -1398,7 +1399,7 @@ function ServiceBooking() {
         <div className="vizit-booking-page min-h-screen bg-[var(--vz-surface-2)] transition-colors dark:text-white">
             <Seo
                 title={`${text.bookNow} — ${business.name} | Vizit`}
-                description={business.short_description || (isBeauty ? text.beautyIntro : text.clinicIntro)}
+                description={localizedText(business, "short_description", locale) || (isBeauty ? text.beautyIntro : text.clinicIntro)}
                 image={business.cover_url || business.logo_url}
                 canonical={`/businesses/${business.slug}`}
                 robots="noindex,follow"

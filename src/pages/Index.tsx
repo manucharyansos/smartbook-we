@@ -68,6 +68,7 @@ import {
   type PublicMapPin,
   type PublicWorkingHour,
 } from "../lib/publicApi";
+import { localizedText } from "@/lib/localizedText";
 
 type BusinessFilter = "all" | "services" | "healthcare" | "rentals";
 type LocationStatus = "idle" | "loading" | "active" | "error" | "unsupported";
@@ -318,6 +319,7 @@ function businessHaystack(item: PublicDirectoryBusiness) {
     item.name,
     item.slug,
     item.short_description,
+    ...Object.values(item.text_translations?.short_description ?? {}),
     item.address,
     item.phone,
     item.custom_category_name,
@@ -978,7 +980,7 @@ function MobileMapBusinessSheet({
   const Icon = isHealthcare ? HeartPulse : Sparkles;
   const coverUrl = item.cover_url && item.cover_url !== failedCoverUrl ? item.cover_url : null;
   const logoUrl = item.logo_url && item.logo_url !== failedLogoUrl ? item.logo_url : null;
-  const description = item.short_description
+  const description = localizedText(item, "short_description", locale)
     || ("description" in item ? item.description : null)
     || t("business.card.defaultDescription");
   const workingHoursRows = useMemo(() => groupWorkingHours(item.working_hours, locale), [item.working_hours, locale]);
@@ -1224,7 +1226,7 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
             </Link>
           </div>
         </header>
-        <p className="vizit-business-description hidden min-h-[40px] text-[13px] leading-5 text-slate-600 dark:text-slate-300 md:line-clamp-2 sm:min-h-[44px] sm:text-sm sm:leading-[22px]">{item.short_description || (item.business_type === "rentals" ? rentalCopy[locale].book : t("business.card.defaultDescription"))}</p>
+        <p className="vizit-business-description hidden min-h-[40px] text-[13px] leading-5 text-slate-600 dark:text-slate-300 md:line-clamp-2 sm:min-h-[44px] sm:text-sm sm:leading-[22px]">{localizedText(item, "short_description", locale) || (item.business_type === "rentals" ? rentalCopy[locale].book : t("business.card.defaultDescription"))}</p>
         {item.business_type === "rentals" ? <p className="rental-muted hidden md:block" style={{ marginTop: 16 }}>{item.rental_hourly_price != null ? `${Number(item.rental_hourly_price).toLocaleString()} ֏ · ${rentalCopy[locale].hourly}` : rentalCopy[locale].title}</p> : <>
         <div className="vizit-business-stats mt-4 hidden grid-cols-2 gap-2 text-[11px] text-slate-600 dark:text-slate-300 md:grid sm:text-xs">
           <div className="flex items-center gap-2 rounded-[14px] border border-slate-200 bg-slate-50 px-3 py-2.5 dark:border-white/10 dark:bg-white/[0.06]"><Sparkles className="h-4 w-4 shrink-0 text-violet-500" /><span className="min-w-0"><span className="font-black text-slate-950 dark:text-white">{item.services_count ?? 0}</span> <span className="truncate">{t("business.card.services")}</span></span></div>

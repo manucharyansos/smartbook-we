@@ -10,26 +10,27 @@ import { PublicBusinessFooter, PublicBusinessHeader } from "../public/PublicBusi
 import RentalGallery from "./RentalGallery";
 import Seo from "../Seo";
 import "../../rentals.css";
+import { localizedText } from "@/lib/localizedText";
 
 export default function RentalProfile({ business }: { business: PublicBusiness }) {
   const { locale } = useLanguage(); const t = rentalCopy[locale]; const rates = business.rental;
   const bookHref = `/book/${business.slug}`;
   const socials = [[t.website, business.website_url], ["Instagram", business.instagram_url], ["Facebook", business.facebook_url], ["WhatsApp", business.whatsapp_url]];
   return <div className="rental-page rental-profile">
-    <Seo title={`${business.name} · ${t.title}`} description={business.short_description || business.description || t.aboutSpace} canonical={`/businesses/${business.slug}`} />
+    <Seo title={`${business.name} · ${t.title}`} description={localizedText(business, "short_description", locale) || localizedText(business, "description", locale) || t.aboutSpace} canonical={`/businesses/${business.slug}`} />
     <PublicBusinessHeader business={business} primaryHref={bookHref} primaryLabel={t.book} secondaryHref="/" secondaryLabel="Vizit" />
     <main className="rental-wrap">
       <section className="rental-profile-hero">
         {business.cover_url && business.show_cover !== false ? <img className="rental-profile-cover" src={business.cover_url} alt={`${business.name} · ${t.cover}`} /> : <div className="rental-profile-cover rental-profile-cover-empty"><Building2 size={64} aria-hidden="true" /></div>}
         <div className="rental-profile-heading">
           {business.logo_url && business.show_logo !== false ? <img className="rental-logo" src={business.logo_url} alt={`${business.name} · ${t.logo}`} /> : <div className="rental-logo rental-profile-logo-empty"><Building2 size={32} aria-hidden="true" /></div>}
-          <div><span className="rental-badge">{t.title}</span><h1>{business.name}</h1>{business.short_description && <p className="rental-muted">{business.short_description}</p>}</div>
+          <div><span className="rental-badge">{t.title}</span><h1>{business.name}</h1>{localizedText(business, "short_description", locale) && <p className="rental-muted">{localizedText(business, "short_description", locale)}</p>}</div>
         </div>
       </section>
       <div className="rental-layout">
         <div className="rental-stack">
           <section className="rental-card rental-stack"><h2>{t.aboutSpace}</h2>
-            {business.description && <p style={{ whiteSpace: "pre-wrap", lineHeight: 1.8 }}>{business.description}</p>}
+            {localizedText(business, "description", locale) && <p style={{ whiteSpace: "pre-wrap", lineHeight: 1.8 }}>{localizedText(business, "description", locale)}</p>}
             {business.address && <p className="rental-row"><MapPin size={18} aria-hidden="true" />{business.address}</p>}
             {business.phone && <a className="rental-row" href={`tel:${business.phone}`}><Phone size={18} aria-hidden="true" />{business.phone}</a>}
             <div className="rental-row">{socials.map(([label, value]) => { const href = safeExternalUrl(value); return href ? <a key={label} className="rental-btn secondary" href={href} target="_blank" rel="noopener noreferrer">{label}</a> : null; })}</div>

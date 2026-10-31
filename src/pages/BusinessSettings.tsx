@@ -45,6 +45,8 @@ import { useAuth } from "../store/auth";
 import { LocationMapPicker } from "../components/settings/LocationMapPicker";
 import { useLanguage, type Locale } from "../contexts/LanguageContext";
 import { TelegramConnectionCard } from "../components/TelegramConnectionCard";
+import { TranslatedTextField } from "@/components/settings/TranslatedTextField";
+import { setTranslation } from "@/lib/localizedText";
 
 type ToastState = {
   open: boolean;
@@ -436,6 +438,7 @@ export default function BusinessSettingsPage() {
       work_end: form.work_end,
       short_description: form.short_description ?? null,
       description: form.description ?? null,
+      text_translations: form.text_translations ?? {},
       logo_url: form.logo_url ?? null,
       cover_url: form.cover_url ?? null,
       is_public_profile_enabled: Boolean(form.is_public_profile_enabled),
@@ -536,12 +539,26 @@ export default function BusinessSettingsPage() {
 
               <div className="mt-5 grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
                 <div className="space-y-4">
-                  <InputShell label={text.shortDescription} icon={<Sparkles className="h-4 w-4 text-[var(--vz-accent-text)]" />}>
-                    <textarea value={form.short_description ?? ""} onChange={(e) => setForm((p) => ({ ...p, short_description: e.target.value }))} className="min-h-[96px] w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-4 focus:ring-[var(--vz-focus)]" />
-                  </InputShell>
-                  <InputShell label={text.fullDescription} icon={<Globe className="h-4 w-4 text-[var(--vz-accent-text)]" />}>
-                    <textarea value={form.description ?? ""} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} className="min-h-[140px] w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-4 focus:ring-[var(--vz-focus)]" />
-                  </InputShell>
+                  <TranslatedTextField
+                    field="short_description"
+                    label={text.shortDescription}
+                    value={form.short_description ?? ""}
+                    translations={form.text_translations}
+                    onChange={(value) => setForm((p) => ({ ...p, short_description: value }))}
+                    onTranslationChange={(lang, value) => setForm((p) => ({ ...p, text_translations: setTranslation(p.text_translations, "short_description", lang, value) }))}
+                    maxLength={255}
+                    rows={3}
+                  />
+                  <TranslatedTextField
+                    field="description"
+                    label={text.fullDescription}
+                    value={form.description ?? ""}
+                    translations={form.text_translations}
+                    onChange={(value) => setForm((p) => ({ ...p, description: value }))}
+                    onTranslationChange={(lang, value) => setForm((p) => ({ ...p, text_translations: setTranslation(p.text_translations, "description", lang, value) }))}
+                    maxLength={10000}
+                    rows={6}
+                  />
                   <div className="grid gap-3 sm:grid-cols-2">
                     {([
                       ["is_public_profile_enabled", text.profileEnabled],

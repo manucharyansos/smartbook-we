@@ -32,6 +32,7 @@ import { safeExternalUrl, whatsappLink } from "../lib/support";
 import { useLanguage, type Locale } from "../contexts/LanguageContext";
 import Seo from "../components/Seo";
 import ServiceDiscountsNotice from "../components/ServiceDiscountsNotice";
+import { localizedText } from "@/lib/localizedText";
 
 const copy = {
     hy: {
@@ -141,13 +142,13 @@ export default function PublicBusinessProfile() {
         "@context": "https://schema.org",
         "@type": business.business_type === "dental" ? "Dentist" : "BeautySalon",
         name: business.name,
-        description: business.short_description || text.defaultDescription,
+        description: localizedText(business, "short_description", locale) || text.defaultDescription,
         url: `https://vizit.am/businesses/${business.slug}`,
         image: business.cover_url || business.logo_url || undefined,
         telephone: business.phone || undefined,
         address: business.address ? { "@type": "PostalAddress", streetAddress: business.address } : undefined,
         potentialAction: { "@type": "ReserveAction", target: `https://vizit.am/book/${business.slug}` },
-    } : null, [business, text.defaultDescription]);
+    } : null, [business, text.defaultDescription, locale]);
 
     if (business?.business_type === "rentals") return <RentalProfile key={business.slug} business={business} />;
 
@@ -205,7 +206,7 @@ export default function PublicBusinessProfile() {
         <div className="vizit-public-detail-page min-h-screen bg-[var(--vz-surface-2)] text-[var(--vz-text)] transition-colors">
             <Seo
                 title={`${business.name} | Vizit`}
-                description={business.short_description || text.defaultDescription}
+                description={localizedText(business, "short_description", locale) || text.defaultDescription}
                 image={business.cover_url || business.logo_url}
                 canonical={`/businesses/${business.slug}`}
                 jsonLd={seoJsonLd}
@@ -260,7 +261,7 @@ export default function PublicBusinessProfile() {
                                                 {business.name}
                                             </h1>
                                             <p className="mt-3 max-w-3xl text-base leading-7 text-[var(--vz-text-secondary)]">
-                                                {business.short_description || text.defaultDescription}
+                                                {localizedText(business, "short_description", locale) || text.defaultDescription}
                                             </p>
                                         </div>
                                     </div>

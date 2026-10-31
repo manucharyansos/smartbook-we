@@ -15,6 +15,7 @@ import Seo from "../Seo";
 import RentalDurationField from "./RentalDurationField";
 import { rentalDurationLabel, rentalLocalStamp, validRentalDuration } from "../../lib/rentalTime";
 import "../../rentals.css";
+import { localizedText } from "@/lib/localizedText";
 
 export default function RentalPublic({ business }: { business: PublicBusiness }) {
   const { locale } = useLanguage();
@@ -71,7 +72,7 @@ export default function RentalPublic({ business }: { business: PublicBusiness })
   function newBooking() { setParams({}); setToken(""); setOtp(""); setTime(""); setMessage(""); setMoving(false); }
 
   return <div className="rental-page">
-    <Seo title={`${t.book} · ${business.name}`} description={business.short_description || business.description || t.book} canonical={`/book/${business.slug}`} />
+    <Seo title={`${t.book} · ${business.name}`} description={localizedText(business, "short_description", locale) || localizedText(business, "description", locale) || t.book} canonical={`/book/${business.slug}`} />
     <PublicBusinessHeader business={business} primaryHref={`/businesses/${business.slug}`} primaryLabel={t.viewSpace} secondaryHref={`/businesses/${business.slug}`} secondaryLabel={t.viewSpace} />
     <main className="rental-wrap">
       <div className="rental-row rental-between"><div className="rental-row">
@@ -83,8 +84,8 @@ export default function RentalPublic({ business }: { business: PublicBusiness })
         <div className="rental-stack">
           {business.cover_url && business.show_cover !== false && <img className="rental-cover" src={business.cover_url} alt={business.name} />}
           <section className="rental-card rental-stack">
-            {business.short_description && <h2>{business.short_description}</h2>}
-            {business.description && <p style={{ whiteSpace: "pre-wrap", lineHeight: 1.8 }}>{business.description}</p>}
+            {localizedText(business, "short_description", locale) && <h2>{localizedText(business, "short_description", locale)}</h2>}
+            {localizedText(business, "description", locale) && <p style={{ whiteSpace: "pre-wrap", lineHeight: 1.8 }}>{localizedText(business, "description", locale)}</p>}
             {business.address && <p className="rental-row"><MapPin size={18} />{business.address}</p>}
             {business.phone && <a className="rental-row" href={`tel:${business.phone}`}><Phone size={18} />{business.phone}</a>}
             <p className="rental-row rental-muted"><Clock3 size={17} />{t.timezone}: {business.timezone || "Asia/Yerevan"}</p>

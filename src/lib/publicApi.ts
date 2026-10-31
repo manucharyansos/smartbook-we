@@ -1,3 +1,4 @@
+import type { TextTranslations } from "./localizedText";
 import axios, { type AxiosError } from "axios";
 import { API_BASE_URL } from "./apiBase";
 import { resolveMediaUrl } from "./mediaUrl";
@@ -69,6 +70,7 @@ export type PublicBusiness = {
     working_hours?: PublicWorkingHour[];
     timezone: string | null;
     short_description?: string | null;
+    text_translations?: TextTranslations | null;
     cover_url?: string | null;
     logo_url?: string | null;
     instagram_url?: string | null;
@@ -108,6 +110,7 @@ export type PublicDirectoryBusiness = {
     work_end: string | null;
     working_hours?: PublicWorkingHour[];
     short_description: string | null;
+    text_translations?: TextTranslations | null;
     cover_url: string | null;
     logo_url: string | null;
     instagram_url?: string | null;

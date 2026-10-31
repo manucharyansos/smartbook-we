@@ -202,7 +202,7 @@ export function AppLayout() {
           isScrolled && "shadow-[var(--vz-shadow-sm)]",
         )}
       >
-        <div className="mx-auto max-w-[1540px] px-3 sm:px-6">
+        <div className="w-full px-3 sm:px-6 xl:px-8">
           <div className="flex h-14 items-center justify-between gap-3 sm:h-[72px]">
             <div className="flex min-w-0 items-center gap-2 sm:gap-3">
               {/* Desktop sidebar collapse */}
@@ -257,7 +257,7 @@ export function AppLayout() {
       </motion.header>
 
       {/* BODY */}
-      <div className="mx-auto w-full max-w-[1540px] px-3 pb-24 pt-3 sm:px-6 sm:pb-8 sm:pt-5 xl:py-6">
+      <div className="w-full px-3 pb-24 pt-3 sm:px-6 sm:pb-8 sm:pt-5 xl:px-8 xl:py-6">
         <div className={cn("grid gap-4 transition-all duration-300 xl:gap-5", isDesktopCollapsed ? "xl:grid-cols-[76px_1fr]" : "xl:grid-cols-[248px_1fr]")}>
 
           {/* DESKTOP SIDEBAR */}

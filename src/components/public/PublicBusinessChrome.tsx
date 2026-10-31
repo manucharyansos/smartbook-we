@@ -6,6 +6,7 @@ import { useLanguage, type Locale } from "../../contexts/LanguageContext";
 import LanguageToggle from "../LanguageToggle";
 import ThemeToggle from "../ThemeToggle";
 import { safeExternalUrl } from "../../lib/support";
+import { localizedText } from "@/lib/localizedText";
 
 const copy = {
   hy: { clinic: "Կլինիկա", page: "Բիզնես էջ", booking: "Ամրագրման միջավայր", home: "Գլխավոր", back: "Վերադառնալ նախորդ էջ", powered: "Vizit-ի աջակցությամբ", defaultPage: "Բիզնես էջ", summary: "Ամրագրում, կոնտակտ և բիզնեսի հիմնական տվյալները մեկ էջում։", locations: "հասցե", primary: "Գլխավոր հասցե", branch: "Մասնաճյուղ", hours: "Տես ամրագրման ժամերը", website: "Կայք", book: "Ամրագրել հիմա" },
@@ -118,7 +119,7 @@ export function PublicBusinessFooter({
           <div>
             <div className="inline-flex items-center gap-2 rounded-xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-2 text-xs font-medium text-[var(--vz-brand-text)] dark:border-[#245171] dark:bg-[var(--vz-accent-soft)] dark:text-[#b9dcfa]">{text.powered}</div>
             <h3 className="vizit-display mt-4 text-xl text-[var(--vz-accent-text)]">{business?.name || text.defaultPage}</h3>
-            <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--vz-muted)]">{business?.short_description || text.summary}</p>
+            <p className="mt-2 max-w-2xl text-sm leading-7 text-[var(--vz-muted)]">{localizedText(business, "short_description", locale) || text.summary}</p>
             <div className="mt-5 flex flex-wrap gap-2 text-xs text-[var(--vz-muted)]">
               {business?.address ? <span className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-3 py-2"><MapPin className="h-3.5 w-3.5" />{business.address}</span> : null}
               {Array.isArray(business?.locations) && business.locations.length > 1 ? <span className="inline-flex items-center gap-2 rounded-xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-2 text-[var(--vz-brand-text)] dark:border-[#245171] dark:bg-[var(--vz-accent-soft)] dark:text-[#b9dcfa]"><MapPin className="h-3.5 w-3.5" />{business.locations.length} {text.locations}</span> : null}

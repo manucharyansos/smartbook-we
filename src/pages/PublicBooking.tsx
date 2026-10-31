@@ -2,6 +2,7 @@ import RentalPublic from "../components/rentals/RentalPublic";
 import { trackSiteEvent } from "@/lib/siteAnalytics";
 /* eslint-disable react-hooks/set-state-in-effect -- this form reconciles URL, location and async availability state after each external source updates */
 import { cloneElement, isValidElement, useEffect, useId, useMemo, useRef, useState, type ReactElement, type ReactNode } from "react";
+import { useRevealMessage } from "@/hooks/useRevealMessage";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -268,9 +269,87 @@ function localizeSmartReason(reason: string | null | undefined, locale: Locale) 
     return locale === "hy" && normalized ? normalized : text.smartFallback;
 }
 
+// The public booking API still answers some errors in English only. Customers
+// see them in the booking form, so translate the ones a visitor can trigger.
+const knownApiMessages: Record<string, Record<Locale, string>> = {
+    "selected time is not available. please refresh available times and try again.": {
+        hy: "Ընտրված ժամն այլևս ազատ չէ։ Թարմացրեք ազատ ժամերը և ընտրեք մեկ այլ ժամ։",
+        ru: "Выбранное время уже занято. Обновите свободные часы и выберите другое время.",
+        en: "The selected time is no longer available. Refresh the free times and choose another one.",
+    },
+    "selected time is not available.": {
+        hy: "Ընտրված ժամն այլևս ազատ չէ։ Ընտրեք մեկ այլ ժամ։",
+        ru: "Выбранное время уже занято. Выберите другое время.",
+        en: "The selected time is no longer available. Choose another time.",
+    },
+    "choose one of the available time slots.": {
+        hy: "Ընտրեք ազատ ժամերից մեկը։",
+        ru: "Выберите одно из свободных времён.",
+        en: "Choose one of the available time slots.",
+    },
+    "invalid code": {
+        hy: "Կոդը սխալ է։ Ստուգեք էլ. փոստով ստացած 4 թվանշանը։",
+        ru: "Неверный код. Проверьте 4 цифры из письма.",
+        en: "The code is incorrect. Check the 4 digits from the email.",
+    },
+    "code expired. please request a new code.": {
+        hy: "Կոդի ժամկետն անցել է։ Սեղմեք «Ուղարկել նոր կոդ»։",
+        ru: "Срок действия кода истёк. Запросите новый код.",
+        en: "The code has expired. Request a new code.",
+    },
+    "too many attempts.": {
+        hy: "Չափազանց շատ փորձեր։ Մի փոքր սպասեք և նորից փորձեք։",
+        ru: "Слишком много попыток. Подождите немного и попробуйте снова.",
+        en: "Too many attempts. Wait a little and try again.",
+    },
+    "invalid phone number": {
+        hy: "Հեռախոսահամարը սխալ է։ Ստուգեք և նորից փորձեք։",
+        ru: "Неверный номер телефона. Проверьте и попробуйте снова.",
+        en: "The phone number is invalid. Check it and try again.",
+    },
+    "no staff available.": {
+        hy: "Այս ժամին ազատ մասնագետ չկա։ Ընտրեք մեկ այլ ժամ։",
+        ru: "На это время нет свободного специалиста. Выберите другое время.",
+        en: "No specialist is free at this time. Choose another time.",
+    },
+    "invalid staff.": {
+        hy: "Ընտրված մասնագետը հասանելի չէ։ Ընտրեք մեկ այլ մասնագետ։",
+        ru: "Выбранный специалист недоступен. Выберите другого.",
+        en: "The selected specialist is unavailable. Choose another one.",
+    },
+    "invalid staff selection": {
+        hy: "Ընտրված մասնագետը հասանելի չէ։ Ընտրեք մեկ այլ մասնագետ։",
+        ru: "Выбранный специалист недоступен. Выберите другого.",
+        en: "The selected specialist is unavailable. Choose another one.",
+    },
+    "the selected specialist is unavailable.": {
+        hy: "Ընտրված մասնագետը հասանելի չէ։ Ընտրեք մեկ այլ մասնագետ։",
+        ru: "Выбранный специалист недоступен. Выберите другого.",
+        en: "The selected specialist is unavailable. Choose another one.",
+    },
+    "the booking services are unavailable.": {
+        hy: "Ընտրված ծառայությունն այժմ հասանելի չէ։",
+        ru: "Выбранная услуга сейчас недоступна.",
+        en: "The selected service is not available right now.",
+    },
+    "invalid service selection": {
+        hy: "Ընտրված ծառայությունն այժմ հասանելի չէ։",
+        ru: "Выбранная услуга сейчас недоступна.",
+        en: "The selected service is not available right now.",
+    },
+};
+
+function localizeKnownApiMessage(message: string) {
+    const lang = typeof document !== "undefined" ? document.documentElement.lang.slice(0, 2) : "hy";
+    const locale: Locale = lang === "ru" || lang === "en" ? lang : "hy";
+    return knownApiMessages[message.trim().toLowerCase()]?.[locale] ?? message;
+}
+
 function formatApiError(error: unknown, fallback: string) {
-    const base = getErrorMessage(error, fallback);
-    const details = getValidationMessages(error).filter((message) => message !== base);
+    const base = localizeKnownApiMessage(getErrorMessage(error, fallback));
+    const details = getValidationMessages(error)
+        .map(localizeKnownApiMessage)
+        .filter((message) => message !== base);
     return details.length ? `${base} — ${details[0]}` : base;
 }
 
@@ -533,6 +612,9 @@ function ServiceBooking() {
 
     const [msg, setMsg] = useState<string | null>(null);
     const [msgType, setMsgType] = useState<"success" | "error">("success");
+    const [submitAttempt, setSubmitAttempt] = useState(0);
+    // "start" keeps the verification code panel, rendered right below the message, on screen.
+    const msgRef = useRevealMessage<HTMLDivElement>(msg, submitAttempt, "start");
     const [activeBookingCode, setActiveBookingCode] = useState<string>(searchParams.get("booking") ?? "");
     const [guestToken, setGuestToken] = useState<string>(searchParams.get("token") ?? "");
     const [otp, setOtp] = useState("");
@@ -930,6 +1012,8 @@ function ServiceBooking() {
             resetClientForm();
         },
         onError: (error: unknown) => {
+            // A rejected time usually means the slot list is stale; refresh it.
+            invalidateAvailabilityQueries();
             setMsgType("error");
             setMsg(formatApiError(error, text.bookingCreateError));
         },
@@ -954,6 +1038,7 @@ function ServiceBooking() {
             resetClientForm();
         },
         onError: (error: unknown) => {
+            invalidateAvailabilityQueries();
             setMsgType("error");
             setMsg(
                 formatApiError(error, text.multiCreateError)
@@ -980,6 +1065,7 @@ function ServiceBooking() {
             resetClientForm();
         },
         onError: (error: unknown) => {
+            invalidateAvailabilityQueries();
             setMsgType("error");
             setMsg(
                 formatApiError(error, text.linesCreateError)
@@ -1176,6 +1262,7 @@ function ServiceBooking() {
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+        setSubmitAttempt((attempt) => attempt + 1);
         setMsg(null);
 
         if (locations.length > 1 && !selectedLocationId) {
@@ -1347,6 +1434,31 @@ function ServiceBooking() {
             : Boolean(lines.length && lines.every((line) => line.service_id && line.date && line.time) && !hasDuplicateLineServices() && !lineOverlap && staff.length);
     const canSubmit = commonFieldsReady && locationReady && selectionReady && services.length > 0;
 
+    // The submit button stays disabled until the form is complete, so tell the
+    // visitor which step is still missing instead of "Ready to book".
+    const submitHint = (() => {
+        if (canSubmit || !services.length || !staff.length) return null;
+        if (!locationReady) return text.selectBranchFirst;
+        if (mode === "single") {
+            if (!serviceId) return text.selectService;
+            if (!time) return text.selectTime;
+        } else if (mode === "multi") {
+            if (!multiServiceIds.length) return text.selectOneService;
+            if (!multiTime) return text.selectCommonStart;
+        } else {
+            if (!lines.length) return text.addOneService;
+            if (hasDuplicateLineServices()) return text.duplicateService;
+            if (lineOverlap) return `${text.overlapPrefix} ${lineOverlap.first}/${lineOverlap.second}. ${text.overlapAction}`;
+            if (lines.some((line) => !line.service_id)) return text.selectService;
+            if (lines.some((line) => !line.date || !line.time)) return text.selectTime;
+        }
+        if (clientName.trim().length < 2) return text.nameRequired;
+        if (clientPhone.trim().length < 5) return text.phoneRequired;
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clientEmail.trim())) return text.emailRequired;
+        if (!legalAccepted) return text.legalRequired;
+        return null;
+    })();
+
     const manageAccessExpired = (() => {
         const status = getHttpStatus(bookingDetailQ.error);
         return status === 401 || status === 403;
@@ -1486,8 +1598,11 @@ function ServiceBooking() {
                     <div className="rounded-[24px] sm:rounded-[30px] bg-[var(--vz-surface)] backdrop-blur-xl border border-white/70 shadow-2xl p-4 sm:p-6">
                         {msg && (
                             <div
+                                ref={msgRef}
+                                role={msgType === "error" ? "alert" : "status"}
+                                tabIndex={-1}
                                 className={mergeClass(
-                                    "mb-6 rounded-2xl border px-4 py-4 flex items-start gap-3",
+                                    "mb-6 scroll-mt-24 rounded-2xl border px-4 py-4 flex items-start gap-3 focus:outline-none",
                                     msgType === "success"
                                         ? "bg-[var(--vz-success-soft)] border-[var(--vz-success-line)] text-[var(--vz-success)]"
                                         : "bg-[var(--vz-danger-soft)] border-[var(--vz-danger-line)] text-[var(--vz-danger)]"
@@ -2075,7 +2190,11 @@ function ServiceBooking() {
                             <div className="bg-[var(--vz-surface-2)] rounded-[28px] border border-[var(--vz-line)] p-5 dark:border-[#312641] sm:p-6">
                                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                     <div>
-                                        <div className="text-sm text-[var(--vz-muted)]">{text.ready}</div>
+                                        {submitHint ? (
+                                            <div className="text-sm font-medium text-[var(--vz-warning)]" role="status" aria-live="polite">{submitHint}</div>
+                                        ) : (
+                                            <div className="text-sm text-[var(--vz-muted)]">{text.ready}</div>
+                                        )}
                                         <div className="text-lg font-semibold text-[var(--vz-text)]">
                                             {mode === "single"
                                                 ? text.readySingle

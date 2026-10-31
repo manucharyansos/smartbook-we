@@ -259,14 +259,14 @@ export default function Onboarding() {
 
   return (
     <div className="vizit-onboarding-page min-h-screen bg-[var(--vz-page)] px-3 py-4 sm:px-5 sm:py-6 lg:px-8">
-      <div className="vizit-onboarding-topbar mx-auto mb-4 flex max-w-none items-center justify-between rounded-[20px] border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2.5 shadow-[var(--vz-shadow-sm)] sm:px-5">
+      <div className="vizit-onboarding-topbar mx-auto mb-4 flex max-w-[1480px] items-center justify-between rounded-[20px] border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2.5 shadow-[var(--vz-shadow-sm)] sm:px-5">
         <VizitLogo markClassName="!h-9 !w-9" textClassName="!text-[19px]" />
         <div className="flex items-center gap-2">
           <LanguageToggle compact className="vizit-onboarding-language border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text-secondary)]" />
           <ThemeToggle compact className="border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text-secondary)]" />
         </div>
       </div>
-      <div className="mx-auto flex max-w-none flex-col gap-4 xl:flex-row xl:items-stretch">
+      <div className="mx-auto flex max-w-[1480px] flex-col gap-4 xl:flex-row xl:items-stretch">
         <aside className="xl:w-[300px] xl:sticky xl:top-6 xl:self-start">
           <div className="vizit-onboarding-rail overflow-hidden rounded-[24px] bg-[var(--vz-cover)] text-[var(--vz-cover-text)] shadow-[var(--vz-shadow)]">
             <div className="border-b border-[rgb(255_255_255/0.12)] p-6">

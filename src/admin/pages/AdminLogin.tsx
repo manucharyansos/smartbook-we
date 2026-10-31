@@ -59,7 +59,7 @@ export default function AdminLogin() {
     <motion.div variants={pageTransition} initial="hidden" animate="show" className="relative min-h-screen overflow-hidden bg-[var(--vz-page)] text-[var(--vz-text)]">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,var(--vz-accent-soft),transparent_40%)]" />
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-none items-center px-4 py-10 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-6xl items-center px-4 py-10 sm:px-6 lg:px-8">
         <div className="grid w-full gap-10 lg:grid-cols-[minmax(0,0.92fr)_minmax(420px,0.78fr)] lg:items-center">
           <div className="hidden lg:block">
             <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-2 text-sm text-[var(--vz-brand-text)]">

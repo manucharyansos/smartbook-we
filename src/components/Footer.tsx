@@ -56,7 +56,7 @@ export default function Footer({ showCta = true }: FooterProps) {
 
   return (
     <footer className="vizit-site-footer border-t border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-text)]">
-      <div className="mx-auto max-w-none px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+      <div className="mx-auto max-w-[1480px] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
         {showCta ? (
           <motion.div
             initial={{ opacity: 0, y: 16 }}

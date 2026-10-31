@@ -66,7 +66,7 @@ export default function LandingNavbar({ audience = "consumer" }: LandingNavbarPr
         transition={{ duration: 0.22, ease: "easeOut" }}
         className="vizit-landing-header fixed inset-x-0 top-0 z-50"
       >
-        <div className="mx-auto max-w-none px-3 pt-3 sm:px-6 sm:pt-4 lg:px-8">
+        <div className="mx-auto max-w-[1480px] px-3 pt-3 sm:px-6 sm:pt-4 lg:px-8">
           <motion.div
             initial={{ y: -14, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}

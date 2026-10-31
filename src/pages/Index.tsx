@@ -1383,11 +1383,11 @@ export default function Index() {
       <LandingNavbar />
 
       <main>
-        <section id="top" className="vizit-hero-section relative overflow-hidden bg-[#faf8fc] px-5 pb-10 pt-[108px] transition-colors dark:bg-[#090712] sm:px-8 sm:pt-[126px] lg:pb-12 xl:px-12">
+        <section id="top" className="vizit-hero-section relative overflow-hidden bg-[#faf8fc] px-5 pb-10 pt-[108px] transition-colors dark:bg-[#090712] sm:px-8 sm:pt-[126px] lg:pb-12">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_10%,rgba(91,47,168,0.11),transparent_29%),radial-gradient(circle_at_84%_18%,rgba(30,158,146,0.10),transparent_28%),linear-gradient(180deg,#faf8fc_0%,#ffffff_64%,#faf8fc_100%)] dark:bg-[radial-gradient(circle_at_16%_10%,rgba(169,128,243,0.19),transparent_28%),radial-gradient(circle_at_84%_18%,rgba(88,208,196,0.11),transparent_28%),linear-gradient(180deg,#090712_0%,#151020_62%,#090712_100%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(91,47,168,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(91,47,168,0.035)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(circle_at_top,black,transparent_76%)] dark:opacity-50" />
 
-          <motion.div variants={stagger} initial="hidden" animate="visible" className="vizit-hero-grid relative mx-auto grid w-full min-w-0 max-w-none gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-center xl:gap-12">
+          <motion.div variants={stagger} initial="hidden" animate="visible" className="vizit-hero-grid relative mx-auto grid w-full min-w-0 max-w-[1480px] gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-center xl:gap-12">
             <div className="vizit-hero-copy w-full min-w-0 max-w-[650px] py-7 text-center lg:py-14 lg:text-left">
               <motion.div variants={fadeUp} className="vizit-hero-badge mx-auto inline-flex items-center gap-2 rounded-full border border-[#1e9e92]/25 bg-[#1e9e92]/[0.08] px-4 py-2 text-[12px] font-semibold text-[#167d74] shadow-sm backdrop-blur-2xl dark:border-[#58d0c4]/25 dark:bg-[#58d0c4]/10 dark:text-[#8be3da] dark:shadow-[0_16px_50px_rgba(0,0,0,0.22)] lg:mx-0">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#1e9e92] dark:bg-[#58d0c4]" /> {t("hero.badge")}
@@ -1433,7 +1433,7 @@ export default function Index() {
         </section>
 
         <section id="categories" className="vizit-categories-section relative scroll-mt-24 bg-[#faf8fc] px-5 pb-8 transition-colors dark:bg-[#090712] sm:px-8">
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.18 }} className="mx-auto max-w-none rounded-[26px] border border-[#e8e2f0] bg-white p-5 text-[#241736] shadow-[0_30px_100px_rgba(62,31,120,0.10)] dark:border-[#312641] dark:bg-[#151020] dark:text-white dark:shadow-[0_30px_100px_rgba(0,0,0,0.30)] sm:rounded-[30px] sm:p-7">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.18 }} className="mx-auto max-w-[1480px] rounded-[26px] border border-[#e8e2f0] bg-white p-5 text-[#241736] shadow-[0_30px_100px_rgba(62,31,120,0.10)] dark:border-[#312641] dark:bg-[#151020] dark:text-white dark:shadow-[0_30px_100px_rgba(0,0,0,0.30)] sm:rounded-[30px] sm:p-7">
             <div className="vizit-category-head mb-5 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div>
                 <SectionBadge><Sparkles className="h-4 w-4" /> {t("businesses.services")}</SectionBadge>
@@ -1472,7 +1472,7 @@ export default function Index() {
         </section>
 
         <section id="how" className="vizit-how-section scroll-mt-24 bg-white px-0 py-10 text-[#241736] transition-colors dark:bg-[#090712] dark:text-white sm:px-8 sm:py-14 lg:py-18">
-          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="mx-auto max-w-none rounded-none border-y border-[#e8e2f0] bg-[#faf8fc] p-5 shadow-[0_20px_70px_rgba(62,31,120,0.07)] dark:border-[#312641] dark:bg-[#151020] dark:shadow-[0_24px_80px_rgba(0,0,0,0.26)] sm:rounded-[34px] sm:border sm:p-8 lg:p-10">
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="mx-auto max-w-[1480px] rounded-none border-y border-[#e8e2f0] bg-[#faf8fc] p-5 shadow-[0_20px_70px_rgba(62,31,120,0.07)] dark:border-[#312641] dark:bg-[#151020] dark:shadow-[0_24px_80px_rgba(0,0,0,0.26)] sm:rounded-[34px] sm:border sm:p-8 lg:p-10">
             <motion.div variants={fadeUp} className="text-center">
               <SectionBadge><Sparkles className="h-4 w-4" /> {t("how.badge")}</SectionBadge>
               <h2 className="vizit-display mt-4 text-[28px] text-[#241736] dark:text-white sm:text-4xl">{t("how.title")}</h2>
@@ -1510,7 +1510,7 @@ export default function Index() {
         </section>
 
         <section id="map" className="vizit-map-section scroll-mt-24 bg-slate-50 px-5 pb-8 pt-12 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8 sm:py-16 lg:py-20">
-          <div className="mx-auto min-w-0 max-w-none">
+          <div className="mx-auto min-w-0 max-w-[1480px]">
             <div className="mb-8">
               <SectionBadge><MapPin className="h-4 w-4" /> {t("map.badge")}</SectionBadge>
               <h2 className="mt-5 max-w-3xl break-words text-[28px] font-black leading-[1.12] tracking-[-0.04em] text-slate-950 dark:text-white sm:text-5xl sm:leading-none">{t("map.title")}</h2>
@@ -1573,7 +1573,7 @@ export default function Index() {
         </section>
 
         <section id="businesses" className="vizit-businesses-section scroll-mt-24 bg-white px-5 py-12 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8 sm:py-16 lg:py-20">
-          <div className="mx-auto min-w-0 max-w-none">
+          <div className="mx-auto min-w-0 max-w-[1480px]">
             <div className="mb-8 grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
               <div className="min-w-0">
                 <SectionBadge><Star className="h-4 w-4" /> {t("businesses.badge")}</SectionBadge>
@@ -1645,7 +1645,7 @@ export default function Index() {
         <HomePlansSection />
 
         <section className="vizit-business-cta bg-white px-5 pb-20 text-slate-950 transition-colors dark:bg-[#050b16] dark:text-white sm:px-8">
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="vizit-business-cta-card mx-auto max-w-none overflow-hidden rounded-[34px] border p-8 backdrop-blur-2xl sm:p-10 lg:p-12">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.16 }} className="vizit-business-cta-card mx-auto max-w-[1480px] overflow-hidden rounded-[34px] border p-8 backdrop-blur-2xl sm:p-10 lg:p-12">
             <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
               <div>
                 <SectionBadge><BadgeCheck className="h-4 w-4" /> {t("cta.badge")}</SectionBadge>

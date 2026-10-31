@@ -18,7 +18,7 @@ export default function MarketingPageShell({
   title,
   description,
   children,
-  maxWidthClassName = "max-w-none",
+  maxWidthClassName = "max-w-[1480px]",
 }: MarketingPageShellProps) {
   return (
     <motion.div

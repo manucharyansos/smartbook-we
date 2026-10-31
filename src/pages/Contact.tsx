@@ -103,7 +103,7 @@ export default function Contact() {
                         variants={staggerContainer(0.08, 0.05)}
                         initial="hidden"
                         animate="show"
-                        className="mx-auto max-w-none"
+                        className="mx-auto max-w-[1480px]"
                     >
                         <motion.div variants={fadeUp} className="mb-10 text-center sm:mb-12">
                             <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm dark:border-white/10 dark:bg-white/[0.07] dark:text-slate-200 dark:shadow-black/20">

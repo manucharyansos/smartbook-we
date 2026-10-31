@@ -13,7 +13,8 @@ import { LEGAL_DOCUMENT_VERSION } from "../../config/legal";
 import { PublicBusinessHeader, PublicBusinessFooter } from "../public/PublicBusinessChrome";
 import Seo from "../Seo";
 import RentalDurationField from "./RentalDurationField";
-import { rentalDurationLabel, rentalLocalStamp, validRentalDuration } from "../../lib/rentalTime";
+import { addDateKeyDays, dateKeyDiffDays, rentalDurationLabel, rentalLocalStamp, rentalRangeEnd, rentalSlotWithin, validRentalDuration } from "../../lib/rentalTime";
+import RentalRangeCalendar from "./RentalRangeCalendar";
 import "../../rentals.css";
 import { localizedText } from "@/lib/localizedText";
 
@@ -66,8 +67,28 @@ export default function RentalPublic({ business }: { business: PublicBusiness })
   const detail = detailQ.data?.data;
   const booking = detail?.primary_booking;
   const currency = (value: number) => `${value.toLocaleString(locale === "hy" ? "hy-AM" : locale)} ֏`;
-  const stamp = (value: string) => new Date(value).toLocaleString(locale === "hy" ? "hy-AM" : locale, { timeZone: business.timezone || "Asia/Yerevan", dateStyle: "medium", timeStyle: "short" });
-  const quote = rates?.hourly_price == null ? null : rentalQuote(rates.hourly_price, duration, rates.duration_discounts);
+  const stamp = (value: string) => {
+    const parts = new Intl.DateTimeFormat("en-CA", { timeZone: business.timezone || "Asia/Yerevan", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date(value));
+    const read = (type: string) => parts.find((part) => part.type === type)?.value ?? "00";
+    return rentalLocalStamp(`${read("year")}-${read("month")}-${read("day")} ${read("hour")}:${read("minute")}`, locale);
+  };
+  const estimate = rates?.hourly_price == null ? null : rentalQuote(rates.hourly_price, duration, rates.duration_discounts);
+  // Once a start time is chosen, the server's price for that exact slot is shown.
+  const quote = selectedSlot && estimate
+    ? { price: selectedSlot.price, gross: selectedSlot.gross_price ?? selectedSlot.price, percent: selectedSlot.discount_percent ?? 0 }
+    : estimate;
+  const today = rentalToday(business.timezone || undefined);
+  const rangeEnd = rentalRangeEnd(date, moving ? 0 : duration, selectedSlot);
+  const allowRange = !moving && !!rates?.allow_overnight && (rates?.max_minutes ?? 0) >= 1440;
+  function pickRange(start: string, end: string | null) {
+    setDate(start); setTime(""); setMessage("");
+    if (!rates || moving || end === null) return;
+    const days = dateKeyDiffDays(start, end);
+    if (days <= 0) { if (duration >= 1440) setDuration(rates.min_minutes); return; }
+    let minutes = days * 1440;
+    if (minutes > rates.max_minutes) { minutes = Math.floor(rates.max_minutes / 1440) * 1440; setMessage(`${t.allowedDuration}: ${rentalDurationLabel(rates.min_minutes, t)} – ${rentalDurationLabel(rates.max_minutes, t)}`); }
+    if (minutes >= rates.min_minutes) setDuration(minutes);
+  }
   function submit(event: FormEvent) { event.preventDefault(); setMessage(""); if (!selectedSlot || !validDuration || slotsQ.isError || slotsQ.isFetching) { setMessage(t.chooseSlot); return; } create.mutate(); }
   function newBooking() { setParams({}); setToken(""); setOtp(""); setTime(""); setMessage(""); setMoving(false); }
 
@@ -113,15 +134,16 @@ export default function RentalPublic({ business }: { business: PublicBusiness })
           </> : <h2>{t.book}</h2>}
 
           {(!code || moving) && <>
-            <div className="rental-fields"><label className="rental-field">{t.date}<input type="date" value={date} min={rentalToday(business.timezone || undefined)} onChange={(event) => { setDate(event.target.value); setTime(""); }} /></label>
-              {!moving && rates && <RentalDurationField value={duration} onChange={(minutes) => { setDuration(minutes); setTime(""); }} min={rates.min_minutes} max={rates.max_minutes} step={rates.slot_step_minutes} presets />}
+            <div className="rental-field"><span>{t.date}</span>
+              <RentalRangeCalendar start={date} end={rangeEnd} minDate={today} maxDate={addDateKeyDays(today, 365)} allowRange={allowRange} onChange={pickRange} />
             </div>
+            {!moving && rates && <RentalDurationField value={duration} onChange={(minutes) => { setDuration(minutes); setTime(""); }} min={rates.min_minutes} max={rates.max_minutes} step={rates.slot_step_minutes} presets />}
             <p className="rental-muted">{t.availabilityHelp} {rates?.allow_overnight ? t.overnightPublic : t.withinHours}</p>
             <h2 style={{ marginBottom: 0 }}>{t.availability}</h2>
             {(moving || validDuration) && slotsQ.isPending && <p role="status">{t.loading}</p>}
             {slotsQ.isError && <div className="rental-note rental-error" role="alert">{getErrorMessage(slotsQ.error, t.error)} <button className="rental-btn secondary" onClick={() => void slotsQ.refetch()}>{t.retry}</button></div>}
             {slotsQ.data?.length === 0 && <p className="rental-empty">{t.noSlots}</p>}
-            <div className="rental-slots">{slotsQ.data?.map((slot) => <button type="button" key={slot.starts_at} className="rental-slot" aria-label={`${t.start}: ${rentalLocalStamp(slot.starts_at, locale)} · ${t.end}: ${rentalLocalStamp(slot.ends_at, locale)}`} aria-pressed={time === slot.starts_at} onClick={() => { setTime(slot.starts_at); setMessage(""); }}>{slot.starts_at.slice(11, 16)}<small style={{ display: "block", opacity: .75 }}>– {slot.ends_at.slice(0, 10) !== slot.starts_at.slice(0, 10) ? rentalLocalStamp(slot.ends_at, locale) : slot.ends_at.slice(11, 16)}</small></button>)}</div>
+            <div className="rental-slots">{slotsQ.data?.map((slot) => <button type="button" key={slot.starts_at} className={rentalSlotWithin(slot, selectedSlot) ? "rental-slot is-within" : "rental-slot"} aria-label={`${t.start}: ${rentalLocalStamp(slot.starts_at, locale)} · ${t.end}: ${rentalLocalStamp(slot.ends_at, locale)}`} aria-pressed={time === slot.starts_at} onClick={() => { setTime(slot.starts_at); setMessage(""); }}>{slot.starts_at.slice(11, 16)}<small style={{ display: "block", opacity: .75 }}>– {slot.ends_at.slice(0, 10) !== slot.starts_at.slice(0, 10) ? rentalLocalStamp(slot.ends_at, locale) : slot.ends_at.slice(11, 16)}</small></button>)}</div>
             {selectedSlot && <div className="rental-note rental-selected-period" role="status"><strong>{t.selection}</strong><span>{t.start}: {rentalLocalStamp(selectedSlot.starts_at, locale)}</span><span>{t.end}: {rentalLocalStamp(selectedSlot.ends_at, locale)}</span>{!moving && <span>{t.duration}: {rentalDurationLabel(duration, t)}</span>}</div>}
             {moving ? <button className="rental-btn" disabled={!selectedSlot || slotsQ.isError || slotsQ.isFetching || move.isPending} onClick={() => move.mutate()}>{move.isPending ? t.loading : t.save}</button> : <form className="rental-stack" onSubmit={submit}>
               {quote !== null && validDuration && <div className="rental-row rental-between"><span>{t.total}{quote.percent > 0 && <small className="rental-muted" style={{ display: "block" }}>{t.discountApplied(quote.percent)} · <s>{currency(quote.gross)}</s></small>}</span><strong className="rental-price">{currency(quote.price)}</strong></div>}

@@ -86,7 +86,7 @@ export default function AuthShell({
                 />
             </motion.div>
 
-            <div className="vizit-auth-layout relative z-10 mx-auto grid min-h-screen max-w-[1320px] items-start gap-6 px-3 pb-8 pt-20 sm:gap-8 sm:px-6 sm:pb-12 sm:pt-24 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:gap-10 lg:px-8 2xl:items-center">
+            <div className="vizit-auth-layout relative z-10 mx-auto grid min-h-screen max-w-none items-start gap-6 px-3 pb-8 pt-20 sm:gap-8 sm:px-6 sm:pb-12 sm:pt-24 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:gap-10 lg:px-8 2xl:items-center">
                 <motion.div
                     variants={staggerContainer(0.08, 0.05)}
                     className="vizit-auth-aside hidden min-w-0 lg:block"

@@ -38,7 +38,7 @@ const Navigation: React.FC<NavigationProps> = ({ isScrolled, selectedType }) => 
                         : 'bg-transparent py-4'
                 }`}
             >
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-none px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between">
                         {/* Logo */}
                         <Link to="/" className="flex items-center gap-2.5 group">

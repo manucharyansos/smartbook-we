@@ -108,7 +108,7 @@ export default function About() {
 
             <main className="pt-32 sm:pt-36 lg:pt-40">
                 <section className="px-4 pb-14 sm:px-6 lg:px-8 lg:pb-20">
-                    <div className="mx-auto max-w-7xl">
+                    <div className="mx-auto max-w-none">
                         <motion.div
                             variants={staggerContainer(0.08, 0.05)}
                             initial="hidden"
@@ -193,7 +193,7 @@ export default function About() {
                         initial="hidden"
                         whileInView="show"
                         viewport={{ once: true, amount: 0.15 }}
-                        className="mx-auto max-w-7xl"
+                        className="mx-auto max-w-none"
                     >
                         <motion.div variants={fadeUp} className="max-w-3xl">
                             <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm dark:border-white/10 dark:bg-white/[0.07] dark:text-slate-200 dark:shadow-black/20">

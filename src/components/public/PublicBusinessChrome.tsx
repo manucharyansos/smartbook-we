@@ -42,7 +42,7 @@ export function PublicBusinessHeader({
 
   return (
     <header className="vizit-public-chrome sticky top-0 z-40 border-b border-[var(--vz-line)] bg-[var(--vz-surface-2)] shadow-sm backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2 sm:gap-4 sm:px-6 sm:py-3 lg:px-8">
+      <div className="mx-auto flex max-w-none items-center justify-between gap-3 px-4 py-2 sm:gap-4 sm:px-6 sm:py-3 lg:px-8">
         <div className="flex min-w-0 items-center gap-3">
           <Link to={fallbackHref} aria-label={business ? text.back : text.home} className="vizit-public-chrome-control inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] text-[var(--vz-brand-text)] shadow-sm transition hover:bg-[var(--vz-accent-soft)] dark:bg-[var(--vz-surface-2)] dark:text-[var(--vz-brand-text)] dark:hover:bg-[var(--vz-accent-soft)] sm:h-11 sm:w-11">
             {business ? <ArrowLeft className="h-4 w-4" /> : <CalendarDays className="h-4 w-4" />}
@@ -92,7 +92,7 @@ export function PublicBusinessFooter({
   if (compact) {
     return (
       <footer className="vizit-public-chrome vizit-public-footer-compact border-t border-[var(--vz-line)] bg-[var(--vz-surface-2)]">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 py-5 text-center sm:flex-row sm:px-6 sm:text-left lg:px-8">
+        <div className="mx-auto flex max-w-none flex-col items-center justify-between gap-3 px-4 py-5 text-center sm:flex-row sm:px-6 sm:text-left lg:px-8">
           <Link to="/" className="inline-flex items-center gap-2.5 text-[var(--vz-accent-text)]">
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-[var(--vz-primary)] text-[var(--vz-on-primary)] shadow-sm">
               <CalendarDays className="h-4 w-4" aria-hidden="true" />
@@ -114,7 +114,7 @@ export function PublicBusinessFooter({
 
   return (
     <footer className="vizit-public-chrome border-t border-[var(--vz-line)] bg-[var(--vz-surface-2)]">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+      <div className="mx-auto max-w-none px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <div className="grid gap-6 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 shadow-sm dark:bg-[var(--vz-surface)] sm:p-6 xl:grid-cols-[1.15fr_0.85fr] xl:items-start">
           <div>
             <div className="inline-flex items-center gap-2 rounded-xl border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-3 py-2 text-xs font-medium text-[var(--vz-brand-text)] dark:border-[#245171] dark:bg-[var(--vz-accent-soft)] dark:text-[#b9dcfa]">{text.powered}</div>

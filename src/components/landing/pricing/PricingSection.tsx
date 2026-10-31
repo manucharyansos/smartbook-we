@@ -32,7 +32,7 @@ export default function PricingSection({ selectedType }: PricingSectionProps) {
     if (q.isLoading) {
         return (
             <section className="py-24 px-4 sm:px-6 bg-[#FDFAF7]">
-                <div className="max-w-7xl mx-auto text-center">
+                <div className="max-w-none mx-auto text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C5A28A] mx-auto mb-4" />
                     <p className="text-[#8F6B58] font-light">Բեռնում է փաթեթները...</p>
                 </div>
@@ -43,7 +43,7 @@ export default function PricingSection({ selectedType }: PricingSectionProps) {
     if (q.isError) {
         return (
             <section className="py-24 px-4 sm:px-6 bg-[#FDFAF7]">
-                <div className="max-w-7xl mx-auto text-center">
+                <div className="max-w-none mx-auto text-center">
                     <p className="text-red-600">
                         Չհաջողվեց բեռնել փաթեթները ({(q.error as Error).message})
                     </p>
@@ -56,7 +56,7 @@ export default function PricingSection({ selectedType }: PricingSectionProps) {
 
     return (
         <section id="pricing" className="py-24 px-4 sm:px-6 bg-[#FDFAF7]">
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-none mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}

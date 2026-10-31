@@ -157,7 +157,7 @@ export default function PublicBusinessProfile() {
             <div className="vizit-public-detail-page min-h-screen bg-[var(--vz-surface-2)] transition-colors dark:text-white">
                 <Seo title={`${text.loadingTitle} | Vizit`} description={text.loadingText} />
                 <PublicBusinessHeader secondaryHref="/" secondaryLabel="Vizit" />
-                <main className="mx-auto max-w-7xl px-4 pb-16 pt-8 sm:px-6 lg:px-8">
+                <main className="mx-auto max-w-none px-4 pb-16 pt-8 sm:px-6 lg:px-8">
                     <div className="h-72 animate-pulse rounded-[34px] border border-[var(--vz-line)] bg-[var(--vz-surface)]" />
                     <div className="mt-8 grid gap-6 2xl:grid-cols-[1fr_340px]">
                         <div className="space-y-6">
@@ -215,7 +215,7 @@ export default function PublicBusinessProfile() {
 
             <main className="pb-16 pt-8 sm:pt-10">
                 <section className="px-4 sm:px-6 lg:px-8">
-                    <div className="mx-auto max-w-7xl">
+                    <div className="mx-auto max-w-none">
                         <motion.div
                             initial={{ opacity: 0, y: 18 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -379,7 +379,7 @@ export default function PublicBusinessProfile() {
                 </section>
 
                 <section className="mt-8 px-4 sm:px-6 lg:px-8">
-                    <div className="mx-auto max-w-7xl space-y-6">
+                    <div className="mx-auto max-w-none space-y-6">
                         <ServiceDiscountsNotice slug={business.slug} discounts={business.service_discounts} locale={locale} />
                         <div className="space-y-6">
                             {business.show_services !== false && (

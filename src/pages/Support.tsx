@@ -26,7 +26,7 @@ export default function Support() {
       <LandingNavbar />
       <main className="pt-32 sm:pt-36 lg:pt-40">
         <section className="px-4 pb-16 sm:px-6 lg:px-8">
-          <motion.div variants={staggerContainer(0.08, 0.05)} initial="hidden" animate="show" className="mx-auto max-w-7xl">
+          <motion.div variants={staggerContainer(0.08, 0.05)} initial="hidden" animate="show" className="mx-auto max-w-none">
             <motion.div variants={fadeUp} className="text-center">
               <div className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/80 px-4 py-2 text-sm font-medium text-violet-700 shadow-sm dark:border-violet-400/30 dark:bg-violet-400/10 dark:text-violet-200 dark:shadow-black/20">
                 <ShieldCheck className="h-4 w-4" /> {text.badge}

@@ -36,7 +36,7 @@ export default function ComingSoonPage({
       }
       title={title}
       description={description}
-      maxWidthClassName="max-w-5xl"
+      maxWidthClassName="max-w-none"
     >
       <div className="grid gap-6 2xl:grid-cols-[1.05fr_0.95fr]">
         <motion.div

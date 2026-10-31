@@ -296,7 +296,7 @@ button, input, select, textarea { font: inherit; }
   color: var(--vz-text) !important;
 }
 #top.vizit-hero-section > div.absolute { opacity: 0 !important; }
-.vizit-hero-grid { max-width: 1240px !important; }
+.vizit-hero-grid { max-width: none !important; }
 .vizit-hero-copy { position: relative; z-index: 2; max-width: 630px !important; }
 .vizit-hero-badge,
 .vizit-business-page main [class*="border-[#1e9e92]"] {
@@ -354,6 +354,10 @@ button, input, select, textarea { font: inherit; }
 .vizit-hero-showcase {
   position: relative;
   display: flex;
+  /* Keep the floating cards beside the phone on very wide screens. */
+  width: 100%;
+  max-width: 640px;
+  margin-inline: auto;
   min-height: 560px;
   align-items: center;
   justify-content: center;
@@ -482,7 +486,7 @@ button, input, select, textarea { font: inherit; }
 html.dark .vizit-category-slider button > span:first-child { background: var(--vz-accent-soft) !important; color: var(--vz-accent-text) !important; }
 .vizit-category-slider button > span:last-child { color: var(--vz-text) !important; }
 .vizit-how-section { padding: 64px 24px !important; }
-.vizit-how-section > div { max-width: 1200px !important; border: 1px solid var(--vz-line) !important; border-radius: 22px !important; padding: 34px !important; }
+.vizit-how-section > div { max-width: none !important; border: 1px solid var(--vz-line) !important; border-radius: 22px !important; padding: 34px !important; }
 .vizit-how-section article,
 .vizit-how-section [class*="rounded-"] { border-color: var(--vz-line) !important; background: var(--vz-surface-2) !important; color: var(--vz-text) !important; box-shadow: none !important; }
 .vizit-how-section p { color: var(--vz-muted) !important; }

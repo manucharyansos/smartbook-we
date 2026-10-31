@@ -202,7 +202,7 @@ export default function BusinessDetails() {
   const billing = data.billing;
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
+    <div className="mx-auto max-w-none space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-start gap-3">
           <button type="button" aria-label="Վերադառնալ" onClick={() => navigate("/admin/businesses")} className="mt-1 rounded-2xl border border-slate-200 bg-white p-3 text-slate-500 transition hover:text-slate-900"><ArrowLeft className="h-5 w-5" /></button>

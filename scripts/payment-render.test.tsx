@@ -42,4 +42,33 @@ assert.match(html, /Idram դրամապանակ/);
 assert.match(html, /Վճարել Idram-ով/);
 assert.match(html, /src="\/payments\/idram.png"/);
 assert.doesNotMatch(html, /IDBank Live|IDBank Test/);
-console.log("PASS payment state validation, provider selection and billing/return rendering");
+assert.doesNotMatch(html, /Պաշտոնական կապից հետո/);
+
+const rentalPlan = { id: 2, code: "rental", name: "Վարձով տարածք", price: 25000, monthly_price: 25000, currency: "AMD", locations: 1, yearly_offer: { price: 300000, discount_amount: 0 } };
+const rentalBilling = { business: { id: 2, business_type: "rentals" }, is_billable: true, reason: null, subscription: { status: "trialing", plan: rentalPlan }, payment_provider: { default: "idram", live_ready: true, checkout_available: true }, usage: {}, seats: {} };
+client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } });
+client.setQueryData(["billing", "me"], rentalBilling);
+client.setQueryData(["plans", "billing-page", "rentals"], [rentalPlan]);
+client.setQueryData(["billing", "invoices"], []);
+html = render(Billing, "/app/billing", client);
+const buttonWithText = (markup: string, text: string) => {
+  const button = markup.match(/<button\b[^>]*>[\s\S]*?<\/button>/g)?.find((item) => item.includes(text));
+  assert.ok(button, `Missing button: ${text}`);
+  return button;
+};
+assert.doesNotMatch(buttonWithText(html, "Ստեղծել հաշիվ և շարունակել"), /\bdisabled=/);
+assert.doesNotMatch(html, /Բանկի վճարման կոճակը կաշխատի միայն/);
+
+client.setQueryData(["billing", "me"], { ...rentalBilling, reason: "business_suspended", is_billable: false });
+html = render(Billing, "/app/billing", client);
+assert.match(buttonWithText(html, "Ստեղծել հաշիվ և շարունակել"), /\bdisabled=/);
+
+client.setQueryData(["billing", "me"], { ...rentalBilling, subscription: { status: "active", plan: rentalPlan } });
+html = render(Billing, "/app/billing", client);
+assert.match(buttonWithText(html, "Ընթացիկ պլան"), /\bdisabled=/);
+
+client.setQueryData(["billing", "me"], { ...rentalBilling, payment_provider: { default: "idram", live_ready: false, checkout_available: false } });
+client.setQueryData(["billing", "invoices"], [{ id: 11, amount: 25000, currency: "AMD", billing_cycle: "monthly", status: "pending", created_at: "2026-11-02T10:00:00Z" }]);
+html = render(Billing, "/app/billing", client);
+assert.match(buttonWithText(html, "Վճարել Idram-ով"), /\bdisabled=/);
+console.log("PASS verified payment states, provider availability, trial activation and suspended-business guards");

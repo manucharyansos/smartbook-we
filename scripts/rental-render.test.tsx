@@ -43,7 +43,10 @@ assert.match(publicPage, /href="\/businesses\/qa-rental"/);
 assert.doesNotMatch(publicPage, /service_id|staff_id/);
 const profilePage = render(RentalProfile, "/businesses/qa-rental", { business });
 assert.match(profilePage, /QA Rental/);
-assert.match(profilePage, /<video[^>]+controls/);
+// Public gallery items open the full viewer; previews must not start playback.
+assert.match(profilePage, /<button[^>]+aria-label="Բացել մեծ չափով: Main hall"/);
+assert.match(profilePage, /<video[^>]+src="[^"]+tour\.mp4"[^>]+preload="metadata"/);
+assert.doesNotMatch(profilePage, /<video[^>]+autoPlay/);
 assert.match(profilePage, /src="https:\/\/api.vizit.am\/api\/media\/file\/logo.png"/);
 assert.match(profilePage, /src="https:\/\/api.vizit.am\/api\/media\/file\/cover.png"/);
 assert.match(profilePage, /Main hall/);

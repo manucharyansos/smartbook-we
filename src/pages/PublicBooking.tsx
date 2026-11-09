@@ -65,6 +65,7 @@ import {
     type Slot,
 } from "../lib/publicApi";
 import { localizedText } from "@/lib/localizedText";
+import { normalizeBookingSource, PUBLIC_WAITLIST_SOURCES } from "../lib/bookingSource";
 
 type BookingMode = "single" | "multi" | "lines";
 
@@ -577,7 +578,10 @@ function ServiceBooking() {
     const services = locationSelectionRequired ? EMPTY_SERVICES : servicesQ.data ?? EMPTY_SERVICES;
     const individualServices = useMemo(() => services.filter((service) => (service.booking_mode ?? "individual") !== "group"), [services]);
     const staff = locationSelectionRequired ? EMPTY_STAFF : staffQ.data ?? EMPTY_STAFF;
-    const bookingSource = searchParams.get("source") ?? "website";
+    // A typo in a hand-made link (?source=Instagram, ?source=tiktok) must not make the API reject the booking.
+    const sourceParam = searchParams.get("source");
+    const bookingSource = normalizeBookingSource(sourceParam);
+    const waitlistSource = normalizeBookingSource(sourceParam, PUBLIC_WAITLIST_SOURCES);
 
     useEffect(() => {
         const bookingFromQuery = searchParams.get("booking") ?? "";
@@ -1167,7 +1171,7 @@ function ServiceBooking() {
             window_end: String(business?.work_end || "18:00").slice(0, 5),
             party_size: partySize,
             notes: notes.trim() || null,
-            source: bookingSource,
+            source: waitlistSource,
             legal_accepted: true,
             terms_version: LEGAL_DOCUMENT_VERSION,
             privacy_version: LEGAL_DOCUMENT_VERSION,

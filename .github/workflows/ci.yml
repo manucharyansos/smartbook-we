@@ -29,6 +29,7 @@ jobs:
       - run: npm run lint
       - run: npm run verify:payments
       - run: npm run verify:rentals
+      - run: npm run verify:public-booking
       - run: npm run build
       - run: |
           php -l public/index.php

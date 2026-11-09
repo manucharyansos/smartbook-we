@@ -10,6 +10,7 @@ function vizit_default_meta($path) {
     $url = 'https://vizit.am' . ($path === '/' ? '/' : $path);
     $pages = [
         '/' => ['Vizit.am — օնլայն ամրագրում ծառայությունների և բժշկական այցերի համար', 'Գտեք ծառայություններն ու բժշկական կենտրոնները, ընտրեք բիզնեսը և ամրագրեք ազատ ժամը Vizit.am-ում։'],
+        '/business' => ['Vizit բիզնեսների համար — ամրագրումներ և հաճախորդների կառավարում', 'Կառավարեք օնլայն ամրագրումները, օրացույցը, թիմը, ծառայություններն ու հաճախորդներին Vizit-ի մեկ հարթակում։'],
         '/features' => ['Vizit-ի հնարավորությունները բիզնեսների համար', 'Կառավարեք ամրագրումները, օրացույցը, ծառայությունները, թիմը և հաճախորդներին մեկ հարթակում։'],
         '/pricing' => ['Vizit-ի գնային պլանները', 'Ընտրեք ձեր բիզնեսի չափին համապատասխան Vizit պլանը և սկսեք 14-օրյա փորձաշրջանը։'],
         '/about' => ['Vizit-ի մասին', 'Ծանոթացեք Vizit.am օնլայն ամրագրման հարթակին և մեր նպատակին։'],
@@ -19,10 +20,14 @@ function vizit_default_meta($path) {
         '/privacy-policy' => ['Գաղտնիության քաղաքականություն | Vizit', 'Կարդացեք Vizit-ի գաղտնիության քաղաքականությունը։'],
         '/terms' => ['Օգտագործման պայմաններ | Vizit', 'Կարդացեք Vizit հարթակի օգտագործման պայմանները։'],
         '/cookies' => ['Cookie-ների քաղաքականություն | Vizit', 'Իմացեք, թե ինչպես է Vizit-ը օգտագործում cookie-ները։'],
+        '/refund-policy' => ['Չեղարկման և վերադարձի քաղաքականություն | Vizit', 'Vizit-ի պլանների չեղարկման, փորձաշրջանի և գումարի վերադարձի պայմանները։'],
+        '/personal-data' => ['Անձնական տվյալների մշակման քաղաքականություն | Vizit', 'Ինչպես է Vizit-ը մշակում և պաշտպանում անձնական տվյալները։'],
     ];
     $page = $pages[$path] ?? null;
     $isKnownRoute = $page !== null;
-    $privatePrefixes = ['/login', '/register', '/forgot-password', '/reset-password', '/business/', '/client/', '/admin', '/app', '/payment-return', '/auth/', '/mock-bank'];
+    // "/business" itself is the public business landing page; only its
+    // login and registration sub-pages are private.
+    $privatePrefixes = ['/login', '/register', '/forgot-password', '/reset-password', '/business/login', '/business/register', '/client/', '/admin', '/app', '/payment-return', '/auth/', '/mock-bank'];
     $robots = $isKnownRoute ? 'index,follow,max-image-preview:large' : 'noindex,nofollow';
     foreach ($privatePrefixes as $prefix) {
         if ($path === rtrim($prefix, '/') || strpos($path, $prefix) === 0) {
@@ -56,10 +61,33 @@ function vizit_default_meta($path) {
         'status' => $isKnownRoute ? 200 : 404,
     ];
 }
+// Fetches a URL with cURL when available and falls back to the HTTP stream
+// wrapper. Many shared hosts disable allow_url_fopen, which made every page
+// fall back to generic, partly non-indexable meta tags.
+function vizit_http_get($url, $accept, $timeout) {
+    if (function_exists('curl_init')) {
+        $handle = curl_init($url);
+        curl_setopt_array($handle, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CONNECTTIMEOUT => 1,
+            CURLOPT_TIMEOUT => $timeout,
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_HTTPHEADER => ['Accept: ' . $accept],
+        ]);
+        $body = curl_exec($handle);
+        curl_close($handle);
+        if (is_string($body) && $body !== '') return $body;
+    }
+    if (filter_var(ini_get('allow_url_fopen'), FILTER_VALIDATE_BOOLEAN)) {
+        $context = stream_context_create(['http' => ['timeout' => $timeout, 'ignore_errors' => true, 'header' => 'Accept: ' . $accept . "\r\n"]]);
+        $body = @file_get_contents($url, false, $context);
+        if (is_string($body) && $body !== '') return $body;
+    }
+    return null;
+}
 function vizit_fetch_meta($apiBase, $path) {
     $url = $apiBase . '/public/seo/meta?path=' . rawurlencode($path);
-    $context = stream_context_create(['http' => ['timeout' => 2.2, 'ignore_errors' => true, 'header' => "Accept: application/json\r\n"]]);
-    $body = @file_get_contents($url, false, $context);
+    $body = vizit_http_get($url, 'application/json', 2.2);
     if (!$body) return null;
     $data = json_decode($body, true);
     if (!is_array($data) || empty($data['title']) || empty($data['description']) || empty($data['url']) || empty($data['image'])) {
@@ -67,13 +95,16 @@ function vizit_fetch_meta($apiBase, $path) {
     }
     return $data;
 }
-function vizit_tags($meta) {
+function vizit_tags($meta, $source) {
     $json = '';
     if (!empty($meta['json_ld']) && is_array($meta['json_ld'])) {
         $jsonFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
         $json = "\n    <script type=\"application/ld+json\">" . json_encode($meta['json_ld'], $jsonFlags) . "</script>";
     }
+    // The source marker shows whether the API answered, so a deploy can be
+    // checked with: curl -s https://vizit.am/business | grep vizit-seo
     return '<!--VIZIT_DYNAMIC_SEO_START-->' . "\n" .
+        '    <!-- vizit-seo: ' . ($source === 'api' ? 'api' : 'fallback') . " -->\n" .
         '    <title>' . vizit_h($meta['title']) . "</title>\n" .
         '    <meta name="description" content="' . vizit_h($meta['description']) . '" />' . "\n" .
         '    <meta name="robots" content="' . vizit_h($meta['robots'] ?? 'index,follow,max-image-preview:large') . '" />' . "\n" .
@@ -93,8 +124,9 @@ function vizit_tags($meta) {
         '    <!--VIZIT_DYNAMIC_SEO_END-->';
 }
 
-$meta = vizit_fetch_meta($apiBase, $path) ?: vizit_default_meta($path);
-$tags = vizit_tags($meta);
+$apiMeta = vizit_fetch_meta($apiBase, $path);
+$meta = $apiMeta ?: vizit_default_meta($path);
+$tags = vizit_tags($meta, $apiMeta ? 'api' : 'fallback');
 $html = preg_replace('/<!--VIZIT_DYNAMIC_SEO_START-->.*?<!--VIZIT_DYNAMIC_SEO_END-->/s', $tags, $html, 1) ?: $html;
 if ((int) ($meta['status'] ?? 200) === 404) {
     http_response_code(404);

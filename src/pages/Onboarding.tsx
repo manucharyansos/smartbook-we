@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useRevealMessage } from "@/hooks/useRevealMessage";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
@@ -100,6 +101,7 @@ function PrimaryInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
 export default function Onboarding() {
   const [currentStep, setCurrentStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const errorRef = useRevealMessage<HTMLDivElement>(error);
   const [saving, setSaving] = useState(false);
 
   const [serviceName, setServiceName] = useState("");
@@ -385,7 +387,12 @@ export default function Onboarding() {
             <div className="grid gap-5 p-4 sm:p-6 lg:p-8 2xl:grid-cols-[minmax(0,1fr)_300px]">
               <div>
                 {error ? (
-                  <div className="mb-6 rounded-xl bg-[var(--vz-danger-soft)] px-4 py-3 text-sm font-medium text-[var(--vz-danger)]">
+                  <div
+                    ref={errorRef}
+                    role="alert"
+                    tabIndex={-1}
+                    className="mb-6 scroll-mt-24 rounded-xl bg-[var(--vz-danger-soft)] px-4 py-3 text-sm font-medium text-[var(--vz-danger)] focus:outline-none"
+                  >
                     {error}
                   </div>
                 ) : null}

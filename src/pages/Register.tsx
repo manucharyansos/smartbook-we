@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useRevealMessage } from "@/hooks/useRevealMessage";
 import { trackSiteEvent } from "@/lib/siteAnalytics";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -236,6 +237,8 @@ export default function Register() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [errorCode, setErrorCode] = useState<string | null>(null);
+    const [submitAttempt, setSubmitAttempt] = useState(0);
+    const errorRef = useRevealMessage<HTMLDivElement>(error, submitAttempt);
     const [currentStep, setCurrentStep] = useState<1 | 2>(1);
     const [passwordStrength, setPasswordStrength] = useState<
         "weak" | "medium" | "strong" | null
@@ -352,6 +355,7 @@ export default function Register() {
     }
 
     function nextStep() {
+        setSubmitAttempt((attempt) => attempt + 1);
         if (!validateStepOne()) return;
         setCurrentStep(2);
     }
@@ -362,6 +366,7 @@ export default function Register() {
 
     async function submit(e: React.FormEvent) {
         e.preventDefault();
+        setSubmitAttempt((attempt) => attempt + 1);
         setError(null);
 
         if (!owner_name.trim()) {
@@ -456,9 +461,12 @@ export default function Register() {
             >
                 {error ? (
                     <motion.div
+                        ref={errorRef}
+                        role="alert"
+                        tabIndex={-1}
                         variants={fadeUp}
                         className={cn(
-                            "rounded-2xl border px-4 py-4 text-sm",
+                            "scroll-mt-24 rounded-2xl border px-4 py-4 text-sm focus:outline-none",
                             errorCode === "trial_already_used"
                                 ? "border-[var(--vz-warning-line)] bg-[var(--vz-warning-soft)] text-[var(--vz-warning)]"
                                 : "border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] text-[var(--vz-danger)]"

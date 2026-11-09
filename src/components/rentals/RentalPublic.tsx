@@ -10,6 +10,7 @@ import RentalDiscounts from "./RentalDiscounts";
 import { cancelPublicBooking, fetchPublicBookingDetail, resendPublicBookingCode, verifyPublicBooking, type PublicBusiness } from "../../lib/publicApi";
 import { getErrorMessage } from "../../lib/http";
 import { LEGAL_DOCUMENT_VERSION } from "../../config/legal";
+import { keepBookingSource, normalizeBookingSource } from "../../lib/bookingSource";
 import { PublicBusinessHeader, PublicBusinessFooter } from "../public/PublicBusinessChrome";
 import Seo from "../Seo";
 import RentalDurationField from "./RentalDurationField";
@@ -53,10 +54,12 @@ export default function RentalPublic({ business }: { business: PublicBusiness })
     enabled: !!rates && rates.hourly_price !== null && (moving || validDuration) && (!code || moving), staleTime: 0, refetchInterval: 30000 });
   const selectedSlot = slotsQ.data?.find((slot) => slot.starts_at === time);
   const onError = (error: unknown) => setMessage(getErrorMessage(error, t.error));
+  // ?source= on the link (e.g. ?source=instagram) shows the owner where the booking came from; a typo falls back to "website".
   const create = useMutation({ mutationFn: () => rentalApi.publicCreate(business.slug, {
     starts_at: selectedSlot?.starts_at || "", duration_minutes: duration, client_name: name, client_phone: phone, client_email: email, notes,
+    source: normalizeBookingSource(params.get("source")),
     legal_accepted: legal, terms_version: LEGAL_DOCUMENT_VERSION, privacy_version: LEGAL_DOCUMENT_VERSION,
-  }), onError: (error) => { onError(error); setTime(""); void slotsQ.refetch(); }, onSuccess: (result) => { trackSiteEvent("booking_created"); const next = new URLSearchParams(); next.set("booking", result.data.booking_code); setParams(next); setMessage(""); setTime(""); void slotsQ.refetch(); } });
+  }), onError: (error) => { onError(error); setTime(""); void slotsQ.refetch(); }, onSuccess: (result) => { trackSiteEvent("booking_created"); setParams(keepBookingSource(params, { booking: result.data.booking_code })); setMessage(""); setTime(""); void slotsQ.refetch(); } });
   const verify = useMutation({ mutationFn: () => verifyPublicBooking({ booking_code: code, otp }), onError,
     onSuccess: (result) => { if (result.manage_token) { setToken(result.manage_token); setMessage(""); } } });
   const resend = useMutation({ mutationFn: () => resendPublicBookingCode(code), onError, onSuccess: () => setMessage(t.sent) });
@@ -90,7 +93,7 @@ export default function RentalPublic({ business }: { business: PublicBusiness })
     if (minutes >= rates.min_minutes) setDuration(minutes);
   }
   function submit(event: FormEvent) { event.preventDefault(); setMessage(""); if (!selectedSlot || !validDuration || slotsQ.isError || slotsQ.isFetching) { setMessage(t.chooseSlot); return; } create.mutate(); }
-  function newBooking() { setParams({}); setToken(""); setOtp(""); setTime(""); setMessage(""); setMoving(false); }
+  function newBooking() { setParams(keepBookingSource(params)); setToken(""); setOtp(""); setTime(""); setMessage(""); setMoving(false); }
 
   return <div className="rental-page">
     <Seo title={`${t.book} · ${business.name}`} description={localizedText(business, "short_description", locale) || localizedText(business, "description", locale) || t.book} canonical={`/book/${business.slug}`} />

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { normalizeBookingSource, PUBLIC_BOOKING_SOURCES, PUBLIC_WAITLIST_SOURCES } from "../src/lib/bookingSource";
+import { keepBookingSource, normalizeBookingSource, PUBLIC_BOOKING_SOURCES, PUBLIC_WAITLIST_SOURCES } from "../src/lib/bookingSource";
 
 // Hand-typed ?source= values: case and spaces are fixed.
 assert.equal(normalizeBookingSource("instagram"), "instagram");
@@ -22,4 +22,14 @@ assert.equal(normalizeBookingSource("partner", PUBLIC_WAITLIST_SOURCES), "websit
 assert.equal(normalizeBookingSource("mobile", PUBLIC_WAITLIST_SOURCES), "website");
 assert.equal(normalizeBookingSource(" Instagram", PUBLIC_WAITLIST_SOURCES), "instagram");
 
-console.log("PASS booking ?source= normalization: case and spaces, unknown values fall back to website, waitlist list");
+// The rental booking page rewrites its URL after a booking and on "New booking". ?source= must survive both,
+// so the next booking in the same visit is not stored as "website"; the old booking code and token are dropped.
+const fromInstagram = new URLSearchParams("source=Instagram&booking=OLD1&token=secret");
+assert.equal(keepBookingSource(fromInstagram, { booking: "NEW1" }).toString(), "booking=NEW1&source=Instagram");
+assert.equal(keepBookingSource(fromInstagram).toString(), "source=Instagram");
+assert.equal(normalizeBookingSource(keepBookingSource(fromInstagram).get("source")), "instagram");
+assert.equal(keepBookingSource(new URLSearchParams("booking=OLD1&token=secret"), { booking: "NEW1" }).toString(), "booking=NEW1");
+assert.equal(keepBookingSource(new URLSearchParams("source=")).toString(), "");
+assert.equal(keepBookingSource(new URLSearchParams()).toString(), "");
+
+console.log("PASS booking ?source= normalization: case and spaces, unknown values fall back to website, waitlist list, kept across rental URL changes");

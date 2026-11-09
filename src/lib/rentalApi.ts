@@ -48,7 +48,7 @@ export const rentalApi = {
   summary: async (from: string, to: string): Promise<RentalSummary> => (await api.get("/rental/summary", { params: { from, to } })).data.data,
   slots: async (slug: string, date: string, minutes: number): Promise<RentalSlot[]> =>
     (await publicApi.get(`/public/businesses/${encodeURIComponent(slug)}/rental-availability`, { params: { date, duration_minutes: minutes } })).data.data,
-  publicCreate: async (slug: string, data: RentalCreate & { legal_accepted: boolean; terms_version: string; privacy_version: string }) =>
+  publicCreate: async (slug: string, data: RentalCreate & { legal_accepted: boolean; terms_version: string; privacy_version: string; source: string }) =>
     (await publicApi.post(`/public/businesses/${encodeURIComponent(slug)}/bookings`, data)).data,
   reschedule: async (code: string, token: string, startsAt: string) =>
     (await publicApi.post(`/public/bookings/${encodeURIComponent(code)}/reschedule`, { starts_at: startsAt }, { headers: { "X-Guest-Token": token } })).data,

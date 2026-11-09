@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-effect -- Query results intentionally hydrate the editable settings and schedule drafts. */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ServiceDiscountsCard from "../components/ServiceDiscountsCard";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -39,6 +39,8 @@ import {
   type BusinessLocation,
 } from "../lib/businessSettingsApi";
 import { fetchSchedule, updateSchedule, type ScheduleDay } from "../lib/scheduleApi";
+import { SHARE_LINK_SOURCES, withBookingSource } from "../lib/bookingSource";
+import { bookingSourceLabel } from "../components/calendar/utils";
 import { cn } from "../lib/cn";
 import { uploadMedia } from "../lib/mediaApi";
 import { useAuth } from "../store/auth";
@@ -88,7 +90,7 @@ const settingsCopy = {
     billingBadge: "Սեփականատիրոջ վճարումների կենտրոն", billingTitle: "Պլան և վճարումներ", billingText: "Պլանները, բաժանորդագրությունն ու հաշիվները կառավարվում են առանձին, միայն սեփականատիրոջ համար հասանելի էջում։ Բանկային վճարումը հասանելի կդառնա միայն պաշտոնական միացումից հետո։", openBilling: "Բացել պլանը և վճարումները", quickNote: "ԱՐԱԳ ՀԻՇԵՑՈՒՄ", ownerOnly: "Միայն սեփականատիրոջ համար", ownerOnlyText: "Վճարումների բաժինը հասանելի չէ կառավարիչներին և աշխատակիցներին։", hosted: "Բանկային կապի կարգավիճակ", hostedText: "Վճարումների էջը ցույց է տալիս՝ պաշտոնական բանկային կապը միացված է, թե դեռ սպասման մեջ է։", annual: "Տարեկան պլան", annualText: "Տարեկան պլանի 2 ամիս անվճար տարբերակը ցուցադրվում է վճարումների էջում։",
     settingsLoadFailed: "Չհաջողվեց բեռնել բիզնեսի կարգավորումները", scheduleLoadFailed: "Չհաջողվեց բեռնել գրաֆիկը", loading: "Բեռնում ենք…", general: "Ընդհանուր", editable: "Կարող եք խմբագրել", readOnly: "Միայն դիտում", phone: "Հեռախոս", phonePlaceholder: "օր․ 077 12 34 56", bookingStep: "Ամրագրման քայլ", bookingStepHint: "15 րոպե քայլով ժամերը կլինեն 09:00, 09:15, 09:30։ Սա ծառայության տևողությունը չէ։", minutes: "րոպե", primaryAddress: "Գլխավոր հասցե", addressPlaceholder: "օր․ Երևան, Աբովյան 10",
     branches: "Մասնաճյուղեր և հասցեներ", branchesText: "Կարող եք ավելացնել մինչև {limit} հասցե։ Գլխավոր հասցեն ցուցադրվում է հանրային էջում։", addAddress: "Ավելացնել հասցե", address: "Հասցե", primary: "Գլխավոր", mapSet: "Քարտեզում նշված է", mapMissing: "Քարտեզի դիրքը նշված չէ", mapTitle: "Բիզնեսի տեղը Yandex քարտեզում", mapText: "Տեղադրեք նշիչը հենց մուտքի վրա և պահպանեք դիրքը։", selectedAddress: "Ընտրված հասցե", noAddress: "Հասցե նշված չէ", savePosition: "Պահպանել դիրքը", editAddress: "Խմբագրել հասցեն", newAddress: "Նոր հասցե", locationNamePlaceholder: "Անվանում (օր․ Կենտրոն)", fullAddress: "Լրիվ հասցե", makePrimary: "Սարքել գլխավոր հասցե", updateAddress: "Թարմացնել հասցեն", saveAddress: "Պահպանել հասցեն", cancel: "Չեղարկել", addAnother: "Ավելացնել ևս մեկ հասցե",
-    timezone: "Ժամային գոտի", timezoneHint: "Հայաստանի համար՝ Asia/Yerevan", armenia: "Հայաստան", workStart: "Աշխատանքի սկիզբ", workEnd: "Աշխատանքի ավարտ", publicBookingLink: "Հանրային ամրագրման հղում", weeklySchedule: "Շաբաթական գրաֆիկ", breakOptional: "Ընդմիջումն ընտրովի է", open: "Բաց է", start: "Սկիզբ", end: "Ավարտ", break: "Ընդմիջում (ընտրովի)", removeBreak: "Հեռացնել ընդմիջումը", saveScheduleOnly: "Պահպանել միայն գրաֆիկը",
+    timezone: "Ժամային գոտի", timezoneHint: "Հայաստանի համար՝ Asia/Yerevan", armenia: "Հայաստան", workStart: "Աշխատանքի սկիզբ", workEnd: "Աշխատանքի ավարտ", publicBookingLink: "Հանրային ամրագրման հղում", shareLinks: "Հղումներ սոցցանցերի համար", shareLinksHint: "Ամրագրման մանրամասներում կերևա, թե որտեղից է եկել հաճախորդը։", weeklySchedule: "Շաբաթական գրաֆիկ", breakOptional: "Ընդմիջումն ընտրովի է", open: "Բաց է", start: "Սկիզբ", end: "Ավարտ", break: "Ընդմիջում (ընտրովի)", removeBreak: "Հեռացնել ընդմիջումը", saveScheduleOnly: "Պահպանել միայն գրաֆիկը",
   },
   ru: {
     saved: "Сохранено", saveFailed: "Не удалось сохранить", locationUpdated: "Адрес обновлен", locationAdded: "Адрес добавлен", locationSaveFailed: "Не удалось сохранить адрес", locationDeleted: "Адрес удален", locationDeleteFailed: "Не удалось удалить адрес", mapSaved: "Положение на карте сохранено", mapSaveFailed: "Не удалось сохранить положение на карте", copyFailed: "Не удалось скопировать ссылку", scheduleSaved: "Расписание сохранено", scheduleSaveFailed: "Не удалось сохранить расписание",
@@ -98,7 +100,7 @@ const settingsCopy = {
     billingBadge: "Платежный центр владельца", billingTitle: "Тариф и платежи", billingText: "Тарифы, подписка и счета управляются на отдельной странице, доступной только владельцу. Банковская оплата станет доступной только после официального подключения.", openBilling: "Открыть тариф и платежи", quickNote: "КРАТКОЕ НАПОМИНАНИЕ", ownerOnly: "Только для владельца", ownerOnlyText: "Раздел платежей недоступен менеджерам и сотрудникам.", hosted: "Статус подключения банка", hostedText: "На странице платежей видно, подключён официальный банковский канал или он ещё ожидается.", annual: "Годовой тариф", annualText: "Вариант с 2 бесплатными месяцами доступен на странице платежей.",
     settingsLoadFailed: "Не удалось загрузить настройки бизнеса", scheduleLoadFailed: "Не удалось загрузить расписание", loading: "Загрузка…", general: "Общее", editable: "Можно редактировать", readOnly: "Только чтение", phone: "Телефон", phonePlaceholder: "напр. 077 12 34 56", bookingStep: "Шаг записи", bookingStepHint: "При шаге 15 минут доступны 09:00, 09:15, 09:30. Это не длительность услуги.", minutes: "мин", primaryAddress: "Основной адрес", addressPlaceholder: "напр. Ереван, Абовяна 10",
     branches: "Филиалы и адреса", branchesText: "Можно добавить до {limit} адресов. Основной адрес показывается на публичной странице.", addAddress: "Добавить адрес", address: "Адрес", primary: "Основной", mapSet: "Отмечено на карте", mapMissing: "Положение на карте не указано", mapTitle: "Расположение на карте Yandex", mapText: "Поставьте маркер у входа и сохраните положение.", selectedAddress: "Выбранный адрес", noAddress: "Адрес не указан", savePosition: "Сохранить положение", editAddress: "Редактировать адрес", newAddress: "Новый адрес", locationNamePlaceholder: "Название (напр. Центр)", fullAddress: "Полный адрес", makePrimary: "Сделать основным", updateAddress: "Обновить адрес", saveAddress: "Сохранить адрес", cancel: "Отменить", addAnother: "Добавить еще один адрес",
-    timezone: "Часовой пояс", timezoneHint: "Для Армении: Asia/Yerevan", armenia: "Армения", workStart: "Начало работы", workEnd: "Конец работы", publicBookingLink: "Публичная ссылка записи", weeklySchedule: "Недельное расписание", breakOptional: "Перерыв необязателен", open: "Открыто", start: "Начало", end: "Конец", break: "Перерыв (необязательно)", removeBreak: "Убрать перерыв", saveScheduleOnly: "Сохранить только расписание",
+    timezone: "Часовой пояс", timezoneHint: "Для Армении: Asia/Yerevan", armenia: "Армения", workStart: "Начало работы", workEnd: "Конец работы", publicBookingLink: "Публичная ссылка записи", shareLinks: "Ссылки для соцсетей", shareLinksHint: "В деталях записи будет видно, откуда пришёл клиент.", weeklySchedule: "Недельное расписание", breakOptional: "Перерыв необязателен", open: "Открыто", start: "Начало", end: "Конец", break: "Перерыв (необязательно)", removeBreak: "Убрать перерыв", saveScheduleOnly: "Сохранить только расписание",
   },
   en: {
     saved: "Saved", saveFailed: "Could not save", locationUpdated: "Address updated", locationAdded: "Address added", locationSaveFailed: "Could not save the address", locationDeleted: "Address deleted", locationDeleteFailed: "Could not delete the address", mapSaved: "Map position saved", mapSaveFailed: "Could not save the map position", copyFailed: "Could not copy the link", scheduleSaved: "Schedule saved", scheduleSaveFailed: "Could not save the schedule",
@@ -108,7 +110,7 @@ const settingsCopy = {
     billingBadge: "Owner billing center", billingTitle: "Plan & payments", billingText: "Plans, subscriptions and invoices are managed on a separate owner-only page. Bank payment becomes available only after the official connection.", openBilling: "Open plan and payments", quickNote: "QUICK REMINDER", ownerOnly: "Owner access only", ownerOnlyText: "Billing is not available to managers or staff.", hosted: "Bank connection status", hostedText: "The billing page shows whether the official bank channel is connected or still pending.", annual: "Annual plan", annualText: "The annual option with 2 free months appears on the billing page.",
     settingsLoadFailed: "Could not load business settings", scheduleLoadFailed: "Could not load the schedule", loading: "Loading…", general: "General", editable: "Editable", readOnly: "Read only", phone: "Phone", phonePlaceholder: "e.g. 077 12 34 56", bookingStep: "Booking interval", bookingStepHint: "A 15-minute step gives 09:00, 09:15, 09:30. It is not the service duration.", minutes: "min", primaryAddress: "Primary address", addressPlaceholder: "e.g. 10 Abovyan St, Yerevan",
     branches: "Locations & addresses", branchesText: "You can add up to {limit} addresses. The primary address appears on the public page.", addAddress: "Add address", address: "Address", primary: "Primary", mapSet: "Marked on map", mapMissing: "Map position not set", mapTitle: "Business location on Yandex Maps", mapText: "Place the marker at the entrance and save the position.", selectedAddress: "Selected address", noAddress: "Address not set", savePosition: "Save position", editAddress: "Edit address", newAddress: "New address", locationNamePlaceholder: "Name (e.g. Downtown)", fullAddress: "Full address", makePrimary: "Make primary", updateAddress: "Update address", saveAddress: "Save address", cancel: "Cancel", addAnother: "Add another address",
-    timezone: "Time zone", timezoneHint: "For Armenia: Asia/Yerevan", armenia: "Armenia", workStart: "Opening time", workEnd: "Closing time", publicBookingLink: "Public booking link", weeklySchedule: "Weekly schedule", breakOptional: "Break is optional", open: "Open", start: "Start", end: "End", break: "Break (optional)", removeBreak: "Remove break", saveScheduleOnly: "Save schedule only",
+    timezone: "Time zone", timezoneHint: "For Armenia: Asia/Yerevan", armenia: "Armenia", workStart: "Opening time", workEnd: "Closing time", publicBookingLink: "Public booking link", shareLinks: "Links for social media", shareLinksHint: "Booking details will show where the client came from.", weeklySchedule: "Weekly schedule", breakOptional: "Break is optional", open: "Open", start: "Start", end: "End", break: "Break (optional)", removeBreak: "Remove break", saveScheduleOnly: "Save schedule only",
   },
 } satisfies Record<Locale, Record<string, string>>;
 
@@ -204,7 +206,9 @@ export default function BusinessSettingsPage() {
     text: "",
     type: "success",
   });
-  const [copiedLink, setCopiedLink] = useState(false);
+  // Which copy button shows "Copied": "main" for the plain booking link, or a source such as "instagram".
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const copiedTimer = useRef<number | undefined>(undefined);
 
   const settingsQ = useQuery({
     queryKey: ["business-settings"],
@@ -397,16 +401,21 @@ export default function BusinessSettingsPage() {
     saveLocationMut.mutate();
   }
 
-  const copyBookingLink = async () => {
-    if (!bookingLink || typeof navigator === "undefined") return;
+  const copyLink = async (url: string, key: string) => {
+    if (typeof navigator === "undefined") return;
     try {
-      await navigator.clipboard.writeText(`https://${bookingLink}`);
-      setCopiedLink(true);
-      window.setTimeout(() => setCopiedLink(false), 1800);
+      await navigator.clipboard.writeText(url);
+      setCopiedKey(key);
+      window.clearTimeout(copiedTimer.current);
+      copiedTimer.current = window.setTimeout(() => setCopiedKey(null), 1800);
     } catch {
       setToast({ open: true, text: text.copyFailed, type: "error" });
       window.setTimeout(() => setToast((p) => ({ ...p, open: false })), 2200);
     }
+  };
+
+  const copyBookingLink = () => {
+    if (bookingLink) void copyLink(`https://${bookingLink}`, "main");
   };
 
   const saveScheduleMut = useMutation({
@@ -498,8 +507,8 @@ export default function BusinessSettingsPage() {
                         onClick={copyBookingLink}
                         className="inline-flex items-center gap-1 rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-2 py-1 text-[11px] font-semibold text-[var(--vz-text-secondary)]"
                       >
-                        {copiedLink ? <CheckCircle2 size={12} className="text-[var(--vz-success)]" /> : <Copy size={12} />}
-                        {copiedLink ? text.copied : text.copy}
+                        {copiedKey === "main" ? <CheckCircle2 size={12} className="text-[var(--vz-success)]" /> : <Copy size={12} />}
+                        {copiedKey === "main" ? text.copied : text.copy}
                       </button>
                     </div>
                 )}
@@ -1002,9 +1011,32 @@ export default function BusinessSettingsPage() {
                               <div className="mt-1 break-all text-sm text-[var(--vz-text)]">{bookingLink}</div>
                             </div>
                             <button type="button" onClick={copyBookingLink} className="inline-flex items-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-xs font-semibold text-[var(--vz-text-secondary)]">
-                              {copiedLink ? <CheckCircle2 size={14} className="text-[var(--vz-success)]" /> : <Copy size={14} />}
-                              {copiedLink ? text.copied : text.copy}
+                              {copiedKey === "main" ? <CheckCircle2 size={14} className="text-[var(--vz-success)]" /> : <Copy size={14} />}
+                              {copiedKey === "main" ? text.copied : text.copy}
                             </button>
+                          </div>
+
+                          <div className="mt-4 border-t border-[var(--vz-line)] pt-4">
+                            <div className="text-xs font-medium text-[var(--vz-muted)]">{text.shareLinks}</div>
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {SHARE_LINK_SOURCES.map((source) => {
+                                const url = withBookingSource(`https://${bookingLink}`, source);
+                                const copied = copiedKey === source;
+                                return (
+                                  <button
+                                    key={source}
+                                    type="button"
+                                    title={url}
+                                    onClick={() => void copyLink(url, source)}
+                                    className="inline-flex items-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-xs font-semibold text-[var(--vz-text-secondary)]"
+                                  >
+                                    {copied ? <CheckCircle2 size={14} className="text-[var(--vz-success)]" /> : <Copy size={14} />}
+                                    {copied ? text.copied : bookingSourceLabel(source)}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                            <div className="mt-2 text-xs leading-5 text-[var(--vz-muted)]">{text.shareLinksHint}</div>
                           </div>
                         </div>
                     )}

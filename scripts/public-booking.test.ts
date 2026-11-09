@@ -1,3 +1,4 @@
+import { SHARE_LINK_SOURCES, withBookingSource } from "../src/lib/bookingSource";
 import assert from "node:assert/strict";
 import { normalizeBookingSource, PUBLIC_BOOKING_SOURCES, PUBLIC_WAITLIST_SOURCES } from "../src/lib/bookingSource";
 
@@ -15,6 +16,16 @@ assert.equal(normalizeBookingSource(""), "website");
 assert.equal(normalizeBookingSource("   "), "website");
 assert.equal(normalizeBookingSource(null), "website");
 assert.equal(normalizeBookingSource(undefined), "website");
+
+// Copy buttons on the settings page: each tagged link keeps its source for bookings and the waitlist.
+assert.deepEqual([...SHARE_LINK_SOURCES], ["instagram", "facebook", "whatsapp"]);
+for (const source of SHARE_LINK_SOURCES) {
+  const link = withBookingSource("https://vizit.am/book/demo-salon", source);
+  assert.equal(link, `https://vizit.am/book/demo-salon?source=${source}`);
+  const sent = new URL(link).searchParams.get("source");
+  assert.equal(normalizeBookingSource(sent), source);
+  assert.equal(normalizeBookingSource(sent, PUBLIC_WAITLIST_SOURCES), source);
+}
 
 // The waitlist API accepts fewer sources than bookings do.
 assert.equal(normalizeBookingSource("partner"), "partner");

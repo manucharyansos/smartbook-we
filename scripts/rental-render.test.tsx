@@ -81,5 +81,19 @@ assert.match(render(RentalSettings, "/app/onboarding", { onboarding: true }), /<
 assert.match(render(RentalWorkspace, "/app/calendar"), /rental-month-day/);
 assert.match(render(RentalWorkspace, "/app/analytics"), /1[\s.,]?500/);
 assert.match(render(RentalWorkspace, "/app/dashboard"), /25[\s.,]?000/);
-console.log("Rental checks passed: separate profile and booking pages, logo/cover/gallery, duration units and limits, multi-day calendar boundaries, settings, onboarding, calendar, analytics and dashboard.");
+// Owners see where each booking came from (the public link's ?source=, or "manual") and a per-source summary.
+const sourced = (id: number, source: string | null, hour: number) => ({ id, booking_code: `QA${id}`, client_name: `Client ${id}`, client_phone: "+37499111001", starts_at: `${today}T0${hour}:00:00Z`, ends_at: `${today}T0${hour + 1}:00:00Z`, status: "confirmed", final_price: 2000, paid_amount: 0, outstanding_amount: 2000, currency: "AMD", payments: [], source });
+query.setQueryData(["rental-bookings", from, to], [sourced(21, "instagram", 5), sourced(22, "manual", 7), sourced(23, "tiktok", 8), sourced(24, null, 3)]);
+query.setQueryData(["rental-summary", from, to], { ...(query.getQueryData(["rental-summary", from, to]) as object), by_source: [{ source: "instagram", count: 2, amount: 4000 }, { source: "manual", count: 1, amount: 2000 }] });
+const sourcedDashboard = render(RentalWorkspace, "/app/dashboard");
+assert.match(sourcedDashboard, /<th>Աղբյուր<\/th>/);
+assert.match(sourcedDashboard, /<td>Instagram<\/td>/);
+assert.match(sourcedDashboard, /<td>Ձեռքով<\/td>/);
+assert.match(sourcedDashboard, /<td>tiktok<\/td>/);
+assert.match(sourcedDashboard, /<td>—<\/td>/);
+assert.match(sourcedDashboard, /Աղբյուր(<!-- -->)?: (<!-- -->)?Instagram/);
+const sourcedAnalytics = render(RentalWorkspace, "/app/analytics");
+assert.match(sourcedAnalytics, /Ըստ աղբյուրի/);
+assert.match(sourcedAnalytics, /<td>Instagram<\/td><td>2<\/td>/);
+console.log("Rental checks passed: separate profile and booking pages, logo/cover/gallery, duration units and limits, multi-day calendar boundaries, settings, onboarding, calendar, analytics, dashboard and booking sources.");
 query.clear();

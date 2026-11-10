@@ -22,6 +22,8 @@ export type RentalBooking = {
   id: number; booking_code: string; client_name: string; client_phone: string; client_email?: string | null;
   starts_at: string; ends_at: string; status: string; final_price: number; paid_amount: number;
   outstanding_amount: number; currency: string; notes?: string | null; is_expired?: boolean;
+  // Where the booking came from: the public link's ?source= value, or "manual" when the owner added it.
+  source?: string | null;
   payments: { id: number; amount: number; status: string; provider: string; created_at: string }[];
 };
 export type RentalSummary = {
@@ -29,6 +31,7 @@ export type RentalSummary = {
   received_amount: number; refunded_amount: number; net_received: number; outstanding_amount: number; refund_due: number;
   booked_minutes: number; available_minutes: number; occupancy_percent: number; monthly_subscription: number;
   daily: { date: string; count: number; amount: number }[];
+  by_source?: { source: string | null; count: number; amount: number }[];
 };
 export type RentalCreate = { starts_at: string; duration_minutes: number; client_name: string; client_phone: string; client_email?: string; notes?: string };
 export const rentalApi = {

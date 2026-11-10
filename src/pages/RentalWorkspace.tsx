@@ -19,6 +19,11 @@ function monthBounds(value: string): [string, string] {
   return [`${value.slice(0, 7)}-01`, `${value.slice(0, 7)}-${last}`];
 }
 
+/** Translated booking source; an unknown value is shown as is, a missing one as a dash. */
+function sourceLabel(source: string | null | undefined, names: Record<string, string>) {
+  return source ? names[source] ?? source : "—";
+}
+
 export default function RentalWorkspace() {
   const { locale } = useLanguage(); const t = rentalCopy[locale]; const location = useLocation();
   const user = useAuth((state) => state.user); const queryClient = useQueryClient();
@@ -40,6 +45,7 @@ export default function RentalWorkspace() {
   const stamp = (value: string) => new Date(value).toLocaleString(locale === "hy" ? "hy-AM" : locale, { timeZone: timezone, dateStyle: "short", timeStyle: "short" });
   const items = selectedDay && view === "calendar" ? all.filter((item) => rentalOverlapsDay(item, selectedDay, timezone)) : all;
   const statuses = t.statuses as Record<string, string>;
+  const sources = t.sources as Record<string, string>;
   function shiftMonth(offset: number) { const [year, month] = from.split("-").map(Number); const next = new Date(Date.UTC(year, month - 1 + offset, 1)).toISOString().slice(0, 10); const bounds = monthBounds(next); setFrom(bounds[0]); setTo(bounds[1]); setSelectedDay(""); }
   const first = new Date(`${from.slice(0, 7)}-01T12:00:00Z`); const emptyDays = (first.getUTCDay() + 6) % 7;
   const daysInMonth = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + 1, 0)).getUTCDate();
@@ -67,11 +73,12 @@ export default function RentalWorkspace() {
       </div>
       {!!blocksQ.data?.length && <div className="rental-stack" style={{ marginTop: 20 }}>{blocksQ.data.map((block) => <div className="rental-row rental-between rental-note" key={block.id}><span>{block.starts_at.slice(0, 16)} — {block.ends_at.slice(0, 16)} {block.reason}</span><button className="rental-btn secondary" disabled={removeBlock.isPending} onClick={() => removeBlock.mutate(block.id)}>{t.unblock}</button></div>)}</div>}
     </section>}
+    {view === "analytics" && summary?.by_source?.length ? <section className="rental-card" style={{ marginTop: 24 }}><h2>{t.bySource}</h2><div className="rental-table-wrap"><table className="rental-table"><thead><tr><th>{t.source}</th><th>{t.count}</th><th>{t.amount}</th></tr></thead><tbody>{summary.by_source.map((row) => <tr key={row.source ?? ""}><td>{sourceLabel(row.source, sources)}</td><td>{row.count}</td><td>{money(row.amount)}</td></tr>)}</tbody></table></div></section> : null}
     {view === "analytics" && summary?.daily.length ? <section className="rental-card" style={{ marginTop: 24 }}><h2>{t.analytics}</h2><div className="rental-table-wrap"><table className="rental-table"><thead><tr><th>{t.date}</th><th>{t.count}</th><th>{t.amount}</th></tr></thead><tbody>{summary.daily.map((row) => <tr key={row.date}><td>{row.date}</td><td>{row.count}</td><td>{money(row.amount)}</td></tr>)}</tbody></table></div></section> : null}
     <section className="rental-card" style={{ marginTop: 24 }}><h2>{t.bookings}{selectedDay && view === "calendar" ? ` · ${selectedDay}` : ""}</h2>
       {!items.length && !bookingsQ.isPending && <p className="rental-empty">{t.noBookings}</p>}
-      <div className="rental-desktop-table rental-table-wrap"><table className="rental-table"><thead><tr><th>{t.date}</th><th>{t.name}</th><th>{t.status}</th><th>{t.total}</th><th>{t.paid}</th><th>{t.debt}</th><th /></tr></thead><tbody>{items.map((item) => <tr key={item.id} data-selectable="true" onClick={() => setSelectedId(item.id)}><td>{stamp(item.starts_at)}<div className="rental-muted">{stamp(item.ends_at)}</div></td><td>{item.client_name}<div className="rental-muted">{item.client_phone}</div></td><td><span className="rental-status" data-status={item.status}>{item.is_expired ? t.expired : statuses[item.status] || item.status}</span></td><td>{money(item.final_price)}</td><td>{money(item.paid_amount)}</td><td>{["cancelled", "no_show"].includes(item.status) ? "—" : money(item.outstanding_amount)}</td><td><button className="rental-btn secondary" onClick={(event) => { event.stopPropagation(); setSelectedId(item.id); }}>{t.status}</button></td></tr>)}</tbody></table></div>
-      <div className="rental-mobile-cards">{items.map((item) => <button key={item.id} className="rental-card rental-stack" style={{ textAlign: "left", padding: 16 }} onClick={() => setSelectedId(item.id)}><div className="rental-row rental-between"><strong>{item.client_name}</strong><span className="rental-status" data-status={item.status}>{item.is_expired ? t.expired : statuses[item.status]}</span></div><span>{stamp(item.starts_at)} — {stamp(item.ends_at)}</span><span className="rental-row rental-between"><span>{t.total}: {money(item.final_price)}</span><span>{t.paid}: {money(item.paid_amount)}</span></span></button>)}</div>
+      <div className="rental-desktop-table rental-table-wrap"><table className="rental-table"><thead><tr><th>{t.date}</th><th>{t.name}</th><th>{t.source}</th><th>{t.status}</th><th>{t.total}</th><th>{t.paid}</th><th>{t.debt}</th><th /></tr></thead><tbody>{items.map((item) => <tr key={item.id} data-selectable="true" onClick={() => setSelectedId(item.id)}><td>{stamp(item.starts_at)}<div className="rental-muted">{stamp(item.ends_at)}</div></td><td>{item.client_name}<div className="rental-muted">{item.client_phone}</div></td><td>{sourceLabel(item.source, sources)}</td><td><span className="rental-status" data-status={item.status}>{item.is_expired ? t.expired : statuses[item.status] || item.status}</span></td><td>{money(item.final_price)}</td><td>{money(item.paid_amount)}</td><td>{["cancelled", "no_show"].includes(item.status) ? "—" : money(item.outstanding_amount)}</td><td><button className="rental-btn secondary" onClick={(event) => { event.stopPropagation(); setSelectedId(item.id); }}>{t.status}</button></td></tr>)}</tbody></table></div>
+      <div className="rental-mobile-cards">{items.map((item) => <button key={item.id} className="rental-card rental-stack" style={{ textAlign: "left", padding: 16 }} onClick={() => setSelectedId(item.id)}><div className="rental-row rental-between"><strong>{item.client_name}</strong><span className="rental-status" data-status={item.status}>{item.is_expired ? t.expired : statuses[item.status]}</span></div><span>{stamp(item.starts_at)} — {stamp(item.ends_at)}</span><span className="rental-muted">{t.source}: {sourceLabel(item.source, sources)}</span><span className="rental-row rental-between"><span>{t.total}: {money(item.final_price)}</span><span>{t.paid}: {money(item.paid_amount)}</span></span></button>)}</div>
     </section>
     <Modal open={createOpen} onClose={() => setCreateOpen(false)} title={t.manual}>{createOpen && <ManualBooking minMinutes={ratesQ.data?.min_minutes || 60} maxMinutes={ratesQ.data?.max_minutes || 720} step={ratesQ.data?.slot_step_minutes || 15} hourly={ratesQ.data?.hourly_price || 0} discounts={ratesQ.data?.duration_discounts} onSuccess={() => { setCreateOpen(false); refresh(); }} />}</Modal>
     <Modal open={blockOpen} onClose={() => setBlockOpen(false)} title={t.block}>{blockOpen && <BlockForm onSuccess={() => { setBlockOpen(false); refresh(); }} />}</Modal>
@@ -111,7 +118,7 @@ function BookingDetail({ booking, timezone, onChange }: { booking: RentalBooking
   const error = status.error || payment.error || move.error;
   return <div className="rental-workspace rental-stack">
     {error && <div className="rental-note rental-error" role="alert">{getErrorMessage(error, t.error)}</div>}
-    <p>{booking.client_phone} {booking.client_email}</p><span className="rental-status" data-status={booking.status}>{stateNames[booking.status]}</span>
+    <p>{booking.client_phone} {booking.client_email}</p><p className="rental-muted">{t.source}: {sourceLabel(booking.source, t.sources as Record<string, string>)}</p><span className="rental-status" data-status={booking.status}>{stateNames[booking.status]}</span>
     <div className="rental-note rental-selected-period">{[booking.starts_at, booking.ends_at].map((value, index) => <span key={value}>{index === 0 ? t.start : t.end}: {new Date(value).toLocaleString(locale === "hy" ? "hy-AM" : locale, { timeZone: timezone, dateStyle: "medium", timeStyle: "short" })}</span>)}</div>
     <div className="rental-fields"><div>{t.total}<strong style={{ display: "block" }}>{booking.final_price.toLocaleString()} ֏</strong></div><div>{t.paid}<strong style={{ display: "block" }}>{booking.paid_amount.toLocaleString()} ֏</strong></div></div>
     {booking.notes && <p>{booking.notes}</p>}

@@ -13,6 +13,8 @@ export const rentalCopy = {
     from: "Սկսած", to: "Մինչև", bookings: "Ամրագրումներ", booked: "Ամրագրված գումար", completed: "Ավարտված ամրագրումների արժեք", received: "Գրանցված մուտքեր", refunded: "Վերադարձված գումար", net: "Մուտքեր՝ վերադարձներից հետո", debt: "Չվճարված մնացորդ", refundDue: "Վերադարձի ենթակա", occupancy: "Տարածքի զբաղվածություն", hours: "ժամ", count: "Քանակ", amount: "Գումար", status: "Կարգավիճակ", noBookings: "Այս միջակայքում ամրագրումներ չկան։", recordPayment: "Գրանցել ստացված վճար", recordRefund: "Գրանցել վերադարձ", paymentHelp: "Գրանցեք միայն փաստացի ստացված կամ վերադարձված գումարը։", paymentHistory: "Վճարումների պատմություն", ledgerHelp: "Գումարները վերաբերում են ընտրված օրերին սկսվող ամրագրումներին։ Սա տարածքի վարձի հաշվառում է։", expired: "Հաստատման ժամկետն ավարտված է", block: "Փակել ժամանակահատվածը", unblock: "Բացել ժամանակահատվածը", reason: "Պատճառ", manual: "Ավելացնել ամրագրում", workingHours: "Հասանելի ժամերը", publicPage: "Հանրային էջ", emptyGallery: "Պատկերասրահը դեռ դատարկ է։", paid: "Վճարված", pending: "Սպասում է հաստատման",
     statuses: { pending: "Սպասման մեջ", confirmed: "Հաստատված", in_progress: "Ընթացքում", completed: "Ավարտված", done: "Ավարտված", cancelled: "Չեղարկված", no_show: "Չներկայացած" },
     weekdays: ["Երկուշաբթի", "Երեքշաբթի", "Չորեքշաբթի", "Հինգշաբթի", "Ուրբաթ", "Շաբաթ", "Կիրակի"],
+    source: "Աղբյուր", bySource: "Ըստ աղբյուրի",
+    sources: { website: "Կայք", mobile: "Հավելված", instagram: "Instagram", facebook: "Facebook", whatsapp: "WhatsApp", widget: "Վիջեթ", partner: "Գործընկեր", qr: "QR կոդ", manual: "Ձեռքով" },
   },
   ru: {
     mediaSaveHelp: "Логотип, обложка и файлы галереи сохраняются при загрузке. Для остальных изменений нажмите «Сохранить».",
@@ -28,6 +30,8 @@ export const rentalCopy = {
     from: "С", to: "По", bookings: "Бронирования", booked: "Сумма бронирований", completed: "Стоимость завершённых бронирований", received: "Полученные платежи", refunded: "Возвращено", net: "Поступления после возвратов", debt: "Остаток к оплате", refundDue: "К возврату", occupancy: "Загрузка помещения", hours: "ч", count: "Количество", amount: "Сумма", status: "Статус", noBookings: "В этом периоде бронирований нет.", recordPayment: "Записать полученную оплату", recordRefund: "Записать возврат", paymentHelp: "Указывайте только фактически полученные или возвращённые суммы.", paymentHistory: "История платежей", ledgerHelp: "Суммы относятся к бронированиям, начинающимся в выбранные дни. Это учёт аренды помещения.", expired: "Срок подтверждения истёк", block: "Закрыть промежуток времени", unblock: "Открыть промежуток времени", reason: "Причина", manual: "Добавить бронирование", workingHours: "Доступное время", publicPage: "Публичная страница", emptyGallery: "В галерее пока нет файлов.", paid: "Оплачено", pending: "Ожидает подтверждения",
     statuses: { pending: "Ожидает", confirmed: "Подтверждено", in_progress: "В процессе", completed: "Завершено", done: "Завершено", cancelled: "Отменено", no_show: "Неявка" },
     weekdays: ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"],
+    source: "Источник", bySource: "По источникам",
+    sources: { website: "Сайт", mobile: "Приложение", instagram: "Instagram", facebook: "Facebook", whatsapp: "WhatsApp", widget: "Виджет", partner: "Партнёр", qr: "QR-код", manual: "Вручную" },
   },
   en: {
     mediaSaveHelp: "The logo, cover and gallery files are saved on upload. Use Save for other changes.",
@@ -43,5 +47,7 @@ export const rentalCopy = {
     from: "From", to: "To", bookings: "Bookings", booked: "Booked amount", completed: "Completed booking value", received: "Recorded receipts", refunded: "Refunded", net: "Receipts after refunds", debt: "Outstanding balance", refundDue: "Refund due", occupancy: "Space occupancy", hours: "h", count: "Count", amount: "Amount", status: "Status", noBookings: "No bookings in this period.", recordPayment: "Record received payment", recordRefund: "Record refund", paymentHelp: "Record only money actually received or refunded.", paymentHistory: "Payment history", ledgerHelp: "Amounts cover bookings starting on the selected dates. These are space rental accounts.", expired: "Confirmation period expired", block: "Block time", unblock: "Unblock time", reason: "Reason", manual: "Add booking", workingHours: "Available hours", publicPage: "Public page", emptyGallery: "No gallery files yet.", paid: "Paid", pending: "Awaiting confirmation",
     statuses: { pending: "Pending", confirmed: "Confirmed", in_progress: "In progress", completed: "Completed", done: "Completed", cancelled: "Cancelled", no_show: "No-show" },
     weekdays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    source: "Source", bySource: "By source",
+    sources: { website: "Website", mobile: "Mobile app", instagram: "Instagram", facebook: "Facebook", whatsapp: "WhatsApp", widget: "Widget", partner: "Partner", qr: "QR code", manual: "Manual" },
   },
 };

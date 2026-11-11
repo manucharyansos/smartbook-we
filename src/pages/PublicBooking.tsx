@@ -67,6 +67,7 @@ import {
 } from "../lib/publicApi";
 import { localizedText } from "@/lib/localizedText";
 import { normalizeBookingSource, PUBLIC_WAITLIST_SOURCES } from "../lib/bookingSource";
+import { useCanonicalBusinessLink } from "../lib/useCanonicalBusinessLink";
 
 type BookingMode = "single" | "multi" | "lines";
 
@@ -2903,9 +2904,12 @@ function ServicePreviewCard({
     );
 }
 
+const publicBusinessKey = (slug: string) => ["public-business", slug] as const;
+
 export default function PublicBooking() {
     const { slug = "" } = useParams();
-    const business = useQuery({ queryKey: ["public-business", slug], queryFn: () => fetchPublicBusiness(slug), enabled: !!slug });
+    const business = useQuery({ queryKey: publicBusinessKey(slug), queryFn: () => fetchPublicBusiness(slug), enabled: !!slug });
+    useCanonicalBusinessLink("/book", slug, business.data, publicBusinessKey);
     if (business.data?.business_type === "rentals") return <RentalPublic key={slug} business={business.data} />;
     return <ServiceBooking />;
 }

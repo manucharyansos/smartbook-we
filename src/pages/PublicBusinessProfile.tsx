@@ -33,6 +33,7 @@ import { useLanguage, type Locale } from "../contexts/LanguageContext";
 import Seo from "../components/Seo";
 import ServiceDiscountsNotice from "../components/ServiceDiscountsNotice";
 import { localizedText } from "@/lib/localizedText";
+import { useCanonicalBusinessLink } from "../lib/useCanonicalBusinessLink";
 
 const copy = {
     hy: {
@@ -103,16 +104,19 @@ function publicRoleLabel(role: string | null | undefined, locale: Locale) {
     return copy[locale].specialist;
 }
 
+const profileBusinessKey = (slug: string) => ["public-business-profile", slug] as const;
+
 export default function PublicBusinessProfile() {
     const { slug = "" } = useParams();
     const { locale } = useLanguage();
     const text = copy[locale];
 
     const businessQ = useQuery({
-        queryKey: ["public-business-profile", slug],
+        queryKey: profileBusinessKey(slug),
         queryFn: () => fetchPublicBusiness(slug),
         enabled: !!slug,
     });
+    useCanonicalBusinessLink("/businesses", slug, businessQ.data, profileBusinessKey);
 
     const servicesQ = useQuery({
         queryKey: ["public-business-profile-services", slug],

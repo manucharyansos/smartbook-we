@@ -37,7 +37,7 @@ function RentalSettingsForm({ profile, settings, initialDays, onboarding }: { pr
   const validDiscounts = discountTiers.every((tier) => Number.isInteger(tier.min_minutes) && tier.min_minutes >= 15 && tier.min_minutes <= 43200 && Number.isInteger(tier.percent) && tier.percent >= 1 && tier.percent <= 90)
     && new Set(discountTiers.map((tier) => tier.min_minutes)).size === discountTiers.length;
   const validDurations = validRentalDuration(rates.min_minutes, 15, 43200, rates.slot_step_minutes) && validRentalDuration(rates.max_minutes, rates.min_minutes, 43200, rates.slot_step_minutes);
-  const [data, setData] = useState({ phone: profile.phone || "", address: profile.address || "", short_description: profile.short_description || "", description: profile.description || "", text_translations: profile.text_translations ?? {}, logo_url: profile.logo_url || "", cover_url: profile.cover_url || "", is_public_profile_enabled: profile.is_public_profile_enabled ?? true, is_marketplace_visible: profile.is_marketplace_visible ?? true });
+  const [data, setData] = useState({ name: profile.name, phone: profile.phone || "", address: profile.address || "", short_description: profile.short_description || "", description: profile.description || "", text_translations: profile.text_translations ?? {}, logo_url: profile.logo_url || "", cover_url: profile.cover_url || "", is_public_profile_enabled: profile.is_public_profile_enabled ?? true, is_marketplace_visible: profile.is_marketplace_visible ?? true });
   const [days, setDays] = useState<ScheduleDay[]>(Array.from({ length: 7 }, (_, n) => initialDays.find((day) => day.weekday === n + 1) || { weekday: n + 1, is_closed: n === 6, start: "09:00", end: "18:00", break_start: null, break_end: null }));
   const [caption, setCaption] = useState(""); const [message, setMessage] = useState(""); const [success, setSuccess] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -47,11 +47,13 @@ function RentalSettingsForm({ profile, settings, initialDays, onboarding }: { pr
   const fail = (error: unknown) => { setMessage(getErrorMessage(error, t.error)); setSuccess(false); };
   const save = useMutation({ mutationFn: async (publish: boolean) => {
     await rentalApi.saveSettings({ ...rates, duration_discounts: discountTiers });
-    await updateBusinessSettings({ ...data, show_services: false, show_staff: false });
+    const savedProfile = await updateBusinessSettings({ ...data, name: data.name.trim(), show_services: false, show_staff: false });
+    const currentUser = useAuth.getState().user;
+    if (currentUser) setUser({ ...currentUser, business_name: savedProfile.name });
     await api.put("/rental/schedule", { days });
     if (publish) await api.post("/business/complete-onboarding");
     return publish;
-  }, onError: fail, onSuccess: (publish) => { refresh(); setMessage(t.saved); setSuccess(true); if (publish) { if (user) setUser({ ...user, needs_onboarding: false }); navigate("/app/dashboard", { replace: true }); } } });
+  }, onError: fail, onSuccess: (publish) => { refresh(); setMessage(t.saved); setSuccess(true); if (publish) { if (user) setUser({ ...useAuth.getState().user!, needs_onboarding: false }); navigate("/app/dashboard", { replace: true }); } } });
   const remove = useMutation({ mutationFn: rentalApi.deleteMedia, onError: fail, onSuccess: refresh });
   const reorder = useMutation({ mutationFn: async ({ index, offset }: { index: number; offset: number }) => {
     const ids = settings.gallery.map((item) => item.id); const next = index + offset;
@@ -68,7 +70,7 @@ function RentalSettingsForm({ profile, settings, initialDays, onboarding }: { pr
       else { await rentalApi.upload(file, caption); setCaption(""); refresh(); }
     } catch (error) { fail(error); } finally { setUploading(false); }
   }
-  function submit(event: FormEvent) { event.preventDefault(); if (!validDurations || !validDiscounts) return; setMessage(""); save.mutate(onboarding); }
+  function submit(event: FormEvent) { event.preventDefault(); if (!validDurations || !validDiscounts || !data.name.trim()) return; setMessage(""); save.mutate(onboarding); }
   return <div className={onboarding ? "rental-page rental-wrap" : "rental-workspace"}>
     <div className="rental-row rental-between"><div><span className="rental-badge">{t.title}</span><h1 style={{ marginTop: 10 }}>{t.settings}</h1></div>
       {!onboarding && <Link className="rental-btn secondary" to={`/businesses/${profile.slug}`} target="_blank">{t.publicPage}</Link>}
@@ -95,6 +97,7 @@ function RentalSettingsForm({ profile, settings, initialDays, onboarding }: { pr
         <button className="rental-btn secondary" type="button" disabled={discounts.length >= 10} onClick={() => setDiscounts((old) => [...old, { hours: old.length ? String(Number(old[old.length - 1].hours || 0) + 2) : "3", percent: "5" }])}>{t.addDiscount}</button>
       </section>
       <section className="rental-card rental-stack"><h2>{t.space}</h2>
+        <label className="rental-field">{t.businessName}<input value={data.name} onChange={(event) => setData((old) => ({ ...old, name: event.target.value }))} maxLength={255} required pattern=".*\S.*" /></label>
         <div className="rental-fields"><label className="rental-field">{t.address}<input value={data.address} onChange={(event) => setData((old) => ({ ...old, address: event.target.value }))} maxLength={255} required /></label><label className="rental-field">{t.phone}<input type="tel" value={data.phone} onChange={(event) => setData((old) => ({ ...old, phone: event.target.value }))} maxLength={40} /></label></div>
         <TranslatedTextField className="rental-field" field="short_description" label={t.shortDescription} value={data.short_description} translations={data.text_translations} multiline={false}
           onChange={(value) => setData((old) => ({ ...old, short_description: value }))}

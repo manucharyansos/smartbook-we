@@ -100,6 +100,7 @@ export async function fetchBusinessSettings(): Promise<BusinessSettings> {
 }
 
 export async function updateBusinessSettings(payload: Partial<{
+  name: string;
   phone: string | null;
   address: string | null;
   timezone: string;

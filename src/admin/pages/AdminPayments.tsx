@@ -1,7 +1,8 @@
+import { DramSign } from "@/components/icons/DramSign";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlertTriangle, CheckCircle2, CircleDollarSign, Clock3, CreditCard, Receipt, RefreshCcw, Search, Wallet, XCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Clock3, CreditCard, Receipt, RefreshCcw, Search, Wallet, XCircle } from "lucide-react";
 import { PageHero } from "@/components/ui/PageHero";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -83,7 +84,7 @@ export default function AdminPayments() {
       {(tab === "invoices" ? invoicesQ.error : transactionsQ.error) ? <div role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{adminErrorText(tab === "invoices" ? invoicesQ.error : transactionsQ.error, "Չհաջողվեց բեռնել ցանկը")}</div> : null}
       {s ? (
         <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
-          <AdminStatCard title="Այս ամիս ստացված" value={amd(s.income.this_month)} hint={`${amd(s.income.today)} այսօր · ${amd(s.income.all_time)} ընդհանուր`} icon={CircleDollarSign} tone="emerald" />
+          <AdminStatCard title="Այս ամիս ստացված" value={amd(s.income.this_month)} hint={`${amd(s.income.today)} այսօր · ${amd(s.income.all_time)} ընդհանուր`} icon={DramSign} tone="emerald" />
           <AdminStatCard title="Ամսական կրկնվող եկամուտ" value={amd(s.mrr)} hint={`${s.subscriptions.active} վճարված բաժանորդագրություն · տարեկանը բաժանված 12-ի`} icon={Wallet} tone="violet" />
           <AdminStatCard title="Չվճարված հաշիվներ" value={s.pending.invoices} hint={`${amd(s.pending.amount)} ընդհանուր`} icon={Receipt} tone="amber" />
           <AdminStatCard title="Պահանջում է ստուգում" value={s.review_required} hint="Ստացված, բայց պլանին չկիրառված վճարումներ" icon={AlertTriangle} tone={s.review_required ? "rose" : "slate"} />

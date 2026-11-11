@@ -1,7 +1,8 @@
+import { DramSign } from "@/components/icons/DramSign";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { AlertTriangle, BarChart3, CalendarDays, DollarSign, Filter, RefreshCcw, ShieldBan, Users, Wallet, Star, Layers3, type LucideIcon } from "lucide-react";
+import { AlertTriangle, BarChart3, CalendarDays, Filter, RefreshCcw, ShieldBan, Users, Wallet, Star, Layers3, type LucideIcon } from "lucide-react";
 import { BarChart, Bar, CartesianGrid, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell } from "recharts";
 
 import { Card } from "../components/ui/Card";
@@ -119,7 +120,7 @@ export default function Analytics() {
 
       <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
         <StatCard icon={CalendarDays} label="Այսօր ամրագրումներ" value={overviewQ.data?.today.bookings ?? 0} />
-        <StatCard icon={DollarSign} label="Այսօր եկամուտ" value={formatMoney(overviewQ.data?.today.revenue ?? 0, currency)} />
+        <StatCard icon={DramSign} label="Այսօր եկամուտ" value={formatMoney(overviewQ.data?.today.revenue ?? 0, currency)} />
         <StatCard icon={Users} label="Վերջին 7 օրում" value={overviewQ.data?.last_7_days.bookings ?? 0} sub={`${overviewQ.data?.last_7_days.unique_clients ?? 0} unique clients`} />
         <StatCard icon={Wallet} label="Թոփ source" value={topSource ? `${topSource.source}` : "—"} sub={topSource ? `${topSource.bookings} bookings` : "Աղբյուրներ դեռ չկան"} />
       </div>

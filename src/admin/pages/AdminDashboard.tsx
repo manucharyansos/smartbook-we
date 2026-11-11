@@ -1,7 +1,8 @@
+import { DramSign } from "@/components/icons/DramSign";
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { Building2, CalendarCheck, Download, DollarSign, RefreshCcw, ShieldCheck, TrendingUp, Users, BarChart3, CircleDollarSign, Clock3, AlarmClockCheck } from 'lucide-react';
+import { Building2, CalendarCheck, Download, RefreshCcw, ShieldCheck, TrendingUp, Users, BarChart3, Clock3, AlarmClockCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar } from 'recharts';
 
@@ -86,7 +87,7 @@ export default function AdminDashboard() {
         title: 'Բիզնեսների շրջանառություն',
         value: fmtAMD(stats.revenue.period_total),
         hint: `Հաճախորդների ամրագրումներ, ոչ Vizit-ի եկամուտ · միջինը ${fmtAMD(stats.revenue.average_booking_value)}`,
-        icon: DollarSign,
+        icon: DramSign,
         tone: 'amber' as const,
         trend: stats.revenue.trend,
       },
@@ -169,8 +170,8 @@ export default function AdminDashboard() {
       {billingQ.isError ? <div role="alert" className="rounded-[24px] border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">{adminErrorText(billingQ.error, 'Vizit-ի եկամուտը չբեռնվեց')}</div> : null}
       {billing ? (
         <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
-          <AdminStatCard title="Vizit-ի եկամուտ այս ամիս" value={fmtAMD(billing.income.this_month)} hint={`${fmtAMD(billing.income.all_time)} ընդհանուր · Idram ${billing.provider.idram.ready ? 'միացված' : 'միացված չէ'}`} icon={CircleDollarSign} tone="emerald" />
-          <AdminStatCard title="Ամսական կրկնվող եկամուտ" value={fmtAMD(billing.mrr)} hint={`${billing.subscriptions.active} վճարված · ${billing.subscriptions.trialing} փորձաշրջանում`} icon={DollarSign} tone="violet" />
+          <AdminStatCard title="Vizit-ի եկամուտ այս ամիս" value={fmtAMD(billing.income.this_month)} hint={`${fmtAMD(billing.income.all_time)} ընդհանուր · Idram ${billing.provider.idram.ready ? 'միացված' : 'միացված չէ'}`} icon={DramSign} tone="emerald" />
+          <AdminStatCard title="Ամսական կրկնվող եկամուտ" value={fmtAMD(billing.mrr)} hint={`${billing.subscriptions.active} վճարված · ${billing.subscriptions.trialing} փորձաշրջանում`} icon={DramSign} tone="violet" />
           <AdminStatCard title="Չվճարված հաշիվներ" value={billing.pending.invoices} hint={fmtAMD(billing.pending.amount)} icon={Clock3} tone="amber" />
           <button type="button" onClick={() => navigate('/admin/payments')} className="text-left"><AdminStatCard title="Պահանջում է ստուգում" value={billing.review_required} hint="Բացել վճարումների էջը" icon={AlarmClockCheck} tone={billing.review_required ? 'rose' : 'slate'} /></button>
         </div>
@@ -272,7 +273,7 @@ export default function AdminDashboard() {
         <Card className="rounded-[30px] p-6 xl:col-span-1">
           <div className="mb-4 flex items-center justify-between">
             <div className="text-lg font-semibold text-slate-950">Ամրագրման աղբյուրներ</div>
-            <CircleDollarSign className="h-5 w-5 text-violet-500" />
+            <DramSign className="h-5 w-5 text-violet-500" />
           </div>
           <div className="space-y-3">
             {stats.top_sources.length ? stats.top_sources.map((item) => (

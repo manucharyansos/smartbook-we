@@ -1,3 +1,4 @@
+import { DramSign } from "@/components/icons/DramSign";
 import { useMemo, useState } from "react";
 import { useRevealMessage } from "@/hooks/useRevealMessage";
 import { motion } from "framer-motion";
@@ -12,7 +13,6 @@ import {
   CheckCircle2,
   ChevronRight,
   Clock3,
-  DollarSign,
   Link2,
   Lock,
   Mail,
@@ -420,7 +420,7 @@ export default function Onboarding() {
 
                         <div>
                           <SectionLabel>Գին (AMD)</SectionLabel>
-                          <FieldShell icon={<DollarSign size={18} />}>
+                          <FieldShell icon={<DramSign size={18} />}>
                             <PrimaryInput
                               type="number"
                               value={price}

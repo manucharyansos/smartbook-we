@@ -363,7 +363,7 @@ export function DayView({
                                                             {block.reason || "Փակ է"}
                                                         </div>
                                                         <span className="rounded-full border border-[var(--vz-danger-line)] bg-[var(--vz-surface)] px-2.5 py-1 text-[11px] font-medium text-[var(--vz-danger)]">
-                                                            Block
+                                                            Փակված
                                                         </span>
                                                     </div>
 

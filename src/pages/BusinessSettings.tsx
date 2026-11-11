@@ -892,10 +892,11 @@ export default function BusinessSettingsPage() {
                             <div className="border-b border-[var(--vz-line)] bg-[var(--vz-primary)] px-4 py-4">
                               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                 <div>
-                                  <div className="flex items-center gap-2 text-base font-semibold text-[var(--vz-text)]">
-                                    <MapPin className="h-5 w-5 text-[var(--vz-accent-text)]" /> {text.mapTitle}
+                                  {/* This bar is --vz-primary in both themes, so its text uses --vz-on-primary. */}
+                                  <div className="flex items-center gap-2 text-base font-semibold text-[var(--vz-on-primary)]">
+                                    <MapPin className="h-5 w-5 text-[var(--vz-on-primary)]" /> {text.mapTitle}
                                   </div>
-                                  <div className="mt-1 text-xs leading-5 text-[var(--vz-text-secondary)]">
+                                  <div className="mt-1 text-xs leading-5 text-[color-mix(in_srgb,var(--vz-on-primary)_80%,transparent)]">
                                     {text.mapText}
                                   </div>
                                 </div>
@@ -1124,9 +1125,11 @@ export default function BusinessSettingsPage() {
                                 </label>
                               </div>
 
+                              {/* Start and end side by side, the break on its own row: the schedule card is
+                                  narrow on most screens, and three columns cut the times ("09:0"). */}
                               {!d.is_closed && (
-                                  <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                                    <div>
+                                  <div className="mt-4 grid grid-cols-2 gap-3">
+                                    <div className="min-w-0">
                                       <label className="mb-1 block text-xs text-[var(--vz-muted)]">{text.start}</label>
                                       <input
                                           disabled={!canEdit}
@@ -1141,7 +1144,7 @@ export default function BusinessSettingsPage() {
                                       />
                                     </div>
 
-                                    <div>
+                                    <div className="min-w-0">
                                       <label className="mb-1 block text-xs text-[var(--vz-muted)]">{text.end}</label>
                                       <input
                                           disabled={!canEdit}
@@ -1156,14 +1159,31 @@ export default function BusinessSettingsPage() {
                                       />
                                     </div>
 
-                                    <div className="rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-3">
-                                      <div className="mb-2 text-xs text-[var(--vz-muted)]">{text.break}</div>
+                                    <div className="col-span-2 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-3">
+                                      <div className="mb-2 flex items-center justify-between gap-3">
+                                        <div className="text-xs text-[var(--vz-muted)]">{text.break}</div>
+                                        <button
+                                            disabled={!canEdit}
+                                            className="text-xs text-[var(--vz-muted)] transition hover:text-[var(--vz-accent-text)] disabled:opacity-50"
+                                            onClick={() =>
+                                                setDays((prev) =>
+                                                    prev.map((x) =>
+                                                        x.weekday === w.k ? { ...x, break_start: null, break_end: null } : x
+                                                    )
+                                                )
+                                            }
+                                            type="button"
+                                        >
+                                          {text.removeBreak}
+                                        </button>
+                                      </div>
 
                                       <div className="grid grid-cols-2 gap-2">
                                         <input
                                             disabled={!canEdit}
                                             type="time"
-                                            className="w-full rounded-lg border border-[var(--vz-line)] bg-[var(--vz-surface)] px-2 py-1.5 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
+                                            aria-label={`${text.break}: ${text.start}`}
+                                            className="w-full min-w-0 rounded-lg border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
                                             value={d.break_start ?? ""}
                                             onChange={(e) =>
                                                 setDays((prev) =>
@@ -1176,7 +1196,8 @@ export default function BusinessSettingsPage() {
                                         <input
                                             disabled={!canEdit}
                                             type="time"
-                                            className="w-full rounded-lg border border-[var(--vz-line)] bg-[var(--vz-surface)] px-2 py-1.5 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
+                                            aria-label={`${text.break}: ${text.end}`}
+                                            className="w-full min-w-0 rounded-lg border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-sm outline-none transition focus:border-[var(--vz-primary)] focus:ring-2 focus:ring-[var(--vz-focus)] disabled:bg-[var(--vz-surface-2)]"
                                             value={d.break_end ?? ""}
                                             onChange={(e) =>
                                                 setDays((prev) =>
@@ -1187,21 +1208,6 @@ export default function BusinessSettingsPage() {
                                             }
                                         />
                                       </div>
-
-                                      <button
-                                          disabled={!canEdit}
-                                          className="mt-2 text-xs text-[var(--vz-muted)] transition hover:text-[var(--vz-accent-text)] disabled:opacity-50"
-                                          onClick={() =>
-                                              setDays((prev) =>
-                                                  prev.map((x) =>
-                                                      x.weekday === w.k ? { ...x, break_start: null, break_end: null } : x
-                                                  )
-                                              )
-                                          }
-                                          type="button"
-                                      >
-                                        {text.removeBreak}
-                                      </button>
                                     </div>
                                   </div>
                               )}

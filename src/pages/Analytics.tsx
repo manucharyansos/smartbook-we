@@ -18,16 +18,27 @@ import {
 
 const sourceOptions = [
   { value: "", label: "Բոլոր աղբյուրները" },
-  { value: "website", label: "Website" },
+  { value: "website", label: "Կայք" },
   { value: "instagram", label: "Instagram" },
   { value: "facebook", label: "Facebook" },
   { value: "whatsapp", label: "WhatsApp" },
-  { value: "admin", label: "Admin" },
-  { value: "partner", label: "Partner" },
-  { value: "widget", label: "Widget" },
-  { value: "qr", label: "QR" },
-  { value: "returning_client", label: "Returning client" },
+  { value: "admin", label: "Ադմին վահանակ" },
+  { value: "partner", label: "Գործընկեր" },
+  { value: "widget", label: "Վիջեթ" },
+  { value: "qr", label: "QR կոդ" },
+  { value: "returning_client", label: "Կրկնվող հաճախորդ" },
 ];
+
+// Booking sources and statuses come from the API as codes; show them in Armenian.
+const SOURCE_LABELS: Record<string, string> = {
+  ...Object.fromEntries(sourceOptions.filter((item) => item.value).map((item) => [item.value, item.label])),
+  mobile: "Հավելված", manual: "Ձեռքով", unknown: "Անհայտ",
+};
+const sourceLabel = (code: string) => SOURCE_LABELS[code] ?? code;
+const STATUS_LABELS: Record<string, string> = {
+  pending: "Սպասման մեջ", confirmed: "Հաստատված", in_progress: "Ընթացքում", completed: "Ավարտված",
+  done: "Ավարտված", cancelled: "Չեղարկված", canceled: "Չեղարկված", no_show: "Չներկայացած",
+};
 
 const colors = ["#7c3aed", "#10b981", "#f59e0b", "#0ea5e9", "#f43f5e", "#6366f1", "#14b8a6", "#64748b"];
 
@@ -80,6 +91,8 @@ export default function Analytics() {
   const sourceRows = sourcesQ.data?.rows ?? [];
   const topSource = sourceRows[0];
   const statusRows = overviewQ.data?.status_breakdown ?? [];
+  const sourceChartRows = sourceRows.map((row) => ({ ...row, label: sourceLabel(row.source) }));
+  const statusChartRows = statusRows.map((row) => ({ ...row, label: STATUS_LABELS[row.status] ?? row.status }));
 
   const revenueData = useMemo(
     () => (revenueQ.data?.months ?? []).map((row) => ({ name: row.year_month?.slice(5) ?? row.year_month, revenue: row.revenue, bookings: row.bookings })),
@@ -121,26 +134,26 @@ export default function Analytics() {
       <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
         <StatCard icon={CalendarDays} label="Այսօր ամրագրումներ" value={overviewQ.data?.today.bookings ?? 0} />
         <StatCard icon={DramSign} label="Այսօր եկամուտ" value={formatMoney(overviewQ.data?.today.revenue ?? 0, currency)} />
-        <StatCard icon={Users} label="Վերջին 7 օրում" value={overviewQ.data?.last_7_days.bookings ?? 0} sub={`${overviewQ.data?.last_7_days.unique_clients ?? 0} unique clients`} />
-        <StatCard icon={Wallet} label="Թոփ source" value={topSource ? `${topSource.source}` : "—"} sub={topSource ? `${topSource.bookings} bookings` : "Աղբյուրներ դեռ չկան"} />
+        <StatCard icon={Users} label="Վերջին 7 օրում" value={overviewQ.data?.last_7_days.bookings ?? 0} sub={`${overviewQ.data?.last_7_days.unique_clients ?? 0} եզակի հաճախորդ`} />
+        <StatCard icon={Wallet} label="Գլխավոր աղբյուր" value={topSource ? sourceLabel(topSource.source) : "—"} sub={topSource ? `${topSource.bookings} ամրագրում` : "Աղբյուրներ դեռ չկան"} />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
-        <StatCard icon={RefreshCcw} label="Վերադարձող հաճախորդներ" value={clientsQ.data?.returning_clients ?? 0} sub={`${clientsQ.data?.rebooking_rate ?? 0}% rebooking`} />
-        <StatCard icon={Users} label="Նոր հաճախորդներ" value={clientsQ.data?.new_clients ?? 0} sub={`${clientsQ.data?.active_clients ?? 0} active in window`} />
-        <StatCard icon={AlertTriangle} label="Կորցրած հաճախորդներ" value={clientsQ.data?.lost_clients ?? 0} sub={`${clientsQ.data?.lost_threshold_days ?? 60} օր inactivity`} />
+        <StatCard icon={RefreshCcw} label="Վերադարձող հաճախորդներ" value={clientsQ.data?.returning_clients ?? 0} sub={`${clientsQ.data?.rebooking_rate ?? 0}% կրկին ամրագրում`} />
+        <StatCard icon={Users} label="Նոր հաճախորդներ" value={clientsQ.data?.new_clients ?? 0} sub={`${clientsQ.data?.active_clients ?? 0} ակտիվ այս ժամանակահատվածում`} />
+        <StatCard icon={AlertTriangle} label="Կորցրած հաճախորդներ" value={clientsQ.data?.lost_clients ?? 0} sub={`${clientsQ.data?.lost_threshold_days ?? 60} օր առանց այցի`} />
         <StatCard icon={Star} label="VIP հաճախորդներ" value={clientsQ.data?.vip_clients ?? 0} />
-        <StatCard icon={ShieldBan} label="Blacklisted" value={clientsQ.data?.blacklisted_clients ?? 0} />
+        <StatCard icon={ShieldBan} label="Սև ցուցակում" value={clientsQ.data?.blacklisted_clients ?? 0} />
       </div>
 
       <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
-        <StatCard icon={Wallet} label="30 օրվա միջին չեկ" value={formatMoney(metrics30?.avg_ticket ?? 0, currency)} sub={`${metrics30?.paid_bookings ?? 0} paid bookings`} />
-        <StatCard icon={CalendarDays} label="Completion rate" value={`${metrics30?.completion_rate ?? 0}%`} sub={`${metrics30?.done_bookings ?? 0} done`} />
-        <StatCard icon={AlertTriangle} label="Cancellation rate" value={`${metrics30?.cancellation_rate ?? 0}%`} sub={`${metrics30?.cancelled_bookings ?? 0} cancelled`} />
-        <StatCard icon={AlertTriangle} label="No-show rate" value={`${metrics30?.no_show_rate ?? 0}%`} sub={`${metrics30?.no_show_bookings ?? 0} no-show`} />
+        <StatCard icon={Wallet} label="30 օրվա միջին չեկ" value={formatMoney(metrics30?.avg_ticket ?? 0, currency)} sub={`${metrics30?.paid_bookings ?? 0} վճարված ամրագրում`} />
+        <StatCard icon={CalendarDays} label="Ավարտված այցեր" value={`${metrics30?.completion_rate ?? 0}%`} sub={`${metrics30?.done_bookings ?? 0} ավարտված`} />
+        <StatCard icon={AlertTriangle} label="Չեղարկումներ" value={`${metrics30?.cancellation_rate ?? 0}%`} sub={`${metrics30?.cancelled_bookings ?? 0} չեղարկված`} />
+        <StatCard icon={AlertTriangle} label="Չներկայացածներ" value={`${metrics30?.no_show_rate ?? 0}%`} sub={`${metrics30?.no_show_bookings ?? 0} չներկայացած`} />
       </div>
 
-      <div className="grid gap-4 sm:gap-6 xl:grid-cols-[1.5fr_1fr]">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-[1.5fr_1fr]">
         <Card className="rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-sm">
           <div className="text-lg font-semibold text-[var(--vz-text)]">Եկամտի դինամիկա</div>
           <div className="mt-2 text-sm text-[var(--vz-muted)]">Եկամուտ + ամրագրումներ ըստ ամիսների</div>
@@ -161,12 +174,12 @@ export default function Analytics() {
 
         <Card className="rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-sm">
           <div className="text-lg font-semibold text-[var(--vz-text)]">Ամրագրման աղբյուրներ</div>
-          <div className="mt-2 text-sm text-[var(--vz-muted)]">Որտեղից են գալիս booking-ները</div>
+          <div className="mt-2 text-sm text-[var(--vz-muted)]">Որտեղից են գալիս ամրագրումները</div>
           <div className="mt-6 h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={sourceRows} dataKey="bookings" nameKey="source" innerRadius={62} outerRadius={100} paddingAngle={2}>
-                  {sourceRows.map((_, idx) => <Cell key={idx} fill={colors[idx % colors.length]} />)}
+                <Pie data={sourceChartRows} dataKey="bookings" nameKey="label" innerRadius={62} outerRadius={100} paddingAngle={2}>
+                  {sourceChartRows.map((_, idx) => <Cell key={idx} fill={colors[idx % colors.length]} />)}
                 </Pie>
                 <Tooltip />
               </PieChart>
@@ -175,7 +188,7 @@ export default function Analytics() {
         </Card>
       </div>
 
-      <div className="grid gap-4 sm:gap-6 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-2">
         <Card className="rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-sm">
           <div className="text-lg font-semibold text-[var(--vz-text)]">Թոփ ծառայություններ</div>
           <div className="mt-2 text-sm text-[var(--vz-muted)]">{days} օրվա կտրվածքով</div>
@@ -186,7 +199,7 @@ export default function Analytics() {
                 <XAxis type="number" tick={{ fontSize: 12 }} />
                 <YAxis dataKey="service_name" type="category" tick={{ fontSize: 12 }} width={110} />
                 <Tooltip />
-                <Bar dataKey="bookings" fill="#7c3aed" radius={[0, 8, 8, 0]} />
+                <Bar dataKey="bookings" name="Ամրագրումներ" fill="#7c3aed" radius={[0, 8, 8, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -211,7 +224,7 @@ export default function Analytics() {
         </Card>
       </div>
 
-      <div className="grid gap-4 sm:gap-6 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-2">
         <Card className="rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-sm">
           <div className="flex items-center gap-2 text-lg font-semibold text-[var(--vz-text)]"><Layers3 className="h-5 w-5 text-[var(--vz-accent-text)]" /> Հաճախորդների խմբեր</div>
           <div className="mt-2 text-sm text-[var(--vz-muted)]">VIP, խմբեր և կարգավիճակների վերլուծություն</div>
@@ -229,7 +242,7 @@ export default function Analytics() {
                 <div className="mt-1 text-2xl font-semibold text-[var(--vz-warning)]">{clientsQ.data?.vip_clients ?? 0}</div>
               </div>
               <div className="rounded-2xl border border-[var(--vz-danger-line)] bg-[var(--vz-danger-soft)] px-4 py-3">
-                <div className="text-xs font-semibold uppercase tracking-wide text-[var(--vz-danger)]">Blacklist</div>
+                <div className="text-xs font-semibold uppercase tracking-wide text-[var(--vz-danger)]">Սև ցուցակ</div>
                 <div className="mt-1 text-2xl font-semibold text-[var(--vz-danger)]">{clientsQ.data?.blacklisted_clients ?? 0}</div>
               </div>
             </div>
@@ -237,30 +250,30 @@ export default function Analytics() {
         </Card>
 
         <Card className="rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-sm">
-          <div className="text-lg font-semibold text-[var(--vz-text)]">Booking statuses</div>
-          <div className="mt-2 text-sm text-[var(--vz-muted)]">Current selection-ի status distribution</div>
+          <div className="text-lg font-semibold text-[var(--vz-text)]">Ամրագրումների կարգավիճակներ</div>
+          <div className="mt-2 text-sm text-[var(--vz-muted)]">Ընտրված ժամանակահատվածի կարգավիճակները</div>
           <div className="mt-6 h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={statusRows}>
+              <BarChart data={statusChartRows}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="status" tick={{ fontSize: 12 }} />
+                <XAxis dataKey="label" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} />
                 <Tooltip />
-                <Bar dataKey="count" fill="#0ea5e9" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="count" name="Քանակ" fill="#0ea5e9" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </Card>
       </div>
 
-      <div className="grid gap-4 sm:gap-6 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 xl:grid-cols-2">
         <Card className="rounded-[30px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-6 shadow-sm">
-          <div className="text-lg font-semibold text-[var(--vz-text)]">Sources table</div>
+          <div className="text-lg font-semibold text-[var(--vz-text)]">Աղբյուրներ՝ ամրագրումներ և եկամուտ</div>
           <div className="mt-4 overflow-x-auto rounded-[24px] border border-[var(--vz-line)]">
             <table className="min-w-full divide-y divide-[var(--vz-line)] text-sm">
               <thead className="bg-[var(--vz-surface-2)] text-left text-[var(--vz-muted)]">
                 <tr>
-                  <th className="px-4 py-3 font-medium">Source</th>
+                  <th className="px-4 py-3 font-medium">Աղբյուր</th>
                   <th className="px-4 py-3 font-medium">Ամրագրումներ</th>
                   <th className="px-4 py-3 font-medium">Եկամուտ</th>
                 </tr>
@@ -268,7 +281,7 @@ export default function Analytics() {
               <tbody className="divide-y divide-[var(--vz-line)] bg-[var(--vz-surface)]">
                 {sourceRows.map((row) => (
                   <tr key={row.source}>
-                    <td className="px-4 py-3 font-medium text-[var(--vz-text)]">{row.source}</td>
+                    <td className="px-4 py-3 font-medium text-[var(--vz-text)]">{sourceLabel(row.source)}</td>
                     <td className="px-4 py-3 text-[var(--vz-text-secondary)]">{row.bookings}</td>
                     <td className="px-4 py-3 text-[var(--vz-text-secondary)]">{formatMoney(row.revenue, currency)}</td>
                   </tr>
@@ -298,7 +311,7 @@ export default function Analytics() {
                 <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
                   {row.group_name ? <span className="rounded-full bg-[var(--vz-info-soft)] px-2.5 py-1 font-medium text-[var(--vz-info)]">{row.group_name}</span> : null}
                   {row.is_vip ? <span className="rounded-full bg-[var(--vz-warning-soft)] px-2.5 py-1 font-medium text-[var(--vz-warning)]">VIP</span> : null}
-                  {row.is_blacklisted ? <span className="rounded-full bg-[var(--vz-danger-soft)] px-2.5 py-1 font-medium text-[var(--vz-danger)]">Blacklist</span> : null}
+                  {row.is_blacklisted ? <span className="rounded-full bg-[var(--vz-danger-soft)] px-2.5 py-1 font-medium text-[var(--vz-danger)]">Սև ցուցակ</span> : null}
                 </div>
               </div>
             )) : <div className="rounded-2xl border border-dashed border-[var(--vz-line)] px-4 py-6 text-sm text-[var(--vz-muted)]">Կորցրած հաճախորդներ այս պահին չկան։</div>}

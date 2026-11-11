@@ -2017,7 +2017,7 @@ export function Calendar() {
                                 <button type="button" onClick={() => setBlockOpen(true)}
                                     className="hidden h-9 items-center gap-2 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-2 text-sm font-medium text-[var(--vz-text-secondary)] shadow-sm transition hover:bg-[var(--vz-surface-2)] sm:inline-flex"
                                 >
-                                    <Ban className="h-4 w-4" /> Block
+                                    <Ban className="h-4 w-4" /> Փակել ժամ
                                 </button>
                             )}
 
@@ -2596,7 +2596,7 @@ export function Calendar() {
                                             {ymd(draft.startsAt)} · {hm(draft.startsAt)} – {hm(draft.endsAt)}
                                         </div>
                                         <p className="mt-2 hidden max-w-2xl text-sm leading-6 text-[var(--vz-muted)] sm:block">
-                                            Ընտրիր ամրագրման ճիշտ տեսակը, լրացրու հաճախորդի տվյալները և պահիր ամրագրումը անմիջապես calendar-ից։
+                                            Ընտրիր ամրագրման ճիշտ տեսակը, լրացրու հաճախորդի տվյալները և պահիր ամրագրումը անմիջապես օրացույցից։
                                         </p>
                                     </div>
 
@@ -3022,7 +3022,7 @@ export function Calendar() {
                                         <option value="facebook">Facebook</option>
                                         <option value="whatsapp">WhatsApp</option>
                                         <option value="partner">Գործընկեր</option>
-                                        <option value="widget">Widget</option>
+                                        <option value="widget">Վիջեթ</option>
                                         <option value="qr">QR</option>
                                         <option value="returning_client">Վերադարձող հաճախորդ</option>
                                     </select>
@@ -3091,7 +3091,7 @@ export function Calendar() {
                                         Խելացի ամրագրման առաջարկներ
                                     </div>
                                     <div className="mt-1 text-sm text-[var(--vz-text-secondary)]">
-                                        Ընտրիր առաջարկված ժամերից մեկը, որ calendar-ում անպետք բաց չմնա։
+                                        Ընտրիր առաջարկված ժամերից մեկը, որ օրացույցում ավելորդ բացեր չմնան։
                                     </div>
                                     <div className="mt-4 space-y-2">
                                         {recommendedSmartSlots.map((slot) => (

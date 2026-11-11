@@ -474,9 +474,9 @@ function cycleLabel(cycle: BillingCycle, locale: Locale) {
 }
 
 const statusNames: Record<Locale, Record<string, string>> = {
-  hy: { active: "Ակտիվ", trialing: "Փորձաշրջան", past_due: "Վճարումն ուշացած է", suspended: "Կասեցված", cancelled: "Չեղարկված", canceled: "Չեղարկված", inactive: "Ակտիվ չէ", pending: "Սպասվում է", paid: "Վճարված", failed: "Չհաջողվեց", refunded: "Վերադարձված", expired: "Ժամկետանց" },
-  ru: { active: "Активна", trialing: "Пробный период", past_due: "Просрочена оплата", suspended: "Приостановлена", cancelled: "Отменена", canceled: "Отменена", inactive: "Не активна", pending: "Ожидает", paid: "Оплачено", failed: "Не удалось", refunded: "Возвращено", expired: "Истёк срок" },
-  en: { active: "Active", trialing: "Trial", past_due: "Past due", suspended: "Suspended", cancelled: "Cancelled", canceled: "Cancelled", inactive: "Inactive", pending: "Pending", paid: "Paid", failed: "Failed", refunded: "Refunded", expired: "Expired" },
+  hy: { active: "Ակտիվ", trialing: "Փորձաշրջան", past_due: "Վճարումն ուշացած է", suspended: "Կասեցված", cancelled: "Չեղարկված", canceled: "Չեղարկված", inactive: "Ակտիվ չէ", pending: "Սպասվում է", paid: "Վճարված", failed: "Չհաջողվեց", refunded: "Վերադարձված", expired: "Ժամկետանց", approved: "Հաստատված", rejected: "Մերժված" },
+  ru: { active: "Активна", trialing: "Пробный период", past_due: "Просрочена оплата", suspended: "Приостановлена", cancelled: "Отменена", canceled: "Отменена", inactive: "Не активна", pending: "Ожидает", paid: "Оплачено", failed: "Не удалось", refunded: "Возвращено", expired: "Истёк срок", approved: "Подтверждён", rejected: "Отклонён" },
+  en: { active: "Active", trialing: "Trial", past_due: "Past due", suspended: "Suspended", cancelled: "Cancelled", canceled: "Cancelled", inactive: "Inactive", pending: "Pending", paid: "Paid", failed: "Failed", refunded: "Refunded", expired: "Expired", approved: "Approved", rejected: "Rejected" },
 };
 
 function statusText(status: string | null | undefined, locale: Locale) {
@@ -1036,7 +1036,7 @@ export default function Billing() {
                 </div>
                 <div className="rounded-3xl border border-[var(--vz-line)] bg-[var(--vz-surface)] p-4">
                   <div className="text-xs uppercase tracking-wide text-[var(--vz-muted)]">{copy.state}</div>
-                  <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{latestInvoiceStatus}</div>
+                  <div className="mt-2 text-lg font-semibold text-[var(--vz-text)]">{statusText(latestInvoiceStatus, locale)}</div>
                   <div className="mt-1 text-sm text-[var(--vz-text-secondary)]">{new Date(latestInvoice.created_at).toLocaleString("hy-AM")}</div>
                 </div>
               </div>

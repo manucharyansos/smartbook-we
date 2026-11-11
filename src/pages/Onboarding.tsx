@@ -36,7 +36,7 @@ const steps = [
   {
     id: "service",
     title: "Առաջին ծառայությունը",
-    subtitle: "Սա կերևա ամրագրման էջում և calendar-ում:",
+    subtitle: "Սա կերևա ամրագրման էջում և օրացույցում։",
     icon: Store,
   },
   {

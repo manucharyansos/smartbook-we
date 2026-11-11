@@ -634,24 +634,27 @@ export default function BusinessSettingsPage() {
                     <div className="relative h-44 bg-[var(--vz-surface-2)]">
                       {form.cover_url ? <img src={form.cover_url} alt="preview banner" className="absolute inset-0 h-full w-full object-cover opacity-35" /> : null}
                       <div className="bg-[var(--vz-cover)] absolute inset-0" />
-                      <div className="absolute inset-x-0 bottom-0 flex items-end gap-4 p-5">
-                        <div className="h-16 w-16 overflow-hidden rounded-[22px] border border-white/20 bg-white/10 backdrop-blur">
-                          {form.logo_url ? <img src={form.logo_url} alt="preview logo" className="h-full w-full object-cover" /> : <div className="grid h-full w-full place-items-center text-sm text-white/70">Logo</div>}
+                      {/* The cover (--vz-cover) is dark teal in both themes, so its text stays white.
+                          No bg-white/* classes here: .vizit-admin-shell turns them into opaque surface cards. */}
+                      <div className="absolute inset-x-0 bottom-0 flex items-end gap-4 p-5 text-white">
+                        <div className="h-16 w-16 overflow-hidden rounded-[22px] border border-[rgba(255,255,255,0.24)] bg-[rgba(255,255,255,0.12)] backdrop-blur">
+                          {form.logo_url ? <img src={form.logo_url} alt="preview logo" className="h-full w-full object-cover" /> : <div className="grid h-full w-full place-items-center text-sm text-white/80">Logo</div>}
                         </div>
                         <div>
-                          <div className="text-lg font-semibold">{form.name ?? settingsQ.data?.name ?? text.businessDefault}</div>
-                          <div className="mt-1 text-sm text-white/75">{form.short_description || text.previewDefault}</div>
+                          <div className="text-lg font-semibold text-white">{form.name ?? settingsQ.data?.name ?? text.businessDefault}</div>
+                          <div className="mt-1 text-sm text-white/80">{form.short_description || text.previewDefault}</div>
                         </div>
                       </div>
                     </div>
-                    <div className="grid gap-3 p-5 text-sm text-white/80 sm:grid-cols-2">
-                      <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                        <div className="text-xs uppercase tracking-[0.18em] text-white/50">{text.publicPage}</div>
-                        <div className="mt-2 font-semibold text-white">{form.is_public_profile_enabled ? text.ready : text.hidden}</div>
+                    {/* --vz-primary is dark teal in light mode and bright teal in dark mode; --vz-on-primary is its readable text colour. */}
+                    <div className="grid gap-3 p-5 text-sm text-[var(--vz-on-primary)] sm:grid-cols-2">
+                      <div className="rounded-2xl border border-[color-mix(in_srgb,var(--vz-on-primary)_18%,transparent)] bg-[color-mix(in_srgb,var(--vz-on-primary)_10%,transparent)] p-4">
+                        <div className="text-xs uppercase tracking-[0.18em] text-[color-mix(in_srgb,var(--vz-on-primary)_70%,transparent)]">{text.publicPage}</div>
+                        <div className="mt-2 font-semibold text-[var(--vz-on-primary)]">{form.is_public_profile_enabled ? text.ready : text.hidden}</div>
                       </div>
-                      <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                        <div className="text-xs uppercase tracking-[0.18em] text-white/50">{text.marketplace}</div>
-                        <div className="mt-2 font-semibold text-white">{form.is_marketplace_visible ? text.visible : text.notVisible}</div>
+                      <div className="rounded-2xl border border-[color-mix(in_srgb,var(--vz-on-primary)_18%,transparent)] bg-[color-mix(in_srgb,var(--vz-on-primary)_10%,transparent)] p-4">
+                        <div className="text-xs uppercase tracking-[0.18em] text-[color-mix(in_srgb,var(--vz-on-primary)_70%,transparent)]">{text.marketplace}</div>
+                        <div className="mt-2 font-semibold text-[var(--vz-on-primary)]">{form.is_marketplace_visible ? text.visible : text.notVisible}</div>
                       </div>
                     </div>
                   </div>

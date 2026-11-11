@@ -16,7 +16,8 @@ import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { Toast } from "@/components/ui/Toast";
 import { getErrorMessage } from "@/lib/http";
 
-type AvailablePlan = { id: number; code: string; name: string; monthly_price: number; yearly_price: number; currency: string; staff_limit: number };
+// fits_business: whether this business's area may buy the plan (an offer on any other plan is never shown to it).
+type AvailablePlan = { id: number; code: string; name: string; monthly_price: number; yearly_price: number; currency: string; staff_limit: number; audience?: string; fits_business?: boolean };
 
 type PricingOverride = {
   id: number; plan_id: number; plan?: { id: number; code: string; name: string } | null;
@@ -26,6 +27,7 @@ type PricingOverride = {
   billing_cycles_limit?: number | null; used_billing_cycles?: number; remaining_billing_cycles?: number | null;
   starts_at?: string | null; ends_at?: string | null; note?: string | null;
   is_active: boolean; is_currently_active: boolean; state?: "active" | "scheduled" | "expired" | "disabled" | "used_up"; creator?: { id: number; name: string } | null;
+  fits_business?: boolean;
 };
 
 type Details = {
@@ -183,6 +185,8 @@ export default function BusinessDetails() {
 
   const data = detailsQ.data;
   const plans = data?.available_plans ?? [];
+  // Offers may only use plans of this business's own area; older API responses have no flag, so keep them.
+  const offerPlans = plans.filter((plan) => plan.fits_business !== false);
   const overrides = data?.pricing_overrides ?? [];
   const activePlan = data?.subscription?.plan ?? null;
   const effectivePrice = data?.subscription?.pricing ?? null;
@@ -310,7 +314,8 @@ export default function BusinessDetails() {
         <div className="grid gap-6 xl:grid-cols-2">
           <div className="space-y-3 rounded-[24px] border border-slate-100 bg-slate-50 p-5">
             <div className="grid gap-3 md:grid-cols-2">
-              <label className="text-sm text-slate-600">Պլան<select value={form.plan_id} onChange={(e) => setForm((prev) => ({ ...prev, plan_id: e.target.value }))} className={cn(inputClass, "mt-1")}><option value="">Ընտրիր</option>{plans.map((plan) => <option key={plan.id} value={plan.id}>{plan.name}</option>)}</select></label>
+              <label className="text-sm text-slate-600">Պլան<select value={form.plan_id} onChange={(e) => setForm((prev) => ({ ...prev, plan_id: e.target.value }))} className={cn(inputClass, "mt-1")}><option value="">Ընտրիր</option>{offerPlans.map((plan) => <option key={plan.id} value={plan.id}>{plan.name}</option>)}</select>
+                <span className="mt-1 block text-xs text-slate-400">Միայն այս բիզնեսի տեսակի պլանները</span></label>
               <label className="text-sm text-slate-600">Զեղչի տեսակ<select value={form.discount_type} onChange={(e) => setForm((prev) => ({ ...prev, discount_type: e.target.value as OverrideForm["discount_type"] }))} className={cn(inputClass, "mt-1")}><option value="">Առանց զեղչի</option>{Object.entries(discountTypeLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
               <label className="text-sm text-slate-600">Ամսական գին, ֏<input inputMode="numeric" value={form.custom_monthly_price} onChange={(e) => setForm((prev) => ({ ...prev, custom_monthly_price: e.target.value.replace(/[^0-9]/g, "") }))} className={cn(inputClass, "mt-1")} /></label>
               <label className="text-sm text-slate-600">Տարեկան գին, ֏<input inputMode="numeric" value={form.custom_yearly_price} onChange={(e) => setForm((prev) => ({ ...prev, custom_yearly_price: e.target.value.replace(/[^0-9]/g, "") }))} className={cn(inputClass, "mt-1")} /></label>
@@ -337,10 +342,13 @@ export default function BusinessDetails() {
                   <div>{formatDate(override.starts_at)} – {formatDate(override.ends_at)}</div>
                   <div>Ստեղծել է՝ {override.creator?.name || "ադմին"}</div>
                 </div>
+                {override.fits_business === false ? (
+                  <div role="alert" className="rounded-2xl bg-amber-50 px-3 py-2 text-amber-800">Այս պլանը նախատեսված չէ այս բիզնեսի տեսակի համար, ուստի բիզնեսը չի տեսնում առաջարկը։ Խմբագրեք և ընտրեք նրա տեսակի պլան։</div>
+                ) : null}
                 {override.note ? <div className="rounded-2xl bg-slate-50 px-3 py-2 text-slate-600">{override.note}</div> : null}
                 <div className="flex gap-2">
                   <Button size="sm" variant="secondary" onClick={() => { setEditingOverrideId(override.id); setForm({
-                    plan_id: String(override.plan_id), custom_monthly_price: override.custom_monthly_price ? String(override.custom_monthly_price) : "",
+                    plan_id: override.fits_business === false ? "" : String(override.plan_id), custom_monthly_price: override.custom_monthly_price ? String(override.custom_monthly_price) : "",
                     custom_yearly_price: override.custom_yearly_price ? String(override.custom_yearly_price) : "", discount_type: override.discount_type || "",
                     discount_value: override.discount_value ? String(override.discount_value) : "", billing_cycles_limit: override.billing_cycles_limit ? String(override.billing_cycles_limit) : "",
                     starts_at: toDateInput(override.starts_at), ends_at: toDateInput(override.ends_at), note: override.note || "", is_active: override.is_active }); }}><Pencil className="h-4 w-4" /> Խմբագրել</Button>

@@ -48,13 +48,13 @@ const steps = [
   {
     id: "hours",
     title: "Ժամեր և ամրագրման քայլ",
-    subtitle: "Սահմանում ես աշխատանքային ժամերն ու grid-ի քայլը:",
+    subtitle: "Սահմանում ես աշխատանքային ժամերն ու օրացույցի քայլը։",
     icon: Calendar,
   },
   {
     id: "finish",
     title: "Պատրաստ է մեկնարկին",
-    subtitle: "Ստուգիր հղումը և անցիր dashboard:",
+    subtitle: "Ստուգիր հղումը և անցիր վահանակ։",
     icon: CheckCircle2,
   },
 ] as const;
@@ -274,11 +274,11 @@ export default function Onboarding() {
             <div className="border-b border-[rgb(255_255_255/0.12)] p-6">
               <div className="inline-flex items-center gap-2 rounded-full bg-[var(--vz-highlight)] px-3 py-1 text-xs font-semibold text-[#2A1300]">
                 <Sparkles size={14} />
-                Vizit setup
+                Vizit-ի կարգավորում
               </div>
               <h1 className="mt-4 text-2xl font-semibold tracking-tight">{businessName}</h1>
               <p className="mt-2 max-w-sm text-sm text-[var(--vz-cover-muted)]">
-                Մի քանի կարճ քայլ, և workspace-ը պատրաստ կլինի առաջին աշխատանքային օրվա համար։
+                Մի քանի կարճ քայլ, և աշխատանքային միջավայրը պատրաստ կլինի առաջին աշխատանքային օրվա համար։
               </p>
             </div>
 
@@ -334,7 +334,7 @@ export default function Onboarding() {
                 </div>
                 <div className="mt-3 flex items-start gap-2 text-xs leading-5 text-[var(--vz-cover-muted)]">
                   <ShieldCheck size={14} className="mt-0.5 shrink-0" />
-                  Այս հղումը հետո էլ կարող ես փոխել settings-ից կամ public profile-ից։
+                  Հղումը կազմվում է բիզնեսի անունից․ անունը փոխելիս հին հղումը շարունակում է աշխատել։
                 </div>
               </div>
             </div>
@@ -362,7 +362,7 @@ export default function Onboarding() {
                 </div>
 
                 <div className="rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-left sm:text-right">
-                  <div className="text-xs font-medium uppercase tracking-[0.18em] text-[var(--vz-muted)]">Progress</div>
+                  <div className="text-xs font-medium uppercase tracking-[0.18em] text-[var(--vz-muted)]">Ընթացք</div>
                   <div className="mt-1 text-lg font-semibold text-[var(--vz-text)]">{currentStep + 1} / {steps.length}</div>
                 </div>
               </div>
@@ -606,7 +606,7 @@ export default function Onboarding() {
                             <div>
                               <div className="text-sm font-semibold text-[var(--vz-text)]">Ինչ է սա նշանակում</div>
                               <p className="mt-1 text-sm leading-6 text-[var(--vz-text-secondary)]">
-                                Սա ծառայության տևողությունը չէ։ Սա calendar-ի grid-ի քայլն է։
+                                Սա ծառայության տևողությունը չէ։ Սա օրացույցի ժամային քայլն է։
                                 Օրինակ՝ <strong>15 րոպե</strong> ընտրելու դեպքում համակարգը կաշխատի 09:00, 09:15, 09:30, 09:45… կետերով։
                               </p>
                             </div>
@@ -615,7 +615,7 @@ export default function Onboarding() {
                       </div>
 
                       <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4 text-sm leading-6 text-[var(--vz-text-secondary)]">
-                        Եթե մոտդ հիմնականում երկար ծառայություններ են, կարող ես ընտրել 20 կամ 30 րոպե։ Եթե ուզում ես ավելի ճկուն calendar, 10 կամ 15 րոպեն ավելի հարմար է։
+                        Եթե մոտդ հիմնականում երկար ծառայություններ են, կարող ես ընտրել 20 կամ 30 րոպե։ Եթե ուզում ես ավելի ճկուն օրացույց, 10 կամ 15 րոպեն ավելի հարմար է։
                       </div>
                     </div>
                   )}
@@ -629,7 +629,7 @@ export default function Onboarding() {
                       <div>
                         <h3 className="text-3xl font-semibold tracking-tight text-[var(--vz-text)]">Ամեն ինչ պատրաստ է</h3>
                         <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--vz-muted)]">
-                          Քո հիմնական տվյալները արդեն ստեղծվել են։ Այժմ կարող ես մտնել dashboard, բացել calendar-ը, և հրապարակային ամրագրման հղումը ուղարկել հաճախորդներին։
+                          Քո հիմնական տվյալները արդեն ստեղծվել են։ Այժմ կարող ես մտնել վահանակ, բացել օրացույցը և հրապարակային ամրագրման հղումը ուղարկել հաճախորդներին։
                         </p>
                       </div>
 
@@ -707,7 +707,7 @@ export default function Onboarding() {
                           </>
                         ) : (
                           <>
-                            Բացել dashboard-ը
+                            Բացել վահանակը
                             <ChevronRight size={16} />
                           </>
                         )}
@@ -722,7 +722,7 @@ export default function Onboarding() {
                   <div className="text-sm font-semibold text-[var(--vz-text)]">Ինչ կստանաս այս քայլից</div>
                   <ul className="mt-4 space-y-3">
                     {[
-                      "Calendar-ը կսկսի աշխատել ճիշտ grid-ով",
+                      "Օրացույցը կաշխատի ճիշտ ժամային քայլով",
                       "Հանրային ամրագրման էջում կհայտնվեն առաջին տվյալները",
                       "Թիմի անդամը կկարողանա մուտք գործել իր հաշիվ",
                     ].map((item) => (

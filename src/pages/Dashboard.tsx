@@ -26,7 +26,7 @@ import { useAuth } from "../store/auth";
 
 const copy = {
   hy: {
-    eyebrow: "Բժշկական աշխատանքային միջավայր", welcome: "Բարի վերադարձ",
+    eyebrow: "Բժշկական աշխատանքային միջավայր", welcome: "Բարի գալուստ",
     intro: "Կառավարեք այցերը, բժիշկներին և պացիենտների հոսքը մեկ պարզ ու վստահելի միջավայրում։",
     eyebrowServices: "Աշխատանքային միջավայր", introServices: "Կառավարեք ամրագրումները, թիմը և հաճախորդներին մեկ պարզ ու վստահելի միջավայրում։",
     calendar: "Բացել օրացույցը", settings: "Կարգավորումներ", loadError: "Չհաջողվեց բեռնել վահանակի տվյալները։ Կրկին փորձեք։",
@@ -47,7 +47,7 @@ const copy = {
     statuses: { confirmed: "Հաստատված", completed: "Ավարտված", pending: "Սպասման մեջ", cancelled: "Չեղարկված", no_show: "Չկայացած" },
   },
   ru: {
-    eyebrow: "Медицинское рабочее пространство", welcome: "С возвращением",
+    eyebrow: "Медицинское рабочее пространство", welcome: "Добро пожаловать",
     intro: "Управляйте визитами, врачами и потоком пациентов в одном простом и надежном пространстве.",
     eyebrowServices: "Рабочее пространство", introServices: "Управляйте записями, командой и клиентами в одном простом и надежном пространстве.",
     calendar: "Открыть календарь", settings: "Настройки", loadError: "Не удалось загрузить данные панели. Попробуйте еще раз.",
@@ -68,7 +68,7 @@ const copy = {
     statuses: { confirmed: "Подтверждено", completed: "Завершено", pending: "Ожидает", cancelled: "Отменено", no_show: "Не состоялось" },
   },
   en: {
-    eyebrow: "Medical workspace", welcome: "Welcome back",
+    eyebrow: "Medical workspace", welcome: "Welcome",
     intro: "Manage visits, doctors and patient flow in one clear and dependable workspace.",
     eyebrowServices: "Workspace", introServices: "Manage bookings, your team and clients in one clear and dependable workspace.",
     calendar: "Open calendar", settings: "Settings", loadError: "Dashboard data could not be loaded. Please try again.",

@@ -64,6 +64,38 @@ function localeCode(locale: Locale) {
   return locale === "hy" ? "hy-AM" : locale === "ru" ? "ru-RU" : "en-US";
 }
 
+const valueLabels: Record<Locale, Record<string, string>> = {
+  hy: {
+    booking: "Ամրագրում", note: "Նշում", reminder: "Հիշեցում",
+    pending: "Սպասում է", confirmed: "Հաստատված", completed: "Ավարտված", cancelled: "Չեղարկված", no_show: "Չներկայացած",
+    general: "Ընդհանուր", visit: "Այց", medical: "Բժշկական", sent: "Ուղարկված", failed: "Չուղարկված", done: "Կատարված",
+    website: "Կայք", mobile: "Հավելված", instagram: "Instagram", facebook: "Facebook", whatsapp: "WhatsApp", widget: "Վիջեթ",
+    partner: "Գործընկեր", qr: "QR կոդ", admin: "Ադմին", returning_client: "Վերադարձող հաճախորդ", internal: "Ներքին", email: "Email",
+    "Pinned note": "Ամրացված նշում", "Client note": "Նշում հաճախորդի մասին", Booking: "Ամրագրում",
+  },
+  ru: {
+    booking: "Запись", note: "Заметка", reminder: "Напоминание",
+    pending: "Ожидает", confirmed: "Подтверждена", completed: "Завершена", cancelled: "Отменена", no_show: "Неявка",
+    general: "Общая", visit: "Визит", medical: "Медицинская", sent: "Отправлено", failed: "Не отправлено", done: "Выполнено",
+    website: "Сайт", mobile: "Приложение", instagram: "Instagram", facebook: "Facebook", whatsapp: "WhatsApp", widget: "Виджет",
+    partner: "Партнёр", qr: "QR-код", admin: "Админ", returning_client: "Повторный клиент", internal: "Внутреннее", email: "Email",
+    "Pinned note": "Закреплённая заметка", "Client note": "Заметка о клиенте", Booking: "Запись",
+  },
+  en: {
+    booking: "Booking", note: "Note", reminder: "Reminder",
+    pending: "Pending", confirmed: "Confirmed", completed: "Completed", cancelled: "Cancelled", no_show: "No-show",
+    general: "General", visit: "Visit", medical: "Medical", sent: "Sent", failed: "Failed", done: "Done",
+    website: "Website", mobile: "Mobile app", instagram: "Instagram", facebook: "Facebook", whatsapp: "WhatsApp", widget: "Widget",
+    partner: "Partner", qr: "QR code", admin: "Admin", returning_client: "Returning client", internal: "Internal", email: "Email",
+  },
+};
+
+/** Human label for API codes (statuses, sources, timeline types); unknown values are shown as is. */
+function valueLabel(value: string | null | undefined, locale: Locale) {
+  if (!value) return "";
+  return valueLabels[locale][value] ?? value;
+}
+
 function formatDateTime(value: string | null | undefined, locale: Locale) {
   if (!value) return "—";
   const d = new Date(String(value).replace(" ", "T"));
@@ -427,7 +459,7 @@ export default function Clients() {
           <select value={segment} onChange={(e) => { setSegment(e.target.value); setPageNumber(1); }} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
             <option value="">{text.allSegments}</option>
             <option value="vip">VIP</option>
-            <option value="blacklist">Blacklist</option>
+            <option value="blacklist">{text.statusBlacklist}</option>
             <option value="grouped">{text.grouped}</option>
           </select>
           <select value={status} onChange={(e) => { setStatus(e.target.value); setPageNumber(1); }} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
@@ -566,7 +598,7 @@ export default function Clients() {
                   </>}
                   <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 shadow-sm">
                     <div className="text-[11px] uppercase tracking-wide text-[var(--vz-muted)]">{text.source}</div>
-                    <div className="mt-1 text-sm font-semibold text-[var(--vz-text)]">{clientQ.data.crm?.favorite_source || "—"}</div>
+                    <div className="mt-1 text-sm font-semibold text-[var(--vz-text)]">{valueLabel(clientQ.data.crm?.favorite_source, locale) || "—"}</div>
                   </div>
                   <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 shadow-sm">
                     <div className="text-[11px] uppercase tracking-wide text-[var(--vz-muted)]">{text.account}</div>
@@ -720,7 +752,7 @@ export default function Clients() {
                                 <div className="mt-3 flex flex-wrap gap-2">
                                   {(reminder.deliveries ?? []).map((delivery) => (
                                     <span key={delivery.id} className={cn("rounded-full px-2.5 py-1 text-[11px] font-semibold", deliveryTone(delivery.status))}>
-                                      {delivery.channel}: {delivery.status}
+                                      {valueLabel(delivery.channel, locale)}: {valueLabel(delivery.status, locale)}
                                     </span>
                                   ))}
                                 </div>
@@ -747,10 +779,10 @@ export default function Clients() {
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <div className="flex flex-wrap items-center gap-2">
-                              <span className="rounded-full bg-[var(--vz-surface)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-text-secondary)]">{item.type}</span>
-                              {item.status ? <span className="rounded-full bg-[var(--vz-accent-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-accent-text)]">{item.status}</span> : null}
+                              <span className="rounded-full bg-[var(--vz-surface)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-text-secondary)]">{valueLabel(item.type, locale)}</span>
+                              {item.status ? <span className="rounded-full bg-[var(--vz-accent-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-accent-text)]">{valueLabel(item.status, locale)}</span> : null}
                             </div>
-                            <div className="mt-2 font-medium text-[var(--vz-text)]">{item.title}</div>
+                            <div className="mt-2 font-medium text-[var(--vz-text)]">{item.type === "reminder" ? item.title : valueLabel(item.title, locale)}</div>
                             {item.subtitle ? <div className="mt-1 text-xs text-[var(--vz-muted)]">{item.subtitle}</div> : null}
                             {item.body ? <div className="mt-2 text-sm leading-6 text-[var(--vz-text-secondary)]">{item.body}</div> : null}
                           </div>
@@ -771,7 +803,7 @@ export default function Clients() {
                             <div className="font-medium text-[var(--vz-text)]">{isRental ? (user?.business_name || rentalCopy[locale].space) : booking.service_name ?? booking.service?.name ?? `${text.service} #${booking.service_id}`}</div>
                             <div className="mt-1 text-xs text-[var(--vz-muted)]">{formatDateTime(booking.starts_at, locale)}{!isRental && <> · {booking.staff_name ?? booking.staff?.name ?? "—"}</>}</div>
                           </div>
-                          <span className="rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-text-secondary)]">{booking.status}</span>
+                          <span className="rounded-full border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-text-secondary)]">{valueLabel(booking.status, locale)}</span>
                         </div>
                       </div>
                     )) : <div className="rounded-2xl border border-dashed border-[var(--vz-line)] px-4 py-5 text-sm text-[var(--vz-muted)]">{text.noBookings}</div>}

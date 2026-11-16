@@ -2179,7 +2179,7 @@ export function Calendar() {
                                             <span className="font-semibold text-[var(--vz-warning)]">{selectedDateBookings.filter((b) => b.status === "pending").length}</span>
                                         </div>
                                         <div className="flex items-center justify-between rounded-2xl bg-[var(--vz-surface-2)] px-3 py-2 text-sm text-[var(--vz-text-secondary)]">
-                                            <span>Block-եր</span>
+                                            <span>Փակ ժամեր</span>
                                             <span className="font-semibold text-[var(--vz-danger)]">{selectedDateBlocks.length}</span>
                                         </div>
                                     </div>
@@ -3218,6 +3218,7 @@ export function Calendar() {
                             : seriesCancellationDescription
                 }
                 confirmText={confirmState?.type === "block" ? "Այո, ջնջել" : "Այո, չեղարկել"}
+                cancelText="Հետ գնալ"
                 danger
                 loading={deleteBlockMut.isPending || cancelMut.isPending || cancelSeriesMut.isPending}
                 onClose={() => {

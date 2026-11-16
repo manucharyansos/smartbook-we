@@ -14,6 +14,7 @@ import { getErrorMessage } from "../lib/http";
 import RentalDurationField from "../components/rentals/RentalDurationField";
 import { validRentalDuration } from "../lib/rentalTime";
 import "../rentals.css";
+import LocationAmenitiesCard from "../components/settings/LocationAmenitiesCard";
 import { TranslatedTextField } from "@/components/settings/TranslatedTextField";
 import { setTranslation } from "@/lib/localizedText";
 
@@ -118,6 +119,7 @@ function RentalSettingsForm({ profile, settings, initialDays, onboarding }: { pr
       </div>)}</section>
       <button className="rental-btn" disabled={!validDurations || !validDiscounts || save.isPending || uploading}>{save.isPending ? t.loading : onboarding ? t.publish : t.save}</button>
     </form>
+    {!onboarding && <div style={{ marginTop: 24 }}><LocationAmenitiesCard locale={locale} isRental /></div>}
     <section className="rental-card rental-stack" style={{ marginTop: 24 }}><h2>{t.gallery} ({settings.gallery.length}/20)</h2><p className="rental-muted">{t.uploadHelp}</p>
       <label className="rental-field">{t.caption}<input value={caption} maxLength={255} onChange={(event) => setCaption(event.target.value)} /></label>
       <label className="rental-field"><span className="rental-row"><ImagePlus size={18} />{uploading ? t.loading : t.upload}</span><input type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" disabled={uploading || settings.gallery.length >= 20} onChange={(event) => { void upload(event.target.files?.[0]); event.target.value = ""; }} /></label>

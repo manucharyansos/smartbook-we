@@ -799,6 +799,15 @@ function ServiceBooking() {
         });
     }, [staff]);
 
+    // A link from a service card or a work photo opens booking with that service chosen.
+    const serviceFromQuery = Number(searchParams.get("service_id") || 0);
+    useEffect(() => {
+        if (!serviceFromQuery || !services.some((item) => item.id === serviceFromQuery)) return;
+        setMode("single");
+        setServiceId(serviceFromQuery);
+        if (individualServices.some((item) => item.id === serviceFromQuery)) setMultiServiceIds([serviceFromQuery]);
+    }, [serviceFromQuery, services, individualServices]);
+
     const singleAvailabilityQ = useQuery({
         queryKey: ["public-availability", slug, serviceId, staffId, date, partySize, selectedLocationId || "all"],
         queryFn: () =>

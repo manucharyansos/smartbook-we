@@ -11,6 +11,9 @@ export type BusinessLocation = {
   longitude?: number | null;
   is_primary: boolean;
   sort_order: number;
+  amenities?: string[];
+  capacity_people?: number | null;
+  area_sqm?: number | null;
 };
 
 function normalizeTime(value: unknown): string | undefined {
@@ -53,6 +56,7 @@ export type BusinessSettings = {
   is_onboarding_completed?: boolean;
   locations?: BusinessLocation[];
   location_limit?: number;
+  amenity_options?: string[];
   service_limit?: number | null;
   plan?: { code?: string | null; name?: string | null } | null;
   usage?: {
@@ -157,6 +161,18 @@ export async function updateBusinessLocation(locationId: number, payload: {
   latitude?: number | null;
   longitude?: number | null;
   is_primary?: boolean;
+}): Promise<{ locations: BusinessLocation[]; location_limit: number }> {
+  const r = await api.patch(`/business/locations/${locationId}`, payload);
+  return {
+    locations: r.data.data.locations ?? [],
+    location_limit: Number(r.data.data.location_limit ?? 1),
+  };
+}
+
+export async function updateLocationAmenities(locationId: number, payload: {
+  amenities: string[];
+  capacity_people?: number | null;
+  area_sqm?: number | null;
 }): Promise<{ locations: BusinessLocation[]; location_limit: number }> {
   const r = await api.patch(`/business/locations/${locationId}`, payload);
   return {

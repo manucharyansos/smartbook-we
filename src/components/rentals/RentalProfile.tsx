@@ -8,6 +8,7 @@ import RentalDiscounts from "./RentalDiscounts";
 import { safeExternalUrl } from "../../lib/support";
 import { PublicBusinessFooter, PublicBusinessHeader } from "../public/PublicBusinessChrome";
 import RentalGallery from "./RentalGallery";
+import AmenitiesSection from "../public/AmenitiesSection";
 import Seo from "../Seo";
 import "../../rentals.css";
 import { localizedText } from "@/lib/localizedText";
@@ -36,6 +37,7 @@ export default function RentalProfile({ business }: { business: PublicBusiness }
             <div className="rental-row">{socials.map(([label, value]) => { const href = safeExternalUrl(value); return href ? <a key={label} className="rental-btn secondary" href={href} target="_blank" rel="noopener noreferrer">{label}</a> : null; })}</div>
           </section>
           <section className="rental-card rental-stack" id="gallery"><h2>{t.gallery}</h2>{business.gallery?.length ? <RentalGallery items={business.gallery} /> : <p className="rental-muted">{t.emptyGallery}</p>}</section>
+          <AmenitiesSection locations={business.locations} locale={locale} />
         </div>
         <aside className="rental-stack">
           <section className="rental-card rental-stack">

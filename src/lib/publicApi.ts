@@ -31,6 +31,17 @@ export type PublicLocation = {
     longitude?: number | null;
     phone?: string | null;
     is_primary: boolean;
+    amenities?: string[];
+    capacity_people?: number | null;
+    area_sqm?: number | null;
+};
+
+export type PublicPortfolioItem = {
+    id: number;
+    url: string | null;
+    caption?: string | null;
+    staff?: { id: number; name: string; is_bookable: boolean } | null;
+    service?: { id: number; name: string } | null;
 };
 
 export type PublicBusinessCategory = {
@@ -86,6 +97,8 @@ export type PublicBusiness = {
     show_services?: boolean;
     service_discounts?: import("../components/ServiceDiscountsCard").ServiceDiscounts | null;
     gallery?: import("./rentalApi").GalleryItem[];
+    portfolio_count?: number;
+    portfolio_preview?: PublicPortfolioItem[];
     rental?: import("./rentalApi").RentalRates | null;
     settings?: {
         has_rooms: boolean;
@@ -153,7 +166,9 @@ export type PublicService = {
     currency: string;
     is_active: boolean;
     image_url?: string | null;
+    description?: string | null;
     location_id?: number | null;
+    portfolio_count?: number;
 };
 
 export type PublicStaff = {
@@ -164,6 +179,7 @@ export type PublicStaff = {
     bio?: string | null;
     is_bookable: boolean;
     location_id?: number | null;
+    portfolio_count?: number;
 };
 
 export type Slot = {
@@ -491,6 +507,7 @@ export async function fetchPublicBusiness(slug: string): Promise<PublicBusiness>
             return {
                 ...normalizePublicBusinessItem(data?.data ?? data),
                 cover_url: resolveMediaUrl((data?.data ?? data).cover_url),
+                portfolio_preview: normalizePortfolio((data?.data ?? data).portfolio_preview),
                 logo_url: resolveMediaUrl((data?.data ?? data).logo_url),
             } as PublicBusiness;
         } catch (error) {
@@ -501,6 +518,17 @@ export async function fetchPublicBusiness(slug: string): Promise<PublicBusiness>
     }
 
     throw lastError;
+}
+
+function normalizePortfolio(items: unknown): PublicPortfolioItem[] {
+    return Array.isArray(items)
+        ? (items as PublicPortfolioItem[]).map((item) => ({ ...item, url: resolveMediaUrl(item.url) })).filter((item) => item.url)
+        : [];
+}
+
+export async function fetchPublicPortfolio(slug: string, params?: { staff_id?: number; service_id?: number; page?: number; per_page?: number }): Promise<{ items: PublicPortfolioItem[]; total: number; lastPage: number }> {
+    const { data } = await publicApi.get(`/public/businesses/${slug}/portfolio`, { params });
+    return { items: normalizePortfolio(data?.data), total: Number(data?.meta?.total ?? 0), lastPage: Number(data?.meta?.last_page ?? 1) };
 }
 
 export async function fetchPublicServices(slug: string, params?: { location_id?: number }): Promise<PublicService[]> {

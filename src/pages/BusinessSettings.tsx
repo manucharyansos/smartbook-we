@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect -- Query results intentionally hydrate the editable settings and schedule drafts. */
 import { useEffect, useMemo, useRef, useState } from "react";
 import ServiceDiscountsCard from "../components/ServiceDiscountsCard";
+import LocationAmenitiesCard from "../components/settings/LocationAmenitiesCard";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -681,6 +682,12 @@ export default function BusinessSettingsPage() {
           {isOwner && vertical !== "rentals" ? (
             <motion.div variants={card} initial="initial" animate="animate" transition={cardTransition}>
               <ServiceDiscountsCard locale={locale} />
+            </motion.div>
+          ) : null}
+
+          {canEdit ? (
+            <motion.div variants={card} initial="initial" animate="animate" transition={cardTransition}>
+              <LocationAmenitiesCard locale={locale} isRental={vertical === "rentals"} />
             </motion.div>
           ) : null}
 

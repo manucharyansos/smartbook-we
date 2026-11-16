@@ -1,5 +1,5 @@
 import RentalProfile from "../components/rentals/RentalProfile";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
@@ -17,7 +17,10 @@ import {
     Instagram,
     Facebook,
     MessageCircleMore,
+    Images,
 } from "lucide-react";
+import AmenitiesSection from "../components/public/AmenitiesSection";
+import PortfolioSection, { type PortfolioFilter } from "../components/public/PortfolioSection";
 
 import { PublicBusinessFooter, PublicBusinessHeader } from "../components/public/PublicBusinessChrome";
 import {
@@ -58,6 +61,15 @@ const copy = {
         why: "Why choose this business", whyItems: ["Online booking without phone calls", "Convenient service and specialist selection", "Fast availability checks", "A professional profile on Vizit"], ready: "Ready to book?", chooseTime: "Choose a convenient time", readyText: "Open the booking page and complete your booking in a few simple steps.", start: "Start booking", viewServices: "View services",
     },
 } as const;
+
+// Texts for the full service list, per-service booking and work photos.
+const extraCopy = {
+    hy: { seeAll: "Տեսնել բոլորը", showLess: "Ցույց տալ քիչ", bookService: "Ամրագրել", works: "{n} աշխատանք", seeWorks: "Աշխատանքներ ({n})" },
+    ru: { seeAll: "Смотреть все", showLess: "Свернуть", bookService: "Записаться", works: "Работ: {n}", seeWorks: "Работы ({n})" },
+    en: { seeAll: "See all", showLess: "Show less", bookService: "Book", works: "{n} works", seeWorks: "Portfolio ({n})" },
+} as const;
+
+const PREVIEW_COUNT = 6;
 
 const EMPTY_SERVICES: PublicService[] = [];
 const EMPTY_STAFF: PublicStaff[] = [];
@@ -110,6 +122,15 @@ export default function PublicBusinessProfile() {
     const { slug = "" } = useParams();
     const { locale } = useLanguage();
     const text = copy[locale];
+    const extra = extraCopy[locale];
+    const [showAllServices, setShowAllServices] = useState(false);
+    const [showAllStaff, setShowAllStaff] = useState(false);
+    const [portfolioFilter, setPortfolioFilter] = useState<PortfolioFilter>({});
+
+    const showWorks = (filter: PortfolioFilter) => {
+        setPortfolioFilter(filter);
+        window.requestAnimationFrame(() => document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    };
 
     const businessQ = useQuery({
         queryKey: profileBusinessKey(slug),
@@ -139,8 +160,8 @@ export default function PublicBusinessProfile() {
     const services = servicesQ.data ?? EMPTY_SERVICES;
     const staff = staffQ.data ?? EMPTY_STAFF;
 
-    const topServices = useMemo(() => services.slice(0, 6), [services]);
-    const topStaff = useMemo(() => staff.slice(0, 6), [staff]);
+    const topServices = useMemo(() => showAllServices ? services : services.slice(0, PREVIEW_COUNT), [services, showAllServices]);
+    const topStaff = useMemo(() => showAllStaff ? staff : staff.slice(0, PREVIEW_COUNT), [staff, showAllStaff]);
 
     const seoJsonLd = useMemo(() => business ? {
         "@context": "https://schema.org",
@@ -434,10 +455,31 @@ export default function PublicBusinessProfile() {
                                                     </div>
 
                                                 </div>
+                                                {service.description ? <p className="mt-3 line-clamp-3 text-sm leading-6 text-[var(--vz-muted)]">{service.description}</p> : null}
+                                                <div className="mt-4 flex flex-wrap items-center gap-2">
+                                                    <Link
+                                                        to={`/book/${business.slug}?service_id=${service.id}&source=website`}
+                                                        className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[var(--vz-primary)] px-4 text-sm font-semibold text-[var(--vz-on-primary)] transition hover:bg-[var(--vz-primary-hover)]"
+                                                    >
+                                                        {extra.bookService}<ArrowRight className="h-4 w-4 shrink-0" />
+                                                    </Link>
+                                                    {service.portfolio_count ? (
+                                                        <button type="button" onClick={() => showWorks({ service_id: service.id })}
+                                                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 text-sm font-medium text-[var(--vz-text-secondary)] hover:border-[var(--vz-line-strong)]">
+                                                            <Images className="h-4 w-4" /> {extra.seeWorks.replace("{n}", String(service.portfolio_count))}
+                                                        </button>
+                                                    ) : null}
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
                                 )}
+                                {services.length > PREVIEW_COUNT ? (
+                                    <button type="button" aria-expanded={showAllServices} onClick={() => setShowAllServices((value) => !value)}
+                                        className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-5 text-sm font-semibold text-[var(--vz-text)] hover:bg-[var(--vz-surface-2)]">
+                                        {showAllServices ? extra.showLess : `${extra.seeAll} (${services.length})`}
+                                    </button>
+                                ) : null}
                             </motion.section>
                             )}
 
@@ -494,9 +536,16 @@ export default function PublicBusinessProfile() {
                                                     <span className="rounded-lg border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-1 text-xs font-medium text-[var(--vz-text-secondary)]">{publicRoleLabel(person.role, locale)}</span>
                                                 </div>
 
+                                                {person.portfolio_count ? (
+                                                    <button type="button" onClick={() => showWorks({ staff_id: person.id })}
+                                                        className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 text-sm font-medium text-[var(--vz-text-secondary)] hover:border-[var(--vz-line-strong)]">
+                                                        <Images className="h-4 w-4" /> {extra.seeWorks.replace("{n}", String(person.portfolio_count))}
+                                                    </button>
+                                                ) : null}
+
                                                 {person.is_bookable ? (
                                                     <Link
-                                                        to={`/book/${business.slug}?staff_id=${person.id}&source=business_profile`}
+                                                        to={`/book/${business.slug}?staff_id=${person.id}&source=website`}
                                                         className="vizit-profile-staff-book mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[var(--vz-primary)] px-4 text-sm font-semibold text-[var(--vz-on-primary)] transition hover:bg-[var(--vz-primary-hover)]"
                                                     >
                                                         {text.bookSpecialist}<ArrowRight className="h-4 w-4 shrink-0" />
@@ -507,8 +556,28 @@ export default function PublicBusinessProfile() {
                                         ))}
                                     </div>
                                 )}
+                                {staff.length > PREVIEW_COUNT ? (
+                                    <button type="button" aria-expanded={showAllStaff} onClick={() => setShowAllStaff((value) => !value)}
+                                        className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-5 text-sm font-semibold text-[var(--vz-text)] hover:bg-[var(--vz-surface-2)]">
+                                        {showAllStaff ? extra.showLess : `${extra.seeAll} (${staff.length})`}
+                                    </button>
+                                ) : null}
                             </motion.section>
                             )}
+
+                            <PortfolioSection
+                                key={`${portfolioFilter.staff_id ?? 0}-${portfolioFilter.service_id ?? 0}`}
+                                slug={business.slug}
+                                preview={business.portfolio_preview ?? []}
+                                total={business.portfolio_count ?? 0}
+                                staff={business.show_staff !== false ? staff : []}
+                                services={business.show_services !== false ? services : []}
+                                filter={portfolioFilter}
+                                onFilterChange={setPortfolioFilter}
+                                locale={locale}
+                            />
+
+                            <AmenitiesSection locations={business.locations} locale={locale} />
                         </div>
 
                         <motion.section

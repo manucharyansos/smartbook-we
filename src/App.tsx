@@ -48,6 +48,7 @@ const Analytics = lazy(() => import("./pages/Analytics"));
 const Calendar = lazy(() => import("./pages/Calendar").then((m) => ({ default: m.Calendar })));
 const Services = lazy(() => import("./pages/Services"));
 const Staff = lazy(() => import("./pages/Staff"));
+const Portfolio = lazy(() => import("./pages/Portfolio"));
 const Clients = lazy(() => import("./pages/Clients"));
 const Tasks = lazy(() => import("./pages/Tasks"));
 const BusinessSettings = lazy(() => import("./pages/BusinessSettings"));
@@ -152,6 +153,7 @@ export default function App() {
                                 <Route path="calendar" element={<BusinessScreen><Calendar /></BusinessScreen>} />
                                 <Route path="services" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><BusinessScreen screen="catalog"><Services /></BusinessScreen></RequireBusinessRoles>} />
                                 <Route path="staff" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><BusinessScreen screen="catalog"><Staff /></BusinessScreen></RequireBusinessRoles>} />
+                                <Route path="portfolio" element={<RequireBusinessRoles roles={["owner", "manager"]}><BusinessScreen screen="catalog"><Portfolio /></BusinessScreen></RequireBusinessRoles>} />
                                 <Route path="clients" element={<Clients />} />
                                 <Route path="tasks" element={<RequireFeature feature="tasks"><Tasks /></RequireFeature>} />
                                 <Route path="analytics" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><RequireFeature feature="analytics"><BusinessScreen><Analytics /></BusinessScreen></RequireFeature></RequireBusinessRoles>} />

@@ -20,6 +20,8 @@ import {
     Images,
 } from "lucide-react";
 import AmenitiesSection from "../components/public/AmenitiesSection";
+import ReviewsSection from "../components/reviews/ReviewsSection";
+import { RatingBadge } from "../components/reviews/Stars";
 import PortfolioSection, { type PortfolioFilter } from "../components/public/PortfolioSection";
 
 import { PublicBusinessFooter, PublicBusinessHeader } from "../components/public/PublicBusinessChrome";
@@ -288,6 +290,9 @@ export default function PublicBusinessProfile() {
                                             <h1 className="break-words text-3xl font-semibold tracking-tight text-[var(--vz-text)] sm:text-4xl lg:text-5xl">
                                                 {business.name}
                                             </h1>
+                                            {business.rating?.count ? (
+                                                <a href="#reviews" className="mt-2 inline-flex"><RatingBadge rating={business.rating} /></a>
+                                            ) : null}
                                             <p className="mt-3 max-w-3xl text-base leading-7 text-[var(--vz-text-secondary)]">
                                                 {localizedText(business, "short_description", locale) || text.defaultDescription}
                                             </p>
@@ -531,6 +536,7 @@ export default function PublicBusinessProfile() {
                                                             <div className="text-sm text-[var(--vz-muted)]">
                                                                 {publicRoleLabel(person.role, locale)}
                                                             </div>
+                                                            {person.rating?.count ? <RatingBadge rating={person.rating} className="mt-1 text-xs" /> : null}
                                                         </div>
                                                     </div>
 
@@ -585,6 +591,8 @@ export default function PublicBusinessProfile() {
                                 onFilterChange={setPortfolioFilter}
                                 locale={locale}
                             />
+
+                            <ReviewsSection slug={business.slug} summary={business.rating} staff={staff} />
 
                             <AmenitiesSection locations={business.locations} locale={locale} />
                         </div>

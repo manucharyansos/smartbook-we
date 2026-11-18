@@ -36,6 +36,29 @@ export type PublicLocation = {
     area_sqm?: number | null;
 };
 
+export type RatingSummary = { average: number | null; count: number; shown?: boolean };
+
+export type PublicReview = {
+    id: number;
+    rating: number;
+    comment: string | null;
+    author_name: string;
+    service: { id: number; name: string } | null;
+    staff: { id: number; name: string } | null;
+    reply: string | null;
+    replied_at: string | null;
+    created_at: string | null;
+};
+
+export type ReviewState = {
+    eligible: boolean;
+    reason: "already_reviewed" | "not_visited" | "not_finished" | "expired" | null;
+    deadline: string | null;
+    review: { id: number; rating: number; comment: string | null; reply: string | null; hidden: boolean } | null;
+};
+
+export type FreeSlot = { time: string; service_id: number | null };
+
 export type PublicPortfolioItem = {
     id: number;
     url: string | null;
@@ -99,6 +122,7 @@ export type PublicBusiness = {
     gallery?: import("./rentalApi").GalleryItem[];
     portfolio_count?: number;
     portfolio_preview?: PublicPortfolioItem[];
+    rating?: RatingSummary;
     rental?: import("./rentalApi").RentalRates | null;
     settings?: {
         has_rooms: boolean;
@@ -108,6 +132,9 @@ export type PublicBusiness = {
 };
 
 export type PublicDirectoryBusiness = {
+    rating?: RatingSummary;
+    matched_staff?: { id: number; name: string; is_bookable: boolean }[];
+    free_slots?: FreeSlot[];
     id: number;
     name: string;
     slug: string;
@@ -180,6 +207,7 @@ export type PublicStaff = {
     is_bookable: boolean;
     location_id?: number | null;
     portfolio_count?: number;
+    rating?: RatingSummary;
 };
 
 export type Slot = {
@@ -253,6 +281,7 @@ export type PublicBookingDetail = {
 };
 
 export type PublicBookingItem = {
+    review_state?: ReviewState | null;
     id: number;
     booking_code: string;
     status: string;
@@ -369,6 +398,55 @@ function buildPublicBusinessQuery(params?: {
     }
 
     return query;
+}
+
+/** Server-side directory search: specialist names, and free time on a day (date YYYY-MM-DD, part of the day). */
+export async function searchPublicBusinesses(params: { search?: string; date?: string; part?: "morning" | "afternoon" | "evening" }): Promise<PublicDirectoryBusiness[]> {
+    const query: Record<string, string | number> = { per_page: 100 };
+    if (params.search?.trim()) query.search = params.search.trim();
+    if (params.date) query.date = params.date;
+    if (params.part) query.part = params.part;
+    const { data } = await publicApi.get("/v1/public/businesses", { params: query });
+    return extractBusinessList(data);
+}
+
+export async function fetchPublicReviews(slug: string, params?: { staff_id?: number; page?: number }): Promise<{ items: PublicReview[]; total: number; lastPage: number; summary: RatingSummary }> {
+    const { data } = await publicApi.get(`/public/businesses/${slug}/reviews`, { params });
+    return {
+        items: (data?.data ?? []) as PublicReview[],
+        total: Number(data?.meta?.total ?? 0),
+        lastPage: Number(data?.meta?.last_page ?? 1),
+        summary: (data?.meta?.summary ?? { average: null, count: 0, shown: false }) as RatingSummary,
+    };
+}
+
+export type ReviewAccess = { token?: string | null; reviewToken?: string | null; bookingId?: number | null };
+
+function reviewHeaders(access: ReviewAccess) {
+    return {
+        ...(access.token ? { "X-Guest-Token": access.token } : {}),
+        ...(access.reviewToken ? { "X-Review-Token": access.reviewToken } : {}),
+    };
+}
+
+export type BookingReviewContext = ReviewState & {
+    booking: { id: number; booking_code: string; starts_at: string | null; business: { name: string; slug: string; logo_url?: string | null } | null; service: { name: string } | null; staff: { name: string } | null };
+};
+
+export async function fetchBookingReview(code: string, access: ReviewAccess): Promise<BookingReviewContext> {
+    const { data } = await publicApi.get(`/public/bookings/${encodeURIComponent(code)}/review`, {
+        params: access.bookingId ? { booking_id: access.bookingId } : undefined,
+        headers: reviewHeaders(access),
+    });
+    return data.data as BookingReviewContext;
+}
+
+export async function submitBookingReview(code: string, access: ReviewAccess, payload: { rating: number; comment?: string | null }) {
+    const { data } = await publicApi.post(`/public/bookings/${encodeURIComponent(code)}/review`, {
+        ...payload,
+        ...(access.bookingId ? { booking_id: access.bookingId } : {}),
+    }, { headers: reviewHeaders(access) });
+    return data.data as ReviewState["review"];
 }
 
 export async function fetchPublicBusinesses(params?: {

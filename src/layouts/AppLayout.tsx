@@ -7,7 +7,7 @@ import {
   BarChart3, CalendarDays, LogOut, Menu, Scissors, Users,
   LayoutDashboard, Settings, ChevronRight, Sparkles, X,
   PanelLeftClose, PanelLeftOpen, Award, Gift, Star, Landmark,
-  ClipboardList, Contact, Megaphone, Images, type LucideProps,
+  ClipboardList, Contact, Megaphone, Images, MessageSquareQuote, type LucideProps,
 } from "lucide-react";
 import { cn } from "../lib/cn";
 import { useAuth } from "../store/auth";
@@ -31,6 +31,7 @@ const baseNavItems: NavItem[] = [
   { to: "/app/services", label: "Ծառայություններ", icon: Scissors },
   { to: "/app/staff", label: "Աշխատակիցներ", icon: Users },
   { to: "/app/portfolio", label: "Աշխատանքներ", icon: Images },
+  { to: "/app/reviews", label: "Կարծիքներ", icon: MessageSquareQuote },
   { to: "/app/clients", label: "Հաճախորդներ", icon: Contact },
   { to: "/app/tasks", label: "Ամրագրումների վահանակ", icon: ClipboardList, feature: "tasks" },
   { to: "/app/analytics", label: "Վերլուծություն", icon: BarChart3, feature: "analytics" },
@@ -52,19 +53,19 @@ const navLinkActive = "bg-[var(--vz-accent-soft)] font-semibold text-[var(--vz-a
 const workspaceCopy = {
   hy: {
     growth: "Աճ",
-    nav: { "/app/dashboard": "Վահանակ", "/app/calendar": "Օրացույց", "/app/services": "Ծառայություններ", "/app/staff": "Աշխատակիցներ", "/app/portfolio": "Աշխատանքներ", "/app/clients": "Հաճախորդներ", "/app/tasks": "Ամրագրումների վահանակ", "/app/analytics": "Վերլուծություն", "/app/billing": "Պլան", "/app/settings": "Կարգավորումներ" },
+    nav: { "/app/dashboard": "Վահանակ", "/app/calendar": "Օրացույց", "/app/services": "Ծառայություններ", "/app/staff": "Աշխատակիցներ", "/app/portfolio": "Աշխատանքներ", "/app/reviews": "Կարծիքներ", "/app/clients": "Հաճախորդներ", "/app/tasks": "Ամրագրումների վահանակ", "/app/analytics": "Վերլուծություն", "/app/billing": "Պլան", "/app/settings": "Կարգավորումներ" },
     medicalNav: { "/app/services": "Բժշկական ծառայություններ", "/app/staff": "Բժիշկներ և թիմ", "/app/clients": "Պացիենտներ", "/app/tasks": "Այցերի վահանակ" },
     giftCards: "Նվերի քարտեր", loyalty: "Լոյալություն", more: "Ավելին", logout: "Ելք", navigation: "Նավիգացիա", menu: "Մենյու", openMenu: "Բացել մենյուն", closeMenu: "Փակել մենյուն", loading: "Բեռնվում է…", workspace: "Աշխատանքային միջավայր", owner: "Սեփականատեր", manager: "Կառավարիչ", staff: "Աշխատակից", superAdmin: "Սուպեր ադմին", healthcare: "Առողջապահություն", services: "Ծառայություններ", trial: "Փորձաշրջան", daysLeft: "օր մնաց", expand: "Բացել կողային վահանակը", collapse: "Փոքրացնել կողային վահանակը", hintTitle: "Արագ սկիզբ", hintText: "Ավելացրեք ծառայությունները, բժիշկներին և նրանց աշխատաժամերը, ապա ընդունեք առաջին այցը։", hintTextServices: "Ավելացրեք ծառայությունները, աշխատակիցներին և նրանց աշխատաժամերը, ապա ընդունեք առաջին ամրագրումը։",
   },
   ru: {
     growth: "Рост",
-    nav: { "/app/dashboard": "Панель", "/app/calendar": "Календарь", "/app/services": "Услуги", "/app/staff": "Сотрудники", "/app/portfolio": "Работы", "/app/clients": "Клиенты", "/app/tasks": "Панель записей", "/app/analytics": "Аналитика", "/app/billing": "Тариф", "/app/settings": "Настройки" },
+    nav: { "/app/dashboard": "Панель", "/app/calendar": "Календарь", "/app/services": "Услуги", "/app/staff": "Сотрудники", "/app/portfolio": "Работы", "/app/reviews": "Отзывы", "/app/clients": "Клиенты", "/app/tasks": "Панель записей", "/app/analytics": "Аналитика", "/app/billing": "Тариф", "/app/settings": "Настройки" },
     medicalNav: { "/app/services": "Медицинские услуги", "/app/staff": "Врачи и команда", "/app/clients": "Пациенты", "/app/tasks": "Панель визитов" },
     giftCards: "Подарочные карты", loyalty: "Лояльность", more: "Ещё", logout: "Выйти", navigation: "Навигация", menu: "Меню", openMenu: "Открыть меню", closeMenu: "Закрыть меню", loading: "Загрузка…", workspace: "Рабочее пространство", owner: "Владелец", manager: "Менеджер", staff: "Сотрудник", superAdmin: "Суперадмин", healthcare: "Здравоохранение", services: "Услуги", trial: "Пробный период", daysLeft: "дн. осталось", expand: "Развернуть боковую панель", collapse: "Свернуть боковую панель", hintTitle: "Быстрый старт", hintText: "Добавьте услуги, врачей и их расписание, затем примите первый визит.", hintTextServices: "Добавьте услуги, сотрудников и их расписание, затем примите первую запись.",
   },
   en: {
     growth: "Growth",
-    nav: { "/app/dashboard": "Dashboard", "/app/calendar": "Calendar", "/app/services": "Services", "/app/staff": "Staff", "/app/portfolio": "Portfolio", "/app/clients": "Clients", "/app/tasks": "Booking board", "/app/analytics": "Analytics", "/app/billing": "Plan", "/app/settings": "Settings" },
+    nav: { "/app/dashboard": "Dashboard", "/app/calendar": "Calendar", "/app/services": "Services", "/app/staff": "Staff", "/app/portfolio": "Portfolio", "/app/reviews": "Reviews", "/app/clients": "Clients", "/app/tasks": "Booking board", "/app/analytics": "Analytics", "/app/billing": "Plan", "/app/settings": "Settings" },
     medicalNav: { "/app/services": "Medical services", "/app/staff": "Doctors & team", "/app/clients": "Patients", "/app/tasks": "Visit board" },
     giftCards: "Gift cards", loyalty: "Loyalty", more: "More", logout: "Log out", navigation: "Navigation", menu: "Menu", openMenu: "Open menu", closeMenu: "Close menu", loading: "Loading…", workspace: "Workspace", owner: "Owner", manager: "Manager", staff: "Staff", superAdmin: "Super admin", healthcare: "Healthcare", services: "Services", trial: "Trial", daysLeft: "days left", expand: "Expand sidebar", collapse: "Collapse sidebar", hintTitle: "Quick start", hintText: "Add services, doctors and their schedules, then accept the first visit.", hintTextServices: "Add services, staff and their schedules, then accept the first booking.",
   },
@@ -100,7 +101,7 @@ export function AppLayout() {
       return { ...item, label: healthcareLabel ?? text.nav[item.to as keyof typeof text.nav] ?? item.label };
     });
     if (isRental) {
-      items = items.filter((item) => !["/app/services", "/app/staff", "/app/portfolio", "/app/tasks"].includes(item.to));
+      items = items.filter((item) => !["/app/services", "/app/staff", "/app/portfolio", "/app/reviews", "/app/tasks"].includes(item.to));
       const labels: Record<string, string> = { "/app/dashboard": rentalText.dashboard, "/app/calendar": rentalText.calendar, "/app/analytics": rentalText.analytics, "/app/settings": rentalText.settings };
       items = items.map((item) => ({ ...item, label: labels[item.to] || item.label }));
     }

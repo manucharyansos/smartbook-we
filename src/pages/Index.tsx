@@ -1,5 +1,6 @@
 import HomePlansSection from "../components/pricing/HomePlansSection";
 import { rentalCopy } from "../i18n/rentals";
+import { RatingBadge } from "../components/reviews/Stars";
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
@@ -59,6 +60,7 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { cn } from "../lib/cn";
 import {
   fetchPublicBusinesses,
+  searchPublicBusinesses,
   fetchPublicBusiness,
   fetchPublicCategories,
   fetchPublicMapPins,
@@ -661,20 +663,52 @@ function SectionBadge({ children }: { children: ReactNode }) {
   return <div className="vizit-section-badge inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold shadow-sm backdrop-blur-2xl sm:text-sm">{children}</div>;
 }
 
+type DayPart = "" | "morning" | "afternoon" | "evening";
+
+const freeTimeCopy = {
+  hy: { day: "Ազատ ժամ", anyDay: "Ցանկացած օր", today: "Այսօր", tomorrow: "Վաղը", part: "Ժամ", anyTime: "Ցանկացած ժամ", morning: "Առավոտ (մինչև 12:00)", afternoon: "Կեսօր (12:00–17:00)", evening: "Երեկո (17:00-ից)", free: "Ազատ ժամեր", searching: "Ստուգում ենք ազատ ժամերը…", none: "Այս օրը ազատ ժամով բիզնես չգտնվեց։ Փորձեք այլ օր կամ ժամ։", specialist: "Մասնագետ" },
+  ru: { day: "Свободное время", anyDay: "Любой день", today: "Сегодня", tomorrow: "Завтра", part: "Время", anyTime: "Любое время", morning: "Утро (до 12:00)", afternoon: "День (12:00–17:00)", evening: "Вечер (с 17:00)", free: "Свободное время", searching: "Проверяем свободное время…", none: "На этот день нет бизнесов со свободным временем. Попробуйте другой день или время.", specialist: "Специалист" },
+  en: { day: "Free time", anyDay: "Any day", today: "Today", tomorrow: "Tomorrow", part: "Time", anyTime: "Any time", morning: "Morning (before 12:00)", afternoon: "Afternoon (12:00–17:00)", evening: "Evening (from 17:00)", free: "Free times", searching: "Checking free times…", none: "No business has free time on this day. Try another day or time.", specialist: "Specialist" },
+} as const;
+
+function localYmd(offsetDays = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function useDebounced<T>(value: T, delay = 350): T {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebounced(value), delay);
+    return () => window.clearTimeout(timer);
+  }, [value, delay]);
+  return debounced;
+}
+
 function SearchPanel({
   search,
   setSearch,
   onSubmit,
   locationStatus,
   onUseLocation,
+  day,
+  setDay,
+  part,
+  setPart,
 }: {
   search: string;
   setSearch: (value: string) => void;
   onSubmit: () => void;
   locationStatus: LocationStatus;
   onUseLocation: () => void;
+  day: string;
+  setDay: (value: string) => void;
+  part: DayPart;
+  setPart: (value: DayPart) => void;
 }) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const ft = freeTimeCopy[locale];
   const locationValue = locationStatus === "loading"
     ? t("search.locating")
     : locationStatus === "active"
@@ -732,6 +766,26 @@ function SearchPanel({
         <button type="submit" className="vizit-search-submit inline-flex h-[54px] min-w-0 items-center justify-center gap-2 rounded-[16px] bg-[#5b2fa8] px-5 text-[14px] font-semibold text-white shadow-[0_14px_30px_rgba(91,47,168,0.24)] transition hover:bg-[#3e1f78] dark:bg-[#a980f3] dark:text-[#160d22] dark:hover:bg-[#bd9cf8] md:h-auto">
           <Search className="h-4 w-4" /> {t("search.button")}
         </button>
+      </div>
+      <div className="vizit-free-time-filter mt-2 grid gap-2 border-t border-[#e8e2f0] px-1 pt-2 dark:border-[#312641] sm:grid-cols-2">
+        <label className="min-w-0 px-2 text-left text-[13px] font-semibold text-[#6b6178] dark:text-[#b7adc5]">
+          {ft.day}
+          <select value={day} onChange={(event) => setDay(event.target.value)} className="mt-1 h-11 w-full min-w-0 rounded-xl border border-[#e8e2f0] bg-white px-2 text-[14px] font-medium text-[#241736] outline-none dark:border-[#312641] dark:bg-[#151020] dark:text-white">
+            <option value="">{ft.anyDay}</option>
+            {Array.from({ length: 14 }, (_, n) => localYmd(n)).map((value, n) => (
+              <option key={value} value={value}>{n === 0 ? ft.today : n === 1 ? ft.tomorrow : new Date(`${value}T12:00:00`).toLocaleDateString(locale === "hy" ? "hy-AM" : locale, { weekday: "short", day: "numeric", month: "short" })}</option>
+            ))}
+          </select>
+        </label>
+        <label className="min-w-0 px-2 text-left text-[13px] font-semibold text-[#6b6178] dark:text-[#b7adc5]">
+          {ft.part}
+          <select value={part} disabled={!day} onChange={(event) => setPart(event.target.value as DayPart)} className="mt-1 h-11 w-full min-w-0 rounded-xl border border-[#e8e2f0] bg-white px-2 text-[14px] font-medium text-[#241736] outline-none disabled:opacity-60 dark:border-[#312641] dark:bg-[#151020] dark:text-white">
+            <option value="">{ft.anyTime}</option>
+            <option value="morning">{ft.morning}</option>
+            <option value="afternoon">{ft.afternoon}</option>
+            <option value="evening">{ft.evening}</option>
+          </select>
+        </label>
       </div>
       {locationError ? <p className="px-3 pb-1 pt-2 text-left text-xs font-medium text-rose-600" role="status">{locationError}</p> : null}
     </motion.form>
@@ -1178,8 +1232,10 @@ function MobileMapBusinessSheet({
   );
 }
 
-function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: number }) {
+function BusinessCard({ item, index, day }: { item: PublicDirectoryBusiness; index: number; day?: string }) {
   const { locale, t } = useLanguage();
+  const ft = freeTimeCopy[locale];
+  const freeSlots = day ? item.free_slots ?? [] : [];
   const vertical = normalizeVertical(item.category?.vertical ?? item.vertical ?? item.business_type);
   const isHealthcare = vertical === "healthcare";
   const Icon = isHealthcare ? HeartPulse : Sparkles;
@@ -1226,6 +1282,22 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
             </Link>
           </div>
         </header>
+        {item.rating?.count || item.matched_staff?.length || freeSlots.length ? (
+          <div className="vizit-business-extras mb-2 space-y-1.5 text-[11px] sm:text-xs">
+            {item.rating?.count ? <RatingBadge rating={item.rating} className="text-xs" /> : null}
+            {item.matched_staff?.length ? <div className="truncate text-[var(--vz-text-secondary)]">{ft.specialist}: <b>{item.matched_staff.map((person) => person.name).join(", ")}</b></div> : null}
+            {freeSlots.length ? (
+              <div className="flex flex-wrap items-center gap-1" aria-label={ft.free}>
+                {freeSlots.map((slot) => (
+                  <Link key={slot.time} to={`/book/${item.slug}?${new URLSearchParams({ ...(slot.service_id ? { service_id: String(slot.service_id) } : {}), date: day ?? "", source: "website" }).toString()}`}
+                    className="inline-flex min-h-8 items-center rounded-lg border border-[var(--vz-line-strong)] bg-[var(--vz-accent-soft)] px-2 font-semibold text-[var(--vz-accent-text)]">
+                    {slot.time}
+                  </Link>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
         <p className="vizit-business-description hidden min-h-[40px] text-[13px] leading-5 text-slate-600 dark:text-slate-300 md:line-clamp-2 sm:min-h-[44px] sm:text-sm sm:leading-[22px]">{localizedText(item, "short_description", locale) || (item.business_type === "rentals" ? rentalCopy[locale].book : t("business.card.defaultDescription"))}</p>
         {item.business_type === "rentals" ? <p className="rental-muted hidden md:block" style={{ marginTop: 16 }}>{item.rental_hourly_price != null ? `${Number(item.rental_hourly_price).toLocaleString()} ֏ · ${rentalCopy[locale].hourly}` : rentalCopy[locale].title}</p> : <>
         <div className="vizit-business-stats mt-4 hidden grid-cols-2 gap-2 text-[11px] text-slate-600 dark:text-slate-300 md:grid sm:text-xs">
@@ -1245,6 +1317,9 @@ function BusinessCard({ item, index }: { item: PublicDirectoryBusiness; index: n
 export default function Index() {
   const { t, locale } = useLanguage();
   const [search, setSearch] = useState("");
+  const [day, setDay] = useState("");
+  const [part, setPart] = useState<DayPart>("");
+  const debouncedSearch = useDebounced(search.trim());
   const [filter, setFilter] = useState<BusinessFilter>("all");
   const [selectedCategorySlug, setSelectedCategorySlug] = useState<string | null>(null);
   const [selectedPinKey, setSelectedPinKey] = useState<string | null>(null);
@@ -1281,7 +1356,23 @@ export default function Index() {
     staleTime: 60_000,
   });
 
-  const allBusinesses = useMemo(() => businessesQ.data ?? [], [businessesQ.data]);
+  // Server search adds specialist-name matches and, for a chosen day, keeps only businesses with free time.
+  const serverSearchQ = useQuery({
+    queryKey: ["public-businesses-server-search", debouncedSearch.length >= 2 ? debouncedSearch : "", day, part],
+    queryFn: () => searchPublicBusinesses({ search: debouncedSearch.length >= 2 ? debouncedSearch : undefined, date: day || undefined, part: day ? part || undefined : undefined }),
+    enabled: Boolean(day) || debouncedSearch.length >= 2,
+    retry: false,
+    staleTime: 60_000,
+  });
+  const serverMatches = useMemo(() => new Map((serverSearchQ.data ?? []).map((business) => [business.id, business])), [serverSearchQ.data]);
+  const allBusinesses = useMemo(() => {
+    const base = businessesQ.data ?? [];
+    if (!serverSearchQ.data) return base;
+    return base.map((business) => {
+      const match = serverMatches.get(business.id);
+      return match ? { ...business, rating: match.rating ?? business.rating, matched_staff: match.matched_staff, free_slots: match.free_slots } : business;
+    });
+  }, [businessesQ.data, serverMatches, serverSearchQ.data]);
   const businessesById = useMemo(() => new Map(allBusinesses.map((business) => [business.id, business])), [allBusinesses]);
   const allCategories = useMemo(() => mergeCategories(mergeCategories(categoriesQ.data ?? [], defaultPublicCategories), deriveCategories(allBusinesses)), [allBusinesses, categoriesQ.data]);
   const categories = useMemo(
@@ -1289,11 +1380,13 @@ export default function Index() {
     [allCategories, filter],
   );
   const filteredBusinesses = useMemo(() => {
-    const matching = allBusinesses.filter((business) => matchesFilter(business, filter) && matchesCategory(business, selectedCategorySlug) && matchesSearch(business, search));
+    const matching = allBusinesses.filter((business) => matchesFilter(business, filter) && matchesCategory(business, selectedCategorySlug)
+      && (matchesSearch(business, search) || Boolean(business.matched_staff?.length && serverMatches.has(business.id)))
+      && (!day || (serverMatches.has(business.id) && Boolean(serverMatches.get(business.id)?.free_slots?.length))));
     return userLocation
       ? [...matching].sort((a, b) => nearestBusinessDistance(a, userLocation) - nearestBusinessDistance(b, userLocation))
       : matching;
-  }, [allBusinesses, filter, search, selectedCategorySlug, userLocation]);
+  }, [allBusinesses, day, filter, search, selectedCategorySlug, serverMatches, userLocation]);
   const apiPins = useMemo(() => (mapPinsQ.data ?? []).map(publicPinToMapPin).filter((pin) => matchesPinSearch(pin, search)), [mapPinsQ.data, search]);
   const pins = useMemo(() => {
     const source = apiPins.length || userLocation ? apiPins : buildPinsFromBusinesses(filteredBusinesses, locale);
@@ -1399,7 +1492,9 @@ export default function Index() {
 
               <motion.p variants={fadeUp} className="mx-auto mt-5 max-w-[560px] text-[15px] leading-7 text-[#6b6178] dark:text-[#b7adc5] sm:mt-6 sm:text-[17px] sm:leading-8 lg:mx-0">{t("hero.subtitle")}</motion.p>
 
-              <SearchPanel search={search} setSearch={setSearch} onSubmit={scrollToResults} locationStatus={locationStatus} onUseLocation={useCurrentLocation} />
+              <SearchPanel search={search} setSearch={setSearch} onSubmit={scrollToResults} locationStatus={locationStatus} onUseLocation={useCurrentLocation} day={day} setDay={(value) => { setDay(value); if (!value) setPart(""); }} part={part} setPart={setPart} />
+              {day && serverSearchQ.isFetching ? <p className="mt-2 text-sm text-[#6b6178] dark:text-[#b7adc5]" role="status">{freeTimeCopy[locale].searching}</p> : null}
+              {day && serverSearchQ.data && !serverSearchQ.isFetching && !filteredBusinesses.length ? <p className="mt-2 text-sm text-[#6b6178] dark:text-[#b7adc5]" role="status">{freeTimeCopy[locale].none}</p> : null}
 
               {businessesQ.isError ? (
                 <motion.div variants={fadeUp} className="mt-4 rounded-2xl border border-rose-300/50 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700 dark:border-rose-300/25 dark:bg-rose-500/10 dark:text-rose-200">
@@ -1637,7 +1732,7 @@ export default function Index() {
                 <h3 className="mt-5 text-2xl font-black text-slate-950 dark:text-white">{t("businesses.empty.title")}</h3>
               </div>
             ) : (
-              <div className="vizit-business-slider flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto px-3 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-[calc((100%_-_350px)/2)] lg:grid lg:grid-cols-2 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0 xl:grid-cols-3 2xl:grid-cols-4">{filteredBusinesses.map((item, index) => <BusinessCard key={item.id} item={item} index={index} />)}</div>
+              <div className="vizit-business-slider flex w-full min-w-0 snap-x snap-mandatory gap-4 overflow-x-auto px-3 pb-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:px-[calc((100%_-_350px)/2)] lg:grid lg:grid-cols-2 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0 xl:grid-cols-3 2xl:grid-cols-4">{filteredBusinesses.map((item, index) => <BusinessCard key={item.id} item={item} index={index} day={day} />)}</div>
             )}
           </div>
         </section>

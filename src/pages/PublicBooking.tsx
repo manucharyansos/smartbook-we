@@ -1,5 +1,6 @@
 import RentalPublic from "../components/rentals/RentalPublic";
 import { trackSiteEvent } from "@/lib/siteAnalytics";
+import { reviewCopy } from "@/components/reviews/reviewCopy";
 /* eslint-disable react-hooks/set-state-in-effect -- this form reconciles URL, location and async availability state after each external source updates */
 import { cloneElement, isValidElement, useEffect, useId, useMemo, useRef, useState, type ReactElement, type ReactNode } from "react";
 import { useRevealMessage } from "@/hooks/useRevealMessage";
@@ -587,7 +588,10 @@ function ServiceBooking() {
 
     const [serviceId, setServiceId] = useState<number>(0);
     const [staffId, setStaffId] = useState<number | "any">("any");
-    const [date, setDate] = useState<string>(todayYmd);
+    const [date, setDate] = useState<string>(() => {
+        const requested = searchParams.get("date") ?? "";
+        return /^\d{4}-\d{2}-\d{2}$/.test(requested) && requested >= todayYmd ? requested : todayYmd;
+    });
     const [time, setTime] = useState<string>("");
     const [singleSlotKey, setSingleSlotKey] = useState<string>("");
 
@@ -2825,7 +2829,18 @@ function ManageBookingCard({
                                         <div className="mt-1 text-[var(--vz-muted)]">#{booking.booking_code}</div>
                                     </div>
                                 </div>
-                                <div className="mt-3 flex justify-end">
+                                <div className="mt-3 flex flex-wrap justify-end gap-2">
+                                    {booking.review_state?.review ? (
+                                        <Link to={`/review/${encodeURIComponent(bookingCode)}?booking_id=${booking.id}&token=${encodeURIComponent(guestToken)}`}
+                                            className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-3 py-2 text-xs font-semibold text-[var(--vz-text-secondary)]">
+                                            <Star className="h-4 w-4 fill-amber-400 text-amber-400" /> {booking.review_state.review.rating}/5
+                                        </Link>
+                                    ) : booking.review_state?.eligible ? (
+                                        <Link to={`/review/${encodeURIComponent(bookingCode)}?booking_id=${booking.id}&token=${encodeURIComponent(guestToken)}`}
+                                            className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--vz-primary)] px-3 py-2 text-xs font-semibold text-[var(--vz-on-primary)]">
+                                            <Star className="h-4 w-4" /> {reviewCopy[locale].rateVisit}
+                                        </Link>
+                                    ) : null}
                                     <button
                                         type="button"
                                         onClick={() => openReschedule(booking.id, booking.starts_at)}

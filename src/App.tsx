@@ -49,6 +49,9 @@ const Calendar = lazy(() => import("./pages/Calendar").then((m) => ({ default: m
 const Services = lazy(() => import("./pages/Services"));
 const Staff = lazy(() => import("./pages/Staff"));
 const Portfolio = lazy(() => import("./pages/Portfolio"));
+const Reviews = lazy(() => import("./pages/Reviews"));
+const ReviewVisit = lazy(() => import("./pages/ReviewVisit"));
+const AdminReviews = lazy(() => import("./admin/pages/AdminReviews"));
 const Clients = lazy(() => import("./pages/Clients"));
 const Tasks = lazy(() => import("./pages/Tasks"));
 const BusinessSettings = lazy(() => import("./pages/BusinessSettings"));
@@ -110,6 +113,7 @@ export default function App() {
                     <Route path="/payment-return" element={<PaymentReturn />} />
                     {mockBankEnabled ? <Route path="/mock-bank/idbank" element={<MockBankIdBank />} /> : null}
                     <Route path="/book/:slug" element={<PublicBooking />} />
+                    <Route path="/review/:code" element={<ReviewVisit />} />
                     <Route path="/marketing/unsubscribe" element={<MarketingUnsubscribe />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/contact" element={<Contact />} />
@@ -132,6 +136,7 @@ export default function App() {
                         <Route path="businesses/:id" element={<RequireAdminRole roles={["super_admin"]}><BusinessDetails /></RequireAdminRole>} />
                         <Route path="users" element={<AdminUsers />} />
                         <Route path="admins" element={<RequireAdminRole roles={["super_admin"]}><AdminAdmins /></RequireAdminRole>} />
+                        <Route path="reviews" element={<RequireAdminRole roles={["super_admin"]}><AdminReviews /></RequireAdminRole>} />
                         <Route path="logs" element={<RequireAdminRole roles={["super_admin"]}><AdminLogs /></RequireAdminRole>} />
                         <Route path="site-analytics" element={<RequireAdminRole roles={["super_admin"]}><AdminSiteAnalytics /></RequireAdminRole>} />
                         <Route path="payments" element={<RequireAdminRole roles={["super_admin", "finance"]}><AdminPayments /></RequireAdminRole>} />
@@ -153,6 +158,7 @@ export default function App() {
                                 <Route path="calendar" element={<BusinessScreen><Calendar /></BusinessScreen>} />
                                 <Route path="services" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><BusinessScreen screen="catalog"><Services /></BusinessScreen></RequireBusinessRoles>} />
                                 <Route path="staff" element={<RequireBusinessRoles roles={["owner", "manager", "super_admin"]}><BusinessScreen screen="catalog"><Staff /></BusinessScreen></RequireBusinessRoles>} />
+                                <Route path="reviews" element={<RequireBusinessRoles roles={["owner", "manager"]}><BusinessScreen screen="catalog"><Reviews /></BusinessScreen></RequireBusinessRoles>} />
                                 <Route path="portfolio" element={<RequireBusinessRoles roles={["owner", "manager"]}><BusinessScreen screen="catalog"><Portfolio /></BusinessScreen></RequireBusinessRoles>} />
                                 <Route path="clients" element={<Clients />} />
                                 <Route path="tasks" element={<RequireFeature feature="tasks"><Tasks /></RequireFeature>} />

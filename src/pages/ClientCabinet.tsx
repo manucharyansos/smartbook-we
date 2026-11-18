@@ -8,6 +8,8 @@ import { useAuth } from "../store/auth";
 import { fadeUp, pageTransition, staggerContainer } from "../lib/motion";
 import { cn } from "../lib/cn";
 import { getErrorMessage } from "../lib/http";
+import CabinetReview from "../components/reviews/CabinetReview";
+import type { ReviewState } from "../lib/publicApi";
 
 type BookingRow = {
   id: number;
@@ -20,6 +22,7 @@ type BookingRow = {
   business: { name?: string | null; slug?: string | null; logo_url?: string | null; address?: string | null };
   service: { name?: string | null; duration_minutes?: number | null; price?: number | null; currency?: string | null };
   staff: { name?: string | null; avatar_url?: string | null };
+  review_state?: ReviewState | null;
 };
 
 async function fetchCabinet() {
@@ -200,6 +203,7 @@ export default function ClientCabinet() {
                     <div className="flex items-center gap-2"><UserRound className="h-4 w-4 text-[var(--vz-accent-text)]" /> {booking.staff?.name || "Աշխատակից չի նշվել"}</div>
                     <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-[var(--vz-accent-text)]" /> {booking.business?.address || "Հասցե չկա"}</div>
                   </div>
+                  <CabinetReview bookingId={booking.id} state={booking.review_state} />
                 </div>
               ))}
             </div>
@@ -220,6 +224,7 @@ export default function ClientCabinet() {
                     <StatusPill status={booking.status} />
                   </div>
                   <div className="mt-3 text-sm text-[var(--vz-text-secondary)]">{formatDate(booking.starts_at)}</div>
+                  <CabinetReview bookingId={booking.id} state={booking.review_state} />
                 </div>
               ))}
             </div>

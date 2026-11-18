@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Building2, CalendarDays, ChevronLeft, ChevronRight, CreditCard, FileText, Globe2, LayoutDashboard, Package, Shield, Users, X } from 'lucide-react';
+import { Building2, CalendarDays, ChevronLeft, ChevronRight, CreditCard, FileText, Globe2, LayoutDashboard, MessageSquareWarning, Package, Shield, Users, X } from 'lucide-react';
 import { cn } from '@/lib/cn';
 
 interface Props {
@@ -30,6 +30,7 @@ export default function AdminSidebar({ expanded, mobileOpen, onToggleExpanded, o
       ? [
           { path: '/admin/plans', icon: Package, label: 'Փաթեթներ' },
           { path: '/admin/admins', icon: Shield, label: 'Ադմիններ' },
+          { path: '/admin/reviews', icon: MessageSquareWarning, label: 'Կարծիքներ' },
           { path: '/admin/logs', icon: FileText, label: 'Մատյան' },
         ]
       : []),

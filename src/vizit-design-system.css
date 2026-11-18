@@ -1576,7 +1576,7 @@ body,
   --fc-page-bg-color: var(--vz-surface);
   --fc-neutral-bg-color: var(--vz-surface-2);
   --fc-neutral-text-color: var(--vz-muted);
-  --fc-today-bg-color: var(--vz-accent-subtle);
+  --fc-today-bg-color: color-mix(in srgb, var(--vz-accent-subtle) 45%, transparent);
   --fc-highlight-color: var(--vz-accent-soft);
   --fc-now-indicator-color: var(--vz-accent-text);
   color: var(--vz-text);

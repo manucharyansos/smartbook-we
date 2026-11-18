@@ -25,8 +25,8 @@ const clientsCopy = {
     filters: "Խելացի ֆիլտրեր", filtersText: "Գտեք ըստ կարգավիճակի, VIP նշման կամ խմբի։", search: "Փնտրել անուն, հեռախոս, էլ. փոստ կամ խումբ", allSegments: "Բոլոր տեսակները", grouped: "Խմբավորված", allStatuses: "Բոլոր կարգավիճակները", statusNew: "Նոր", returning: "Վերադարձող", lost: "Կորած", upcoming: "Առաջիկա այցով", allGroups: "Բոլոր խմբերը", clear: "Մաքրել ֆիլտրերը",
     list: "Պացիենտների ցուցակ", genericList: "Հաճախորդների ցուցակ", listText: "Ընտրեք անձին՝ ամբողջ պատմությունն ու բժշկական քարտը բացելու համար։", genericListText: "Ընտրեք հաճախորդին՝ ամբողջ պատմությունը բացելու համար։", loading: "Բեռնում ենք…", empty: "Պացիենտներ դեռ չկան", genericEmpty: "Հաճախորդներ դեռ չկան", emptyText: "Ավելացրեք առաջին գրառումը կամ փոխեք ֆիլտրերը։", visit: "այց", lastVisit: "Վերջին այց", nextVisit: "Հաջորդ այց", page: "Էջ", previous: "Նախորդ", next: "Հաջորդ",
     profile: "Պացիենտի քարտ", genericProfile: "Հաճախորդի քարտ", edit: "Խմբագրել", totalVisits: "Ընդհանուր այցեր", totalSpent: "Ընդհանուր ծախս", avgTicket: "Միջին վճարում", favoriteService: "Հաճախ ընտրված ծառայություն", favoriteStaff: "Հաճախ ընտրված մասնագետ", favoriteDoctor: "Հաճախ ընտրված բժիշկ", source: "Հիմնական աղբյուր", account: "Օգտատիրոջ հաշիվ", linked: "Կապված է", notLinked: "Դեռ չկա", completed: "Կատարված այցեր", cancellations: "Չեղարկումներ", noShow: "Չկայացած այցեր", blockReason: "Սև ցուցակի պատճառ",
-    medicalCard: "Բժշկական տեղեկություններ", birthDate: "Ծննդյան օր", bloodType: "Արյան խումբ", allergies: "Ալերգիաներ", emergency: "Արտակարգ կապ", medicalHistory: "Բժշկական պատմություն",
-    notes: "Նշումներ", general: "Ընդհանուր", visitNote: "Այց", medical: "Բժշկական", pin: "Ամրացնել", add: "Ավելացնել", notePlaceholder: "Գրեք այցի կամ պացիենտի մասին կարևոր նշումը…", pinned: "Ամրացված", noNotes: "Նշումներ դեռ չկան։",
+    medicalCard: "Բժշկական տեղեկություններ", extraCard: "Լրացուցիչ տեղեկություններ", birthDate: "Ծննդյան օր", bloodType: "Արյան խումբ", allergies: "Ալերգիաներ", emergency: "Արտակարգ կապ", medicalHistory: "Բժշկական պատմություն",
+    notes: "Նշումներ", general: "Ընդհանուր", visitNote: "Այց", medical: "Բժշկական", pin: "Ամրացնել", add: "Ավելացնել", notePlaceholder: "Գրեք այցի կամ պացիենտի մասին կարևոր նշումը…", genericNotePlaceholder: "Գրեք այցի կամ հաճախորդի մասին կարևոր նշումը…", pinned: "Ամրացված", noNotes: "Նշումներ դեռ չկան։",
     reminders: "Հիշեցումներ", reminderPlaceholder: "Ինչի՞ մասին հիշեցնել", internal: "Ներքին", atTime: "Հենց ժամին", min15: "15 րոպե առաջ", min30: "30 րոպե առաջ", hour1: "1 ժամ առաջ", hour3: "3 ժամ առաջ", day1: "1 օր առաջ", inApp: "Համակարգում", activeReminder: "Ակտիվ հիշեցում", details: "Մանրամասներ…", createReminder: "Ստեղծել հիշեցում", minBefore: "ր առաջ", disabled: "անջատված է", markDone: "Ավարտված", sendNow: "Ուղարկել հիմա", noReminders: "Հիշեցումներ դեռ չկան։",
     timeline: "Գործողությունների պատմություն", emptyTimeline: "Պատմությունը դեռ դատարկ է։", recentBookings: "Վերջին այցերը", service: "Ծառայություն", noBookings: "Դեռ այցեր չկան։", selectClient: "Ընտրեք պացիենտ", genericSelectClient: "Ընտրեք հաճախորդ", selectText: "Ցուցակից ընտրեք անձին՝ մանրամասն քարտը բացելու համար։",
     editClient: "Խմբագրել հաճախորդին", editPatient: "Խմբագրել պացիենտին", name: "Անուն և ազգանուն", namePlaceholder: "Օր․ Մարիամ Հովհաննիսյան", phone: "Հեռախոս", email: "Էլ. փոստ", group: "Խումբ", groupPlaceholder: "Օր․ VIP, կորպորատիվ", select: "Ընտրել", emergencyName: "Արտակարգ կապի անուն", emergencyPhone: "Արտակարգ կապի հեռախոս", nameShort: "Անուն", vipClient: "VIP հաճախորդ", vipPatient: "VIP պացիենտ", blacklist: "Սև ցուցակ", reason: "Սև ցուցակի պատճառ", reasonPlaceholder: "Նշեք պատճառը…", allergiesPlaceholder: "Օր․ լատեքս, պենիցիլին…", historyPlaceholder: "Այցերի ժամանակ հաշվի առնելու տեղեկություններ…", note: "Ընդհանուր նշում", profileNotePlaceholder: "Նախընտրություններ կամ այլ կարևոր տեղեկություն…", close: "Փակել", save: "Պահպանել", create: "Ստեղծել",
@@ -38,8 +38,8 @@ const clientsCopy = {
     filters: "Умные фильтры", filtersText: "Поиск по статусу, VIP-метке или группе.", search: "Поиск по имени, телефону, почте или группе", allSegments: "Все типы", grouped: "С группой", allStatuses: "Все статусы", statusNew: "Новый", returning: "Возвращается", lost: "Потерян", upcoming: "С визитом", allGroups: "Все группы", clear: "Сбросить фильтры",
     list: "Список пациентов", genericList: "Список клиентов", listText: "Выберите человека, чтобы открыть историю и медицинскую карту.", genericListText: "Выберите клиента, чтобы открыть полную историю.", loading: "Загрузка…", empty: "Пациентов пока нет", genericEmpty: "Клиентов пока нет", emptyText: "Добавьте первую запись или измените фильтры.", visit: "визитов", lastVisit: "Последний визит", nextVisit: "Следующий визит", page: "Страница", previous: "Назад", next: "Далее",
     profile: "Карта пациента", genericProfile: "Профиль клиента", edit: "Изменить", totalVisits: "Всего визитов", totalSpent: "Всего потрачено", avgTicket: "Средний чек", favoriteService: "Любимая услуга", favoriteStaff: "Любимый специалист", favoriteDoctor: "Любимый врач", source: "Основной источник", account: "Аккаунт клиента", linked: "Подключен", notLinked: "Пока нет", completed: "Завершенные визиты", cancellations: "Отмены", noShow: "Неявки", blockReason: "Причина блокировки",
-    medicalCard: "Медицинская информация", birthDate: "Дата рождения", bloodType: "Группа крови", allergies: "Аллергии", emergency: "Экстренный контакт", medicalHistory: "Медицинская история",
-    notes: "Заметки", general: "Общее", visitNote: "Визит", medical: "Медицинское", pin: "Закрепить", add: "Добавить", notePlaceholder: "Важная заметка о визите или пациенте…", pinned: "Закреплено", noNotes: "Заметок пока нет.",
+    medicalCard: "Медицинская информация", extraCard: "Дополнительная информация", birthDate: "Дата рождения", bloodType: "Группа крови", allergies: "Аллергии", emergency: "Экстренный контакт", medicalHistory: "Медицинская история",
+    notes: "Заметки", general: "Общее", visitNote: "Визит", medical: "Медицинское", pin: "Закрепить", add: "Добавить", notePlaceholder: "Важная заметка о визите или пациенте…", genericNotePlaceholder: "Важная заметка о визите или клиенте…", pinned: "Закреплено", noNotes: "Заметок пока нет.",
     reminders: "Напоминания", reminderPlaceholder: "О чем напомнить?", internal: "Внутреннее", atTime: "В назначенное время", min15: "За 15 минут", min30: "За 30 минут", hour1: "За 1 час", hour3: "За 3 часа", day1: "За 1 день", inApp: "В системе", activeReminder: "Напоминание активно", details: "Подробности…", createReminder: "Создать напоминание", minBefore: "мин. до", disabled: "отключено", markDone: "Завершено", sendNow: "Отправить сейчас", noReminders: "Напоминаний пока нет.",
     timeline: "История действий", emptyTimeline: "История пока пуста.", recentBookings: "Последние визиты", service: "Услуга", noBookings: "Визитов пока нет.", selectClient: "Выберите пациента", genericSelectClient: "Выберите клиента", selectText: "Выберите человека из списка, чтобы открыть карточку.",
     editClient: "Редактировать клиента", editPatient: "Редактировать пациента", name: "Имя и фамилия", namePlaceholder: "Напр. Мария Иванова", phone: "Телефон", email: "Эл. почта", group: "Группа", groupPlaceholder: "Напр. VIP, корпоративные", select: "Выбрать", emergencyName: "Имя экстренного контакта", emergencyPhone: "Телефон экстренного контакта", nameShort: "Имя", vipClient: "VIP-клиент", vipPatient: "VIP-пациент", blacklist: "Черный список", reason: "Причина блокировки", reasonPlaceholder: "Укажите причину…", allergiesPlaceholder: "Напр. латекс, пенициллин…", historyPlaceholder: "Информация, важная во время визитов…", note: "Общая заметка", profileNotePlaceholder: "Предпочтения и другая важная информация…", close: "Закрыть", save: "Сохранить", create: "Создать",
@@ -51,8 +51,8 @@ const clientsCopy = {
     filters: "Smart filters", filtersText: "Find people by status, VIP marker or group.", search: "Search name, phone, email or group", allSegments: "All types", grouped: "Grouped", allStatuses: "All statuses", statusNew: "New", returning: "Returning", lost: "Lost", upcoming: "Upcoming", allGroups: "All groups", clear: "Clear filters",
     list: "Patient list", genericList: "Client list", listText: "Select a person to open their full history and medical record.", genericListText: "Select a client to open their full history.", loading: "Loading…", empty: "No patients yet", genericEmpty: "No clients yet", emptyText: "Add the first record or change the filters.", visit: "visits", lastVisit: "Last visit", nextVisit: "Next visit", page: "Page", previous: "Previous", next: "Next",
     profile: "Patient record", genericProfile: "Client profile", edit: "Edit", totalVisits: "Total visits", totalSpent: "Total spent", avgTicket: "Average payment", favoriteService: "Favorite service", favoriteStaff: "Favorite specialist", favoriteDoctor: "Favorite doctor", source: "Main source", account: "Client account", linked: "Linked", notLinked: "Not linked", completed: "Completed visits", cancellations: "Cancellations", noShow: "No-shows", blockReason: "Block reason",
-    medicalCard: "Medical information", birthDate: "Date of birth", bloodType: "Blood type", allergies: "Allergies", emergency: "Emergency contact", medicalHistory: "Medical history",
-    notes: "Notes", general: "General", visitNote: "Visit", medical: "Medical", pin: "Pin", add: "Add", notePlaceholder: "Add an important note about the visit or patient…", pinned: "Pinned", noNotes: "No notes yet.",
+    medicalCard: "Medical information", extraCard: "Additional information", birthDate: "Date of birth", bloodType: "Blood type", allergies: "Allergies", emergency: "Emergency contact", medicalHistory: "Medical history",
+    notes: "Notes", general: "General", visitNote: "Visit", medical: "Medical", pin: "Pin", add: "Add", notePlaceholder: "Add an important note about the visit or patient…", genericNotePlaceholder: "Add an important note about the visit or client…", pinned: "Pinned", noNotes: "No notes yet.",
     reminders: "Reminders", reminderPlaceholder: "What should we remind you about?", internal: "Internal", atTime: "At the scheduled time", min15: "15 minutes before", min30: "30 minutes before", hour1: "1 hour before", hour3: "3 hours before", day1: "1 day before", inApp: "In app", activeReminder: "Reminder enabled", details: "Details…", createReminder: "Create reminder", minBefore: "min before", disabled: "disabled", markDone: "Done", sendNow: "Send now", noReminders: "No reminders yet.",
     timeline: "Activity history", emptyTimeline: "The history is empty.", recentBookings: "Recent visits", service: "Service", noBookings: "No visits yet.", selectClient: "Select a patient", genericSelectClient: "Select a client", selectText: "Select someone from the list to open the full record.",
     editClient: "Edit client", editPatient: "Edit patient", name: "Full name", namePlaceholder: "e.g. Mary Smith", phone: "Phone", email: "Email", group: "Group", groupPlaceholder: "e.g. VIP, corporate", select: "Select", emergencyName: "Emergency contact name", emergencyPhone: "Emergency contact phone", nameShort: "Name", vipClient: "VIP client", vipPatient: "VIP patient", blacklist: "Block list", reason: "Block reason", reasonPlaceholder: "Enter the reason…", allergiesPlaceholder: "e.g. latex, penicillin…", historyPlaceholder: "Information to consider during visits…", note: "General note", profileNotePlaceholder: "Preferences or other important information…", close: "Close", save: "Save", create: "Create",
@@ -635,16 +635,16 @@ export default function Clients() {
                   </div>
                 ) : null}
 
-                {(clientQ.data.birth_date || clientQ.data.blood_type || clientQ.data.allergies || clientQ.data.medical_history || clientQ.data.emergency_contact_name || clientQ.data.emergency_contact_phone) ? (
+                {(clientQ.data.birth_date || clientQ.data.allergies || (isHealthcare && (clientQ.data.blood_type || clientQ.data.medical_history || clientQ.data.emergency_contact_name || clientQ.data.emergency_contact_phone))) ? (
                   <div className="mt-4 rounded-[28px] border border-[var(--vz-line)] bg-[var(--vz-surface)] p-5 shadow-sm">
-                    <div className="text-sm font-semibold text-[var(--vz-text)]">{text.medicalCard}</div>
+                    <div className="text-sm font-semibold text-[var(--vz-text)]">{isHealthcare ? text.medicalCard : text.extraCard}</div>
                     <div className="mt-4 grid gap-3 sm:grid-cols-2">
                       <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]"><span className="text-[var(--vz-muted)]">{text.birthDate}</span><div className="mt-1 font-semibold text-[var(--vz-text)]">{clientQ.data.birth_date || "—"}</div></div>
-                      <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]"><span className="text-[var(--vz-muted)]">{text.bloodType}</span><div className="mt-1 font-semibold text-[var(--vz-text)]">{clientQ.data.blood_type || "—"}</div></div>
+                      {isHealthcare ? <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]"><span className="text-[var(--vz-muted)]">{text.bloodType}</span><div className="mt-1 font-semibold text-[var(--vz-text)]">{clientQ.data.blood_type || "—"}</div></div> : null}
                       <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]"><span className="text-[var(--vz-muted)]">{text.allergies}</span><div className="mt-1 font-semibold text-[var(--vz-text)]">{clientQ.data.allergies || "—"}</div></div>
-                      <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]"><span className="text-[var(--vz-muted)]">{text.emergency}</span><div className="mt-1 font-semibold text-[var(--vz-text)]">{clientQ.data.emergency_contact_name || "—"} {clientQ.data.emergency_contact_phone ? `· ${clientQ.data.emergency_contact_phone}` : ""}</div></div>
+                      {isHealthcare ? <div className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]"><span className="text-[var(--vz-muted)]">{text.emergency}</span><div className="mt-1 font-semibold text-[var(--vz-text)]">{clientQ.data.emergency_contact_name || "—"} {clientQ.data.emergency_contact_phone ? `· ${clientQ.data.emergency_contact_phone}` : ""}</div></div> : null}
                     </div>
-                    {clientQ.data.medical_history ? <div className="mt-3 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm leading-6 text-[var(--vz-text-secondary)]"><div className="text-[var(--vz-muted)]">{text.medicalHistory}</div><div className="mt-1 font-medium text-[var(--vz-text)]">{clientQ.data.medical_history}</div></div> : null}
+                    {isHealthcare && clientQ.data.medical_history ? <div className="mt-3 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] px-4 py-3 text-sm leading-6 text-[var(--vz-text-secondary)]"><div className="text-[var(--vz-muted)]">{text.medicalHistory}</div><div className="mt-1 font-medium text-[var(--vz-text)]">{clientQ.data.medical_history}</div></div> : null}
                   </div>
                 ) : null}
 
@@ -653,16 +653,16 @@ export default function Clients() {
                     <div className="flex items-center gap-2 text-sm font-semibold text-[var(--vz-text)]"><NotebookPen className="h-4 w-4 text-[var(--vz-accent-text)]" /> {text.notes}</div>
                     {canManage ? (
                       <div className="mt-4 space-y-3 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
-                        <div className="grid gap-3 xl:grid-cols-[1fr_auto_auto]">
-                          <select value={noteType} onChange={(e) => setNoteType(e.target.value)} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
+                        <div className="flex flex-wrap gap-3">
+                          <select value={noteType} onChange={(e) => setNoteType(e.target.value)} className="min-w-[140px] flex-1 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
                             <option value="general">{text.general}</option>
                             <option value="visit">{text.visitNote}</option>
-                            <option value="medical">{text.medical}</option>
+                            {isHealthcare ? <option value="medical">{text.medical}</option> : null}
                           </select>
                           <label className="inline-flex items-center gap-2 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm text-[var(--vz-text-secondary)]"><input type="checkbox" checked={notePinned} onChange={(e) => setNotePinned(e.target.checked)} /> <Pin className="h-4 w-4 text-[var(--vz-warning)]" /> {text.pin}</label>
                           <Button onClick={submitClientNote} loading={createNoteMut.isPending}>{text.add}</Button>
                         </div>
-                        <textarea value={noteBody} onChange={(e) => setNoteBody(e.target.value)} rows={3} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" placeholder={text.notePlaceholder} />
+                        <textarea value={noteBody} onChange={(e) => setNoteBody(e.target.value)} rows={3} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" placeholder={isHealthcare ? text.notePlaceholder : text.genericNotePlaceholder} />
                       </div>
                     ) : null}
                     <div className="mt-4 space-y-3">
@@ -672,7 +672,7 @@ export default function Clients() {
                             <div>
                               <div className="flex flex-wrap items-center gap-2">
                                 {note.is_pinned ? <span className="rounded-full bg-[var(--vz-warning-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-warning)]">{text.pinned}</span> : null}
-                                <span className="rounded-full bg-[var(--vz-accent-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-accent-text)]">{note.note_type || 'general'}</span>
+                                <span className="rounded-full bg-[var(--vz-accent-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vz-accent-text)]">{note.note_type === "medical" ? text.medical : note.note_type === "visit" ? text.visitNote : text.general}</span>
                                 <span className="text-xs text-[var(--vz-muted)]">{formatDateTime(note.created_at, locale)}</span>
                               </div>
                               <div className="mt-2 text-sm leading-6 text-[var(--vz-text-secondary)]">{note.body}</div>
@@ -689,9 +689,9 @@ export default function Clients() {
                     <div className="flex items-center gap-2 text-sm font-semibold text-[var(--vz-text)]"><BellRing className="h-4 w-4 text-[var(--vz-info)]" /> {text.reminders}</div>
                     {canManage ? (
                       <div className="mt-4 space-y-3 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface-2)] p-4">
-                        <div className="grid gap-3 md:grid-cols-2">
+                        <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))]">
                           <Input value={reminderTitle} onChange={(e) => setReminderTitle(e.target.value)} placeholder={text.reminderPlaceholder} />
-                          <input type="datetime-local" value={reminderAt} onChange={(e) => setReminderAt(e.target.value)} className="w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm" />
+                          <input type="datetime-local" value={reminderAt} onChange={(e) => setReminderAt(e.target.value)} className="w-full min-w-0 rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-3 py-3 text-sm" />
                           <select value={reminderChannel} onChange={(e) => setReminderChannel(e.target.value)} className="rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
                             <option value="internal">{text.internal}</option>
                             <option value="email">Email</option>
@@ -840,6 +840,7 @@ export default function Clients() {
               {text.birthDate}
               <Input className="mt-1" type="date" value={form.birth_date} onChange={(e) => setForm((p) => ({ ...p, birth_date: e.target.value }))} />
             </label>
+            {isHealthcare ? <>
             <label className="text-sm text-[var(--vz-text-secondary)]">
               {text.bloodType}
               <select value={form.blood_type} onChange={(e) => setForm((p) => ({ ...p, blood_type: e.target.value }))} className="mt-1 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm">
@@ -855,6 +856,7 @@ export default function Clients() {
               {text.emergencyPhone}
               <Input className="mt-1" value={form.emergency_contact_phone} onChange={(e) => setForm((p) => ({ ...p, emergency_contact_phone: e.target.value }))} placeholder="+374..." />
             </label>
+            </> : null}
           </div>
 
           <div className="grid gap-3 md:grid-cols-2">
@@ -888,10 +890,10 @@ export default function Clients() {
             {text.allergies}
             <textarea value={form.allergies} onChange={(e) => setForm((p) => ({ ...p, allergies: e.target.value }))} rows={3} className="mt-1 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm outline-none ring-0 transition focus:border-[var(--vz-primary)]" placeholder={text.allergiesPlaceholder} />
           </label>
-          <label className="block text-sm text-[var(--vz-text-secondary)]">
+          {isHealthcare ? <label className="block text-sm text-[var(--vz-text-secondary)]">
             {text.medicalHistory}
             <textarea value={form.medical_history} onChange={(e) => setForm((p) => ({ ...p, medical_history: e.target.value }))} rows={3} className="mt-1 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm outline-none ring-0 transition focus:border-[var(--vz-primary)]" placeholder={text.historyPlaceholder} />
-          </label>
+          </label> : null}
           <label className="block text-sm text-[var(--vz-text-secondary)]">
             {text.note}
             <textarea value={form.notes} onChange={(e) => setForm((p) => ({ ...p, notes: e.target.value }))} rows={4} className="mt-1 w-full rounded-2xl border border-[var(--vz-line)] bg-[var(--vz-surface)] px-4 py-3 text-sm outline-none ring-0 transition focus:border-[var(--vz-primary)]" placeholder={text.profileNotePlaceholder} />
